@@ -27,7 +27,7 @@ const DESC = {
   distanz_rad:'Distanzstück auf dem Ende der Stützplatte, darauf die Radhalterung (3× M6×40 durch beide Teile).',
   radhalterung:'Gabel für die Laufscheibe; die M8×40-Schraube mit Sechskantmutter ist die Achse.',
   rad_u:'Laufscheibe DN70 (Ø 70 mm, flache Scheibe). Läuft in der Gabel auf der Rohrsohle und führt das Unterteil.',
-  bumper:'Luftbalg („Bumper“) – Gummizylinder mit Anschlussplatten oben und unten. Wird mit Druckluft beaufschlagt und drückt die komplette Einheit samt Schalungsschild gegen die Rohrwand.',
+  bumper:'Luftbalg („Bumper“) – Gummizylinder mit Anschlussplatten oben und unten. Zum Anfahren entlüftet; steht die Schalung unter dem Anschluss, wird er aufgeblasen und drückt die komplette Einheit samt Schalungsschild gegen die Rohrwand.',
   dstueck50:'Distanzstück 50 mm. Erhöht den Abstand zwischen Stützplatte und Bumper, damit das Schild bei größerem Rohrdurchmesser die Rohrwand erreicht.',
   dstueck100:'Distanzstück 100 mm. Erhöht den Abstand zwischen Stützplatte und Bumper für größere Rohrdurchmesser.',
   // Zentraleinheit

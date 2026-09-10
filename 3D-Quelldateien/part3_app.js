@@ -467,7 +467,12 @@ function applyExplode(){
   });
   Object.keys(state.bgGroups).forEach(k=>{ const g=state.bgGroups[k]; g.position.copy(gesamt? g.userData.expl.clone().multiplyScalar(t) : new THREE.Vector3()); });
   const up = (state.pipe && state.pressUp) ? state.pressUp*(1-t) : 0;
-  state.parts.forEach(p=>{ if(p.bg!=='unterteil') return; if(p.key==='bumper'){ const sc=Math.max(0.2,(state.bumperH-up)/state.bumperH); p.obj.scale.set(1,sc,1); p.obj.position.y+=up; } else { p.obj.position.y+=up; } });
+  const hP = state.bumperH-up;                                  // Bumperhoehe in Anpressstellung
+  const kp = (state.kp==null)?1:state.kp;                          // 0 = Anfahren (entlueftet), 1 = angepresst
+  const dl = state.pipe ? Math.min(30,Math.max(0,hP-8))*(1-kp)*(1-t) : 0; // Absenkung des Oberbaus beim Anfahren
+  state.dl=dl;
+  state.parts.forEach(p=>{ if(p.bg!=='unterteil') return; if(p.key==='bumper'){ const sc=Math.max(0.05,(hP-dl)/state.bumperH); p.obj.scale.set(1,sc,1); p.obj.position.y+=up; } else { p.obj.position.y+=up; } });
+  ['zentral','halte','schalung'].forEach(k=>{ state.bgGroups[k].position.y-=dl; });
 }
 function applyTransp(){
   const p=state.byKey['schild']; if(!p) return;
@@ -650,23 +655,27 @@ document.getElementById('btn-fs').addEventListener('click',()=>{ const el=viewer
 let demoT0=0;
 function startPipeDemo(){ demoT0=performance.now(); }
 function updateDemo(now){
-  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } return; }
+  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } const cap=document.getElementById('democap'); if(cap) cap.hidden=true; if(state.kp!==1){ state.kp=1; applyExplode(); } return; }
   const inj=state.ctx.getObjectByName('inj'), stem=state.ctx.getObjectByName('stem'), mortar=state.ctx.getObjectByName('mortar'), roll=state.ctx.getObjectByName('roll'), welle=state.byKey['welle'];
-  const t=((now-demoT0)/1000)%14; // 14-s-Schleife
+  const t=((now-demoT0)/1000)%19; // 19-s-Schleife
   const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);
   const R=state.R, axisY=state.pipeCenterY;
-  // 0–2 s Warten, 2–5 s Injektionsblase ausfahren, 5–9 s Mörtel verpressen, 9–12 s halten, 12–14 s Blase zurück
-  const k = t<2?0 : t<5?ease((t-2)/3) : t<12?1 : 1-ease((t-12)/2);
+  // 0-2 Anfahren (Bumper entlueftet) | 2-4.5 Bumper aufblasen, Schild anpressen | 4.5-7.5 Blase ausfahren | 7.5-11.5 Moertel | 11.5-14 Aushaerten | 14-16.5 Blase einfahren | 16.5-19 Bumper entlueften
+  const kp = t<2?0 : t<4.5?ease((t-2)/2.5) : t<16.5?1 : 1-ease((t-16.5)/2.5);
+  if(kp!==state.kp){ state.kp=kp; applyExplode(); }
+  const cap=document.getElementById('democap');
+  if(cap){ const ph = t<2?'1 · Anfahren zur Schadstelle – Bumper entlüftet, Schalung hat Abstand zur Rohrwand' : t<4.5?'2 · Bumper aufblasen – Schalungsschild wird an die Rohrwand gepresst' : t<7.5?'3 · Welle dreht, Luft dazu – Injektionsblase fährt in den Anschluss' : t<11.5?'4 · Mörtel verpressen – Drucksensor meldet die Verfüllung' : t<14?'5 · Aushärten' : t<16.5?'6 · Injektionsblase einfahren' : '7 · Bumper entlüften – weiterfahren'; if(cap.textContent!==ph) cap.textContent=ph; cap.hidden=false; }
+  const k = t<4.5?0 : t<7.5?ease((t-4.5)/3) : t<14?1 : t<16.5?1-ease((t-14)/2.5) : 0;
   // Blase ist um die Welle gewickelt: Rolle wird beim Ausfahren duenner, Welle dreht sich, Schlauch waechst durch die Oeffnung in den Stutzen
-  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1);
+  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1); roll.position.y=state.yB-(state.dl||0);
   welle.obj.rotation.z=-k*Math.PI*4;
-  const wallY=axisY+R, base=state.yB+rR, total=(wallY-base)+140;
+  const wallY=axisY+R, base=state.yB-(state.dl||0)+rR, total=(wallY-base)+140;
   stem.visible=k>0.02; stem.position.y=base; stem.scale.y=Math.max(0.01,total*k);
   const tip=base+total*k; const kk=Math.max(0,Math.min(1,(tip-wallY)/140));
   inj.visible=kk>0.02; const rs=(state.ctxStutzR||75)-14;
   inj.scale.set(rs*(0.35+0.65*kk), 22+90*kk, rs*(0.35+0.65*kk));
   inj.position.y = wallY + 30 + 60*kk;
-  const m = t<5?0 : t<9?ease((t-5)/4) : 1;
+  const m = t<7.5?0 : t<11.5?ease((t-7.5)/4) : t<16.5?1 : 1-ease((t-16.5)/1.5);
   mortar.visible = m>0.02; mortar.material.opacity = 0.85*m;
 }
 

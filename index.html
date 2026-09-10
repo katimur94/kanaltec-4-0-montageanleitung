@@ -81,6 +81,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:.01em;li
 .pill.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
 .hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 14px;pointer-events:none;opacity:1;transition:opacity .6s;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;box-shadow:var(--shadow)}
 .hint.gone{opacity:0}
+.democap{position:absolute;left:10px;right:10px;top:58px;margin:0 auto;width:max-content;max-width:calc(100% - 20px);background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-family:var(--font-display);font-size:17px;font-weight:600;text-align:center;box-shadow:var(--shadow);pointer-events:none;line-height:1.25}
 #loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;color:var(--muted);background:var(--scene)}
 
 /* Hilfe-Overlay */
@@ -293,6 +294,7 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
         <button type="button" id="pc-iso">Nur dieses Teil</button>
       </div>
     </div>
+    <div class="democap" id="democap" hidden></div>
     <div class="hint" id="hint">Ziehen = drehen · Zwei Finger oder Mausrad = zoomen · Teil antippen = Info</div>
     <div class="help" id="help" role="dialog" aria-label="Bedienungshilfe">
       <div class="helpbox">
@@ -452,7 +454,7 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
       <div>
         <div class="grid4" style="grid-template-columns:1fr">
           <div class="card"><div class="n">SCHRITT 1 · ~20 MIN</div><h3>Roboter umrüsten</h3><p>Fräsroboter über die Werkzeugaufnahme mit der Zentraleinheit koppeln, Versorgungsleitung (Strom, Druckluft, Mörtelschlauch) anschließen. Die Klappvorrichtung erlaubt das Einfädeln durch den Schacht.</p></div>
-          <div class="card"><div class="n">SCHRITT 2</div><h3>Positionieren &amp; anpressen</h3><p>Der Roboter fährt die Schalung unter den Stutzen. Über Bumper und Blase wird das Schalungsschild gegen die Rohrwand gepresst – die Öffnung im Schild liegt genau unter dem Anschluss.</p></div>
+          <div class="card"><div class="n">SCHRITT 2</div><h3>Positionieren &amp; anpressen</h3><p>Zum Anfahren ist der Bumper entlüftet, die Schalung hat Abstand zur Rohrwand. Steht die Schalung unter dem Stutzen, wird der Bumper aufgeblasen: Er hebt die Einheit an und presst das Schalungsschild an die Rohrwand – die Öffnung im Schild liegt genau unter dem Anschluss.</p></div>
           <div class="card"><div class="n">SCHRITT 3</div><h3>Injektionsblase &amp; Verpressen</h3><p>Die Injektionsblase ist um die Blasenwelle gewickelt. Der Motor dreht die Welle, mit Luftzugabe wird die Blase durch die Öffnung im Schild in den Stutzen ausgefahren und dichtet ihn nach oben ab. ERGELIT-Kanaltec-Mörtel wird kontinuierlich vom Fahrzeug angemischt und über den Mörtelschlauch verpresst; ein Drucksensor meldet, wenn die Schadstelle verfüllt ist.</p></div>
           <div class="card"><div class="n">SCHRITT 4 · GESAMT 30–45 MIN</div><h3>Aushärten &amp; lösen</h3><p>Nach kurzer Aushärtezeit werden Blase und Schild entlastet, der Roboter fährt weiter. Kein Wasserhalten, keine Querschnittsreduzierung, keine Vorabdichtung bei Fremdwasser nötig.</p></div>
         </div>
@@ -465,7 +467,7 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
     <h2>Die vier Baugruppen</h2>
     <p class="lead">Jede Baugröße besteht aus denselben vier Baugruppen. Zentraleinheit (Oberwagen) und die Blaseneinheit der Halteeinheit sind für alle Größen identisch; Schalung, Schildhalterung Teil 2 und die Distanzstücke des Unterteils werden je Rohrdurchmesser angepasst.</p>
     <div class="bg-list">
-      <div class="card k"><div class="n">UNTERTEIL</div><h3>Stützplatte, Bumper, Laufscheibe</h3><p>Trägt über den Luftbalg („Bumper“) die gesamte Einheit und erzeugt den Anpressdruck nach oben. Ab DN350 werden Distanzstücke (50 mm / 100 mm) mit längeren M8-Schrauben zwischen Stützplatte und Bumper gesetzt.</p></div>
+      <div class="card k"><div class="n">UNTERTEIL</div><h3>Stützplatte, Bumper, Laufscheibe</h3><p>Trägt über den Luftbalg („Bumper“) die gesamte Einheit. Zum Anfahren entlüftet, wird er unter dem Anschluss aufgeblasen und presst die Schalung an die Rohrwand. Ab DN350 werden Distanzstücke (50 mm / 100 mm) mit längeren M8-Schrauben zwischen Stützplatte und Bumper gesetzt.</p></div>
       <div class="card b"><div class="n">ZENTRALEINHEIT · OBERWAGEN</div><h3>Grundkörper, Zentralrohr, Klappvorrichtung</h3><p>Verbindet Unterteil und Halteeinheit. Das Zentralrohr endet in der federbelasteten Klappvorrichtung mit der Werkzeugaufnahme zum Fräsroboter; die Einbauhilfe mit Laufscheibe DN70 führt das vordere Ende.</p></div>
       <div class="card r"><div class="n">HALTEEINHEIT</div><h3>Schildhalterung &amp; Blaseneinheit</h3><p>Sitzt auf dem Grundkörper. Schildhalterung Teil 1–3 trägt die Schalung über zwei Tragstangen; um die Blasenwelle ist die Injektionsblase gewickelt, der Motor dreht sie zum Ausfahren durch die Öffnung des Schalungsschildes.</p></div>
       <div class="card y"><div class="n">SCHALUNG</div><h3>Schalungsträger, Blase, Schalungsschild</h3><p>Drei geschichtete Schalen: der stählerne Träger mit seinen Aufnahmen auf den Tragstangen, darüber die Gummiblase und außen das Schalungsschild mit der Stutzenöffnung. Für jede Baugröße mit passendem Radius.</p></div>
@@ -1598,7 +1600,7 @@ const DESC = {
   distanz_rad:'Distanzstück auf dem Ende der Stützplatte, darauf die Radhalterung (3× M6×40 durch beide Teile).',
   radhalterung:'Gabel für die Laufscheibe; die M8×40-Schraube mit Sechskantmutter ist die Achse.',
   rad_u:'Laufscheibe DN70 (Ø 70 mm, flache Scheibe). Läuft in der Gabel auf der Rohrsohle und führt das Unterteil.',
-  bumper:'Luftbalg („Bumper“) – Gummizylinder mit Anschlussplatten oben und unten. Wird mit Druckluft beaufschlagt und drückt die komplette Einheit samt Schalungsschild gegen die Rohrwand.',
+  bumper:'Luftbalg („Bumper“) – Gummizylinder mit Anschlussplatten oben und unten. Zum Anfahren entlüftet; steht die Schalung unter dem Anschluss, wird er aufgeblasen und drückt die komplette Einheit samt Schalungsschild gegen die Rohrwand.',
   dstueck50:'Distanzstück 50 mm. Erhöht den Abstand zwischen Stützplatte und Bumper, damit das Schild bei größerem Rohrdurchmesser die Rohrwand erreicht.',
   dstueck100:'Distanzstück 100 mm. Erhöht den Abstand zwischen Stützplatte und Bumper für größere Rohrdurchmesser.',
   // Zentraleinheit
@@ -2265,7 +2267,12 @@ function applyExplode(){
   });
   Object.keys(state.bgGroups).forEach(k=>{ const g=state.bgGroups[k]; g.position.copy(gesamt? g.userData.expl.clone().multiplyScalar(t) : new THREE.Vector3()); });
   const up = (state.pipe && state.pressUp) ? state.pressUp*(1-t) : 0;
-  state.parts.forEach(p=>{ if(p.bg!=='unterteil') return; if(p.key==='bumper'){ const sc=Math.max(0.2,(state.bumperH-up)/state.bumperH); p.obj.scale.set(1,sc,1); p.obj.position.y+=up; } else { p.obj.position.y+=up; } });
+  const hP = state.bumperH-up;                                  // Bumperhoehe in Anpressstellung
+  const kp = (state.kp==null)?1:state.kp;                          // 0 = Anfahren (entlueftet), 1 = angepresst
+  const dl = state.pipe ? Math.min(30,Math.max(0,hP-8))*(1-kp)*(1-t) : 0; // Absenkung des Oberbaus beim Anfahren
+  state.dl=dl;
+  state.parts.forEach(p=>{ if(p.bg!=='unterteil') return; if(p.key==='bumper'){ const sc=Math.max(0.05,(hP-dl)/state.bumperH); p.obj.scale.set(1,sc,1); p.obj.position.y+=up; } else { p.obj.position.y+=up; } });
+  ['zentral','halte','schalung'].forEach(k=>{ state.bgGroups[k].position.y-=dl; });
 }
 function applyTransp(){
   const p=state.byKey['schild']; if(!p) return;
@@ -2448,23 +2455,27 @@ document.getElementById('btn-fs').addEventListener('click',()=>{ const el=viewer
 let demoT0=0;
 function startPipeDemo(){ demoT0=performance.now(); }
 function updateDemo(now){
-  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } return; }
+  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } const cap=document.getElementById('democap'); if(cap) cap.hidden=true; if(state.kp!==1){ state.kp=1; applyExplode(); } return; }
   const inj=state.ctx.getObjectByName('inj'), stem=state.ctx.getObjectByName('stem'), mortar=state.ctx.getObjectByName('mortar'), roll=state.ctx.getObjectByName('roll'), welle=state.byKey['welle'];
-  const t=((now-demoT0)/1000)%14; // 14-s-Schleife
+  const t=((now-demoT0)/1000)%19; // 19-s-Schleife
   const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);
   const R=state.R, axisY=state.pipeCenterY;
-  // 0–2 s Warten, 2–5 s Injektionsblase ausfahren, 5–9 s Mörtel verpressen, 9–12 s halten, 12–14 s Blase zurück
-  const k = t<2?0 : t<5?ease((t-2)/3) : t<12?1 : 1-ease((t-12)/2);
+  // 0-2 Anfahren (Bumper entlueftet) | 2-4.5 Bumper aufblasen, Schild anpressen | 4.5-7.5 Blase ausfahren | 7.5-11.5 Moertel | 11.5-14 Aushaerten | 14-16.5 Blase einfahren | 16.5-19 Bumper entlueften
+  const kp = t<2?0 : t<4.5?ease((t-2)/2.5) : t<16.5?1 : 1-ease((t-16.5)/2.5);
+  if(kp!==state.kp){ state.kp=kp; applyExplode(); }
+  const cap=document.getElementById('democap');
+  if(cap){ const ph = t<2?'1 · Anfahren zur Schadstelle – Bumper entlüftet, Schalung hat Abstand zur Rohrwand' : t<4.5?'2 · Bumper aufblasen – Schalungsschild wird an die Rohrwand gepresst' : t<7.5?'3 · Welle dreht, Luft dazu – Injektionsblase fährt in den Anschluss' : t<11.5?'4 · Mörtel verpressen – Drucksensor meldet die Verfüllung' : t<14?'5 · Aushärten' : t<16.5?'6 · Injektionsblase einfahren' : '7 · Bumper entlüften – weiterfahren'; if(cap.textContent!==ph) cap.textContent=ph; cap.hidden=false; }
+  const k = t<4.5?0 : t<7.5?ease((t-4.5)/3) : t<14?1 : t<16.5?1-ease((t-14)/2.5) : 0;
   // Blase ist um die Welle gewickelt: Rolle wird beim Ausfahren duenner, Welle dreht sich, Schlauch waechst durch die Oeffnung in den Stutzen
-  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1);
+  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1); roll.position.y=state.yB-(state.dl||0);
   welle.obj.rotation.z=-k*Math.PI*4;
-  const wallY=axisY+R, base=state.yB+rR, total=(wallY-base)+140;
+  const wallY=axisY+R, base=state.yB-(state.dl||0)+rR, total=(wallY-base)+140;
   stem.visible=k>0.02; stem.position.y=base; stem.scale.y=Math.max(0.01,total*k);
   const tip=base+total*k; const kk=Math.max(0,Math.min(1,(tip-wallY)/140));
   inj.visible=kk>0.02; const rs=(state.ctxStutzR||75)-14;
   inj.scale.set(rs*(0.35+0.65*kk), 22+90*kk, rs*(0.35+0.65*kk));
   inj.position.y = wallY + 30 + 60*kk;
-  const m = t<5?0 : t<9?ease((t-5)/4) : 1;
+  const m = t<7.5?0 : t<11.5?ease((t-7.5)/4) : t<16.5?1 : 1-ease((t-16.5)/1.5);
   mortar.visible = m>0.02; mortar.material.opacity = 0.85*m;
 }
 
