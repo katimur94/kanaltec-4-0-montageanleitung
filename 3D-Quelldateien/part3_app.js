@@ -404,8 +404,9 @@ function build(dn){
   const stutzO=cyl(stutzR+10,320,MAT.pipeOut,40); stutzO.position.set(0,yP+R+160,zHole); ctx.add(stutzO);
   const ring=new THREE.Mesh(new THREE.TorusGeometry(stutzR+8, 9, 12, 40), MAT.mortar); ring.rotation.x=Math.PI/2; ring.position.set(0,yP+R+2,zHole); ring.name='mortar'; ring.visible=false; ctx.add(ring);
   const inj=new THREE.Mesh(new THREE.SphereGeometry(1,24,16), MAT.injBlase); inj.name='inj'; inj.scale.set(stutzR-14,20,stutzR-14); inj.position.set(0,yP+R-10,zHole); inj.visible=false; ctx.add(inj);
-  const stemBase=hy+33, stemH=(yP+R)-stemBase;
-  const stem=cyl(9,stemH,MAT.injBlase,12); stem.name='stem'; stem.position.set(0,stemBase+stemH/2,zHole); stem.visible=false; ctx.add(stem);
+  const roll=cylZ(26,64,MAT.injBlase,28); roll.name='roll'; roll.position.set(0,yB,zHole); roll.visible=false; ctx.add(roll);
+  const stem=cyl(12,1,MAT.injBlase,16); stem.geometry.translate(0,0.5,0); stem.name='stem'; stem.position.set(0,yB,zHole); stem.visible=false; ctx.add(stem);
+  const stemBase=yB, stemH=(yP+R)-yB; state.yB=yB;
   state.pressUp=Math.max(0,(yP-R+3)-state.plateBottom);
   state.stemBase=stemBase; state.stemH=stemH; state.ctxStutzR=stutzR;
   ctx.visible=state.pipe; root.add(ctx); state.ctx=ctx;
@@ -603,6 +604,9 @@ function applyStep(){
   applyVisibility(); applyExplode(); applyStepUI();
 }
 function applyStepUI(){
+  document.body.classList.toggle('stepping', !!state.stepMode);
+  { const bt=document.getElementById('ex-together'), ba=document.getElementById('ex-apart'); if(bt&&ba){ bt.classList.toggle('on',state.explode<0.02); ba.classList.toggle('on',state.explode>0.98); } }
+  document.getElementById('stepbar').classList.toggle('on', !!state.stepMode);
   const list=state.steps[state.bg]; const i=state.stepIdx;
   document.querySelectorAll('.step').forEach(el=>{ const j=+el.dataset.i; el.classList.toggle('on', state.stepMode && j===i); el.classList.toggle('done', state.stepMode && j<i); });
   if(list[i]){ document.getElementById('steptitle').textContent=(i+1)+'. '+list[i].t; document.getElementById('stepsub').textContent=list[i].s; document.getElementById('stepnum').textContent=(i+1)+'/'+list.length; }
@@ -639,25 +643,29 @@ document.getElementById('btn-reset').addEventListener('click',()=>{ state.isolat
 document.getElementById('btn-rot').addEventListener('click',e=>{ state.autoRot=!state.autoRot; controls.autoRotate=state.autoRot; controls.autoRotateSpeed=1.2; e.currentTarget.classList.toggle('on',state.autoRot); });
 document.getElementById('btn-pipe').addEventListener('click',e=>{ state.pipe=!state.pipe; e.currentTarget.classList.toggle('on',state.pipe); if(state.ctx) state.ctx.visible=state.pipe; applyExplode(); startPipeDemo(); });
 document.getElementById('btn-labels').addEventListener('click',e=>{ state.labels=!state.labels; e.currentTarget.classList.toggle('on',state.labels); });
-document.getElementById('btn-labels').classList.add('on');
+if(window.innerWidth<=1000){ state.labels=false; document.getElementById('btn-labels').classList.remove('on'); } else { document.getElementById('btn-labels').classList.add('on'); }
 document.getElementById('btn-fs').addEventListener('click',()=>{ const el=viewerEl; if(document.fullscreenElement){ document.exitFullscreen(); } else if(el.requestFullscreen){ el.requestFullscreen(); } });
 
 /* Demo-Ablauf mit Rohr: Injektionsblase fährt aus, Mörtelring erscheint */
 let demoT0=0;
 function startPipeDemo(){ demoT0=performance.now(); }
 function updateDemo(now){
-  if(!state.pipe || !state.ctx) return;
-  const inj=state.ctx.getObjectByName('inj'), stem=state.ctx.getObjectByName('stem'), mortar=state.ctx.getObjectByName('mortar');
+  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } return; }
+  const inj=state.ctx.getObjectByName('inj'), stem=state.ctx.getObjectByName('stem'), mortar=state.ctx.getObjectByName('mortar'), roll=state.ctx.getObjectByName('roll'), welle=state.byKey['welle'];
   const t=((now-demoT0)/1000)%14; // 14-s-Schleife
   const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);
   const R=state.R, axisY=state.pipeCenterY;
   // 0–2 s Warten, 2–5 s Injektionsblase ausfahren, 5–9 s Mörtel verpressen, 9–12 s halten, 12–14 s Blase zurück
   const k = t<2?0 : t<5?ease((t-2)/3) : t<12?1 : 1-ease((t-12)/2);
-  inj.visible = k>0.02; stem.visible=k>0.02;
-  const rs=(state.ctxStutzR||75)-14;
-  inj.scale.set(rs*(0.3+0.7*k), 20+110*k, rs*(0.3+0.7*k));
-  inj.position.y = axisY + R - 10 + 130*k;
-  stem.scale.y = Math.max(0.02,k); stem.position.y = state.stemBase + state.stemH*k/2;
+  // Blase ist um die Welle gewickelt: Rolle wird beim Ausfahren duenner, Welle dreht sich, Schlauch waechst durch die Oeffnung in den Stutzen
+  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1);
+  welle.obj.rotation.z=-k*Math.PI*4;
+  const wallY=axisY+R, base=state.yB+rR, total=(wallY-base)+140;
+  stem.visible=k>0.02; stem.position.y=base; stem.scale.y=Math.max(0.01,total*k);
+  const tip=base+total*k; const kk=Math.max(0,Math.min(1,(tip-wallY)/140));
+  inj.visible=kk>0.02; const rs=(state.ctxStutzR||75)-14;
+  inj.scale.set(rs*(0.35+0.65*kk), 22+90*kk, rs*(0.35+0.65*kk));
+  inj.position.y = wallY + 30 + 60*kk;
   const m = t<5?0 : t<9?ease((t-5)/4) : 1;
   mortar.visible = m>0.02; mortar.material.opacity = 0.85*m;
 }
@@ -707,6 +715,7 @@ function loop(now){
   resize();
   if(camAnim){ const k=Math.min(1,(now-camAnim.t0)/camAnim.dur); const e=k*k*(3-2*k); camera.position.lerpVectors(camAnim.p0,camAnim.p1,e); controls.target.lerpVectors(camAnim.t0v,camAnim.t1,e); if(k>=1) camAnim=null; }
   controls.update();
+  if(exAnim){ const k=Math.min(1,(now-exAnim.t0)/550); const e=k*k*(3-2*k); state.explode=exAnim.from+(exAnim.target-exAnim.from)*e; const v=Math.round(state.explode*100); ex.value=v; document.getElementById('explodeval').textContent=v+' %'; applyExplode(); syncExplodeBtns(); if(k>=1) exAnim=null; }
   updateDemo(now);
   renderer.render(scene,camera);
   updateLabels();
@@ -724,6 +733,30 @@ document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('on',p.id==='tab-'+b.dataset.tab));
 }));
+
+/* ---------- Einfache Bedienung ---------- */
+const exBtnT=document.getElementById('ex-together'), exBtnA=document.getElementById('ex-apart');
+function syncExplodeBtns(){ exBtnT.classList.toggle('on',state.explode<0.02); exBtnA.classList.toggle('on',state.explode>0.98); }
+let exAnim=null;
+function animateExplode(target){ exAnim={from:state.explode,target,t0:performance.now()}; }
+function leaveStepMode(){ if(!state.stepMode) return; state.stepMode=false; document.getElementById('stepmode').checked=false; applyVisibility(); applyStepUI(); }
+function enterStepMode(){ state.stepMode=true; state.stepIdx=0; document.getElementById('stepmode').checked=true; state.isolate=null; selectPart(null); applyStep(); }
+exBtnT.addEventListener('click',()=>{ leaveStepMode(); animateExplode(0); });
+exBtnA.addEventListener('click',()=>{ leaveStepMode(); animateExplode(1); });
+ex.addEventListener('input',syncExplodeBtns);
+document.getElementById('stepstart').addEventListener('click',()=>{ enterStepMode(); });
+document.getElementById('stepstop').addEventListener('click',()=>{ leaveStepMode(); });
+document.getElementById('btn-reset2').addEventListener('click',()=>{ document.getElementById('btn-reset').click(); });
+const helpEl=document.getElementById('help');
+const isTouch=window.matchMedia('(pointer:coarse)').matches;
+document.getElementById('help-touch').hidden=!isTouch; document.getElementById('help-mouse').hidden=isTouch;
+document.getElementById('hint').textContent = isTouch ? 'Ein Finger = drehen · Zwei Finger = zoomen · Teil antippen = Info' : 'Maus ziehen = drehen · Mausrad = zoomen · Teil anklicken = Info';
+function showHelp(){ helpEl.classList.add('on'); }
+function hideHelp(){ helpEl.classList.remove('on'); try{ localStorage.setItem('kt40-help','1'); }catch(e){} }
+document.getElementById('helpbtn').addEventListener('click',showHelp);
+document.getElementById('help-close').addEventListener('click',hideHelp);
+helpEl.addEventListener('click',e=>{ if(e.target===helpEl) hideHelp(); });
+try{ if(!localStorage.getItem('kt40-help')) showHelp(); }catch(e){ showHelp(); }
 
 /* ---------- Start ---------- */
 resize(); if(location.hash==="#debug") window.__kt40={state,camera,controls,fitView,applyExplode,applyVisibility,renderer};

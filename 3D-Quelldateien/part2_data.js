@@ -48,8 +48,8 @@ const DESC = {
   teil3:'Schildhalterung Teil 3 – zwei Tragstangen (Rundstab auf Flachleiste) auf den Oberkanten der Stehplatten, je 2× M6×16. Auf die Stangen werden die Rohrhülsen der Schalungsaufnahmen geschoben.',
   gehaeuse:'Gehäuse der Blasenwelle – Würfel mit großer Bohrung, zwischen den Bolzen der Tragstangen mit 4× M6×45 bzw. M6×65 gehalten; vorn Deckel und Motor.',
   deckel:'Deckel des Gehäuses (Motorseite) mit Mittelbohrung, 4× M5×12 in den Ecken; daran der Motorflansch mit 4× M4×16.',
-  welle:'Welle der Blaseneinheit – Vierkantstab mit Mittelbohrung für die Injektionsblase; am vorderen Ende Bund und abgesetzter Zapfen, der im Klemmblock und im Gehäuse läuft. Wird vom Motor verstellt.',
-  motor:'Antriebsmotor der Blaseneinheit, angeflanscht am Deckel des Gehäuses.',
+  welle:'Welle der Blaseneinheit – Vierkantstab, um den die Injektionsblase gewickelt ist; am vorderen Ende Bund und abgesetzter Zapfen, der im Klemmblock und im Gehäuse läuft. Der Motor dreht die Welle: zusammen mit Luftzugabe wird die Blase durch die Öffnung im Schalungsschild in den Anschluss ausgefahren.',
+  motor:'Antriebsmotor der Blaseneinheit, angeflanscht am Deckel des Gehäuses. Dreht die Blasenwelle zum Aus- und Einfahren der Injektionsblase.',
   bef1:'Befestigung Blaseneinheit 1 – Klemmblöcke mit Bohrung: einer auf dem Zapfen der Blasenwelle, einer auf dem Bolzen der rechten Tragstange.',
   bef2:'Befestigung Blaseneinheit 2 – Bolzen mit Querbohrungen in den vorderen Enden der Tragstangen; durch die Querbohrungen laufen die langen M6-Schrauben ins Gehäuse.',
   // Schalung
