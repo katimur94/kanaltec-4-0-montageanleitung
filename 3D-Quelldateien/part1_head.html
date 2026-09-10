@@ -74,6 +74,9 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:.01em;li
 .vtop>*{pointer-events:auto}
 .pill{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:22px;padding:0 14px;min-height:40px;font-family:var(--font-display);font-size:16px;font-weight:600;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow)}
 .pill.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.modeseg{display:inline-flex;border:1px solid var(--line);background:var(--panel);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+.modeseg button{border:0;background:transparent;color:var(--muted);min-height:40px;padding:0 14px;font-family:var(--font-display);font-size:16px;font-weight:600;white-space:nowrap}
+.modeseg button.on{background:var(--blue);color:#fff}
 .hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 14px;pointer-events:none;opacity:1;transition:opacity .6s;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;box-shadow:var(--shadow)}
 .hint.gone{opacity:0}
 .democap{position:absolute;left:10px;right:10px;top:58px;margin:0 auto;width:max-content;max-width:calc(100% - 20px);background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-family:var(--font-display);font-size:17px;font-weight:600;text-align:center;box-shadow:var(--shadow);pointer-events:none;line-height:1.25}
@@ -252,6 +255,8 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
   .panel{border-left:0;overflow:visible}
   .tabs{top:46vh;top:46dvh}
   .pill{min-height:38px;font-size:15px;padding:0 12px}
+  .pill .lbl{display:none}
+  .modeseg button{min-height:38px;font-size:15px;padding:0 10px}
   #partcard{left:8px;right:8px;bottom:8px;width:auto;padding:8px 10px 10px;max-height:calc(100% - 60px)}
   #partcard p{font-size:14px}
   .hint{bottom:10px;font-size:13px}
@@ -291,7 +296,11 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
     <div id="labels"></div>
     <div id="loading">3D-Modell wird aufgebaut …</div>
     <div class="vtop">
-      <button class="pill" id="btn-reset2" type="button">⟲ Ansicht zurücksetzen</button>
+      <button class="pill" id="btn-reset2" type="button" title="Ansicht zurücksetzen">⟲<span class="lbl"> Ansicht zurücksetzen</span></button>
+      <div class="modeseg" role="group" aria-label="Maus- bzw. Fingerfunktion">
+        <button type="button" id="mode-rot" class="on">↻ Drehen</button>
+        <button type="button" id="mode-pan">✥ Verschieben</button>
+      </div>
       <button class="pill accent" id="helpbtn" type="button">? Hilfe</button>
     </div>
     <div id="partcard" role="dialog" aria-live="polite">
@@ -303,7 +312,6 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
         <button type="button" id="pc-iso">Nur dieses Teil</button>
       </div>
     </div>
-    <div class="democap" id="democap" hidden></div>
     <div class="hint" id="hint">Ziehen = drehen · Zwei Finger oder Mausrad = zoomen · Teil antippen = Info</div>
     <div class="help" id="help" role="dialog" aria-label="Bedienungshilfe">
       <div class="helpbox">
@@ -311,12 +319,14 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
         <ul id="help-touch">
           <li><i>☝️</i><span><b>Mit einem Finger ziehen</b> – Modell drehen</span></li>
           <li><i>🤏</i><span><b>Zwei Finger zusammen/auseinander</b> – zoomen</span></li>
+          <li><i>✥</i><span><b>Oben „Verschieben“ antippen</b>, dann mit einem Finger ziehen – Modell nach links, rechts, oben, unten schieben (geht auch mit zwei Fingern)</span></li>
           <li><i>👆</i><span><b>Auf ein Teil tippen</b> – Name und Erklärung anzeigen</span></li>
           <li><i>⬇️</i><span><b>Nach unten wischen</b> – Rohrgröße, Baugruppe und Montageschritte wählen</span></li>
         </ul>
         <ul id="help-mouse" hidden>
           <li><i>🖱️</i><span><b>Linke Maustaste ziehen</b> – Modell drehen</span></li>
-          <li><i>⚙️</i><span><b>Mausrad</b> – zoomen, <b>rechte Taste ziehen</b> – verschieben</span></li>
+          <li><i>⚙️</i><span><b>Mausrad</b> – zoomen</span></li>
+          <li><i>✥</i><span><b>Oben „Verschieben“ anklicken</b> und ziehen – Modell nach links, rechts, oben, unten schieben (auch: rechte Maustaste ziehen oder Pfeiltasten)</span></li>
           <li><i>👆</i><span><b>Auf ein Teil klicken</b> – Name und Erklärung anzeigen</span></li>
           <li><i>➡️</i><span><b>Rechts im Bedienfeld</b> – Rohrgröße, Baugruppe und Montageschritte wählen</span></li>
         </ul>

@@ -79,6 +79,9 @@ h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:.01em;li
 .vtop>*{pointer-events:auto}
 .pill{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:22px;padding:0 14px;min-height:40px;font-family:var(--font-display);font-size:16px;font-weight:600;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow)}
 .pill.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.modeseg{display:inline-flex;border:1px solid var(--line);background:var(--panel);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+.modeseg button{border:0;background:transparent;color:var(--muted);min-height:40px;padding:0 14px;font-family:var(--font-display);font-size:16px;font-weight:600;white-space:nowrap}
+.modeseg button.on{background:var(--blue);color:#fff}
 .hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 14px;pointer-events:none;opacity:1;transition:opacity .6s;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;box-shadow:var(--shadow)}
 .hint.gone{opacity:0}
 .democap{position:absolute;left:10px;right:10px;top:58px;margin:0 auto;width:max-content;max-width:calc(100% - 20px);background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;font-family:var(--font-display);font-size:17px;font-weight:600;text-align:center;box-shadow:var(--shadow);pointer-events:none;line-height:1.25}
@@ -257,6 +260,8 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
   .panel{border-left:0;overflow:visible}
   .tabs{top:46vh;top:46dvh}
   .pill{min-height:38px;font-size:15px;padding:0 12px}
+  .pill .lbl{display:none}
+  .modeseg button{min-height:38px;font-size:15px;padding:0 10px}
   #partcard{left:8px;right:8px;bottom:8px;width:auto;padding:8px 10px 10px;max-height:calc(100% - 60px)}
   #partcard p{font-size:14px}
   .hint{bottom:10px;font-size:13px}
@@ -298,7 +303,11 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
     <div id="labels"></div>
     <div id="loading">3D-Modell wird aufgebaut …</div>
     <div class="vtop">
-      <button class="pill" id="btn-reset2" type="button">⟲ Ansicht zurücksetzen</button>
+      <button class="pill" id="btn-reset2" type="button" title="Ansicht zurücksetzen">⟲<span class="lbl"> Ansicht zurücksetzen</span></button>
+      <div class="modeseg" role="group" aria-label="Maus- bzw. Fingerfunktion">
+        <button type="button" id="mode-rot" class="on">↻ Drehen</button>
+        <button type="button" id="mode-pan">✥ Verschieben</button>
+      </div>
       <button class="pill accent" id="helpbtn" type="button">? Hilfe</button>
     </div>
     <div id="partcard" role="dialog" aria-live="polite">
@@ -310,7 +319,6 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
         <button type="button" id="pc-iso">Nur dieses Teil</button>
       </div>
     </div>
-    <div class="democap" id="democap" hidden></div>
     <div class="hint" id="hint">Ziehen = drehen · Zwei Finger oder Mausrad = zoomen · Teil antippen = Info</div>
     <div class="help" id="help" role="dialog" aria-label="Bedienungshilfe">
       <div class="helpbox">
@@ -318,12 +326,14 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
         <ul id="help-touch">
           <li><i>☝️</i><span><b>Mit einem Finger ziehen</b> – Modell drehen</span></li>
           <li><i>🤏</i><span><b>Zwei Finger zusammen/auseinander</b> – zoomen</span></li>
+          <li><i>✥</i><span><b>Oben „Verschieben“ antippen</b>, dann mit einem Finger ziehen – Modell nach links, rechts, oben, unten schieben (geht auch mit zwei Fingern)</span></li>
           <li><i>👆</i><span><b>Auf ein Teil tippen</b> – Name und Erklärung anzeigen</span></li>
           <li><i>⬇️</i><span><b>Nach unten wischen</b> – Rohrgröße, Baugruppe und Montageschritte wählen</span></li>
         </ul>
         <ul id="help-mouse" hidden>
           <li><i>🖱️</i><span><b>Linke Maustaste ziehen</b> – Modell drehen</span></li>
-          <li><i>⚙️</i><span><b>Mausrad</b> – zoomen, <b>rechte Taste ziehen</b> – verschieben</span></li>
+          <li><i>⚙️</i><span><b>Mausrad</b> – zoomen</span></li>
+          <li><i>✥</i><span><b>Oben „Verschieben“ anklicken</b> und ziehen – Modell nach links, rechts, oben, unten schieben (auch: rechte Maustaste ziehen oder Pfeiltasten)</span></li>
           <li><i>👆</i><span><b>Auf ein Teil klicken</b> – Name und Erklärung anzeigen</span></li>
           <li><i>➡️</i><span><b>Rechts im Bedienfeld</b> – Rohrgröße, Baugruppe und Montageschritte wählen</span></li>
         </ul>
@@ -2078,7 +2088,7 @@ renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmi
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(38, 1, 5, 20000);
 const controls=new THREE.OrbitControls(camera, canvas);
-controls.enableDamping=true; controls.dampingFactor=0.08; controls.rotateSpeed=0.8; controls.zoomSpeed=0.9; controls.screenSpacePanning=true; controls.maxDistance=8000; controls.minDistance=120;
+controls.enableDamping=true; controls.dampingFactor=0.14; controls.rotateSpeed=0.8; controls.zoomSpeed=0.9; controls.screenSpacePanning=true; controls.maxDistance=8000; controls.minDistance=120;
 scene.add(new THREE.HemisphereLight(0xffffff, 0x4a5560, 0.55));
 const key=new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(500,900,600); scene.add(key);
 const fill=new THREE.DirectionalLight(0xdfe8ff, 0.28); fill.position.set(-600,300,-400); scene.add(fill);
@@ -2449,7 +2459,7 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('pointermove',e=>{
   if(e.pointerType!=='mouse') return;
   const k=pickAt(e.clientX,e.clientY);
-  if(k!==state.hoverKey){ state.hoverKey=k; canvas.style.cursor=k?'pointer':''; updateHighlight(); }
+  if(k!==state.hoverKey){ state.hoverKey=k; canvas.style.cursor=k?'pointer':(state.mode==='pan'?'move':''); updateHighlight(); }
 });
 
 /* ---------- Auswahl / Teilkarte ---------- */
@@ -2667,10 +2677,16 @@ ex.addEventListener('input',syncExplodeBtns);
 $s('stepstart').addEventListener('click',()=>{ enterStepMode(); });
 $s('stepstop').addEventListener('click',()=>{ leaveStepMode(); });
 document.getElementById('btn-reset2').addEventListener('click',()=>{ document.getElementById('btn-reset').click(); });
+/* Drehen / Verschieben umschalten (linke Maustaste bzw. ein Finger) */
+function setMode(m){ state.mode=m; const pan=(m==='pan'); controls.mouseButtons.LEFT = pan?THREE.MOUSE.PAN:THREE.MOUSE.ROTATE; controls.touches.ONE = pan?THREE.TOUCH.PAN:THREE.TOUCH.ROTATE; document.getElementById('mode-rot').classList.toggle('on',!pan); document.getElementById('mode-pan').classList.toggle('on',pan); canvas.style.cursor = pan?'move':''; }
+document.getElementById('mode-rot').addEventListener('click',()=>setMode('rot'));
+document.getElementById('mode-pan').addEventListener('click',()=>setMode('pan'));
+controls.mouseButtons.RIGHT=THREE.MOUSE.PAN; controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY; controls.touches.TWO=THREE.TOUCH.DOLLY_PAN; controls.panSpeed=1.0; controls.keyPanSpeed=12;
+if(controls.listenToKeyEvents){ controls.listenToKeyEvents(window); }
 const helpEl=document.getElementById('help');
 const isTouch=window.matchMedia('(pointer:coarse)').matches;
 document.getElementById('help-touch').hidden=!isTouch; document.getElementById('help-mouse').hidden=isTouch;
-document.getElementById('hint').textContent = isTouch ? 'Ein Finger = drehen · Zwei Finger = zoomen · Teil antippen = Info' : 'Maus ziehen = drehen · Mausrad = zoomen · Teil anklicken = Info';
+document.getElementById('hint').textContent = isTouch ? 'Ein Finger = drehen · Zwei Finger = zoomen/verschieben · Teil antippen = Info' : 'Ziehen = drehen · Mausrad = zoomen · Rechte Taste = verschieben · Klick = Info';
 function showHelp(){ helpEl.classList.add('on'); }
 function hideHelp(){ helpEl.classList.remove('on'); try{ localStorage.setItem('kt40-help','1'); }catch(e){} }
 document.getElementById('helpbtn').addEventListener('click',showHelp);

@@ -169,7 +169,7 @@ renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmi
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(38, 1, 5, 20000);
 const controls=new THREE.OrbitControls(camera, canvas);
-controls.enableDamping=true; controls.dampingFactor=0.08; controls.rotateSpeed=0.8; controls.zoomSpeed=0.9; controls.screenSpacePanning=true; controls.maxDistance=8000; controls.minDistance=120;
+controls.enableDamping=true; controls.dampingFactor=0.14; controls.rotateSpeed=0.8; controls.zoomSpeed=0.9; controls.screenSpacePanning=true; controls.maxDistance=8000; controls.minDistance=120;
 scene.add(new THREE.HemisphereLight(0xffffff, 0x4a5560, 0.55));
 const key=new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(500,900,600); scene.add(key);
 const fill=new THREE.DirectionalLight(0xdfe8ff, 0.28); fill.position.set(-600,300,-400); scene.add(fill);
@@ -540,7 +540,7 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('pointermove',e=>{
   if(e.pointerType!=='mouse') return;
   const k=pickAt(e.clientX,e.clientY);
-  if(k!==state.hoverKey){ state.hoverKey=k; canvas.style.cursor=k?'pointer':''; updateHighlight(); }
+  if(k!==state.hoverKey){ state.hoverKey=k; canvas.style.cursor=k?'pointer':(state.mode==='pan'?'move':''); updateHighlight(); }
 });
 
 /* ---------- Auswahl / Teilkarte ---------- */
@@ -758,10 +758,16 @@ ex.addEventListener('input',syncExplodeBtns);
 $s('stepstart').addEventListener('click',()=>{ enterStepMode(); });
 $s('stepstop').addEventListener('click',()=>{ leaveStepMode(); });
 document.getElementById('btn-reset2').addEventListener('click',()=>{ document.getElementById('btn-reset').click(); });
+/* Drehen / Verschieben umschalten (linke Maustaste bzw. ein Finger) */
+function setMode(m){ state.mode=m; const pan=(m==='pan'); controls.mouseButtons.LEFT = pan?THREE.MOUSE.PAN:THREE.MOUSE.ROTATE; controls.touches.ONE = pan?THREE.TOUCH.PAN:THREE.TOUCH.ROTATE; document.getElementById('mode-rot').classList.toggle('on',!pan); document.getElementById('mode-pan').classList.toggle('on',pan); canvas.style.cursor = pan?'move':''; }
+document.getElementById('mode-rot').addEventListener('click',()=>setMode('rot'));
+document.getElementById('mode-pan').addEventListener('click',()=>setMode('pan'));
+controls.mouseButtons.RIGHT=THREE.MOUSE.PAN; controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY; controls.touches.TWO=THREE.TOUCH.DOLLY_PAN; controls.panSpeed=1.0; controls.keyPanSpeed=12;
+if(controls.listenToKeyEvents){ controls.listenToKeyEvents(window); }
 const helpEl=document.getElementById('help');
 const isTouch=window.matchMedia('(pointer:coarse)').matches;
 document.getElementById('help-touch').hidden=!isTouch; document.getElementById('help-mouse').hidden=isTouch;
-document.getElementById('hint').textContent = isTouch ? 'Ein Finger = drehen · Zwei Finger = zoomen · Teil antippen = Info' : 'Maus ziehen = drehen · Mausrad = zoomen · Teil anklicken = Info';
+document.getElementById('hint').textContent = isTouch ? 'Ein Finger = drehen · Zwei Finger = zoomen/verschieben · Teil antippen = Info' : 'Ziehen = drehen · Mausrad = zoomen · Rechte Taste = verschieben · Klick = Info';
 function showHelp(){ helpEl.classList.add('on'); }
 function hideHelp(){ helpEl.classList.remove('on'); try{ localStorage.setItem('kt40-help','1'); }catch(e){} }
 document.getElementById('helpbtn').addEventListener('click',showHelp);
