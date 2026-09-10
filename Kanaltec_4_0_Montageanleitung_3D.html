@@ -2317,18 +2317,52 @@ function build(dn){
 
   /* Rohrkontext (Hauptkanal + Stutzen + Injektionsblase + Mörtel) */
   const ctx=grp(); ctx.name='pipectx';
-  const pipeLen=1400;
+  const pipeLen=3400;
   const yP=state.pipeCenterY, zHole=state.holeZ;
-  const pIn=cylZ(R,pipeLen,MAT.pipe,64); pIn.position.y=yP; ctx.add(pIn);
-  const pOut=cylZ(R+12,pipeLen,MAT.pipeOut,64); pOut.position.y=yP; ctx.add(pOut);
+  const pIn=cylZ(R,pipeLen,MAT.pipe,64); pIn.position.set(0,yP,-700); ctx.add(pIn);
+  const pOut=cylZ(R+12,pipeLen,MAT.pipeOut,64); pOut.position.set(0,yP,-700); ctx.add(pOut);
   const stutzR=75; const stutz=cyl(stutzR,320,MAT.pipe,40); stutz.position.set(0,yP+R+160,zHole); ctx.add(stutz);
   const stutzO=cyl(stutzR+10,320,MAT.pipeOut,40); stutzO.position.set(0,yP+R+160,zHole); ctx.add(stutzO);
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(stutzR+8, 9, 12, 40), MAT.mortar); ring.rotation.x=Math.PI/2; ring.position.set(0,yP+R+2,zHole); ring.name='mortar'; ring.visible=false; ctx.add(ring);
+  const mMort=MAT.mortar.clone(); const ring=new THREE.Mesh(new THREE.TorusGeometry(stutzR+8, 9, 12, 40), mMort); ring.rotation.x=Math.PI/2; ring.position.set(0,yP+R+2,zHole); ring.name='mortar'; ring.visible=false; ctx.add(ring);
+  const mDmg=new THREE.MeshStandardMaterial({color:0x5A3526,roughness:1,metalness:0,transparent:true,opacity:1}); const dmg=new THREE.Mesh(new THREE.TorusGeometry(stutzR+9, 8, 6, 14), mDmg); dmg.rotation.x=Math.PI/2; dmg.scale.set(1.05,1,0.9); dmg.position.set(0,yP+R+1,zHole); dmg.name='damage'; ctx.add(dmg);
   const inj=new THREE.Mesh(new THREE.SphereGeometry(1,24,16), MAT.injBlase); inj.name='inj'; inj.scale.set(stutzR-14,20,stutzR-14); inj.position.set(0,yP+R-10,zHole); inj.visible=false; ctx.add(inj);
   const roll=cylZ(26,64,MAT.injBlase,28); roll.name='roll'; roll.position.set(0,yB,zHole); roll.visible=false; ctx.add(roll);
   const stem=cyl(12,1,MAT.injBlase,16); stem.geometry.translate(0,0.5,0); stem.name='stem'; stem.position.set(0,yB,zHole); stem.visible=false; ctx.add(stem);
   const stemBase=yB, stemH=(yP+R)-yB; state.yB=yB;
   state.pressUp=Math.max(0,(yP-R+3)-state.plateBottom);
+  /* IBAK-Fraesroboter (schematisch): Koerper hinter der Werkzeugaufnahme, Kamerakopf, Raeder auf Schwingarmen, Versorgungskabel */
+  { const robot=grp(); robot.name='robot';
+    const rb=55+0.12*(R-150), rl=900, zF=-400, wr=38+0.06*(R-150);
+    const mBody=new THREE.MeshStandardMaterial({color:0x2E3A4A,metalness:0.5,roughness:0.45});
+    const mBlue=new THREE.MeshStandardMaterial({color:0x1F6FD0,metalness:0.3,roughness:0.5});
+    const mLed=new THREE.MeshStandardMaterial({color:0xFFF6C0,emissive:0xFFE38A,emissiveIntensity:0.9});
+    const bar=(a,b,r,mat)=>{ const d=new THREE.Vector3().subVectors(b,a); const len=d.length(); const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,12),mat); m.position.copy(a).addScaledVector(d,0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize()); return m; };
+    const body=cylZ(rb,rl-60,mBody,40); body.position.set(0,axisY,zF-30-(rl-60)/2); robot.add(body);
+    const capF=cylZ(rb*0.86,30,mBlue,40); capF.position.set(0,axisY,zF-15); robot.add(capF);
+    const capR=cylZ(rb*0.86,30,mBlue,40); capR.position.set(0,axisY,zF-rl+15); robot.add(capR);
+    const sock=cylZ(16,6,MAT.rubber2,20); sock.position.set(0,axisY,zF-3); robot.add(sock);
+    [zF-120,zF-rl+150].forEach(z=>{ const ring=new THREE.Mesh(new THREE.TorusGeometry(rb+1,3,10,48),mBlue); ring.position.set(0,axisY,z); robot.add(ring); });
+    const cam=grp(); cam.add(box(56,32,80,mBody)); cam.add(at(cylZ(13,10,MAT.rubber2,24),0,0,-44)); cam.add(at(cylZ(7,12,MAT.alu,16),0,0,-46)); cam.add(at(cylZ(6,4,mLed,12),-20,8,-41)); cam.add(at(cylZ(6,4,mLed,12),20,8,-41));
+    cam.position.set(0,axisY+rb+12,zF-70); robot.add(cam);
+    const cv=document.createElement('canvas'); cv.width=320; cv.height=120; const cx=cv.getContext('2d'); cx.fillStyle='#ffffff'; cx.fillRect(0,0,320,120);
+    cx.fillStyle='#CF2A20'; cx.fillRect(18,14,118,7); cx.fillStyle='#1F4E9A'; cx.fillRect(150,14,152,7);
+    cx.font='italic bold 64px Arial, Helvetica, sans-serif'; cx.textBaseline='alphabetic'; cx.textAlign='left';
+    let x0=26; const segs=[['Di','#CF2A20'],['T','#1F4E9A'],['om','#CF2A20']]; const wsum=segs.reduce((a,sg)=>a+cx.measureText(sg[0]).width,0); x0=(320-wsum)/2;
+    segs.forEach(sg=>{ cx.fillStyle=sg[1]; cx.fillText(sg[0],x0,82); x0+=cx.measureText(sg[0]).width; });
+    cx.font='bold 17px Arial, Helvetica, sans-serif'; cx.fillStyle='#1F4E9A'; cx.textAlign='center'; cx.fillText('GmbH Kanaltechnik',160,108);
+    const tex=new THREE.CanvasTexture(cv); tex.encoding=THREE.sRGBEncoding; const mLab=new THREE.MeshBasicMaterial({map:tex});
+    const lab=new THREE.Mesh(new THREE.PlaneGeometry(128,48),mLab); lab.position.set(rb+0.6,axisY+6,zF-440); lab.rotation.y=Math.PI/2; robot.add(lab);
+    const lab2=new THREE.Mesh(new THREE.PlaneGeometry(128,48),mLab); lab2.position.set(-rb-0.6,axisY+6,zF-440); lab2.rotation.y=-Math.PI/2; robot.add(lab2);
+    const wheels=[]; const xw=R*0.45, yw=yP-Math.sqrt(R*R-xw*xw)+wr*0.95;
+    [zF-180,zF-rl+180].forEach(z=>{ [-1,1].forEach(sx=>{
+      const a=new THREE.Vector3(sx*rb*0.6,axisY-rb*0.45,z), b=new THREE.Vector3(sx*xw,yw,z);
+      robot.add(bar(a,b,7,MAT.steel2));
+      const w=grp(); w.add(cylX(wr,30,MAT.rubber,36)); w.add(cylX(wr*0.55,32,MAT.alu,24)); w.add(at(cylX(4,40,MAT.steel2,10),0,0,0)); w.position.copy(b); robot.add(w); wheels.push(w);
+    }); });
+    const cable=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0,axisY,zF-rl),new THREE.Vector3(0,axisY-rb*0.6,zF-rl-120),new THREE.Vector3(10,yP-R+14,zF-rl-320),new THREE.Vector3(-10,yP-R+14,zF-rl-700),new THREE.Vector3(0,yP-R+14,zF-rl-1100)]),64,9,12,false),MAT.rubber2);
+    robot.add(cable);
+    ctx.add(robot); state.robot=robot; state.robotWheels=wheels; state.robotWr=wr;
+  }
   state.stemBase=stemBase; state.stemH=stemH; state.ctxStutzR=stutzR;
   ctx.visible=state.pipe; root.add(ctx); state.ctx=ctx;
 
@@ -2416,6 +2450,7 @@ function visibleBox(){
   const b=new THREE.Box3(); let any=false;
   state.parts.forEach(p=>{ if(p.obj.visible && !p.ghost){ b.expandByObject(p.obj); any=true; } });
   if(!any) state.parts.forEach(p=>{ if(p.obj.visible){ b.expandByObject(p.obj); } });
+  if(state.pipe && state.robot){ b.expandByObject(state.robot); }
   return b;
 }
 function fitView(reset){
@@ -2424,6 +2459,7 @@ function fitView(reset){
   const maxDim=Math.max(size.x,size.y,size.z);
   const aspect=camera.aspect; const fov=THREE.MathUtils.degToRad(camera.fov);
   let dist=maxDim/2/Math.tan(fov/2); if(aspect<1) dist/=aspect; dist*=1.25;
+  if(!isFinite(dist) || dist<=0 || !isFinite(center.x)) return;
   controls.target.copy(center);
   if(reset){ const dir=new THREE.Vector3(-1,0.62,1).normalize(); camera.position.copy(center).addScaledVector(dir,dist); }
   else { const dir=camera.position.clone().sub(controls.target).normalize(); camera.position.copy(center).addScaledVector(dir,dist); }
@@ -2567,7 +2603,7 @@ const ex=document.getElementById('explode');
 ex.addEventListener('input',()=>{ state.explode=ex.value/100; document.getElementById('explodeval').textContent=ex.value+' %'; if(state.stepMode && state.explode>0){ state.stepMode=false; $s('stepmode').checked=false; $s('stepbar').classList.remove('on'); applyVisibility(); applyStepUI(); } applyExplode(); });
 document.getElementById('btn-reset').addEventListener('click',()=>{ state.isolate=null; selectPart(null); applyVisibility(); fitView(true); });
 document.getElementById('btn-rot').addEventListener('click',e=>{ state.autoRot=!state.autoRot; controls.autoRotate=state.autoRot; controls.autoRotateSpeed=1.2; e.currentTarget.classList.toggle('on',state.autoRot); });
-document.getElementById('btn-pipe').addEventListener('click',e=>{ state.pipe=!state.pipe; e.currentTarget.classList.toggle('on',state.pipe); if(state.ctx) state.ctx.visible=state.pipe; applyExplode(); startPipeDemo(); });
+document.getElementById('btn-pipe').addEventListener('click',e=>{ state.pipe=!state.pipe; e.currentTarget.classList.toggle('on',state.pipe); if(state.ctx) state.ctx.visible=state.pipe; applyExplode(); startPipeDemo(); if(state.pipe){ state.kp=0; updateDemo(performance.now()); fitView(true); } });
 document.getElementById('btn-labels').addEventListener('click',e=>{ state.labels=!state.labels; e.currentTarget.classList.toggle('on',state.labels); });
 if(window.innerWidth<=1000){ state.labels=false; document.getElementById('btn-labels').classList.remove('on'); } else { document.getElementById('btn-labels').classList.add('on'); }
 document.getElementById('btn-fs').addEventListener('click',()=>{ const el=viewerEl; if(document.fullscreenElement){ document.exitFullscreen(); } else if(el.requestFullscreen){ el.requestFullscreen(); } });
@@ -2576,19 +2612,24 @@ document.getElementById('btn-fs').addEventListener('click',()=>{ const el=viewer
 let demoT0=0;
 function startPipeDemo(){ demoT0=performance.now(); }
 function updateDemo(now){
-  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } const cap=document.getElementById('democap'); if(cap) cap.hidden=true; if(state.kp!==1){ state.kp=1; applyExplode(); } return; }
-  const inj=state.ctx.getObjectByName('inj'), stem=state.ctx.getObjectByName('stem'), mortar=state.ctx.getObjectByName('mortar'), roll=state.ctx.getObjectByName('roll'), welle=state.byKey['welle'];
-  const t=((now-demoT0)/1000)%19; // 19-s-Schleife
+  if(!state.pipe || !state.ctx){ if(state.ctx){ const w=state.byKey['welle']; if(w) w.obj.rotation.z=0; const r=state.ctx.getObjectByName('roll'); if(r) r.visible=false; } const cap=document.getElementById('democap'); if(cap) cap.hidden=true; if(state.kp!==1){ state.kp=1; applyExplode(); } if(state.driveDz){ state.driveDz=0; ['unterteil','zentral','halte','schalung'].forEach(g=>{ state.bgGroups[g].position.z=0; }); } return; }
+  const inj=state.ctx.getObjectByName('inj'), stem=state.ctx.getObjectByName('stem'), mortar=state.ctx.getObjectByName('mortar'), roll=state.ctx.getObjectByName('roll'), welle=state.byKey['welle'], dmg=state.ctx.getObjectByName('damage');
+  const t=((now-demoT0)/1000)%25; // 25-s-Schleife
   const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);
   const R=state.R, axisY=state.pipeCenterY;
   // 0-2 Anfahren (Bumper entlueftet) | 2-4.5 Bumper aufblasen, Schild anpressen | 4.5-7.5 Blase ausfahren | 7.5-11.5 Moertel | 11.5-14 Aushaerten | 14-16.5 Blase einfahren | 16.5-19 Bumper entlueften
-  const kp = t<2?0 : t<4.5?ease((t-2)/2.5) : t<16.5?1 : 1-ease((t-16.5)/2.5);
+  // 0-4.5 Anfahrt | 4.5-7 Bumper aufblasen | 7-10 Blase ausfahren | 10-14 Moertel | 14-16.5 Aushaerten | 16.5-19 Blase einfahren | 19-21.5 Bumper entlueften | 21.5-25 Rueckfahrt
+  const kd = t<4.5?ease(t/4.5) : t<21.5?1 : 1-ease((t-21.5)/3.5);
+  const kp = t<4.5?0 : t<7?ease((t-4.5)/2.5) : t<19?1 : t<21.5?1-ease((t-19)/2.5) : 0;
   if(kp!==state.kp){ state.kp=kp; applyExplode(); }
+  const dz=-560*(1-kd); state.driveDz=dz;
+  ['unterteil','zentral','halte','schalung'].forEach(g=>{ state.bgGroups[g].position.z=dz; });
+  if(state.robot){ state.robot.position.z=dz; state.robotWheels.forEach(w=>{ w.rotation.x=dz/state.robotWr; }); }
   const cap=document.getElementById('democap');
   if(cap){ const ph = t<2?'1 · Anfahren zur Schadstelle – Bumper entlüftet, Schalung hat Abstand zur Rohrwand' : t<4.5?'2 · Bumper aufblasen – Schalungsschild wird an die Rohrwand gepresst' : t<7.5?'3 · Welle dreht, Luft dazu – Injektionsblase fährt in den Anschluss' : t<11.5?'4 · Mörtel verpressen – Drucksensor meldet die Verfüllung' : t<14?'5 · Aushärten' : t<16.5?'6 · Injektionsblase einfahren' : '7 · Bumper entlüften – weiterfahren'; if(cap.textContent!==ph) cap.textContent=ph; cap.hidden=false; }
-  const k = t<4.5?0 : t<7.5?ease((t-4.5)/3) : t<14?1 : t<16.5?1-ease((t-14)/2.5) : 0;
+  const k = t<7?0 : t<10?ease((t-7)/3) : t<16.5?1 : t<19?1-ease((t-16.5)/2.5) : 0;
   // Blase ist um die Welle gewickelt: Rolle wird beim Ausfahren duenner, Welle dreht sich, Schlauch waechst durch die Oeffnung in den Stutzen
-  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1); roll.position.y=state.yB-(state.dl||0);
+  roll.visible=true; const rR=26-14*k; roll.scale.set(rR/26,rR/26,1); roll.position.y=state.yB-(state.dl||0); roll.position.z=state.holeZ+dz;
   welle.obj.rotation.z=-k*Math.PI*4;
   const wallY=axisY+R, base=state.yB-(state.dl||0)+rR, total=(wallY-base)+140;
   stem.visible=k>0.02; stem.position.y=base; stem.scale.y=Math.max(0.01,total*k);
@@ -2596,8 +2637,10 @@ function updateDemo(now){
   inj.visible=kk>0.02; const rs=(state.ctxStutzR||75)-14;
   inj.scale.set(rs*(0.35+0.65*kk), 22+90*kk, rs*(0.35+0.65*kk));
   inj.position.y = wallY + 30 + 60*kk;
-  const m = t<7.5?0 : t<11.5?ease((t-7.5)/4) : t<16.5?1 : 1-ease((t-16.5)/1.5);
-  mortar.visible = m>0.02; mortar.material.opacity = 0.85*m;
+  const m = t<10?0 : t<14?ease((t-10)/4) : 1;                 // Moertel bleibt bis zum Ende der Schleife (sanierter Anschluss)
+  const hard = t<14?0 : t<16.5?ease((t-14)/2.5) : 1;         // Aushaerten: Farbe von Frischmoertel zu hellem Grau
+  mortar.visible = m>0.02; mortar.material.opacity = 0.85*m+0.15*hard; mortar.material.color.setHex(0xC7811A).lerp(new THREE.Color(0xC9C4B6), hard);
+  if(dmg){ dmg.visible = m<0.98; dmg.material.opacity = 1-m; }
 }
 
 /* ---------- Beschriftungen (Positionsnummern) ---------- */
@@ -2645,6 +2688,7 @@ function loop(now){
   resize();
   if(camAnim){ const k=Math.min(1,(now-camAnim.t0)/camAnim.dur); const e=k*k*(3-2*k); camera.position.lerpVectors(camAnim.p0,camAnim.p1,e); controls.target.lerpVectors(camAnim.t0v,camAnim.t1,e); if(k>=1) camAnim=null; }
   controls.update();
+  if(!isFinite(camera.position.x)){ camera.position.set(1000,600,1000); controls.target.set(0,0,0); controls.update(); fitView(true); }
   if(exAnim){ const k=Math.min(1,(now-exAnim.t0)/550); const e=k*k*(3-2*k); state.explode=exAnim.from+(exAnim.target-exAnim.from)*e; const v=Math.round(state.explode*100); ex.value=v; document.getElementById('explodeval').textContent=v+' %'; applyExplode(); syncExplodeBtns(); if(k>=1) exAnim=null; }
   updateDemo(now);
   renderer.render(scene,camera);

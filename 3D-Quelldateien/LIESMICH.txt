@@ -1,9 +1,7 @@
-Quelldateien der 3D-Montageanleitung Kanaltec 4.0
-=================================================
-part1_head.html  – Seitenaufbau, CSS, Texte (Funktionsprinzip, Baugruppen, Tabellen, Quellen)
-part2_data.js    – Baugrößen, Stücklisten je Baugruppe, Teilebeschreibungen, Montageschritte
-part3_app.js     – 3D-Geometrie (Three.js), Explosion, Auswahl, Beschriftung
-three.min.js / OrbitControls.js – Three.js r128 (wird eingebettet)
+Quelldateien der Kanaltec 4.0 Montageanleitung 3D.
 
-Neu bauen (Node.js nötig):   node build.mjs
-Ergebnis: ../Kanaltec_4_0_Montageanleitung_3D.html (eine Datei, läuft offline).
+Bauen:            node build.mjs        (schreibt ../Kanaltec_4_0_Montageanleitung_3D.html und ../index.html)
+Tutorial-Bilder:  node serve.js ..  ->  http://localhost:8765/#debug  ->  capture_tutorial.js in die Konsole  ->  node tutorial_gen.js
+Texte/Stuecklisten: part2_data.js   |   Layout/CSS/Doku: part1_head.html   |   3D/Logik: part3_app.js
+
+Ausfuehrliche Beschreibung: ../README.md und ../ENTSCHEIDUNGEN.md
