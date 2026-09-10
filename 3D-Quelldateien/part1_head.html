@@ -190,6 +190,22 @@ table.bom .nm small{display:block;color:var(--muted);font-size:12.5px;line-heigh
 .legend i{width:16px;height:16px;border-radius:3px;border:1px solid rgba(0,0,0,.2);flex:none}
 .note{background:var(--panel2);border-left:3px solid var(--warn);padding:8px 10px;font-size:14px;border-radius:0 4px 4px 0;margin:10px 0}
 
+/* ---------- Tutorial ---------- */
+.tut-intro{max-width:68ch;color:var(--muted);font-size:17px;margin:0 0 18px}
+.tut-group{margin:26px 0 8px;padding-top:18px;border-top:2px solid var(--line)}
+.tut-group h3{font-size:24px;margin-bottom:4px}
+.tut-group p{margin:0 0 12px;color:var(--muted);font-size:15px}
+.tut-step{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
+.tut-step img{width:100%;height:auto;border-radius:6px;background:#1A1F24;display:block}
+.tut-step .tn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--font-display);font-weight:700;font-size:19px;margin-bottom:6px}
+.tut-step h4{font-family:var(--font-display);font-size:22px;font-weight:600;margin:0 0 6px;line-height:1.1}
+.tut-step p{margin:0;font-size:16px}
+.tut-step .plist{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
+.tut-step .plist i{font-style:normal;font-family:var(--font-mono);font-size:12px;padding:2px 8px;border:1px solid var(--line2);border-radius:12px;color:var(--muted)}
+.tut-legend{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-bottom:14px}
+.tut-legend i{width:16px;height:16px;border-radius:3px;background:#3a5fb0;display:inline-block}
+@media (max-width:760px){ .tut-step{grid-template-columns:1fr} }
+
 /* ---------- Dokumentation ---------- */
 .docs{max-width:1100px;margin:0 auto;padding:34px 20px 60px}
 .docs section{margin-bottom:40px}
@@ -333,25 +349,6 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
           </div>
         </div>
       </section>
-      <section class="cstep">
-        <div class="cnum">4</div>
-        <div>
-          <h2>Montage Schritt für Schritt</h2>
-          <p class="small">Zeigt die Teile in der Reihenfolge, in der sie montiert werden.</p>
-          <button class="big accent" id="stepstart" type="button">▶ Schritt für Schritt starten</button>
-          <input type="checkbox" id="stepmode" hidden>
-          <div class="stepbar" id="stepbar">
-            <div class="stxt"><b id="steptitle">Schritt</b><span id="stepsub"></span></div>
-            <div class="snav">
-              <button type="button" id="stepprev">‹ Zurück</button>
-              <span class="snum" id="stepnum">1/5</span>
-              <button type="button" class="next" id="stepnext">Weiter ›</button>
-            </div>
-            <button type="button" class="stop" id="stepstop">Schritt-für-Schritt beenden</button>
-          </div>
-          <div class="steps" id="steplist"></div>
-        </div>
-      </section>
       <details class="extras">
         <summary>Weitere Einstellungen</summary>
         <div class="body">
@@ -395,6 +392,7 @@ footer{border-top:1px solid var(--line);padding:16px 20px 28px;text-align:center
 </main>
 
 <div class="docs">
+<!--TUTORIAL-->
   <section id="prinzip">
     <span class="eyebrow">Funktionsprinzip</span>
     <h2>So dichtet Kanaltec 4.0 einen Stutzen ab</h2>

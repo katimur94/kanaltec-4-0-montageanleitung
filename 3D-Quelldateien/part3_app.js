@@ -3,6 +3,8 @@
    ===================================================================== */
 (function(){
 'use strict';
+const NULLEL={addEventListener(){},appendChild(){},classList:{toggle(){},remove(){},add(){},contains(){return false;}},style:{},checked:false,textContent:'',innerHTML:'',hidden:true,value:0,dataset:{}};
+function $s(id){ return document.getElementById(id)||NULLEL; }
 if (!window.THREE) { document.getElementById('loading').textContent = '3D-Bibliothek konnte nicht geladen werden.'; return; }
 
 /* ---------- Materialien ---------- */
@@ -593,32 +595,32 @@ function updateBOMState(){
   });
 }
 function buildStepList(){
-  const wrap=document.getElementById('steplist'); wrap.innerHTML='';
+  const wrap=$s('steplist'); wrap.innerHTML='';
   const list=state.steps[state.bg];
   list.forEach((st,i)=>{
     const d=document.createElement('div'); d.className='step'; d.dataset.i=i;
     d.innerHTML='<span class="n">'+(i+1)+'</span><div><b>'+st.t+'</b><span>'+st.s+'</span>'+(st.p?'<div class="plist">'+st.p.filter(k=>state.byKey[k]).map(k=>'<i>'+(bomEntry(k)?bomEntry(k).e[0]:'')+'</i>').join('')+'</div>':'')+'</div>';
-    d.addEventListener('click',()=>{ state.stepIdx=i; if(!state.stepMode){ state.stepMode=true; document.getElementById('stepmode').checked=true; } applyStep(); });
+    d.addEventListener('click',()=>{ state.stepIdx=i; if(!state.stepMode){ state.stepMode=true; $s('stepmode').checked=true; } applyStep(); });
     wrap.appendChild(d);
   });
   applyStepUI();
 }
 function applyStep(){
-  document.getElementById('stepbar').classList.toggle('on', state.stepMode);
+  $s('stepbar').classList.toggle('on', state.stepMode);
   if(state.stepMode){ state.explode=0; document.getElementById('explode').value=0; document.getElementById('explodeval').textContent='0 %'; state.isolate=null; }
   applyVisibility(); applyExplode(); applyStepUI();
 }
 function applyStepUI(){
   document.body.classList.toggle('stepping', !!state.stepMode);
   { const bt=document.getElementById('ex-together'), ba=document.getElementById('ex-apart'); if(bt&&ba){ bt.classList.toggle('on',state.explode<0.02); ba.classList.toggle('on',state.explode>0.98); } }
-  document.getElementById('stepbar').classList.toggle('on', !!state.stepMode);
+  $s('stepbar').classList.toggle('on', !!state.stepMode);
   const list=state.steps[state.bg]; const i=state.stepIdx;
   document.querySelectorAll('.step').forEach(el=>{ const j=+el.dataset.i; el.classList.toggle('on', state.stepMode && j===i); el.classList.toggle('done', state.stepMode && j<i); });
-  if(list[i]){ document.getElementById('steptitle').textContent=(i+1)+'. '+list[i].t; document.getElementById('stepsub').textContent=list[i].s; document.getElementById('stepnum').textContent=(i+1)+'/'+list.length; }
+  if(list[i]){ $s('steptitle').textContent=(i+1)+'. '+list[i].t; $s('stepsub').textContent=list[i].s; $s('stepnum').textContent=(i+1)+'/'+list.length; }
 }
-document.getElementById('stepprev').addEventListener('click',()=>{ state.stepIdx=Math.max(0,state.stepIdx-1); applyStep(); });
-document.getElementById('stepnext').addEventListener('click',()=>{ state.stepIdx=Math.min(state.steps[state.bg].length-1,state.stepIdx+1); applyStep(); });
-document.getElementById('stepmode').addEventListener('change',e=>{ state.stepMode=e.target.checked; state.stepIdx=0; applyStep(); });
+$s('stepprev').addEventListener('click',()=>{ state.stepIdx=Math.max(0,state.stepIdx-1); applyStep(); });
+$s('stepnext').addEventListener('click',()=>{ state.stepIdx=Math.min(state.steps[state.bg].length-1,state.stepIdx+1); applyStep(); });
+$s('stepmode').addEventListener('change',e=>{ state.stepMode=e.target.checked; state.stepIdx=0; applyStep(); });
 document.getElementById('ghost').addEventListener('change',e=>{ state.ghost=e.target.checked; applyVisibility(); });
 document.getElementById('transp').addEventListener('change',e=>{ state.transp=e.target.checked; applyTransp(); });
 
@@ -643,7 +645,7 @@ function setBG(k){ state.bg=k; state.selected=null; state.isolate=null; state.st
 
 /* ---------- Explosion / Buttons ---------- */
 const ex=document.getElementById('explode');
-ex.addEventListener('input',()=>{ state.explode=ex.value/100; document.getElementById('explodeval').textContent=ex.value+' %'; if(state.stepMode && state.explode>0){ state.stepMode=false; document.getElementById('stepmode').checked=false; document.getElementById('stepbar').classList.remove('on'); applyVisibility(); applyStepUI(); } applyExplode(); });
+ex.addEventListener('input',()=>{ state.explode=ex.value/100; document.getElementById('explodeval').textContent=ex.value+' %'; if(state.stepMode && state.explode>0){ state.stepMode=false; $s('stepmode').checked=false; $s('stepbar').classList.remove('on'); applyVisibility(); applyStepUI(); } applyExplode(); });
 document.getElementById('btn-reset').addEventListener('click',()=>{ state.isolate=null; selectPart(null); applyVisibility(); fitView(true); });
 document.getElementById('btn-rot').addEventListener('click',e=>{ state.autoRot=!state.autoRot; controls.autoRotate=state.autoRot; controls.autoRotateSpeed=1.2; e.currentTarget.classList.toggle('on',state.autoRot); });
 document.getElementById('btn-pipe').addEventListener('click',e=>{ state.pipe=!state.pipe; e.currentTarget.classList.toggle('on',state.pipe); if(state.ctx) state.ctx.visible=state.pipe; applyExplode(); startPipeDemo(); });
@@ -748,13 +750,13 @@ const exBtnT=document.getElementById('ex-together'), exBtnA=document.getElementB
 function syncExplodeBtns(){ exBtnT.classList.toggle('on',state.explode<0.02); exBtnA.classList.toggle('on',state.explode>0.98); }
 let exAnim=null;
 function animateExplode(target){ exAnim={from:state.explode,target,t0:performance.now()}; }
-function leaveStepMode(){ if(!state.stepMode) return; state.stepMode=false; document.getElementById('stepmode').checked=false; applyVisibility(); applyStepUI(); }
-function enterStepMode(){ state.stepMode=true; state.stepIdx=0; document.getElementById('stepmode').checked=true; state.isolate=null; selectPart(null); applyStep(); }
+function leaveStepMode(){ if(!state.stepMode) return; state.stepMode=false; $s('stepmode').checked=false; applyVisibility(); applyStepUI(); }
+function enterStepMode(){ state.stepMode=true; state.stepIdx=0; $s('stepmode').checked=true; state.isolate=null; selectPart(null); applyStep(); }
 exBtnT.addEventListener('click',()=>{ leaveStepMode(); animateExplode(0); });
 exBtnA.addEventListener('click',()=>{ leaveStepMode(); animateExplode(1); });
 ex.addEventListener('input',syncExplodeBtns);
-document.getElementById('stepstart').addEventListener('click',()=>{ enterStepMode(); });
-document.getElementById('stepstop').addEventListener('click',()=>{ leaveStepMode(); });
+$s('stepstart').addEventListener('click',()=>{ enterStepMode(); });
+$s('stepstop').addEventListener('click',()=>{ leaveStepMode(); });
 document.getElementById('btn-reset2').addEventListener('click',()=>{ document.getElementById('btn-reset').click(); });
 const helpEl=document.getElementById('help');
 const isTouch=window.matchMedia('(pointer:coarse)').matches;

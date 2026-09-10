@@ -6,6 +6,6 @@ Montageschritten und Funktionsprinzip. Läuft im Browser auf PC und Smartphone, 
 
 - Webseite: `index.html` (GitHub Pages)
 - Gleiche Datei zum Herunterladen: `Kanaltec_4_0_Montageanleitung_3D.html` (offlinefähig, Three.js eingebettet)
-- Quelldateien und Build: Ordner `3D-Quelldateien` (`node build.mjs` erzeugt die HTML-Datei neu)
+- Quelldateien und Build: Ordner `3D-Quelldateien` (`node build.mjs` erzeugt die HTML-Datei neu; `node tutorial_gen.js` baut das Bild-Text-Tutorial aus `captures/`)
 
 Stand der Zeichnungen: 03/2026.
