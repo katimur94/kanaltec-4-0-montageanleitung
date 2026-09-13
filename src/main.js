@@ -24,11 +24,17 @@ try{viewer=new Viewer($('viewport'),selectPart);viewer.build(state.id);$('loadin
 applyTheme();
 function family(){return families.find(f=>f.id===state.id);}
 $('viewport').addEventListener('viewchange',e=>{$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===e.detail.view));});
-function updateSections(){const options={pipe:$('cutPipe').checked,shield:$('cutShield').checked,holder:$('hideHolder').checked,hideBladder:$('hideBladder').checked,hideRobot:$('hideRobot').checked};viewer?.setSections(options);viewer?.poseRobot(viewer.mode==='process'?viewer.upperLift||0:0);$('schematic').textContent=[options.pipe?'Rohr im Schnitt':'Rohr vollständig',options.shield?'Schalung im Schnitt':'Schalung vollständig',...(options.holder?['Halterung ausgeblendet']:[])].join(' · ');try{localStorage.setItem('kanaltec-visibility',JSON.stringify(options));}catch{}}
+function updateSections(){const options={pipe:$('cutPipe').checked,shield:$('cutShield').checked,holder:$('hideHolder').checked,hideBladder:$('hideBladder').checked,hideRobot:$('hideRobot').checked};$('showRobot').checked=!options.hideRobot;viewer?.setSections(options);viewer?.poseRobot(viewer.mode==='process'?viewer.upperLift||0:0);$('schematic').textContent=[options.pipe?'Rohr im Schnitt':'Rohr vollständig',options.shield?'Schalung im Schnitt':'Schalung vollständig',...(options.holder?['Halterung ausgeblendet']:[]),options.hideRobot?'Ohne Roboter':'Mit Roboter'].join(' · ');try{localStorage.setItem('kanaltec-visibility',JSON.stringify(options));}catch{}}
 try{const saved=JSON.parse(localStorage.getItem('kanaltec-visibility'));if(saved)for(const[id,key]of [['cutPipe','pipe'],['cutShield','shield'],['hideHolder','holder'],['hideBladder','hideBladder'],['hideRobot','hideRobot']])if(typeof saved[key]==='boolean')$(id).checked=saved[key];}catch{}
-updateSections();
+updateSections();viewer?.fit();
 for(const id of ['cutPipe','cutShield','hideHolder','hideBladder','hideRobot'])$(id).onchange=updateSections;
-$('hideRobot').onchange=()=>{updateSections();if($('hideRobot').checked&&viewer?.currentView==='robot')viewer.fit();};
+function setRobotVisible(visible){
+ $('hideRobot').checked=!visible;updateSections();
+ if(visible&&!['all','z'].includes(state.group)){setGroup('all');return;}
+ if(viewer&&['iso','side','front','top','robot'].includes(viewer.currentView))viewer.fit(!visible&&viewer.currentView==='robot'?'iso':viewer.currentView);
+}
+$('showRobot').onchange=()=>setRobotVisible($('showRobot').checked);
+$('hideRobot').onchange=()=>setRobotVisible(!$('hideRobot').checked);
 $('viewSettings').onclick=()=>{const open=$('viewSettingsPanel').hidden;$('viewSettingsPanel').hidden=!open;$('viewSettings').setAttribute('aria-expanded',String(open));};
 $('closeViewSettings').onclick=()=>{$('viewSettingsPanel').hidden=true;$('viewSettings').setAttribute('aria-expanded','false');};
 function page(){return +$('refFamily').value?families.find(f=>f.id===+$('refFamily').value).page+($('refGroup').value==='all'?0:groupInfo[$('refGroup').value].offset):3;}
