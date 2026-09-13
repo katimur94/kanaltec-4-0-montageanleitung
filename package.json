@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node work/build.mjs",
-    "test": "node work/check-model.mjs"
+    "test": "node work/check-model.mjs && node work/check-robot.mjs"
   },
   "dependencies": {
     "three": "0.160.1"

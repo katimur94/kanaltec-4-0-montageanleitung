@@ -61,19 +61,19 @@ function makeMesh(g,m){const o=new THREE.Mesh(g,m);o.castShadow=o.receiveShadow=
 function tube(curve,r,m,segments=96){return makeMesh(new THREE.TubeGeometry(curve,segments,r,10,false),m);}
 
 export class RepairScene {
- constructor(R,branchTop,hosePoints,inletX){
+ constructor(R,branchTop,hosePoints,inletX,pipeLength=1350){
   this.R=R;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
   this.texture=concreteTexture();
   this.pipeTextures=surfaceTextures('pipe');this.mortarTextures=surfaceTextures('mortar');
   this.concrete=new THREE.MeshStandardMaterial({color:'#422b21',...this.pipeTextures,bumpScale:.12,roughness:1,metalness:0,envMapIntensity:.18,side:THREE.DoubleSide});
   this.cutConcrete=this.concrete.clone();this.cutConcrete.clippingPlanes=[cutPlane];
-  const pg=damagedPipeGeometry(R,1350,18),bg=brokenBranch(R,branchTop);
+  const pg=damagedPipeGeometry(R,pipeLength,18),bg=brokenBranch(R,branchTop);
   this.pipe=makeMesh(pg,this.cutConcrete);this.pipeFull=makeMesh(pg,this.concrete);
   this.branch=makeMesh(bg,this.cutConcrete);this.branchFull=makeMesh(bg,this.concrete);
   this.group.add(this.pipe,this.pipeFull,this.branch,this.branchFull);
   const capPositions=[],capIndices=[],capUV=[];
   const rect=(x0,x1,y0,y1)=>{const n=capPositions.length/3;capPositions.push(x0,y0,0,x1,y0,0,x1,y1,0,x0,y1,0);capUV.push(x0/120,y0/120,x1/120,y0/120,x1/120,y1/120,x0/120,y1/120);capIndices.push(n,n+1,n+2,n,n+2,n+3);};
-  rect(-675,675,-R-18,-R);rect(-675,breakoutContour(Math.PI)[0],R,R+18);rect(breakoutContour(0)[0],675,R,R+18);
+  rect(-pipeLength/2,pipeLength/2,-R-18,-R);rect(-pipeLength/2,breakoutContour(Math.PI)[0],R,R+18);rect(breakoutContour(0)[0],pipeLength/2,R,R+18);
   for(const a of [0,Math.PI]){const sign=Math.cos(a),bottom=R+65+14*Math.sin(a*5+.6)+10*Math.cos(a*11);rect(Math.min(sign*passage.radius,sign*(passage.radius+passage.wall)),Math.max(sign*passage.radius,sign*(passage.radius+passage.wall)),bottom,branchTop);}
   const capMaterial=this.concrete.clone();capMaterial.color.set('#6b4632');capMaterial.roughness=1;capMaterial.bumpScale=.3;
   this.pipeCaps=makeMesh(geometry(capPositions,capIndices,capUV),capMaterial);this.pipeCaps.castShadow=this.pipeCaps.receiveShadow=false;this.group.add(this.pipeCaps);
@@ -134,6 +134,9 @@ export class RepairScene {
   this.splash=new THREE.Group();this.water.add(this.splash);
   for(let i=0;i<7;i++){const o=makeMesh(new THREE.TorusGeometry(9, .65,5,36),this.waterMaterial);o.rotation.x=-Math.PI/2;this.splash.add(o);}
   this.setCut(true);this.update({time:0,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false});
+ }
+ setFeedPoints(points){
+  this.feedCurve=new THREE.CatmullRomCurve3(points.map(p=>p.clone()));this.feedCore.geometry.dispose();this.feedCore.geometry=new THREE.TubeGeometry(this.feedCurve,240,3.25,10,false);
  }
  setCut(cut){
   this.cut=cut;this.section.visible=cut&&this.fill>.0001;

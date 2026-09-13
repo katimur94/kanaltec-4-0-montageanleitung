@@ -10,6 +10,8 @@ Im **Kanalblick** sind nach dem Ausschalen die eingeprägten Drucksensor- und In
 
 ## Einfach verwenden
 
+Der ergänzte **IBAK-Roboter** trägt die Klappvorrichtung an seiner Werkzeugaufnahme anstelle des Fräskopfs. Vier profilierte Räder, Frontkamera, Hubarm und Leitungen sind nach Nutzerfotos und Herstelleransichten rekonstruiert. Der Arm folgt beim Anpressen der Schalung, während der Fahrwagen seine Höhe hält; die Räder drehen sich während der Fahrt. **Roboter** öffnet eine Nahansicht, **Schnitt & Sicht** erlaubt das Ausblenden. Unbemaßte Roboterdetails und Radzusätze sind angenähert und keine zusätzlichen Positionen der DiTom-Stückliste.
+
 Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `Kanaltec-4.0-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.
 
 Die vollständige Bedienung steht in [START-HIER.md](START-HIER.md). Unbemaßte Geometrien und Teile des Funktionsablaufs sind angenähert; die Präsentation erläutert das System und ist keine bemaßte Fertigungszeichnung.
@@ -24,7 +26,7 @@ npm test
 npm run build
 ```
 
-`src/` enthält Modell, Animation, Oberfläche und eingebettete Quellen. `work/build.mjs` erzeugt zwei inhaltsgleiche, eigenständige Dateien: `index.html` für Pages und `Kanaltec-4.0-Praesentation.html` für die Offline-Nutzung. `work/check-model.mjs` prüft die Baugruppen und die Wickelmechanik für alle fünf Baugrößen.
+`src/` enthält Modell, Animation, Oberfläche und eingebettete Quellen. `work/build.mjs` erzeugt zwei inhaltsgleiche, eigenständige Dateien: `index.html` für Pages und `Kanaltec-4.0-Praesentation.html` für die Offline-Nutzung. `work/check-model.mjs` prüft die Baugruppen und die Wickelmechanik für alle fünf Baugrößen; `work/check-robot.mjs` zusätzlich die Roboterkupplung, den Hubarm, die Radbewegung und den Radfreigang.
 
 ## Veröffentlichung
 

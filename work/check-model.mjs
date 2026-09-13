@@ -76,7 +76,8 @@ for(const f of families){
  const checkInlet=()=>{
   const shieldLift=v.shieldPart.node.position.y-v.shieldPart.base.y;
   near(v.inlet.position.y+10,v.radius+shieldLift+3*v.sealAir,'Inlet flange contacts outer shield underside');
-  near(v.feed.position.y+v.hosePoints.at(-1)[1],v.inlet.position.y-9,'Hose stays joined to inlet');
+  near(v.feed.position.y+v.feedCurve.getPoint(1).y,v.inlet.position.y-9,'Flexible hose stays joined to inlet');
+  near(v.feedCurve.getPoint(0).y,v.hosePoints[0][1],'Rear supply stays at the crawler height');
  };
  for(const e of [0,.5,1]){v.explode=e;v.updateParts();v.resetPose();checkInlet();}
  v.explode=0;v.updateParts();v.resetPose();

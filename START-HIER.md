@@ -1,5 +1,7 @@
 # Kanaltec 4.0 präsentieren
 
+**IBAK-Roboter:** Die Gesamtansicht enthält jetzt den Fahrwagen mit vier profilierten Rädern, Frontkamera, Hubarm und Versorgungsleitungen. An der Werkzeugaufnahme sitzt die Klappvorrichtung anstelle des Fräskopfs. Über **Roboter** öffnest du die Nahansicht; **Schnitt & Sicht → IBAK-Roboter ausblenden** gibt die Schalungsbauteile frei. Bei der Fahrt drehen sich die Räder, beim Anpressen folgt der Arm der Schalung und der Fahrwagen bleibt unten. Der Roboter ist nach den ergänzenden Fotos und dem IBAK-Prospekt angenähert; seine Bauteile gehören nicht zur DiTom-PDF-Stückliste.
+
 Die Datei **Kanaltec-4.0-Praesentation.html** per Doppelklick in Edge, Chrome oder Firefox öffnen. Modell, Bilder, Originalzeichnungen und Animationen sind in dieser einen Datei enthalten. Zum Weitergeben oder für einen USB-Stick genügt die HTML-Datei. Externe Videos und Herstellerseiten benötigen Internet.
 
 1. Oben über **Dunkel / Hell** den Darstellungsmodus wählen. Die Auswahl wird im Browser gespeichert, soweit lokale Speicherung erlaubt ist.

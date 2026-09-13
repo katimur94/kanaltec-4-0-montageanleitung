@@ -5,6 +5,7 @@ import {mergeVertices} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {bom,families,PHASE} from './data.js';
 import {BladderMechanism,ports,bladderMount} from './bladder.js';
 import {RepairScene} from './repair.js';
+import {Robot} from './robot.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=THREE.MathUtils.clamp;
@@ -189,7 +190,7 @@ export class Viewer {
   this.camera.position.add(offset);this.controls.target.add(offset);this.controls.update();
  }
  setTheme(dark){this.scene.background.set(dark?'#17222c':'#edf0ef');this.floor.material.opacity=dark?.28:.12;this.floor.material.color.set(dark?'#000000':'#455861');}
- clear(){this.repair?.dispose();for(const n of [this.model,this.context]){n.traverse(o=>{if(o.isMesh){if(![...cached.values()].includes(o.geometry))o.geometry.dispose();if(o.userData.origMat)o.material.dispose();}});n.clear();}this.parts=[];}
+ clear(){this.repair?.dispose();this.robot?.dispose();for(const n of [this.model,this.context]){n.traverse(o=>{if(o.isMesh){if(![...cached.values()].includes(o.geometry))o.geometry.dispose();if(o.userData.origMat)o.material.dispose();}});n.clear();}this.parts=[];this.robot=null;this.repair=null;}
  addPart(g,row,i,position,explode,object){
   const node=new THREE.Group();node.position.copy(position);node.add(object);this.model.add(node);const p={group:g,pos:row.pos,key:row.key,index:i,name:row.name,qty:row.qty,kind:row.kind,note:row.note,node,base:position.clone(),delta:explode,originalRotation:node.quaternion.clone()};node.userData.part=p;this.parts.push(p);return p;
  }
@@ -299,9 +300,11 @@ export class Viewer {
   this.winding=new BladderMechanism(R,this.shaftPart.base.y);this.model.add(this.winding.group);
   this.inlet=new THREE.Group();this.inlet.add(tube(6.5,4,20,palettes.metal,V(),'y'),tube(10,4,2,palettes.darkMetal,V(0,9,0),'y'),cyl(9,4,palettes.darkMetal,V(0,-3,0),'y',6));this.model.add(this.inlet);
   this.sensor=new THREE.Group();this.sensor.add(cyl(6,12,palettes.darkMetal,V(0,-6,0)),cyl(9,2,mat('#c3312e',.1,.5),V(0,1,0)),torus(10.5,1.5,palettes.gold,V(0,1,0)));this.model.add(this.sensor);
-  this.hosePoints=[[-560,-5,27],[-285,45,35],[-145,R-72,24],[ports.inletX,R-42,0],[ports.inletX,R-19,0]];
+  this.robotAnchor=this.parts.find(p=>p.group==='z'&&p.key==='adapter');this.robot=new Robot(R+12,this.robotAnchor.base);this.model.add(this.robot.group);
+  const robotY=this.robot.bodyY+this.robotAnchor.base.y;
+  this.hosePoints=[[-1500,robotY+40,112],[-1250,robotY+48,112],[-900,robotY+48,112],[-720,robotY+55,105],[-560,-5,60],[-285,45,35],[-145,R-72,24],[ports.inletX,R-42,0],[ports.inletX,R-19,0]];
   this.feed=hose(this.hosePoints,4.5,new THREE.MeshStandardMaterial({color:'#90a5aa',roughness:.28,transparent:true,opacity:.26,depthWrite:false}));this.model.add(this.feed);
-  this.sensorFull=false;this.poseMechanism(0,0,0);
+  this.feedLift=null;this.sensorFull=false;this.poseMechanism(0,0,0);
  }
  poseMechanism(extension,inflation,lift){
   if(!this.winding)return;
@@ -312,9 +315,18 @@ export class Viewer {
   this.inlet.visible=this.sensor.visible=this.group==='all'||this.group==='s';
   this.inlet.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.inletX,this.radius-10+3*this.sealAir,0));
   this.sensor.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.sensorX,this.radius+2+3*this.sealAir,0));
-  this.feed.visible=proc;this.feed.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).y+=3*this.sealAir;
-  if(this.repair){this.repair.hoseGroup.visible=proc;this.repair.hoseGroup.position.copy(this.feed.position);}
+  this.feed.visible=proc;this.feed.position.set(0,0,0);
+  const offset=this.shieldPart.node.position.clone().sub(this.shieldPart.base);offset.y+=3*this.sealAir;const feedPose=offset.toArray().join(',');
+  if(this.feedLift!==feedPose){this.feedLift=feedPose;const points=this.hosePoints.map((p,i)=>V(...p).addScaledVector(offset,i<4?0:i===4?.45:1));this.feedCurve=new THREE.CatmullRomCurve3(points);this.feed.geometry.dispose();this.feed.geometry=new THREE.TubeGeometry(this.feedCurve,144,4.5,10,false);this.repair?.setFeedPoints(points);}
+  if(this.repair){this.repair.hoseGroup.visible=proc;this.repair.hoseGroup.position.set(0,0,0);}
+  this.poseRobot(lift);
   if(!proc){this.sensorFull=false;this.sensor.children[1].material.emissive.set('#000000');}
+ }
+ poseRobot(lift=0){
+  if(!this.robot)return;
+  this.robot.group.visible=!this.sections?.hideRobot&&(this.group==='all'||this.group==='z');
+  this.robot.group.position.copy(this.robotAnchor.node.position);this.robot.group.position.y-=lift;
+  this.robot.pose(lift,this.mode==='process'?this.model.position.x:0);
  }
  poseSeal(air){
   if(!this.sealPart)return;
@@ -328,7 +340,7 @@ export class Viewer {
  buildContext(){
   const R=this.radius+12;
   this.branchTop=R+20+Math.max(260,this.winding.travel+65);
-  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX);
+  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4000);
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
   this.damage=this.repair.cavity;
@@ -370,7 +382,7 @@ export class Viewer {
   this.repair.update({time:t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE});
 
  }
- bounds(){const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);return b;}
+ bounds(){const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);if(this.robot?.group.visible)b.expandByObject(this.robot.group);return b;}
  fit(view='iso'){
   this.currentView=view;
   if(this.inspectionLamp)this.inspectionLamp.visible=view==='channel';
@@ -379,12 +391,17 @@ export class Viewer {
    const R=this.radius+12;this.controls.target.set(0,R,0);this.camera.position.set(-20,R-280,32);this.camera.lookAt(this.controls.target);this.controls.update();this.applyMaterials();
    if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));return;
   }
-  this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(-570,this.bottom,-300),V(450,this.branchTop+20,280));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
+  this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();this.poseRobot();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(this.sections.hideRobot?-570:-1950,this.bottom,-300),V(450,this.branchTop+20,280));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
+  if(view==='robot'&&this.robot){if(this.mode==='process')this.processPose();b=new THREE.Box3().setFromObject(this.robot.group);b.max.x=-270+this.model.position.x;b.min.x=Math.max(b.min.x,-1510+this.model.position.x);}
   if(view==='damage')b=new THREE.Box3(V(-265,this.radius-100,-140),V(210,this.radius+180,120));
   if(view==='winding')b=new THREE.Box3(V(-125,this.top-65,-75),V(145,this.radius+80,75));
   if(view==='hinge'){b=new THREE.Box3();for(const p of this.parts)if(p.group==='z'&&['hinge1','hinge2','hinge3','adapter','adapterbolts','hingebolts','topbolts','washers'].includes(p.key))b.expandByObject(p.node);}
   const center=b.getCenter(V()),sz=b.getSize(V());const max=Math.max(sz.y,sz.x/Math.max(.8,this.camera.aspect),sz.z*.75);let dist=Math.max(view==='hinge'?220:500,max/(2*Math.tan(THREE.MathUtils.degToRad(17)))*1.48);
-  const dir=view==='side'?V(0,.05,1):view==='front'?V(1,.06,0):view==='top'?V(.001,1,.001):view==='hinge'?V(-.75,.35,1):view==='damage'?V(-.5,.55,1):['drive','winding'].includes(view)?V(-.7,.25,1):this.mode==='process'?V(.5,.28,1):V(.68,.48,1);
+  const dir=view==='side'?V(0,.05,1):view==='front'?V(1,.06,0):view==='top'?V(.001,1,.001):view==='robot'?V(.3,.62,1):view==='hinge'?V(-.75,.35,1):view==='damage'?V(-.5,.55,1):['drive','winding'].includes(view)?V(-.7,.25,1):this.mode==='process'?V(.35,.28,1):V(.35,.55,1);
+  if(this.robot?.group.visible&&!['hinge','damage','drive','winding'].includes(view)){
+   const forward=dir.clone().normalize(),right=V(0,1,0).cross(forward).normalize(),up=forward.clone().cross(right).normalize(),ty=Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2)),tx=ty*this.camera.aspect;dist=300;
+   for(const x of[b.min.x,b.max.x])for(const y of[b.min.y,b.max.y])for(const z of[b.min.z,b.max.z]){const p=V(x,y,z).sub(center),depth=p.dot(forward);dist=Math.max(dist,depth+1.12*Math.abs(p.dot(right))/tx,depth+1.12*Math.abs(p.dot(up))/ty);}
+  }
   this.camera.position.copy(center.clone().add(dir.normalize().multiplyScalar(dist)));this.controls.target.copy(center);this.controls.update();this.applyMaterials();
   if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));
  }
