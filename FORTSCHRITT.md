@@ -2,6 +2,10 @@
 
 Diese Chronik ergänzt Git. Sie erklärt die fachlichen Korrekturen und den Prüfstand so, dass die Weiterarbeit ohne den ursprünglichen Chat möglich ist. Neue abgeschlossene Änderungen oben ergänzen; ursprüngliche Einträge nicht als aktuelle Bestätigung ungeprüfter späterer Exporte verstehen.
 
+## 13.09.2026 – Werbevideos mit Logo und Telegram-Skill
+
+Sechs neue Werbeexporte: 16:9, 9:16 und 4:5, jeweils mit Sprecher/Musik und ausschließlich Musik. Animierter Logo-Auftakt und Abschluss, aktuelles 3D-Modell mit Roboter, Highlights und Überblendungen, keine Untertitel. Formate und Produktions-/Prüfstand sind in [WERBEVIDEOS.md](WERBEVIDEOS.md) dokumentiert. Persönlichen Telegram-Skill separat installiert; Zugriff verschlüsselt im Benutzerprofil gespeichert und für den Versand eingesetzt.
+
 ## 13.09.2026 – Freie Modellfläche und separates 3D-Vollbild
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.

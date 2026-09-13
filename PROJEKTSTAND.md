@@ -16,6 +16,8 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 
 ## Zuletzt erledigt
 
+**Neue Werbefilme:** Sechs Exporte mit Logoanimation und Modell-Highlights in drei Formaten, je mit Sprecher/Musik oder nur Musik. Details, Prüfstand und lokale Produktionsdateien: [WERBEVIDEOS.md](WERBEVIDEOS.md). Der persönliche Telegram-Skill und seine verschlüsselten Zugangsdaten bleiben außerhalb des Repositories.
+
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
 
 Implementierung: Die externe `.scene-controls` enthält alle Ansichtswerkzeuge; `#viewport` enthält ausschließlich Canvas und die standardmäßig verborgene `#labelsLayer`. Auswahlkarte, Lade-/Fehlermeldung und Hinweise liegen außerhalb. Fullscreen API auf `#viewport`, Größenanpassung über den vorhandenen ResizeObserver; kein Neuaufbau des Modells beim Vollbildwechsel.
