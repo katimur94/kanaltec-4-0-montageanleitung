@@ -16,6 +16,10 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 
 ## Zuletzt erledigt
 
+**Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
+
+Implementierung: Die externe `.scene-controls` enthält alle Ansichtswerkzeuge; `#viewport` enthält ausschließlich Canvas und die standardmäßig verborgene `#labelsLayer`. Auswahlkarte, Lade-/Fehlermeldung und Hinweise liegen außerhalb. Fullscreen API auf `#viewport`, Größenanpassung über den vorhandenen ResizeObserver; kein Neuaufbau des Modells beim Vollbildwechsel.
+
 - Infiltration berücksichtigt die bewegte Schalung: zunächst freier Fall; beim Unterfahren werden die einzelnen Wasserstrahlen nacheinander aufgefangen. Wasser läuft außen auf dem gekrümmten Schild zu beiden seitlichen Rändern und tropft erst dort ab.
 - Beim vollständigen Anpressen endet der Ablauf in den Kanal. Wasser hinter der Schalung bleibt bis zur fortschreitenden Mörtelfüllung sichtbar. Nach der Verfüllung kommt beim Absenken kein neues Wasser zurück.
 - Rohr- und Schalungsschnitte sind Darstellungsoptionen, keine physisch entfernten Bauteile. Sie verändern den Wasserweg nicht. Beide Wasserabläufe bleiben auch im Rohrschnitt dargestellt; die vorhandene Geometrie verdeckt sie normal.

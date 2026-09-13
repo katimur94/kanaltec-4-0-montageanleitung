@@ -82,3 +82,17 @@ html[data-theme=dark]{color-scheme:dark}
 @media(max-width:760px){.brand-logo{width:150px;max-height:52px}.header{gap:12px}}
 @media(max-width:600px){.header{height:auto;min-height:73px;padding:10px 16px;flex-wrap:wrap;gap:8px 12px}.header-title{padding-left:12px}.header-actions{gap:8px}}
 .viewtoolbar{max-width:calc(100% - 34px);flex-wrap:wrap}.viewtoolbar button{white-space:nowrap}.viewport .scene-toggles{top:var(--toolbar-bottom,60px)}.viewport .view-settings{top:calc(var(--toolbar-bottom,60px) + 38px)}
+.scene-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 12px}
+.scene-controls .viewtoolbar,.scene-controls .scene-toggles,.scene-controls .camera-navigation,.scene-controls .view-settings{position:static;inset:auto;max-width:100%;box-shadow:none}
+.scene-controls .viewtoolbar{width:100%;flex-wrap:wrap;margin:0}
+.scene-controls .scene-toggles{display:flex;flex-wrap:wrap;gap:6px}
+.scene-controls .camera-navigation{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.scene-controls .pan-directions{margin:0}
+.scene-controls .view-settings{width:100%;flex-basis:100%}
+.scene-information .viewport-bottom{position:static;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:9px 0}
+.scene-information .viewport-bottom>span{max-width:none}
+.scene-information .schematic{position:static;display:inline-block;margin:0 0 10px}
+.scene-information #selectionCard{position:relative;inset:auto;max-width:100%;width:100%;margin:0 0 10px;box-shadow:none}
+.main-panel>#loading{position:static;padding:12px;min-height:0}
+.viewport:fullscreen{width:100vw;height:100dvh;min-height:0;max-height:none;border:0;border-radius:0}
+.viewport::backdrop{background:#101b24}

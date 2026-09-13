@@ -1,5 +1,7 @@
 # Kanaltec 4.0 – interaktive 3D-Präsentation
 
+**Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
+
 [Präsentation öffnen](https://katimur94.github.io/kanaltec-4-0-montageanleitung/)
 
 **Weiterarbeit auf einem anderen Computer:** [Projektstand und Übergabe](PROJEKTSTAND.md) · [Fortschrittschronik](FORTSCHRITT.md) · [Hinweise für die Bearbeitung](AGENTS.md). Diese Dokumente halten die bisherigen Korrekturen, Quellen, offenen Punkte und Prüfschritte fest und werden bei weiteren Änderungen fortgeschrieben.

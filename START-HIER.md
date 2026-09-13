@@ -1,5 +1,7 @@
 # Kanaltec 4.0 präsentieren
 
+**Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
+
 **Auf einem anderen Computer weiterarbeiten:** Einstieg über [PROJEKTSTAND.md](PROJEKTSTAND.md). Dort stehen Einrichtung, Dateiübersicht, wichtige Modellvorgaben, offene Zuordnungen und der Veröffentlichungsablauf. Die bisherigen Änderungen sind in [FORTSCHRITT.md](FORTSCHRITT.md) zusammengefasst.
 
 **Wasser bei der Ankunft:** Unter **So funktioniert’s → Positionieren** trifft das Wasser auf die noch abgesenkte Schalung, läuft über deren Wölbung nach links und rechts und tropft an den Seiten ab. Beim Anpressen endet der Ablauf in den Kanal; die Infiltration hinter dem Schild versiegt erst mit der Verfüllung. Unter **Schadstelle** lässt sich das von oben betrachten; für die Tropfen unter der Seitenkante etwas herauszoomen. Die Schnittauswahl verändert die physische Wasserführung nicht.
@@ -15,12 +17,12 @@ Der Schalter **Roboter anzeigen** direkt über dem Modell blendet den Fahrwagen 
 Die Datei **Kanaltec-4.0-Praesentation.html** per Doppelklick in Edge, Chrome oder Firefox öffnen. Modell, Bilder, Originalzeichnungen und Animationen sind in dieser einen Datei enthalten. Zum Weitergeben oder für einen USB-Stick genügt die HTML-Datei. Externe Videos und Herstellerseiten benötigen Internet.
 
 1. Oben über **Dunkel / Hell** den Darstellungsmodus wählen. Die Auswahl wird im Browser gespeichert, soweit lokale Speicherung erlaubt ist.
-2. Unter **3D erkunden** eine Größe und eine Baugruppe wählen. Unten rechts **Drehen / Verschieben** wählen und mit der Maus oder einem Finger ziehen. Die vier Richtungsknöpfe bewegen das Modell nach links, rechts, oben oder unten. Rechts ziehen verschiebt auch im Drehmodus; mit dem Mausrad zoomen. Zwei Finger verschieben und zoomen. **R** zentriert die Ansicht. Die Pfeiltasten der Tastatur bleiben für Animationsschritte reserviert.
+2. Unter **3D erkunden** eine Größe und eine Baugruppe wählen. Oberhalb der 3D-Fläche **Drehen / Verschieben** wählen und mit der Maus oder einem Finger ziehen. Die vier Richtungsknöpfe bewegen das Modell nach links, rechts, oben oder unten. Rechts ziehen verschiebt auch im Drehmodus; mit dem Mausrad zoomen. Zwei Finger verschieben und zoomen. **R** zentriert die Ansicht. Die Pfeiltasten der Tastatur bleiben für Animationsschritte reserviert.
 3. **Explosionsansicht** öffnen und den Schieberegler oder die Abspieltaste verwenden. Über **Stückliste ansehen** lässt sich jedes aufgeführte Bauteil auswählen und hervorheben.
 4. **Vorführen** startet die sieben Sanierungsschritte. Jeder Schritt kann auch einzeln angewählt werden; die Leertaste startet oder pausiert.
 5. **Originalzeichnung** zeigt die zugehörige PDF-Seite. Ein Klick vergrößert die Zeichnung. Die vollständige PDF und die Fotos stehen unter **Originale & Quellen** bereit.
 
-Über **Schnitt & Sicht** im 3D-Fenster wählst du unabhängig voneinander **Rohr aufschneiden**, **Schalung aufschneiden** und **Vordere Halterung ausblenden**. Die Schalung und ihre Halterung sind zunächst vollständig sichtbar. Die Einstellungen bleiben bei Kamerawechseln erhalten und werden im Browser gespeichert, soweit möglich. **Durchblick** schaltet die transparente Darstellung um.
+Über **Schnitt & Sicht** oberhalb der 3D-Fläche wählst du unabhängig voneinander **Rohr aufschneiden**, **Schalung aufschneiden** und **Vordere Halterung ausblenden**. Die Schalung und ihre Halterung sind zunächst vollständig sichtbar. Die Einstellungen bleiben bei Kamerawechseln erhalten und werden im Browser gespeichert, soweit möglich. **Durchblick** schaltet die transparente Darstellung um.
 
 Mit **Anschlussblase ausblenden** im selben Menü kannst du die Welle ohne verdeckende Wicklung und Blasenspitze betrachten. Unter **Halteeinheit → Oben** siehst du die flache Befestigungsseite und ihre Öffnung; durch Drehen die geschlossene gerundete Rückseite. Für die Vorführung die Anschlussblase wieder einblenden.
 
@@ -36,7 +38,7 @@ Die Animation zeigt die Blase auf der drehenden Welle beim Ab- und Aufwickeln, d
 
 **Die zwei Blasen haben unterschiedliche Aufgaben:** In Schritt 3 wird die flächige Dichtblase zwischen Schalungsträger und Schild aufgeblasen. Erst danach fährt in Schritt 4 die auf der Welle gewickelte Anschlussblase in den Anschluss. Beim Ausschalen wird die Anschlussblase zurückgewickelt, die Dichtblase entspannt und schließlich der Bumper vakuumiert. Die Statusanzeigen zeigen die Zustände getrennt an.
 
-**F** schaltet Vollbild um; alternativ die Browser-Taste **F11** verwenden. **Bild speichern** exportiert die aktuelle 3D-Ansicht als PNG.
+**F** schaltet das 3D-Vollbild um; **Umschalt + F** oder **F11** zeigt die ganze Seite im Vollbild. **Bild speichern** exportiert die aktuelle 3D-Ansicht als PNG.
 
 Die Rekonstruktion folgt der bereitgestellten Montageanleitung und den Fotos. Unbemaßte Formen, Bohrungspositionen und Abstände bleiben angenähert. Rohr, Anschlussblase und Mörtelanimation erläutern den Ablauf schematisch. Die offenen Zuordnungen der Vorlage sind unter **Recherche & Genauigkeit** beschrieben.
 

@@ -2,6 +2,12 @@
 
 Diese Chronik ergänzt Git. Sie erklärt die fachlichen Korrekturen und den Prüfstand so, dass die Weiterarbeit ohne den ursprünglichen Chat möglich ist. Neue abgeschlossene Änderungen oben ergänzen; ursprüngliche Einträge nicht als aktuelle Bestätigung ungeprüfter späterer Exporte verstehen.
 
+## 13.09.2026 – Freie Modellfläche und separates 3D-Vollbild
+
+**Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
+
+**Prüfung:** Browserprüfung von normaler Ansicht, reinem 3D-Vollbild, Beschriftung per B und Rückkehr per Esc. Keine Buttons innerhalb von `#viewport`. Bestehende Geometrie-, Wasser-, Blasen-, Roboter- und Kameraprüfungen für alle fünf DN bestanden (`npm test`). Modellgeometrie unverändert; Standalone-Dateien neu gebaut.
+
 ## 13.09.2026 – Wasserführung an der ankommenden Schalung und Projektübergabe
 
 **Problem:** Die Infiltration folgte festen Falllinien. Eine darunterfahrende, noch abgesenkte Schalung wurde nicht berücksichtigt; Wasser war unterhalb des Schildes zu sehen, obwohl es aufgefangen werden müsste.

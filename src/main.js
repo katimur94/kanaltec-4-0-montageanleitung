@@ -3,13 +3,11 @@ import {families,groupInfo,bom,stages,sources,videos,PHASE} from './data.js';
 import assets from './assets.json';
 const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)];
 const lastStage=stages.length-1, endTime=stages.length-.001;
-const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:true,ref:'drawings',lastStage:-1};
+const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:false,ref:'drawings',lastStage:-1};
 const safe=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const opts=families.map(f=>`<option value="${f.id}"${f.id===400?' selected':''}>${f.label}</option>`).join('');$('family').innerHTML=opts;$('refFamily').innerHTML=opts;
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="robot" id="robotView" title="IBAK-Fahrwagen, Hubarm und Werkzeugaufnahme">Roboter</button>');
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="tool" id="toolView" title="CutterCam, Hubschwingen und vordere Werkzeugachse im Detail">Werkzeugarm</button><button data-view="shaft" id="shaftView" title="Nahansicht auf die Blasenwelle; folgt der Welle während der Animation">Wellenkamera</button>');
-const cameraToolbar=$('shaftView').parentElement;
-new ResizeObserver(()=>$('viewport').style.setProperty('--toolbar-bottom',`${cameraToolbar.offsetTop+cameraToolbar.offsetHeight+7}px`)).observe(cameraToolbar);
 $('viewSettingsPanel').querySelector('p').insertAdjacentHTML('beforebegin','<label><input id="hideRobot" type="checkbox"> IBAK-Roboter ausblenden</label>');
 $('groupButtons').innerHTML=Object.entries(groupInfo).map(([key,g],i)=>`<button class="groupbutton" data-group="${key}" style="--gcolor:${g.color}"><span class="groupicon">0${i+1}</span><span><strong>${g.short}</strong><small>${key==='s'?'Schild, Blase & Träger':key==='h'?'Tragstruktur & Antrieb':key==='z'?'Verbindung zum Roboter':'Abstützung & Distanzstücke'}</small></span><span class="chevron">›</span></button>`).join('');
 $('stageButtons').innerHTML=stages.map((s,i)=>`<button class="groupbutton" data-stage="${i}"><span class="stage-no">0${i+1}</span><strong>${s.title}</strong></button>`).join('');
@@ -88,7 +86,8 @@ function showRef(ref){state.ref=ref;$$('[data-ref]').forEach(b=>b.classList.togg
 function updateDrawing(){const n=page();$('drawingImage').src=assets.pages[n];$('drawingImage').alt='Originalzeichnung · '+$('refGroup').selectedOptions[0].textContent+' · PDF Seite '+n;$('pageInfo').textContent='PDF Seite '+n+' / 27';}
 function largeImage(src,alt){$('largeImage').src=src;$('largeImage').alt=alt;$('imageDialog').showModal();}
 function openDrawing(){state.ref='drawings';setMode('sources');}
-async function full(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notify('Vollbild über F11 im Browser aktivieren.');}}
+async function full(target=document.documentElement){try{if(document.fullscreenElement===target)await document.exitFullscreen();else{if(document.fullscreenElement)await document.exitFullscreen();await target.requestFullscreen();}}catch{notify("Dieser Browser erlaubt hier kein Vollbild. Bitte in Chrome, Edge oder Firefox öffnen.");}}
+document.addEventListener("fullscreenchange",()=>{$("viewportFullscreen").setAttribute("aria-pressed",String(document.fullscreenElement===$("viewport")));});
 $$('button[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));$$('button[data-group]').forEach(b=>b.onclick=()=>setGroup(b.dataset.group));
 $$('button[data-stage]').forEach(b=>b.onclick=()=>{state.playing=false;state.time=+b.dataset.stage+.92;updateStage();updatePlayButtons();});
 $$('[data-view]').forEach(b=>b.onclick=()=>{if(['robot','tool'].includes(b.dataset.view)){$('hideRobot').checked=false;updateSections();if(state.group!=='all')setGroup('all');}if(b.dataset.view==='shaft'&&!['all','h'].includes(state.group))setGroup('all');stopRotation();viewer?.fit(b.dataset.view);$$('[data-view]').forEach(x=>x.classList.toggle('active',x===b));});
@@ -120,7 +119,7 @@ function stepAnimation(direction,wholePhase=false){
  updatePlayButtons();
 }
 $('stepBack').onclick=()=>stepAnimation(-1);$('stepForward').onclick=()=>stepAnimation(1);
-$('present').onclick=()=>{state.time=0;state.playUntil=endTime;setMode('process');state.playing=true;updatePlayButtons();};$('fullscreen').onclick=full;
+$('present').onclick=()=>{state.time=0;state.playUntil=endTime;setMode('process');state.playing=true;updatePlayButtons();};$('fullscreen').onclick=()=>full();$('viewportFullscreen').onclick=()=>full($('viewport'));
 $('replayStage').onclick=()=>{state.time=Math.floor(state.time);state.playUntil=Math.min(endTime,state.time+.999);state.playing=true;updateStage();updatePlayButtons();};
 $('showBom').onclick=()=>{$('bomPanel').hidden=!$('bomPanel').hidden;if(!$('bomPanel').hidden){renderBom();$('bomPanel').scrollIntoView({behavior:'smooth',block:'nearest'});}};$('closeBom').onclick=()=>{$('bomPanel').hidden=true;};
 $$('[data-ref]').forEach(b=>b.onclick=()=>showRef(b.dataset.ref));$('refFamily').onchange=updateDrawing;$('refGroup').onchange=updateDrawing;
@@ -135,14 +134,14 @@ document.addEventListener('keydown',e=>{
  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)&&!timelineControl)return;
  if(['ArrowLeft','ArrowRight'].includes(e.key)&&['process','explode'].includes(state.mode)){e.preventDefault();stepAnimation(e.key==='ArrowRight'?1:-1,e.shiftKey);return;}
  if(e.code==='Space'){e.preventDefault();if(!e.repeat)togglePlay();}
- if(e.key.toLowerCase()==='f')full();if(e.key.toLowerCase()==='r')viewer?.fit();if(e.key==='Escape')selectPart(null);
+ if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();full(e.shiftKey||state.mode==='sources'?document.documentElement:$('viewport'));}if(e.key.toLowerCase()==='b'&&!e.repeat)$('labels').click();if(e.key.toLowerCase()==='r')viewer?.fit();if(e.key==='Escape'){selectPart(null);if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}
 });
 if(viewer)viewer.onFrame=dt=>{
  if(state.mode==='sources')return;
  if(state.playing&&state.mode==='process'){state.time+=dt*.11*state.speed;const end=state.playUntil??endTime;if(state.time>=end){state.time=end;state.playing=false;updatePlayButtons();}updateStage();}
  if(state.explodePlaying&&state.mode==='explode'){let v=viewer.targetExplode+dt*.19*state.speed*state.explodeDirection;if(v>=1){v=1;state.explodePlaying=false;state.explodeDirection=-1;updatePlayButtons();}else if(v<=0){v=0;state.explodePlaying=false;state.explodeDirection=1;updatePlayButtons();}setExplosion(v);}
  const layer=$('labelsLayer');layer.hidden=!state.labels||!!viewer.selected;
- if(!layer.hidden){const occupied=[];const items=state.mode==='process'?viewer.processAnchors().map((p,i)=>({l:$('process-label-'+i),p:p.point,name:p.name,side:p.side})):Object.keys(groupInfo).map(g=>({l:$('label-'+g),p:viewer.anchor(g)}));for(const l of layer.children)l.hidden=true;for(const item of items){const{l,p}=item;if(!p)continue;const q=viewer.project(p);l.hidden=!q.visible;if(l.hidden)continue;if(item.name)l.textContent=item.name;l.classList.toggle('label-left',item.side==='left');let x=Math.min(viewer.el.clientWidth-l.offsetWidth-12,Math.max(28,item.side==='left'?q.x-l.offsetWidth-55:q.x+80)),y=Math.max(98,Math.min(viewer.el.clientHeight-68,q.y));for(const r of occupied)if(Math.abs(r.y-y)<28&&Math.abs(r.x-x)<170)y=r.y+29;if(y>viewer.el.clientHeight-55)y=viewer.el.clientHeight-55;l.style.left=x+'px';l.style.top=y+'px';occupied.push({x,y});}}
+ if(!layer.hidden){const occupied=[];const items=state.mode==='process'?viewer.processAnchors().map((p,i)=>({l:$('process-label-'+i),p:p.point,name:p.name,side:p.side})):Object.keys(groupInfo).map(g=>({l:$('label-'+g),p:viewer.anchor(g)}));for(const l of layer.children)l.hidden=true;for(const item of items){const{l,p}=item;if(!p)continue;const q=viewer.project(p);l.hidden=!q.visible;if(l.hidden)continue;if(item.name)l.textContent=item.name;l.classList.toggle('label-left',item.side==='left');let x=Math.min(viewer.el.clientWidth-l.offsetWidth-12,Math.max(28,item.side==='left'?q.x-l.offsetWidth-55:q.x+80)),y=Math.max(12,Math.min(viewer.el.clientHeight-28,q.y));for(const r of occupied)if(Math.abs(r.y-y)<28&&Math.abs(r.x-x)<170)y=r.y+29;if(y>viewer.el.clientHeight-28)y=viewer.el.clientHeight-28;l.style.left=x+'px';l.style.top=y+'px';occupied.push({x,y});}}
  // Public, read-only DOM evidence for offline QA; no network services are used.
  $('viewport').dataset.modelParts=viewer.parts.length;$('viewport').dataset.group=state.group;$('viewport').dataset.mode=state.mode;$('viewport').dataset.explosion=viewer.explode.toFixed(3);$('viewport').dataset.stage=Math.min(lastStage,Math.floor(state.time));$('viewport').dataset.view=viewer.currentView;
  if(state.mode==='process'){
