@@ -1,4 +1,8 @@
-# Original-PDF nicht veroeffentlichen (internes Dokument)
-Montageanleitung_Kanaltec_4_0.pdf
-.claude/
+node_modules/
+work/qa/
+*.log
+.DS_Store
 Thumbs.db
+.env
+.env.*
+Montageanleitung_Kanaltec_4_0.pdf

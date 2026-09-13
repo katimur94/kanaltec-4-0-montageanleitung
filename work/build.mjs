@@ -1,0 +1,12 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+import esbuild from 'esbuild';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const result=await esbuild.build({absWorkingDir:root,tsconfigRaw:{},entryPoints:['src/main.js'],bundle:true,write:false,minify:true,format:'iife',target:['chrome100','firefox110','safari16'],legalComments:'inline'});
+const css=await readFile(path.join(root,'src/style.css'),'utf8');const template=await readFile(path.join(root,'src/index.template.html'),'utf8');
+const logo=await readFile(path.join(root,'src/logo-transparent.png'));
+const html=template.replace('/*LOGO_DATA*/',()=>`data:image/png;base64,${logo.toString('base64')}`).replace('/*STYLES*/',()=>css).replace('/*APP*/',()=>result.outputFiles[0].text.replaceAll('</script','<\\/script'));
+await writeFile(path.join(root,'Kanaltec-4.0-Praesentation.html'),html);
+await writeFile(path.join(root,'index.html'),html);
+console.log('Built standalone HTML:',(html.length/1048576).toFixed(2),'MB');

@@ -1,7 +1,0 @@
-Quelldateien der Kanaltec 4.0 Montageanleitung 3D.
-
-Bauen:            node build.mjs        (schreibt ../Kanaltec_4_0_Montageanleitung_3D.html und ../index.html)
-Tutorial-Bilder:  node serve.js ..  ->  http://localhost:8765/#debug  ->  capture_tutorial.js in die Konsole  ->  node tutorial_gen.js
-Texte/Stuecklisten: part2_data.js   |   Layout/CSS/Doku: part1_head.html   |   3D/Logik: part3_app.js
-
-Ausfuehrliche Beschreibung: ../README.md und ../ENTSCHEIDUNGEN.md

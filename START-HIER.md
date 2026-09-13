@@ -1,0 +1,31 @@
+# Kanaltec 4.0 präsentieren
+
+Die Datei **Kanaltec-4.0-Praesentation.html** per Doppelklick in Edge, Chrome oder Firefox öffnen. Modell, Bilder, Originalzeichnungen und Animationen sind in dieser einen Datei enthalten. Zum Weitergeben oder für einen USB-Stick genügt die HTML-Datei. Externe Videos und Herstellerseiten benötigen Internet.
+
+1. Oben über **Dunkel / Hell** den Darstellungsmodus wählen. Die Auswahl wird im Browser gespeichert, soweit lokale Speicherung erlaubt ist.
+2. Unter **3D erkunden** eine Größe und eine Baugruppe wählen. Unten rechts **Drehen / Verschieben** wählen und mit der Maus oder einem Finger ziehen. Die vier Richtungsknöpfe bewegen das Modell nach links, rechts, oben oder unten. Rechts ziehen verschiebt auch im Drehmodus; mit dem Mausrad zoomen. Zwei Finger verschieben und zoomen. **R** zentriert die Ansicht. Die Pfeiltasten der Tastatur bleiben für Animationsschritte reserviert.
+3. **Explosionsansicht** öffnen und den Schieberegler oder die Abspieltaste verwenden. Über **Stückliste ansehen** lässt sich jedes aufgeführte Bauteil auswählen und hervorheben.
+4. **Vorführen** startet die sieben Sanierungsschritte. Jeder Schritt kann auch einzeln angewählt werden; die Leertaste startet oder pausiert.
+5. **Originalzeichnung** zeigt die zugehörige PDF-Seite. Ein Klick vergrößert die Zeichnung. Die vollständige PDF und die Fotos stehen unter **Originale & Quellen** bereit.
+
+Über **Schnitt & Sicht** im 3D-Fenster wählst du unabhängig voneinander **Rohr aufschneiden**, **Schalung aufschneiden** und **Vordere Halterung ausblenden**. Die Schalung und ihre Halterung sind zunächst vollständig sichtbar. Die Einstellungen bleiben bei Kamerawechseln erhalten und werden im Browser gespeichert, soweit möglich. **Durchblick** schaltet die transparente Darstellung um.
+
+Mit **Anschlussblase ausblenden** im selben Menü kannst du die Welle ohne verdeckende Wicklung und Blasenspitze betrachten. Unter **Halteeinheit → Oben** siehst du die flache Befestigungsseite und ihre Öffnung; durch Drehen die geschlossene gerundete Rückseite. Für die Vorführung die Anschlussblase wieder einblenden.
+
+Im Sanierungsablauf bringt **Blasenantrieb** die Kamera näher an die Welle, ohne Teile auszublenden. Mit **Schritt wiederholen** läuft der gewählte Schritt von Anfang bis Ende; die Zeitachse erlaubt beliebige Zwischenstände.
+
+Unter der Zeitachse findest du **Animationsgeschwindigkeit** von **0,1× bis 4×**. Das Tempo gilt auch für die Explosionsanimation und wird im Browser gespeichert, soweit erlaubt. **← / →** pausiert die Wiedergabe und bewegt die Animation jeweils um einen kleinen Teilschritt zurück oder vor (2 % eines Ablaufschritts bzw. 2 Prozentpunkte der Explosion). Gedrückt halten bewegt sie weiter. **Umschalt + ← / →** springt im Sanierungsablauf zum Beginn des vorherigen bzw. nächsten Schritts. Alternativ die sichtbaren Tasten **← Zurück / Vor →** verwenden. **Leertaste** setzt die automatische Wiedergabe fort oder pausiert sie. In geöffneten Auswahllisten bleiben die Pfeiltasten für die Auswahl reserviert.
+
+Die Animation zeigt die Blase auf der drehenden Welle beim Ab- und Aufwickeln, den starren runden Kopf in der Schildöffnung und die Mörtelzufuhr von unten durch die separate kleine Öffnung. Die rote Signallampe unter dem Modell zeigt die simulierte Vollmeldung des Drucksensors. Der Bumper bleibt während der Fahrt vakuumiert und flach; er wird erst an der Anschlussposition aufgeblasen und vor der Weiterfahrt wieder vakuumiert.
+
+**Die zwei Blasen haben unterschiedliche Aufgaben:** In Schritt 3 wird die flächige Dichtblase zwischen Schalungsträger und Schild aufgeblasen. Erst danach fährt in Schritt 4 die auf der Welle gewickelte Anschlussblase in den Anschluss. Beim Ausschalen wird die Anschlussblase zurückgewickelt, die Dichtblase entspannt und schließlich der Bumper vakuumiert. Die Statusanzeigen zeigen die Zustände getrennt an.
+
+**F** schaltet Vollbild um; alternativ die Browser-Taste **F11** verwenden. **Bild speichern** exportiert die aktuelle 3D-Ansicht als PNG.
+
+Die Rekonstruktion folgt der bereitgestellten Montageanleitung und den Fotos. Unbemaßte Formen, Bohrungspositionen und Abstände bleiben angenähert. Rohr, Anschlussblase und Mörtelanimation erläutern den Ablauf schematisch. Die offenen Zuordnungen der Vorlage sind unter **Recherche & Genauigkeit** beschrieben.
+
+Quellen für spätere Anpassungen liegen unter `src`. Nach `npm ci` lautet der lokale Build `npm run build`, die Geometrieprüfung `npm test`. Diese Werkzeuge werden zum Präsentieren nicht benötigt.
+
+**Öffnungen der drei Schalungslagen:** Nur das äußere Schalungsschild hat die drei getrennten Funktionsöffnungen. Schalungsträger und die dazwischenliegende Dichtblase haben jeweils einen großen ovalen Durchbruch. Der Injektionsanschluss sitzt von unten am äußeren Schild und folgt ihm in der Explosionsansicht. Die verdeckte Ovalkontur ist anhand der ergänzenden Systembeschreibung angenähert.
+
+Unter **Zentraleinheit → Klappvorrichtung** öffnest du die Nahansicht der Verbindung zum Roboter. Sie steht in **3D erkunden** und in der **Explosionsansicht** zur Verfügung. Die Kamera fokussiert Pos. 7–10 und deren Befestigungen aus PDF-Seite 10; mit Drehen und Verschieben kannst du beide Seiten prüfen. Es werden dabei keine Bauteile ausgeblendet.
