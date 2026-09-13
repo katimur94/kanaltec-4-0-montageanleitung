@@ -3,6 +3,9 @@ import * as THREE from 'three';
 // User-described assembly: threaded bladder foot in the single flat shaft face.
 // Dimensions and elastic folds are reconstructed, not manufacturing dimensions.
 export const ports={opening:40,tip:36,inletX:-66,inletRadius:7,sensorX:70,sensorRadius:9};
+// The illustrative branch and its moulded passage share the shield aperture.
+// The former independently chosen branch diameter created a false reducer.
+export const passage={radius:ports.opening,wall:12};
 export const bladderMount={flat:6.5,seat:7.1,radius:35,capHeight:6,threadBottom:-2.5,threadTop:6.4};
 // Each collapsed wall is about 3 mm: two walls form a 6 mm folded bladder.
 export const windingSpec={turns:3,wall:3,folded:6,layerGap:.3};
@@ -88,7 +91,7 @@ export class BladderMechanism {
   for(let i=0;i<=112;i++){
    const s=i/112,y=lerp(baseY,tipY,s),distance=state.stored+(y-baseY),flare=smooth(distance/22);
    const peel=smooth((y-baseY)/14),passage=smooth((y-(this.radius-38))/28)*peel,head=smooth((y-(tipY-23))/23)*peel;
-   const swell=inflation*smooth((y-this.radius-7)/22)*smooth((tipY-y)/20),roundRadius=35.5+12.5*swell;
+   const swell=inflation*smooth((y-this.radius+16)/10)*smooth((tipY-y)/20),roundRadius=35.5+(ports.opening-.45-35.5)*swell;
    const flatX=lerp(55,29,passage),flatZ=lerp(windingSpec.folded/2,3.8,passage),round=Math.max(head,inflation);
    const rx=lerp(bladderMount.radius,lerp(flatX,roundRadius,round),flare),rz=lerp(bladderMount.radius,lerp(flatZ,roundRadius,round),flare);
    for(let j=0;j<=columns;j++){const u=j/columns*Math.PI*2,pleat=(1-inflation)*(1-head)*passage*.8*Math.cos(u*6)*Math.sin(u),k=i*(columns+1)+j;bp.setXYZ(k,rx*Math.cos(u),y,rz*Math.sin(u)+pleat);bu.setXY(k,j/columns,distance/2.2);}

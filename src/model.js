@@ -166,6 +166,7 @@ export class Viewer {
  constructor(el,onSelect){
   this.el=el;this.onSelect=onSelect;this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#edf0ef');
   this.camera=new THREE.PerspectiveCamera(34,1,1,15000);this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,preserveDrawingBuffer:true});this.renderer.setPixelRatio(Math.min(devicePixelRatio,2));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.25;el.prepend(this.renderer.domElement);
+  this.inspectionLamp=new THREE.PointLight('#f1f4f6',2.6,1200,0);this.inspectionLamp.position.set(-85,30,0);this.inspectionLamp.visible=false;this.camera.add(this.inspectionLamp);this.scene.add(this.camera);
   this.renderer.localClippingEnabled=true;
   const env=new RoomEnvironment();const pmrem=new THREE.PMREMGenerator(this.renderer);this.scene.environment=pmrem.fromScene(env,.04).texture;env.dispose();pmrem.dispose();
   this.scene.add(new THREE.HemisphereLight('#ffffff','#86949e',2));const key=new THREE.DirectionalLight('#ffffff',3.2);key.position.set(350,900,550);key.castShadow=true;key.shadow.mapSize.set(2048,2048);Object.assign(key.shadow.camera,{left:-1500,right:1500,top:1500,bottom:-1500,near:1,far:4000});key.shadow.normalBias=2;this.scene.add(key);
@@ -372,6 +373,12 @@ export class Viewer {
  bounds(){const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);return b;}
  fit(view='iso'){
   this.currentView=view;
+  if(this.inspectionLamp)this.inspectionLamp.visible=view==='channel';
+  this.camera.fov=view==='channel'?58:34;this.camera.updateProjectionMatrix();
+  if(view==='channel'){
+   const R=this.radius+12;this.controls.target.set(0,R,0);this.camera.position.set(-20,R-280,32);this.camera.lookAt(this.controls.target);this.controls.update();this.applyMaterials();
+   if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));return;
+  }
   this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(-570,this.bottom,-300),V(450,this.branchTop+20,280));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
   if(view==='damage')b=new THREE.Box3(V(-265,this.radius-100,-140),V(210,this.radius+180,120));
   if(view==='winding')b=new THREE.Box3(V(-125,this.top-65,-75),V(145,this.radius+80,75));

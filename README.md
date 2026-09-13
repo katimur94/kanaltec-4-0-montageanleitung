@@ -6,6 +6,8 @@ Das Schalungssystem der DiTom GmbH Kanaltechnik als interaktives 3D-Modell mit f
 
 Die Nahansicht **Schadstelle** zeigt einen großen Ausbruch mit Bruchkanten und Infiltration. Der Injektionsmörtel fließt im transparenten Schlauch zum Zulauf, füllt die Schadstelle fortschreitend und stoppt den Wassereintritt. Der Anschluss bleibt innen offen. Das Schadensbild ist ein Beispiel zur Erklärung des Verfahrens.
 
+Im **Kanalblick** sind nach dem Ausschalen die eingeprägten Drucksensor- und Injektionsmarken sichtbar. Die Gussfläche schließt bündig mit der Rohrinnenwand ab; der Durchgang hat keine kegelförmige Verengung. Braunes Steinzeug und grauer Mörtel besitzen unterschiedliche Oberflächen.
+
 ## Einfach verwenden
 
 Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `Kanaltec-4.0-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.

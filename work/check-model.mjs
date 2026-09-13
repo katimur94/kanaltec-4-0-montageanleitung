@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {Viewer} from '../src/model.js';
 import {families,bom} from '../src/data.js';
-import {ports,bladderMount,windingSpec} from '../src/bladder.js';
+import {ports,bladderMount,windingSpec,passage} from '../src/bladder.js';
+import {imprints} from '../src/repair-surface.js';
 
 // Geometry checks without a browser or GPU; assertions describe PDF orientation
 // and assembled contacts, not dimensional certification of unmeasured drawings.
@@ -177,6 +178,16 @@ for(const f of families){
  assert.equal(v.repair.mortar.scale.y,1,'Fill grows from the inlet instead of scaling a complete cylinder');
  v.context.updateMatrixWorld(true);const openBranch=new THREE.Raycaster(new THREE.Vector3(0,v.radius+140,0),new THREE.Vector3(0,-1,0),.001,150).intersectObject(v.mortar,true);
  assert.equal(openBranch.length,0,'Repair preserves the bladder-shaped open branch lumen');
+ for(const a of [0,.65,1.4,Math.PI])for(const h of [0,.25,.5,1]){const p=v.repair.point(a,0,h);near(Math.hypot(p.x,p.z),passage.radius,'No tapered reducer in the repaired bore',.001);}
+ v.context.updateMatrixWorld(true);
+ for(const mark of imprints){
+  const ray=new THREE.Raycaster(new THREE.Vector3(mark.x,v.radius-25,mark.z),new THREE.Vector3(0,1,0),.001,80),hits=ray.intersectObject(v.repair.innerSkin,true);
+  assert.ok(hits.length>0,`${mark.key}: impression has a closed mortar floor`);
+  near(hits[0].point.y,v.radius+12+mark.rings.at(-1)[1],`${mark.key}: actual recessed impression at the shield port`,.04);
+ }
+ v.repair.innerSkin.traverse(o=>{if(o.isMesh){const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){assert.ok(Number.isFinite(p.getX(i))&&Number.isFinite(p.getY(i))&&Number.isFinite(p.getZ(i)),'Finite cast surface');assert.ok(Math.hypot(p.getY(i),p.getZ(i))>=v.radius+12-.003,'Cast surface and imprints never protrude into sewer lumen');}}});
+ const surfaceRay=new THREE.Raycaster(new THREE.Vector3(110,v.radius-25,0),new THREE.Vector3(0,1,0),.001,80);
+ near(surfaceRay.intersectObject(v.repair.innerSkin,true)[0].point.y,v.radius+12,'Casting is flush with the original pipe crown',.015);
  pose(6.99);assert.equal(v.repair.water.visible,false,'No infiltration returns after removal');
  assert.ok(v.repair.hoseGroup.position.equals(v.feed.position),'Internal mortar follows the attached hose during lowering and travel');
  pose(.5);const bumperPart=part('u','bumper'),vacuumHeight=bumperPart.node.scale.y;

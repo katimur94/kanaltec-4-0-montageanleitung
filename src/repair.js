@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {passage} from './bladder.js';
+import {surfaceTextures,mouldSurface} from './repair-surface.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=x=>THREE.MathUtils.clamp(x,0,1);
@@ -14,6 +16,7 @@ export function breakoutContour(a){
  return [148*Math.cos(a)*jag,100*Math.sin(a)*jag];
 }
 function surfacePoint(R,x,arc,depth=0){return V(x,(R+depth)*Math.cos(arc/R),(R+depth)*Math.sin(arc/R));}
+function branchBottom(R,a){const k=a/TAU*40,bin=Math.floor(k),edge=t=>R+65+14*Math.sin(t*5+.6)+10*Math.cos(t*11);return THREE.MathUtils.lerp(edge(bin/40*TAU),edge((bin+1)/40*TAU),k-bin);}
 function geometry(positions,indices,uv){
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setIndex(indices);
  if(uv)g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();return g;
@@ -46,7 +49,7 @@ export function damagedPipeGeometry(R,length,thickness){
 function brokenBranch(R,top){
  const pos=[],uv=[],idx=[],rows=16,stride=N+1;
  for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=N;i++){
-  const a=i/N*TAU,k=a/TAU*40,bin=Math.floor(k),edge=t=>R+65+14*Math.sin(t*5+.6)+10*Math.cos(t*11),bottom=THREE.MathUtils.lerp(edge(bin/40*TAU),edge((bin+1)/40*TAU),k-bin),r=69+side*11;
+  const a=i/N*TAU,bottom=branchBottom(R,a),r=passage.radius+side*passage.wall;
   pos.push(r*Math.cos(a),THREE.MathUtils.lerp(bottom,top,j/rows),r*Math.sin(a));uv.push(a*2,(pos.at(-2)-R)/120);
  }
  const count=(rows+1)*stride;
@@ -61,7 +64,8 @@ export class RepairScene {
  constructor(R,branchTop,hosePoints,inletX){
   this.R=R;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
   this.texture=concreteTexture();
-  this.concrete=new THREE.MeshStandardMaterial({color:'#858980',map:this.texture,bumpMap:this.texture,bumpScale:.42,roughness:.96,side:THREE.DoubleSide});
+  this.pipeTextures=surfaceTextures('pipe');this.mortarTextures=surfaceTextures('mortar');
+  this.concrete=new THREE.MeshStandardMaterial({color:'#422b21',...this.pipeTextures,bumpScale:.12,roughness:1,metalness:0,envMapIntensity:.18,side:THREE.DoubleSide});
   this.cutConcrete=this.concrete.clone();this.cutConcrete.clippingPlanes=[cutPlane];
   const pg=damagedPipeGeometry(R,1350,18),bg=brokenBranch(R,branchTop);
   this.pipe=makeMesh(pg,this.cutConcrete);this.pipeFull=makeMesh(pg,this.concrete);
@@ -70,8 +74,8 @@ export class RepairScene {
   const capPositions=[],capIndices=[],capUV=[];
   const rect=(x0,x1,y0,y1)=>{const n=capPositions.length/3;capPositions.push(x0,y0,0,x1,y0,0,x1,y1,0,x0,y1,0);capUV.push(x0/120,y0/120,x1/120,y0/120,x1/120,y1/120,x0/120,y1/120);capIndices.push(n,n+1,n+2,n,n+2,n+3);};
   rect(-675,675,-R-18,-R);rect(-675,breakoutContour(Math.PI)[0],R,R+18);rect(breakoutContour(0)[0],675,R,R+18);
-  for(const a of [0,Math.PI]){const sign=Math.cos(a),bottom=R+65+14*Math.sin(a*5+.6)+10*Math.cos(a*11);rect(Math.min(sign*69,sign*80),Math.max(sign*69,sign*80),bottom,branchTop);}
-  const capMaterial=this.concrete.clone();capMaterial.bumpScale=.12;
+  for(const a of [0,Math.PI]){const sign=Math.cos(a),bottom=R+65+14*Math.sin(a*5+.6)+10*Math.cos(a*11);rect(Math.min(sign*passage.radius,sign*(passage.radius+passage.wall)),Math.max(sign*passage.radius,sign*(passage.radius+passage.wall)),bottom,branchTop);}
+  const capMaterial=this.concrete.clone();capMaterial.color.set('#6b4632');capMaterial.roughness=1;capMaterial.bumpScale=.3;
   this.pipeCaps=makeMesh(geometry(capPositions,capIndices,capUV),capMaterial);this.pipeCaps.castShadow=this.pipeCaps.receiveShadow=false;this.group.add(this.pipeCaps);
 
   // A rough soil/socket cavity between the broken main and branch pipe.
@@ -92,14 +96,16 @@ export class RepairScene {
    this.cracks.add(tube(new THREE.CatmullRomCurve3(pts),.7,crackMat,30));
   }this.group.add(this.cracks);
 
-  this.mortarMaterial=new THREE.MeshStandardMaterial({color:'#68695f',roughness:.48,side:THREE.DoubleSide});
+  this.mortarMaterial=new THREE.MeshStandardMaterial({color:'#444743',roughness:.75,side:THREE.DoubleSide});
+  this.skinMaterial=new THREE.MeshStandardMaterial({color:'#555652',...this.mortarTextures,bumpScale:.16,roughness:.95,envMapIntensity:.35,vertexColors:true,side:THREE.DoubleSide});
+  this.innerSkin=mouldSurface(R,breakoutContour,this.skinMaterial);this.group.add(this.innerSkin);
   this.mortarGeometry=new THREE.BufferGeometry();
   this.mortarGeometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*3),3));
   this.mortarGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*2),2));
   this.mortar=makeMesh(this.mortarGeometry,this.mortarMaterial);this.mortar.frustumCulled=false;this.group.add(this.mortar);
-  this.sectionGeometry=new THREE.BufferGeometry();this.sectionGeometry.setAttribute('position',this.mortarGeometry.attributes.position);this.sectionGeometry.setAttribute('uv',this.mortarGeometry.attributes.uv);
+  this.sectionGeometry=new THREE.BufferGeometry();this.sectionGeometry.setAttribute('position',this.mortarGeometry.attributes.position);this.sectionGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(this.mortarGeometry.attributes.uv.array.length),2));
   // The exposed section face must not clip against its own coplanar plane.
-  this.sectionMaterial=this.mortarMaterial.clone();
+  this.sectionMaterial=new THREE.MeshStandardMaterial({color:'#65695f',...this.mortarTextures,bumpScale:.08,roughness:.95,side:THREE.DoubleSide});
   this.section=makeMesh(this.sectionGeometry,this.sectionMaterial);this.section.castShadow=this.section.receiveShadow=false;this.section.frustumCulled=false;this.group.add(this.section);
   this.lastFill=-1;
 
@@ -133,16 +139,17 @@ export class RepairScene {
   this.cut=cut;this.section.visible=cut&&this.fill>.0001;
   this.pipeCaps.visible=cut;
   this.pipe.visible=this.branch.visible=cut;this.pipeFull.visible=this.branchFull.visible=!cut;
-  for(const m of [this.cavityMaterial,this.mortarMaterial,this.waterMaterial])m.clippingPlanes=cut?[cutPlane]:null;
+  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.waterMaterial])m.clippingPlanes=cut?[cutPlane]:null;
   this.cracks.traverse(o=>{if(o.isMesh)o.material.clippingPlanes=cut?[cutPlane]:null;});
  }
  point(a,q,h){
-  const [x,arc]=breakoutContour(a),edge=surfacePoint(this.R,x,arc),r=THREE.MathUtils.lerp(35.8,48.2,smooth((h*105-6)/22));
+  const [x,arc]=breakoutContour(a),edge=surfacePoint(this.R,x,arc),r=passage.radius;
   const bulge=6*Math.sin(h*Math.PI)*(1+.3*Math.sin(a*17));
-  const ox=THREE.MathUtils.lerp(edge.x,80*Math.cos(a),h)+Math.cos(a)*bulge,oz=THREE.MathUtils.lerp(edge.z,80*Math.sin(a),h)+Math.sin(a)*bulge;
+  const outerRadius=passage.radius+passage.wall;
+  const ox=THREE.MathUtils.lerp(edge.x,outerRadius*Math.cos(a),h)+Math.cos(a)*bulge,oz=THREE.MathUtils.lerp(edge.z,outerRadius*Math.sin(a),h)+Math.sin(a)*bulge;
   const px=THREE.MathUtils.lerp(r*Math.cos(a),ox,q),pz=THREE.MathUtils.lerp(r*Math.sin(a),oz,q);
-  const by=Math.sqrt(Math.max(0,(this.R-.75)**2-pz*pz));
-  return V(px,THREE.MathUtils.lerp(by,this.R+96,h),pz);
+  const by=Math.sqrt(Math.max(0,this.R**2-pz*pz));
+  return V(px,THREE.MathUtils.lerp(by,branchBottom(this.R,a),h),pz);
  }
  arrival(a,q){const p=this.point(a,q,0);return Math.min(.24,Math.hypot(p.x-this.inletX,p.z)/240*.24);}
  fillGeometry(fill){
@@ -157,17 +164,21 @@ export class RepairScene {
   const idx=[];
   for(let j=0;j<RADIAL;j++)for(let i=0;i<N;i++){
    const a=j*stride+i,b=a+stride;if(Math.max(heights[a],heights[a+1],heights[b],heights[b+1])<=.00001)continue;
-   idx.push(a,b,a+1,b,b+1,a+1,a+layer,a+1+layer,b+layer,b+layer,a+1+layer,b+1+layer);
+   if(fill<1)idx.push(a,b,a+1,b,b+1,a+1);
+   if(fill<1)idx.push(a+layer,a+1+layer,b+layer,b+layer,a+1+layer,b+1+layer);
   }
   for(const j of [0,RADIAL])for(let i=0;i<N;i++){const a=j*stride+i;if(Math.max(heights[a],heights[a+1])>0)idx.push(a,a+1,a+layer,a+layer,a+1,a+1+layer);}
   this.mortarGeometry.setIndex(idx);attr.needsUpdate=uv.needsUpdate=true;this.mortarGeometry.computeVertexNormals();this.mortarGeometry.computeBoundingSphere();
+  const sectionUV=this.sectionGeometry.attributes.uv;for(let i=0;i<attr.count;i++)sectionUV.setXY(i,attr.getX(i)/80,attr.getY(i)/80);sectionUV.needsUpdate=true;
   const caps=[];for(const i of [0,N/2])for(let j=0;j<RADIAL;j++){const a=j*stride+i,b=a+stride;if(Math.max(heights[a],heights[b])>0)caps.push(a,b,a+layer,b,b+layer,a+layer);}
   this.sectionGeometry.setIndex(caps);this.sectionGeometry.computeVertexNormals();
  }
  update({time,fill,hoseFront,injecting,sealed,cured}){
   this.fill=fill;this.hoseFront=hoseFront;this.fillGeometry(fill);this.mortar.visible=fill>.0001;
+  this.innerSkin.visible=fill===1;
   this.section.visible=this.cut&&this.mortar.visible;
-  this.mortarMaterial.color.set(cured?'#91968b':'#68695f');this.mortarMaterial.roughness=cured?.91:.48;
+  this.mortarMaterial.color.set(cured?'#666764':'#444642');this.mortarMaterial.roughness=cured?.96:.68;
+  this.skinMaterial.color.copy(this.mortarMaterial.color);
   this.sectionMaterial.color.copy(this.mortarMaterial.color);this.sectionMaterial.roughness=this.mortarMaterial.roughness;
   this.feedCore.geometry.setDrawRange(0,Math.floor(hoseFront*240)*10*6);this.feedCore.visible=hoseFront>0;
   this.outlet.visible=injecting&&hoseFront>=1;
@@ -191,5 +202,5 @@ export class RepairScene {
   }
   this.splash.children.forEach((o,i)=>{const u=((time*2+i*.143)%1+1)%1,p=this.streams[i].curve.getPoint(1);o.visible=sealed<.96&&this.waterActivity>.08&&(!this.pipe.visible||p.z<0);o.position.set(p.x,-Math.sqrt(Math.max(1,this.R*this.R-p.z*p.z))+2,p.z);o.scale.setScalar(.5+u*2);});
  }
- dispose(){this.texture.dispose();const materials=new Set();for(const root of [this.group,this.hoseGroup])root.traverse(o=>{if(o.isMesh)materials.add(o.material);});for(const m of materials)m.dispose();}
+ dispose(){this.texture.dispose();for(const pack of [this.pipeTextures,this.mortarTextures])for(const t of Object.values(pack))t.dispose();const materials=new Set();for(const root of [this.group,this.hoseGroup])root.traverse(o=>{if(o.isMesh)materials.add(o.material);});for(const m of materials)m.dispose();}
 }
