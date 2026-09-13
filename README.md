@@ -4,6 +4,8 @@
 
 Das Schalungssystem der DiTom GmbH Kanaltechnik als interaktives 3D-Modell mit fünf Baugrößen, Explosionsansicht und animiertem Sanierungsablauf. Enthalten sind die überarbeiteten Bauteile, die vollständig abwickelbare Anschlussblase mit drei Wicklungen, getrennte Bumper- und Dichtblasenphasen, einstellbare Geschwindigkeit, Pfeiltastensteuerung, frei wählbare Schnitte, Verschieben der Ansicht und Hell-/Dunkelmodus mit transparentem Logo.
 
+Die Nahansicht **Schadstelle** zeigt einen großen Ausbruch mit Bruchkanten und Infiltration. Der Injektionsmörtel fließt im transparenten Schlauch zum Zulauf, füllt die Schadstelle fortschreitend und stoppt den Wassereintritt. Der Anschluss bleibt innen offen. Das Schadensbild ist ein Beispiel zur Erklärung des Verfahrens.
+
 ## Einfach verwenden
 
 Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `Kanaltec-4.0-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.

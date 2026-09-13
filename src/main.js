@@ -42,7 +42,7 @@ function setMode(mode){
  const src=mode==='sources',proc=mode==='process';$('workspace').hidden=src;$('sourcesPanel').hidden=!src;
  $('assemblyNav').hidden=proc;$('stageNav').hidden=!proc;$('explosionControl').hidden=mode!=='explode';$('processControl').hidden=!proc;$('schematic').hidden=!proc;$('showBom').hidden=proc;$('ghost').hidden=false;
  $('playbackSettings').hidden=!(proc||mode==='explode');$('phaseKeys').hidden=!proc;
- $('driveView').hidden=!proc;$('windingView').hidden=!proc;$('mechanismReadout').hidden=!proc;
+ $('damageView').hidden=!proc;$('driveView').hidden=!proc;$('windingView').hidden=!proc;$('mechanismReadout').hidden=!proc;
  $('bomPanel').hidden=true;selectPart(null);
  if(viewer&&!src){viewer.resize();viewer.setMode(mode);if(proc){state.group='all';viewer.setGroup('all');viewer.controls.autoRotate=false;$('rotate').setAttribute('aria-pressed','false');$('ghost').setAttribute('aria-pressed','false');state.lastStage=-1;updateStage();}else{viewer.setGroup(state.group);if(mode==='explode'){$('explosion').value=75;setExplosion(.75,true);}else{viewer.setExplode(0);viewer.explode=0;viewer.fit();}}}
  if(src){$('refFamily').value=state.id;$('refGroup').value=state.group;showRef(state.ref);}updateInfo();updatePlayButtons();

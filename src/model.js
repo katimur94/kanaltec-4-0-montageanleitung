@@ -4,6 +4,7 @@ import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.j
 import {mergeVertices} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {bom,families,PHASE} from './data.js';
 import {BladderMechanism,ports,bladderMount} from './bladder.js';
+import {RepairScene} from './repair.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=THREE.MathUtils.clamp;
@@ -160,23 +161,6 @@ function fastener(kind,size){const g=new THREE.Group();const match=size.match(/M
 }
 function between(a,b,r,m){const d=b.clone().sub(a);const o=cyl(r,d.length(),m,a.clone().add(b).multiplyScalar(.5));o.quaternion.setFromUnitVectors(V(0,1,0),d.normalize());return o;}
 function hose(points,r,material){return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p=>V(...p))),72,r,10,false),material);}
-function pipeSection(radius,length,thickness,cut=true){
- const vertices=[],indices=[],nx=80,na=cut?72:144,span=cut?Math.PI:Math.PI*2;
- for(let layer=0;layer<2;layer++)for(let ix=0;ix<=nx;ix++)for(let ia=0;ia<=na;ia++){
-  const a=-Math.PI+ia/na*span,r=radius+layer*thickness;
-  vertices.push((ix/nx-.5)*length,r*Math.cos(a),r*Math.sin(a));
- }
- const count=(nx+1)*(na+1);
- for(let layer=0;layer<2;layer++)for(let ix=0;ix<nx;ix++)for(let ia=0;ia<na;ia++){
-  const a=-Math.PI+(ia+.5)/na*span,x=((ix+.5)/nx-.5)*length,z=radius*Math.sin(a);
-  if(Math.cos(a)>.9&&x*x+z*z<52*52)continue;
-  const i=layer*count+ix*(na+1)+ia,j=i+na+1;
-  if(layer===0)indices.push(i,j,i+1,j,j+1,i+1);else indices.push(i,i+1,j,j,i+1,j+1);
- }
- if(cut)for(let ix=0;ix<nx;ix++)for(const ia of [0,na]){const a=ix*(na+1)+ia,b=a+na+1;indices.push(a,b,a+count,b,b+count,a+count);}
- for(const ix of [0,nx])for(let ia=0;ia<na;ia++){const a=ix*(na+1)+ia;indices.push(a,a+count,a+1,a+1,a+count,a+count+1);}
- const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setIndex(indices);g.computeVertexNormals();return g;
-}
 
 export class Viewer {
  constructor(el,onSelect){
@@ -204,7 +188,7 @@ export class Viewer {
   this.camera.position.add(offset);this.controls.target.add(offset);this.controls.update();
  }
  setTheme(dark){this.scene.background.set(dark?'#17222c':'#edf0ef');this.floor.material.opacity=dark?.28:.12;this.floor.material.color.set(dark?'#000000':'#455861');}
- clear(){for(const n of [this.model,this.context]){n.traverse(o=>{if(o.isMesh){if(![...cached.values()].includes(o.geometry))o.geometry.dispose();if(o.userData.origMat)o.material.dispose();}});n.clear();}this.parts=[];}
+ clear(){this.repair?.dispose();for(const n of [this.model,this.context]){n.traverse(o=>{if(o.isMesh){if(![...cached.values()].includes(o.geometry))o.geometry.dispose();if(o.userData.origMat)o.material.dispose();}});n.clear();}this.parts=[];}
  addPart(g,row,i,position,explode,object){
   const node=new THREE.Group();node.position.copy(position);node.add(object);this.model.add(node);const p={group:g,pos:row.pos,key:row.key,index:i,name:row.name,qty:row.qty,kind:row.kind,note:row.note,node,base:position.clone(),delta:explode,originalRotation:node.quaternion.clone()};node.userData.part=p;this.parts.push(p);return p;
  }
@@ -315,7 +299,7 @@ export class Viewer {
   this.inlet=new THREE.Group();this.inlet.add(tube(6.5,4,20,palettes.metal,V(),'y'),tube(10,4,2,palettes.darkMetal,V(0,9,0),'y'),cyl(9,4,palettes.darkMetal,V(0,-3,0),'y',6));this.model.add(this.inlet);
   this.sensor=new THREE.Group();this.sensor.add(cyl(6,12,palettes.darkMetal,V(0,-6,0)),cyl(9,2,mat('#c3312e',.1,.5),V(0,1,0)),torus(10.5,1.5,palettes.gold,V(0,1,0)));this.model.add(this.sensor);
   this.hosePoints=[[-560,-5,27],[-285,45,35],[-145,R-72,24],[ports.inletX,R-42,0],[ports.inletX,R-19,0]];
-  this.feed=hose(this.hosePoints,4.5,new THREE.MeshStandardMaterial({color:'#313f46',roughness:.65,transparent:true,opacity:.72,depthWrite:false}));this.model.add(this.feed);
+  this.feed=hose(this.hosePoints,4.5,new THREE.MeshStandardMaterial({color:'#90a5aa',roughness:.28,transparent:true,opacity:.26,depthWrite:false}));this.model.add(this.feed);
   this.sensorFull=false;this.poseMechanism(0,0,0);
  }
  poseMechanism(extension,inflation,lift){
@@ -328,7 +312,8 @@ export class Viewer {
   this.inlet.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.inletX,this.radius-10+3*this.sealAir,0));
   this.sensor.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.sensorX,this.radius+2+3*this.sealAir,0));
   this.feed.visible=proc;this.feed.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).y+=3*this.sealAir;
-  if(!proc)this.sensorFull=false;
+  if(this.repair){this.repair.hoseGroup.visible=proc;this.repair.hoseGroup.position.copy(this.feed.position);}
+  if(!proc){this.sensorFull=false;this.sensor.children[1].material.emissive.set('#000000');}
  }
  poseSeal(air){
   if(!this.sealPart)return;
@@ -341,21 +326,11 @@ export class Viewer {
  }
  buildContext(){
   const R=this.radius+12;
-  // Retain the rear half, remove the foreground half so the mechanism stays visible.
-  const pipeMat=new THREE.MeshStandardMaterial({color:'#8a9b98',metalness:.04,roughness:.88,side:THREE.DoubleSide});
-  this.pipe=mesh(pipeSection(R,1350,18),pipeMat);this.context.add(this.pipe);
-  this.pipeFull=mesh(pipeSection(R,1350,18,false),pipeMat);this.context.add(this.pipeFull);
-  const branchHeight=Math.max(260,this.winding.travel+65);this.branchTop=R+20+branchHeight;
-  const branchMat=new THREE.MeshStandardMaterial({color:'#9eafac',metalness:.03,roughness:.8,side:THREE.DoubleSide});this.branch=mesh(new THREE.CylinderGeometry(69,69,branchHeight,64,1,true,Math.PI/2,Math.PI),branchMat,V(0,R+20+branchHeight/2,0));this.context.add(this.branch);
-  this.branchFull=mesh(new THREE.CylinderGeometry(69,69,branchHeight,64,1,true),branchMat,V(0,R+20+branchHeight/2,0));this.context.add(this.branchFull);
-  for(const yy of [R+27,this.branchTop]){const rim=torus(69,5,branchMat,V(0,yy,0));this.context.add(rim);}
-  const damageMat=new THREE.MeshStandardMaterial({color:'#d3a076',transparent:true,opacity:.23,depthWrite:false,side:THREE.DoubleSide,roughness:.9});
-  this.damage=mesh(new THREE.CylinderGeometry(99,104,93,64,1,true),damageMat,V(0,R+35,0));this.context.add(this.damage);
-  const mortarProfile=[new THREE.Vector2(100,0),new THREE.Vector2(100,96)];
-  for(let i=32;i>=0;i--){const h=i*3;mortarProfile.push(new THREE.Vector2(35.5+12.5*smooth((h-5)/22),h));}mortarProfile.push(new THREE.Vector2(100,0));
-  this.mortar=mesh(new THREE.LatheGeometry(mortarProfile,80),mat('#3ca49c',.05,.57),V(0,R+1,0));this.context.add(this.mortar);
-  this.flowCurve=new THREE.CatmullRomCurve3([...this.hosePoints.map(p=>V(...p)),V(ports.inletX,this.radius+2,0),V(ports.inletX,this.radius+16,0),V(-48,this.radius+25,45),V(0,this.radius+35,75),V(ports.sensorX,this.radius+18,0)]);this.flow=[];
-  for(let i=0;i<24;i++){const o=mesh(new THREE.SphereGeometry(2.8,10,8),new THREE.MeshBasicMaterial({color:'#45f5d8'}));this.context.add(o);this.flow.push(o);}
+  this.branchTop=R+20+Math.max(260,this.winding.travel+65);
+  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX);
+  this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
+  for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
+  this.damage=this.repair.cavity;
   this.context.visible=false;
  }
  setMode(mode){this.mode=mode;this.context.visible=mode==='process';this.floor.visible=mode!=='process';if(mode==='process'){this.group='all';this.targetExplode=0;this.faint=false;}this.updateParts();this.fit();}
@@ -367,7 +342,7 @@ export class Viewer {
  applyMaterials(){for(const p of this.parts)p.node.traverse(o=>{if(!o.isMesh)return;if(!o.userData.origMat){o.userData.origMat=o.material;o.material=o.material.clone();}const selected=this.selected&&p.group===this.selected.group&&p.pos===this.selected.pos;const cut=this.sections?.shield&&['shield','mat','carrier'].includes(p.key),transparent=this.faint&&p.group==='s';o.material.opacity=transparent?.16:this.selected&&!selected?.33:1;o.material.transparent=o.material.opacity<1;o.material.depthWrite=o.material.opacity===1;o.material.clippingPlanes=cut?[new THREE.Plane(V(0,0,-1),0)]:null;o.material.needsUpdate=true;o.material.emissive.set(selected?'#1e88ac':'#000000');o.material.emissiveIntensity=selected?.32:0;});if(this.winding)for(const m of [this.winding.material,this.winding.tip.material]){m.opacity=this.selected?.2:1;m.transparent=!!this.selected;m.depthWrite=!this.selected;}}
  updateParts(){const groupDelta={s:V(0,240,0),h:V(0,35,0),z:V(0,-140,0),u:V(0,-300,0)};
   const drive=this.sections?.holder;
-  if(this.pipe){this.pipe.visible=!!this.sections.pipe;this.pipeFull.visible=!this.sections.pipe;this.branch.visible=!!this.sections.pipe;this.branchFull.visible=!this.sections.pipe;}
+  if(this.repair)this.repair.setCut(!!this.sections.pipe);
   for(const p of this.parts){const frontHolder=drive&&p.base.z>0&&((p.group==='h'&&['sides','rail','pins','blocks','blockbolts','sidebolts','railbolts'].includes(p.key))||(p.group==='s'&&['mounts','straps','bolts','mountbolts'].includes(p.key)));p.node.visible=(this.group==='all'||p.group===this.group)&&!frontHolder;p.node.position.copy(p.base);if(this.explode>0){const d=p.delta.clone();if(this.group==='all'){d.multiplyScalar(.6);d.add(groupDelta[p.group]);}p.node.position.addScaledVector(d,this.explode);}}
  }
  setProcess(t){this.time=t;}
@@ -385,18 +360,24 @@ export class Viewer {
   const inflation=stage<PHASE.BLADDER?0:stage===PHASE.BLADDER?smooth((f-.8)/.2):stage===PHASE.REMOVE?1-smooth(f/.14):1;
   for(const p of this.parts){if(p.group!=='u')p.node.position.y+=lift;if(p.key==='bumper'){p.node.scale.y=bumperScale;p.node.position.y+=49*(bumperScale-1);}}
   this.poseMechanism(extend,inflation,lift);
-  const fill=stage<PHASE.MORTAR?0:stage===PHASE.MORTAR?smooth(f):1;this.mortar.visible=fill>.005;this.mortar.scale.y=Math.max(.005,fill);this.mortar.material.color.set(stage>=PHASE.CURE?'#95aba1':'#3ca49c');this.damage.visible=fill<.99;
-  this.sensorFull=(stage===PHASE.MORTAR&&fill>=.98)||stage===PHASE.CURE||(stage===PHASE.REMOVE&&f<.14);
-  for(let i=0;i<this.flow.length;i++){this.flow[i].visible=stage===PHASE.MORTAR&&!this.sensorFull;this.flow[i].position.copy(this.flowCurve.getPoint((performance.now()/6500+i/this.flow.length)%1)).add(this.feed.position).add(this.model.position);}
+  // First fill the supply line, then propagate from the shield inlet through
+  // the breakout. Timing is explanatory and remains deterministic when seeking.
+  const hoseFront=stage<PHASE.MORTAR?0:stage===PHASE.MORTAR?clamp(f/.18,0,1):1;
+  const fill=stage<PHASE.MORTAR?0:stage===PHASE.MORTAR?smooth((f-.18)/.72):1;
+  this.sensorFull=(stage===PHASE.MORTAR&&fill>=.995)||stage===PHASE.CURE||(stage===PHASE.REMOVE&&f<.14);
+  this.sensor.children[1].material.emissive.set(this.sensorFull?'#e92916':'#000000');this.sensor.children[1].material.emissiveIntensity=this.sensorFull?1.5:0;
+  this.repair.update({time:t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE});
+
  }
  bounds(){const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);return b;}
  fit(view='iso'){
   this.currentView=view;
   this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(-570,this.bottom,-300),V(450,this.branchTop+20,280));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
+  if(view==='damage')b=new THREE.Box3(V(-265,this.radius-100,-140),V(210,this.radius+180,120));
   if(view==='winding')b=new THREE.Box3(V(-125,this.top-65,-75),V(145,this.radius+80,75));
   if(view==='hinge'){b=new THREE.Box3();for(const p of this.parts)if(p.group==='z'&&['hinge1','hinge2','hinge3','adapter','adapterbolts','hingebolts','topbolts','washers'].includes(p.key))b.expandByObject(p.node);}
   const center=b.getCenter(V()),sz=b.getSize(V());const max=Math.max(sz.y,sz.x/Math.max(.8,this.camera.aspect),sz.z*.75);let dist=Math.max(view==='hinge'?220:500,max/(2*Math.tan(THREE.MathUtils.degToRad(17)))*1.48);
-  const dir=view==='side'?V(0,.05,1):view==='front'?V(1,.06,0):view==='top'?V(.001,1,.001):view==='hinge'?V(-.75,.35,1):['drive','winding'].includes(view)?V(-.7,.25,1):this.mode==='process'?V(.5,.28,1):V(.68,.48,1);
+  const dir=view==='side'?V(0,.05,1):view==='front'?V(1,.06,0):view==='top'?V(.001,1,.001):view==='hinge'?V(-.75,.35,1):view==='damage'?V(-.5,.55,1):['drive','winding'].includes(view)?V(-.7,.25,1):this.mode==='process'?V(.5,.28,1):V(.68,.48,1);
   this.camera.position.copy(center.clone().add(dir.normalize().multiplyScalar(dist)));this.controls.target.copy(center);this.controls.update();this.applyMaterials();
   if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));
  }
