@@ -159,6 +159,37 @@ for(const f of families){
  v.setSections({pipe:true,shield:false,holder:false});assert.ok(v.parts.every(p=>p.node.visible),'User can restore complete holder');v.fit();
  v.mode='process';v.context.visible=true;
  const pose=t=>{v.time=t;v.updateParts();v.processPose();v.model.updateMatrixWorld(true);};
+ // Moving shield intercepts infiltration; water follows the intact physical
+ // shell even when the presentation hides a half for explanation.
+ pose(0);assert.ok(v.repair.streams.every(s=>!s.path.caught),'Before arrival water falls at the defect');
+ pose(.5);const caughtMidway=v.repair.streams.filter(s=>s.path.caught).length;
+ assert.ok(caughtMidway>0&&caughtMidway<7,'Arrival intercepts streams progressively, not all at once');
+ for(const t of [.5,.72,.99,1.25,1.6,1.92,2.5]){
+  pose(t);const outer=v.radius+2+3*v.sealAir;
+  for(const s of v.repair.streams){
+   if(!s.path.caught)continue;
+   // Check every tube vertex against the actual curved shield envelope,
+   // including tube thickness, not just a centreline or a visual clip plane.
+   for(const stream of [s.mesh,s.runoffMesh]){
+    const vertices=stream.geometry.attributes.position;
+    for(let i=0;i<vertices.count;i++){
+     const x=Math.abs(vertices.getX(i)-v.model.position.x),z=vertices.getZ(i);
+     if(x>250)continue;
+     const developedHalf=v.radius*1.13-(x>212?38-Math.sqrt(Math.max(0,38**2-(x-212)**2)):0);
+     if(Math.abs(z)>outer*Math.sin(developedHalf/v.radius))continue;
+     assert.ok(vertices.getY(i)>=v.upperLift+Math.sqrt(outer**2-z*z)-.04,'Water tube stays above the shield instead of passing through it');
+    }
+   }
+   const lip=s.path.lip,edgeZ=outer*Math.sin(s.path.edgeAngle);assert.ok(Math.abs(lip.z)>edgeZ+2,'Runoff detaches beyond the lateral shield edge');
+  }
+ }
+ pose(.99);assert.ok(v.repair.streams.every(s=>s.path.caught),'Positioned shield catches all seven streams');
+ assert.ok(v.repair.streams.some(s=>s.path.lip.z<0)&&v.repair.streams.some(s=>s.path.lip.z>0),'Water exits on both sides');
+ const waterBeforeCut=v.repair.streams.map(s=>s.path.lip.toArray());v.setSections({pipe:false,shield:true});pose(.99);
+ assert.deepEqual(v.repair.streams.map(s=>s.path.lip.toArray()),waterBeforeCut,'Cutaway controls do not change physical runoff');v.setSections({pipe:true,shield:false});
+ pose(1.999);assert.ok(v.repair.streams.every(s=>!s.runoffMesh.visible)&&v.repair.drops.every(d=>!d.mesh.visible),'Pressed shield stops lateral discharge and falling drops');
+ assert.ok(v.repair.water.visible&&v.repair.streams.some(s=>s.mesh.visible),'Infiltration behind pressed shield remains until filling');
+ pose(.99);assert.deepEqual(v.repair.streams.map(s=>s.path.lip.toArray()),waterBeforeCut,'Backward seeking restores runoff without stale geometry');
  v.context.updateMatrixWorld(true);
  const crownRay=(x,z=0)=>new THREE.Raycaster(new THREE.Vector3(x,v.radius+150,z),new THREE.Vector3(0,-1,0),.001,190).intersectObject(v.pipeFull,true);
  assert.equal(crownRay(115).length,0,'Large breakout removes crown wall well beyond the old circular opening');

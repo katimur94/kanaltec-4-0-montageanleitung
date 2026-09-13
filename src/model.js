@@ -379,7 +379,7 @@ export class Viewer {
   const fill=stage<PHASE.MORTAR?0:stage===PHASE.MORTAR?smooth((f-.18)/.72):1;
   this.sensorFull=(stage===PHASE.MORTAR&&fill>=.995)||stage===PHASE.CURE||(stage===PHASE.REMOVE&&f<.14);
   this.sensor.children[1].material.emissive.set(this.sensorFull?'#e92916':'#000000');this.sensor.children[1].material.emissiveIntensity=this.sensorFull?1.5:0;
-  this.repair.update({time:t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE});
+  this.repair.update({time:t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE,shield:{x:this.model.position.x,lift,seal,press}});
 
  }
  bounds(){this.model.updateMatrixWorld(true);const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);if(this.robot?.group.visible)b.expandByObject(this.robot.group);return b;}

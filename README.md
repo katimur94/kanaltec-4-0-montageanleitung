@@ -2,9 +2,13 @@
 
 [Präsentation öffnen](https://katimur94.github.io/kanaltec-4-0-montageanleitung/)
 
+**Weiterarbeit auf einem anderen Computer:** [Projektstand und Übergabe](PROJEKTSTAND.md) · [Fortschrittschronik](FORTSCHRITT.md) · [Hinweise für die Bearbeitung](AGENTS.md). Diese Dokumente halten die bisherigen Korrekturen, Quellen, offenen Punkte und Prüfschritte fest und werden bei weiteren Änderungen fortgeschrieben.
+
 Das Schalungssystem der DiTom GmbH Kanaltechnik als interaktives 3D-Modell mit fünf Baugrößen, Explosionsansicht und animiertem Sanierungsablauf. Enthalten sind die überarbeiteten Bauteile, die vollständig abwickelbare Anschlussblase mit drei Wicklungen, getrennte Bumper- und Dichtblasenphasen, einstellbare Geschwindigkeit, Pfeiltastensteuerung, frei wählbare Schnitte, Verschieben der Ansicht und Hell-/Dunkelmodus mit transparentem Logo.
 
 Die Nahansicht **Schadstelle** zeigt einen großen Ausbruch mit Bruchkanten und Infiltration. Der Injektionsmörtel fließt im transparenten Schlauch zum Zulauf, füllt die Schadstelle fortschreitend und stoppt den Wassereintritt. Der Anschluss bleibt innen offen. Das Schadensbild ist ein Beispiel zur Erklärung des Verfahrens.
+
+Während der Ankunft fängt die abgesenkte Schalung die Wasserstrahlen nacheinander auf. Das Wasser läuft außen über die gekrümmte Fläche zu beiden Seiten und tropft außerhalb der Schildkante ab. Mit dem Anpressen endet das Abtropfen in den Kanal; Wasser hinter dem Schild bleibt bis zur Verfüllung sichtbar. Die Wasserwege berücksichtigen auch gerundete Schildenden und rückwärtige Zeitsprünge.
 
 Im **Kanalblick** sind nach dem Ausschalen die eingeprägten Drucksensor- und Injektionsmarken sichtbar. Die Gussfläche schließt bündig mit der Rohrinnenwand ab; der Durchgang hat keine kegelförmige Verengung. Braunes Steinzeug und grauer Mörtel besitzen unterschiedliche Oberflächen.
 
@@ -15,6 +19,8 @@ Der **IBAK MicroGator** trägt die Klappvorrichtung an seiner Werkzeugaufnahme. 
 Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `Kanaltec-4.0-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.
 
 Die vollständige Bedienung steht in [START-HIER.md](START-HIER.md). Unbemaßte Geometrien und Teile des Funktionsablaufs sind angenähert; die Präsentation erläutert das System und ist keine bemaßte Fertigungszeichnung.
+
+**Werkzeugarm** zeigt die überarbeitete CutterCam mit quer liegendem Schwenkkopf, Schwingen, parallelen Führungen und vorderer Werkzeugachse. **Wellenkamera** folgt der Welle auch in der Animation und bei Größenwechseln. Roboter-Sichtbarkeit, Drehen, Verschieben und Zoom bleiben bedienbar.
 
 ## Weiterentwickeln
 

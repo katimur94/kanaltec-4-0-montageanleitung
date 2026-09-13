@@ -59,6 +59,21 @@ function brokenBranch(R,top){
 }
 function makeMesh(g,m){const o=new THREE.Mesh(g,m);o.castShadow=o.receiveShadow=true;return o;}
 function tube(curve,r,m,segments=96){return makeMesh(new THREE.TubeGeometry(curve,segments,r,10,false),m);}
+function waterCurve(points){const c=new THREE.CurvePath();for(let i=1;i<points.length;i++)if(points[i].distanceToSquared(points[i-1])>1e-8)c.add(new THREE.LineCurve3(points[i-1],points[i]));return c;}
+
+// The shield is 500 mm long, has rounded developed corners (38 mm), and is
+// curved through +/-1.13 rad. Use its physical outline even in a cutaway view.
+export function shieldWaterPath(R,start,edge,shield){
+ const r=R-12,outer=R-10+3*(shield?.seal||0),dx=Math.abs(edge.x-(shield?.x||0)),corner=38;
+ const arc=r*1.13-(dx>250-corner?corner-Math.sqrt(Math.max(0,corner**2-(dx-250+corner)**2)):0);
+ const angle=arc/r,covered=!!shield&&dx<=250&&Math.abs(edge.z)<outer*Math.sin(angle);
+ if(!covered){const end=edge.clone().add(V(0,-32,0));return{caught:false,incoming:waterCurve([start,V(edge.x,edge.y+10,edge.z),edge,end]),runoff:null,lip:end};}
+ const side=edge.z<0?-1:1,wet=outer+2.3,impactAngle=Math.asin(edge.z/wet),impact=V(edge.x,shield.lift+wet*Math.cos(impactAngle),edge.z);
+ const incoming=new THREE.CubicBezierCurve3(start,V((start.x+edge.x)/2,start.y,edge.z),V(edge.x,Math.max(edge.y+10,impact.y+18),edge.z),impact),points=[impact];
+ for(let i=1;i<=48;i++){const a=THREE.MathUtils.lerp(impactAngle,side*angle,i/48);points.push(V(edge.x,shield.lift+wet*Math.cos(a),wet*Math.sin(a)));}
+ const lip=points.at(-1).clone().add(V(0,-3,side*3));points.push(lip);
+ return{caught:true,incoming,runoff:waterCurve(points),lip,impact,side,edgeAngle:angle};
+}
 
 export class RepairScene {
  constructor(R,branchTop,hosePoints,inletX,pipeLength=1350){
@@ -119,20 +134,23 @@ export class RepairScene {
   this.outletCurve=new THREE.CatmullRomCurve3([V(inletX,R-20,0),V(inletX,R-6,0),V(inletX,R+2,0),V(inletX-8,R+7,0)]);
   this.outlet=tube(this.outletCurve,3.4,this.feedMaterial,36);this.group.add(this.outlet);
 
-  this.water=new THREE.Group();this.group.add(this.water);this.streams=[];this.drops=[];
-  this.waterMaterial=new THREE.MeshPhysicalMaterial({color:'#73c5dc',transparent:true,opacity:.7,roughness:.12,metalness:.05,clearcoat:1,side:THREE.DoubleSide,depthWrite:false});
+  this.water=new THREE.Group();this.group.add(this.water);this.streams=[];this.drops=[];this.waterTraces=[];
+  this.waterMaterial=new THREE.MeshPhysicalMaterial({color:'#9cd2dd',transparent:true,opacity:.52,roughness:.17,metalness:0,clearcoat:.7,side:THREE.DoubleSide,depthWrite:false});
+  this.runoffMaterial=this.waterMaterial.clone();
   const dropletGeo=new THREE.SphereGeometry(1,8,6);
   // Several paths visibly enter at the fractured edge and fall into the sewer.
   for(let i=0;i<7;i++){
    const a=(.10+i*.123)*TAU,[x,arc]=breakoutContour(a),edge=surfacePoint(R,x,arc,2);
    const start=this.point(a,1,.49+(i%3)*.08);
-   const end=V(edge.x*.87,edge.y-45,edge.z*.83);
-   const curve=new THREE.CatmullRomCurve3([start,V(edge.x,R+13,edge.z),edge,end]);
-   const stream=tube(curve,1.5+(i%3)*.65,this.waterMaterial,40);this.water.add(stream);this.streams.push({mesh:stream,curve,angle:a});
-   for(let j=0;j<9;j++){const d=makeMesh(dropletGeo,this.waterMaterial);this.water.add(d);this.drops.push({mesh:d,stream:i,phase:j/9});}
+   const path=shieldWaterPath(R,start,edge,null),radius=1+(i%3)*.35;
+   const stream=tube(path.incoming,radius,this.waterMaterial,64),runoff=tube(path.incoming,radius,this.runoffMaterial,96);
+   this.water.add(stream,runoff);this.streams.push({mesh:stream,runoffMesh:runoff,start,edge,radius,path,curve:path.incoming,angle:a});
+   for(let j=0;j<9;j++){const d=makeMesh(dropletGeo,this.runoffMaterial);this.water.add(d);this.drops.push({mesh:d,stream:i,phase:j/9});}
+   for(let j=0;j<3;j++){const d=makeMesh(dropletGeo,this.runoffMaterial);d.scale.setScalar(1.65);this.water.add(d);this.waterTraces.push({mesh:d,stream:i,phase:j/3});}
   }
   this.splash=new THREE.Group();this.water.add(this.splash);
-  for(let i=0;i<7;i++){const o=makeMesh(new THREE.TorusGeometry(9, .65,5,36),this.waterMaterial);o.rotation.x=-Math.PI/2;this.splash.add(o);}
+  for(let i=0;i<7;i++){const o=makeMesh(new THREE.TorusGeometry(6,.45,5,36),this.runoffMaterial);this.splash.add(o);}
+  this.water.traverse(o=>{if(o.isMesh)o.castShadow=o.receiveShadow=false;});
   this.setCut(true);this.update({time:0,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false});
  }
  setFeedPoints(points){
@@ -142,7 +160,10 @@ export class RepairScene {
   this.cut=cut;this.section.visible=cut&&this.fill>.0001;
   this.pipeCaps.visible=cut;
   this.pipe.visible=this.branch.visible=cut;this.pipeFull.visible=this.branchFull.visible=!cut;
-  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.waterMaterial])m.clippingPlanes=cut?[cutPlane]:null;
+  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial])m.clippingPlanes=cut?[cutPlane]:null;
+  // A display cut removes pipe geometry, not half of the water hitting the
+  // intact shield. Keep both lateral paths visible; real surfaces still occlude.
+  this.waterMaterial.clippingPlanes=this.runoffMaterial.clippingPlanes=null;
   this.cracks.traverse(o=>{if(o.isMesh)o.material.clippingPlanes=cut?[cutPlane]:null;});
  }
  point(a,q,h){
@@ -176,7 +197,7 @@ export class RepairScene {
   const caps=[];for(const i of [0,N/2])for(let j=0;j<RADIAL;j++){const a=j*stride+i,b=a+stride;if(Math.max(heights[a],heights[b])>0)caps.push(a,b,a+layer,b,b+layer,a+layer);}
   this.sectionGeometry.setIndex(caps);this.sectionGeometry.computeVertexNormals();
  }
- update({time,fill,hoseFront,injecting,sealed,cured}){
+ update({time,fill,hoseFront,injecting,sealed,cured,shield=null}){
   this.fill=fill;this.hoseFront=hoseFront;this.fillGeometry(fill);this.mortar.visible=fill>.0001;
   this.innerSkin.visible=fill===1;
   this.section.visible=this.cut&&this.mortar.visible;
@@ -191,19 +212,25 @@ export class RepairScene {
    o.position.copy(this.feedCurve.getPointAt(u)).addScaledVector(radial,2.7);
   }
   this.waterActivity=1-smooth(fill/.86);this.water.visible=this.waterActivity>.001;
-  this.waterMaterial.opacity=.68*this.waterActivity;
+  this.waterMaterial.opacity=.52*this.waterActivity;
+  const runoffStrength=1-smooth(((shield?.press||0)-.9)/.1);this.runoffMaterial.opacity=.52*this.waterActivity*runoffStrength;
+  const poseKey=shield?[shield.x,shield.lift,shield.seal].join(','):'no-shield';
+  if(poseKey!==this.waterPoseKey){
+   this.waterPoseKey=poseKey;
+   for(const s of this.streams){s.path=shieldWaterPath(this.R,s.start,s.edge,shield);s.curve=s.path.incoming;s.mesh.geometry.dispose();s.mesh.geometry=new THREE.TubeGeometry(s.curve,64,s.radius,8,false);if(s.path.runoff){s.runoffMesh.geometry.dispose();s.runoffMesh.geometry=new THREE.TubeGeometry(s.path.runoff,96,s.radius,8,false);}}
+  }
   for(let i=0;i<this.streams.length;i++){
    const s=this.streams[i],a=this.waterActivity; s.mesh.visible=a> .035+i*.025;
-   // Once the shield seals, water is contained behind it; no falling water
-   // passes through the shield into the channel below the closed mould.
-   s.mesh.material.clippingPlanes=[...(this.pipe.visible?[cutPlane]:[]),...(sealed>.96?[new THREE.Plane(V(0,1,0),-this.R+22)]:[])];
+   s.runoffMesh.visible=s.mesh.visible&&s.path.caught&&runoffStrength>.001;
   }
   for(const d of this.drops){
-   const s=this.streams[d.stream],u=((time*2.4+d.phase)%1+1)%1,p=s.curve.getPoint(1);
-   d.mesh.visible=sealed<.96&&this.waterActivity>.08&&(!this.pipe.visible||p.z<0);
-   d.mesh.position.set(p.x+2*Math.sin(u*12+d.stream),p.y-u*u*(this.R*1.65+50),p.z);d.mesh.scale.set(1.8,3.3+u*2,1.8);
+   const s=this.streams[d.stream],u=((time*2.4+d.phase)%1+1)%1,p=s.path.lip;
+   d.mesh.visible=runoffStrength>.001&&this.waterActivity>.08;
+   const z=p.z+.55*Math.sin(u*12+d.stream),bottom=-Math.sqrt(Math.max(1,this.R**2-z**2));
+   d.mesh.position.set(p.x+.5*Math.sin(u*9),THREE.MathUtils.lerp(p.y,bottom+6,u*u),z);d.mesh.scale.set(1.1,2.2+u,1.1);
   }
-  this.splash.children.forEach((o,i)=>{const u=((time*2+i*.143)%1+1)%1,p=this.streams[i].curve.getPoint(1);o.visible=sealed<.96&&this.waterActivity>.08&&(!this.pipe.visible||p.z<0);o.position.set(p.x,-Math.sqrt(Math.max(1,this.R*this.R-p.z*p.z))+2,p.z);o.scale.setScalar(.5+u*2);});
+  for(const d of this.waterTraces){const s=this.streams[d.stream];d.mesh.visible=s.runoffMesh.visible;if(d.mesh.visible)d.mesh.position.copy(s.path.runoff.getPointAt(((time*2+d.phase)%1+1)%1));}
+  this.splash.children.forEach((o,i)=>{const u=((time*2+i*.143)%1+1)%1,p=this.streams[i].path.lip,bottom=-Math.sqrt(Math.max(1,this.R**2-p.z**2)),normal=V(0,-bottom,-p.z).normalize();o.visible=runoffStrength>.001&&this.waterActivity>.08;o.position.set(p.x,bottom,p.z);o.position.addScaledVector(normal,1.4);o.quaternion.setFromUnitVectors(V(0,0,1),normal);o.scale.setScalar(.35+u*.9);});
  }
  dispose(){this.texture.dispose();for(const pack of [this.pipeTextures,this.mortarTextures])for(const t of Object.values(pack))t.dispose();const materials=new Set();for(const root of [this.group,this.hoseGroup])root.traverse(o=>{if(o.isMesh)materials.add(o.material);});for(const m of materials)m.dispose();}
 }
