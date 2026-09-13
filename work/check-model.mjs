@@ -248,6 +248,18 @@ for(const f of families){
  near(v.hosePoints.at(-1)[0],ports.inletX,'Hose ends at separate inlet');assert.ok(v.hosePoints.at(-1)[1]<v.radius-8,'Hose approaches shield from below');
  for(const t of [0,.92,1.92,2.92,3.92,4.92,5.92,6.92]){v.time=t;v.updateParts();v.processPose();assert.ok(v.model.position.toArray().every(Number.isFinite));assert.ok(v.mortar.scale.y>0);}
  assert.ok(v.model.position.x<0&&v.mortar.visible,'After removal repair remains at branch');
+ // A shaft camera must keep the drive in frame through travel and bumper lift,
+ // including backward seeking, without changing the user's visibility choices.
+ const visibility={...v.sections};v.fit('shaft');
+ const cameraOffset=v.camera.position.clone().sub(v.shaftFocus());
+ for(const t of [0,.5,1.5,3.4,3.9,6.99,2.5]){
+  pose(t);v.followShaft();v.controls.update();v.camera.updateMatrixWorld(true);
+  near(v.camera.position.clone().sub(v.shaftFocus()).distanceTo(cameraOffset),0,'Wellenkamera follows translation without changing angle or zoom');
+  const projected=v.shaftFocus().project(v.camera);near(projected.x,0,'Shaft stays horizontally centred');near(projected.y,0,'Shaft stays vertically centred');assert.ok(projected.z>-1&&projected.z<1,'Shaft remains inside camera depth');
+ }
+ const pan=new THREE.Vector3(13,7,-4);v.camera.position.add(pan);v.controls.target.add(pan);pose(6.7);v.followShaft();
+ near(v.controls.target.clone().sub(v.shaftFocus()).distanceTo(pan),0,'Manual panning is preserved while following the shaft');assert.deepEqual(v.sections,visibility,'Camera view never changes clipping or part visibility');
+ v.fit('side');const cameraRest=v.camera.position.clone();pose(0);v.followShaft();near(v.camera.position.distanceTo(cameraRest),0,'Other views stop following the shaft');
  v.mode='explore';v.resetPose();
  near(v.sealAir,0,'Dichtblase deformation resets outside process');
  assert.ok(v.parts.every(p=>p.node.scale.equals(new THREE.Vector3(1,1,1))),'Process deformation resets');

@@ -81,3 +81,4 @@ html[data-theme=dark]{color-scheme:dark}
 .brand{flex-shrink:0}.brand-logo{display:block;width:220px;height:auto;max-height:76px;object-fit:contain;border-radius:3px}
 @media(max-width:760px){.brand-logo{width:150px;max-height:52px}.header{gap:12px}}
 @media(max-width:600px){.header{height:auto;min-height:73px;padding:10px 16px;flex-wrap:wrap;gap:8px 12px}.header-title{padding-left:12px}.header-actions{gap:8px}}
+.viewtoolbar{max-width:calc(100% - 34px);flex-wrap:wrap}.viewtoolbar button{white-space:nowrap}.viewport .scene-toggles{top:var(--toolbar-bottom,60px)}.viewport .view-settings{top:calc(var(--toolbar-bottom,60px) + 38px)}

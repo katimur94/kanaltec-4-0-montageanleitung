@@ -7,6 +7,9 @@ const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:fals
 const safe=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const opts=families.map(f=>`<option value="${f.id}"${f.id===400?' selected':''}>${f.label}</option>`).join('');$('family').innerHTML=opts;$('refFamily').innerHTML=opts;
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="robot" id="robotView" title="IBAK-Fahrwagen, Hubarm und Werkzeugaufnahme">Roboter</button>');
+$('resetView').insertAdjacentHTML('beforebegin','<button data-view="tool" id="toolView" title="CutterCam, Hubschwingen und vordere Werkzeugachse im Detail">Werkzeugarm</button><button data-view="shaft" id="shaftView" title="Nahansicht auf die Blasenwelle; folgt der Welle während der Animation">Wellenkamera</button>');
+const cameraToolbar=$('shaftView').parentElement;
+new ResizeObserver(()=>$('viewport').style.setProperty('--toolbar-bottom',`${cameraToolbar.offsetTop+cameraToolbar.offsetHeight+7}px`)).observe(cameraToolbar);
 $('viewSettingsPanel').querySelector('p').insertAdjacentHTML('beforebegin','<label><input id="hideRobot" type="checkbox"> IBAK-Roboter ausblenden</label>');
 $('groupButtons').innerHTML=Object.entries(groupInfo).map(([key,g],i)=>`<button class="groupbutton" data-group="${key}" style="--gcolor:${g.color}"><span class="groupicon">0${i+1}</span><span><strong>${g.short}</strong><small>${key==='s'?'Schild, Blase & Träger':key==='h'?'Tragstruktur & Antrieb':key==='z'?'Verbindung zum Roboter':'Abstützung & Distanzstücke'}</small></span><span class="chevron">›</span></button>`).join('');
 $('stageButtons').innerHTML=stages.map((s,i)=>`<button class="groupbutton" data-stage="${i}"><span class="stage-no">0${i+1}</span><strong>${s.title}</strong></button>`).join('');
@@ -23,7 +26,7 @@ $('themeToggle').onclick=()=>{dark=!dark;applyTheme();try{localStorage.setItem('
 try{viewer=new Viewer($('viewport'),selectPart);viewer.build(state.id);$('loading').hidden=true;}catch(e){$('loading').innerHTML='<div style="padding:30px;max-width:530px"><b>3D konnte nicht gestartet werden.</b><p>Bitte die Datei in einem aktuellen Edge-, Chrome- oder Firefox-Browser öffnen und Hardwarebeschleunigung aktivieren. Zeichnungen und Fotos sind unter „Originale & Quellen“ verfügbar.</p></div>';console.error(e);}
 applyTheme();
 function family(){return families.find(f=>f.id===state.id);}
-$('viewport').addEventListener('viewchange',e=>{$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===e.detail.view));});
+$('viewport').addEventListener('viewchange',e=>{$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===e.detail.view));$('sceneHint').textContent=e.detail.view==='shaft'?'Wellenkamera folgt der Welle · Ziehen zum Drehen · Rechts ziehen zum Verschieben':'Ziehen zum Drehen · Rechts ziehen zum Verschieben · Mausrad zum Zoomen';});
 function updateSections(){const options={pipe:$('cutPipe').checked,shield:$('cutShield').checked,holder:$('hideHolder').checked,hideBladder:$('hideBladder').checked,hideRobot:$('hideRobot').checked};$('showRobot').checked=!options.hideRobot;viewer?.setSections(options);viewer?.poseRobot(viewer.mode==='process'?viewer.upperLift||0:0);$('schematic').textContent=[options.pipe?'Rohr im Schnitt':'Rohr vollständig',options.shield?'Schalung im Schnitt':'Schalung vollständig',...(options.holder?['Halterung ausgeblendet']:[]),options.hideRobot?'Ohne Roboter':'Mit Roboter'].join(' · ');try{localStorage.setItem('kanaltec-visibility',JSON.stringify(options));}catch{}}
 try{const saved=JSON.parse(localStorage.getItem('kanaltec-visibility'));if(saved)for(const[id,key]of [['cutPipe','pipe'],['cutShield','shield'],['hideHolder','holder'],['hideBladder','hideBladder'],['hideRobot','hideRobot']])if(typeof saved[key]==='boolean')$(id).checked=saved[key];}catch{}
 updateSections();viewer?.fit();
@@ -31,7 +34,7 @@ for(const id of ['cutPipe','cutShield','hideHolder','hideBladder','hideRobot'])$
 function setRobotVisible(visible){
  $('hideRobot').checked=!visible;updateSections();
  if(visible&&!['all','z'].includes(state.group)){setGroup('all');return;}
- if(viewer&&['iso','side','front','top','robot'].includes(viewer.currentView))viewer.fit(!visible&&viewer.currentView==='robot'?'iso':viewer.currentView);
+ if(viewer&&['iso','side','front','top','robot','tool'].includes(viewer.currentView))viewer.fit(!visible&&['robot','tool'].includes(viewer.currentView)?'iso':viewer.currentView);
 }
 $('showRobot').onchange=()=>setRobotVisible($('showRobot').checked);
 $('hideRobot').onchange=()=>setRobotVisible(!$('hideRobot').checked);
@@ -46,6 +49,7 @@ function selectPart(p){
 }
 function setGroup(g){state.group=g;selectPart(null);if(viewer){viewer.setGroup(g);viewer.targetExplode=state.mode==='explode'?+$('explosion').value/100:0;viewer.fit();}$$('button[data-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.group===g);b.setAttribute('aria-pressed',String(b.dataset.group===g));});updateInfo();if(!$('bomPanel').hidden)renderBom();}
 function setMode(mode){
+ const keepShaftCamera=viewer?.currentView==='shaft';
  state.mode=mode;state.playing=false;state.explodePlaying=false;
  $$('button[data-mode]').forEach(b=>{b.classList.toggle('active',b.dataset.mode===mode);b.setAttribute('aria-pressed',String(b.dataset.mode===mode));});
  const src=mode==='sources',proc=mode==='process';$('workspace').hidden=src;$('sourcesPanel').hidden=!src;
@@ -54,6 +58,7 @@ function setMode(mode){
  $('channelView').hidden=!proc;$('damageView').hidden=!proc;$('driveView').hidden=!proc;$('windingView').hidden=!proc;$('mechanismReadout').hidden=!proc;
  $('bomPanel').hidden=true;selectPart(null);
  if(viewer&&!src){viewer.resize();viewer.setMode(mode);if(proc){state.group='all';viewer.setGroup('all');viewer.controls.autoRotate=false;$('rotate').setAttribute('aria-pressed','false');$('ghost').setAttribute('aria-pressed','false');state.lastStage=-1;updateStage();}else{viewer.setGroup(state.group);if(mode==='explode'){$('explosion').value=75;setExplosion(.75,true);}else{viewer.setExplode(0);viewer.explode=0;viewer.fit();}}}
+ if(!src&&keepShaftCamera)viewer?.fit('shaft');
  if(src){$('refFamily').value=state.id;$('refGroup').value=state.group;showRef(state.ref);}updateInfo();updatePlayButtons();
 }
 function updateInfo(){
@@ -86,8 +91,8 @@ function openDrawing(){state.ref='drawings';setMode('sources');}
 async function full(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notify('Vollbild über F11 im Browser aktivieren.');}}
 $$('button[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));$$('button[data-group]').forEach(b=>b.onclick=()=>setGroup(b.dataset.group));
 $$('button[data-stage]').forEach(b=>b.onclick=()=>{state.playing=false;state.time=+b.dataset.stage+.92;updateStage();updatePlayButtons();});
-$$('[data-view]').forEach(b=>b.onclick=()=>{if(b.dataset.view==='robot'){$('hideRobot').checked=false;updateSections();if(state.group!=='all')setGroup('all');}viewer?.fit(b.dataset.view);$$('[data-view]').forEach(x=>x.classList.toggle('active',x===b));});
-$('family').onchange=()=>{state.id=+$('family').value;state.playing=false;state.explodePlaying=false;viewer?.build(state.id);if(viewer){viewer.setMode(state.mode);viewer.setGroup(state.group);viewer.setExplode(state.mode==='explode'?+$('explosion').value/100:0);viewer.fit();}updateInfo();selectPart(null);updatePlayButtons();if(!$('bomPanel').hidden)renderBom();};
+$$('[data-view]').forEach(b=>b.onclick=()=>{if(['robot','tool'].includes(b.dataset.view)){$('hideRobot').checked=false;updateSections();if(state.group!=='all')setGroup('all');}if(b.dataset.view==='shaft'&&!['all','h'].includes(state.group))setGroup('all');stopRotation();viewer?.fit(b.dataset.view);$$('[data-view]').forEach(x=>x.classList.toggle('active',x===b));});
+$('family').onchange=()=>{const view=viewer?.currentView;state.id=+$('family').value;state.playing=false;state.explodePlaying=false;viewer?.build(state.id);if(viewer){viewer.setMode(state.mode);viewer.setGroup(state.group);viewer.setExplode(state.mode==='explode'?+$('explosion').value/100:0);viewer.fit(view);}updateInfo();selectPart(null);updatePlayButtons();if(!$('bomPanel').hidden)renderBom();};
 $('drawing').onclick=openDrawing;$('fidelity').onclick=()=>{state.ref='research';setMode('sources');};
 $('ghost').onclick=()=>{const on=$('ghost').getAttribute('aria-pressed')!=='true';$('ghost').setAttribute('aria-pressed',String(on));viewer?.setGhost(on);};
 $('labels').onclick=()=>{state.labels=!state.labels;$('labels').setAttribute('aria-pressed',String(state.labels));};
@@ -139,7 +144,7 @@ if(viewer)viewer.onFrame=dt=>{
  const layer=$('labelsLayer');layer.hidden=!state.labels||!!viewer.selected;
  if(!layer.hidden){const occupied=[];const items=state.mode==='process'?viewer.processAnchors().map((p,i)=>({l:$('process-label-'+i),p:p.point,name:p.name,side:p.side})):Object.keys(groupInfo).map(g=>({l:$('label-'+g),p:viewer.anchor(g)}));for(const l of layer.children)l.hidden=true;for(const item of items){const{l,p}=item;if(!p)continue;const q=viewer.project(p);l.hidden=!q.visible;if(l.hidden)continue;if(item.name)l.textContent=item.name;l.classList.toggle('label-left',item.side==='left');let x=Math.min(viewer.el.clientWidth-l.offsetWidth-12,Math.max(28,item.side==='left'?q.x-l.offsetWidth-55:q.x+80)),y=Math.max(98,Math.min(viewer.el.clientHeight-68,q.y));for(const r of occupied)if(Math.abs(r.y-y)<28&&Math.abs(r.x-x)<170)y=r.y+29;if(y>viewer.el.clientHeight-55)y=viewer.el.clientHeight-55;l.style.left=x+'px';l.style.top=y+'px';occupied.push({x,y});}}
  // Public, read-only DOM evidence for offline QA; no network services are used.
- $('viewport').dataset.modelParts=viewer.parts.length;$('viewport').dataset.group=state.group;$('viewport').dataset.mode=state.mode;$('viewport').dataset.explosion=viewer.explode.toFixed(3);$('viewport').dataset.stage=Math.min(lastStage,Math.floor(state.time));
+ $('viewport').dataset.modelParts=viewer.parts.length;$('viewport').dataset.group=state.group;$('viewport').dataset.mode=state.mode;$('viewport').dataset.explosion=viewer.explode.toFixed(3);$('viewport').dataset.stage=Math.min(lastStage,Math.floor(state.time));$('viewport').dataset.view=viewer.currentView;
  if(state.mode==='process'){
   const full=String(viewer.sensorFull);if($('sensorStatus').dataset.full!==full){$('sensorStatus').dataset.full=full;$('sensorText').textContent=viewer.sensorFull?'Leuchtet · Gegendruck meldet voll':'Aus · keine Vollmeldung';}
   const n=Math.floor(state.time),f=state.time-n,drive=n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';

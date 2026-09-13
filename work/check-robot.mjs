@@ -15,9 +15,16 @@ for(const family of families){
   near(mount.x,-382,'Receiver meets the rear face of the existing T adapter');near(mount.y,-20+lift,'Receiver follows the mould lift');near(mount.z,0,'Receiver remains centred');
   const wheelY=r.wheels[0].getWorldPosition(new THREE.Vector3()).y;
   if(chassisY===undefined)chassisY=wheelY;near(wheelY,chassisY,'Crawler stays on the channel while the mould lifts');
-  for(let i=0;i<2;i++)near(r.armPoints[i].distanceTo(r.armPoints[i+1]),r.armLengths[i],'Articulated arm keeps constant link lengths');
+  const [a,b,c,d]=r.armPoints;
+  near(a.distanceTo(b),r.armLength,'Side rocker keeps its length');near(c.distanceTo(d),r.armLength,'Lower guide keeps its length');
+  near(a.distanceTo(c),r.axisSpacing,'Rear transverse axes remain separated');near(b.distanceTo(d),r.axisSpacing,'Nose axes remain separated');
+  near(b.clone().sub(a).angleTo(d.clone().sub(c)),0,'Lower guides remain parallel to the side rockers');
+  near(b.x,-43,'Tool tilt axis stays at the receiver');near(b.y,lift,'Front axis follows mould height');
+  near(a.x,r.pivot.x+r.carrier.position.x,'Rear axis remains on the crawler');near(a.y,r.pivot.y,'Rear axis stays at fixed height');
+  assert.equal(r.cameraLEDs.length,4,'CutterCam has four LED windows');
+  const optical=r.cameraEye.getWorldPosition(new THREE.Vector3());assert.ok(optical.x<a.x+anchor.x+160&&optical.x>a.x+anchor.x,'Camera sits behind the long arm, inside the front cradle');
  }
- r.pose(8,-330);r.group.updateMatrixWorld(true);near(r.wheels[0].rotation.z,330/r.wheelRadius,'Wheels rotate with travel');
+ r.pose(8,-330);r.group.updateMatrixWorld(true);near(r.wheels[0].rotation.z,(330-r.carrier.position.x)/r.wheelRadius,'Wheels rotate with travel and linkage compensation');
  // Vertex check includes tooth corners and sidewalls. The constructor solves
  // the rotational envelope, so every rolling angle stays inside the pipe.
  let maximum=0;

@@ -28,11 +28,12 @@ export class Robot{
   this.config=robotConfigurations[Math.round(pipeRadius*2)]||robotConfigurations[400];this.anchor=anchor.clone();this.pipeRadius=pipeRadius;this.group=new THREE.Group();this.group.name='IBAK MicroGator';this.group.position.copy(anchor);
   this.m={steel:mat('#b1bdc6',.82,.28),polished:mat('#d1d6d8',.87,.22),dark:mat('#252c32',.58,.34),black:mat('#11171b',.16,.5),rim:mat('#bdc6cc',.87,.24),pur:rubber('#703c2a'),tire:rubber('#24292a'),blue:mat('#087eb2',.12,.36),yellow:mat('#d3a719',.12,.4),glass:mat('#061b24',.7,.12),gasket:mat('#050809',.03,.72),brass:mat('#ba9d5f',.72,.3)};
   this.ledMaterial=new THREE.MeshStandardMaterial({color:'#edf7e9',emissive:'#dceee1',emissiveIntensity:1.5,roughness:.2});this.wheelRadius=this.config.radius;this.track=this.config.track;this.bodyY=-18-anchor.y;
-  this.chassis=new THREE.Group();this.chassis.name='Fahrwagengehäuse';this.group.add(this.chassis);this.wheels=[];
+  this.carrier=new THREE.Group();this.group.add(this.carrier);
+  this.chassis=new THREE.Group();this.chassis.name='Fahrwagengehäuse';this.carrier.add(this.chassis);this.wheels=[];
   for(const x of [-940,-575])for(const side of [-1,1]){const w=this.makeWheel(side);w.position.set(x,0,side*this.track);this.wheels.push(w);}
   // Solve contact over all tread corners and sidewalls for every wheel angle.
   let wheelWorldY=-Infinity;for(const w of this.wheels){w.updateMatrixWorld(true);w.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=V().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld),radial=Math.hypot(p.x-w.position.x,p.y);wheelWorldY=Math.max(wheelWorldY,-Math.sqrt(pipeRadius**2-p.z**2)+radial);}});}
-  this.wheelY=wheelWorldY+.65-anchor.y;this.axleDrop=this.bodyY-this.wheelY;for(const w of this.wheels){w.position.y=this.wheelY;this.group.add(w);}
+  this.wheelY=wheelWorldY+.65-anchor.y;this.axleDrop=this.bodyY-this.wheelY;for(const w of this.wheels){w.position.y=this.wheelY;this.carrier.add(w);}
   this.buildChassis();this.buildExtension();bake(this.chassis);this.buildCamera();this.buildArm();this.lines=[];
   for(const[side,m]of [[-1,this.m.blue],[1,this.m.yellow]]){const o=tube([V(-1235,this.bodyY,side*30),V(-970,this.bodyY+65,side*40),V(-20,18,side*33)],2.7,m);this.group.add(o);this.lines.push({o,side});}this.pose(0,0);
  }
@@ -86,27 +87,72 @@ export class Robot{
   if(this.config.kit==='large'){for(const x of [-940,-575]){e.add(cyl(16,2*this.track-50,m.steel,V(x,wy,0),'z'));for(const side of [-1,1])e.add(rod(V(x-35,y-25,side*80),V(x+25,wy+24,side*(this.track-40)),8,m.steel));}for(const side of [-1,1])e.add(box(440,38,28,m.dark,V(-757,wy+35,side*(this.track-48)),2));}
  }
  buildCamera(){
-  const m=this.m,y=this.bodyY,g=new THREE.Group();this.cameraHead=g;g.name='CutterCam · vier LED und Reinigungsdüse';g.position.set(-332,y+44,0);g.rotation.z=.08;this.group.add(g);
-  g.add(cyl(33,62,m.black,V(-27,0,0)),cyl(34,7,m.dark,V(-54,0,0)));const head=mesh(new THREE.SphereGeometry(34,48,32),m.dark,V(17,0,0));head.scale.x=1.04;g.add(head);for(const x of [-56,-31,-5])g.add(ring(33.4,.65,m.gasket,V(x,0,0)));
-  const face=plate(37,44,3,m.black,[],2);face.rotation.y=Math.PI/2;face.position.x=46;g.add(face,cyl(8.6,3,m.polished,V(48,-1,0)),cyl(6.7,3.2,m.glass,V(49,-1,0)),ring(7.2,.65,m.black,V(51,-1,0)));
-  for(const yy of [-14,13])for(const z of [-11,11])g.add(cyl(4.3,3,m.steel,V(47.5,yy,z)),cyl(3.2,3.5,this.ledMaterial,V(49,yy,z)));for(const yy of [-22,22])for(const z of [-9,9])g.add(bolt(2.3,m.steel,m.gasket,V(44.5,yy,z),'x'));
-  const saddle=plate(52,61,5,m.steel,[[-16,-18,4],[16,-18,4],[-16,18,4],[16,18,4]],1);saddle.rotation.x=-Math.PI/2;saddle.position.set(-23,33,0);g.add(saddle);for(const z of [-28,28])g.add(cyl(6,51,m.steel,V(-24,28,z)),cyl(7,6,m.dark,V(2,28,z)));
-  for(const z of [-32,32])g.add(tube([V(-46,25,z),V(-52,33,z),V(-20,39,z)],2,m.blue,24),cyl(3.5,8,m.brass,V(-45,26,z),'y',12));g.add(tube([V(-52,-9,-27),V(-17,-20,-29),V(26,-23,-21),V(39,-16,-15)],1.7,m.black,40),box(33,4,7,m.gasket,V(20,-32,0),.2));bake(g);
-  const base=new THREE.Group();base.add(cyl(14,29,m.dark,V(-366,y+13,0),'y'),box(64,10,64,m.steel,V(-359,y+20,0)));bake(base);this.group.add(base);const coil=[];for(let i=0;i<=480;i++){const t=i/480,a=t*TAU*8;coil.push(V(-417+t*68,y+53+12*Math.cos(a),-37+12*Math.sin(a)));}this.group.add(tube(coil,2.3,m.black,240));
+  // CutterCam reference: two transverse drums, not a longitudinal bullet camera.
+  // Front optics sit on the curved pan/tilt drum beneath a stepped metal bridge.
+  const m=this.m,y=this.bodyY,g=new THREE.Group();this.cameraHead=g;g.name='CutterCam · Schwenkkopf, vier LED und Reinigung';g.position.set(-306,y+36,0);this.carrier.add(g);
+  g.add(cyl(28,61,m.black,V(-39,0,0),'z'),cyl(25,67,m.dark,V(-39,0,0),'z'));
+  for(const z of [-32,32])g.add(ring(23,.7,m.gasket,V(-39,0,z),'z'),bolt(5,m.steel,m.gasket,V(-39,0,z)));
+  const bridgeShape=new THREE.Shape();bridgeShape.moveTo(-61,-22);bridgeShape.lineTo(-22,-22);bridgeShape.lineTo(-14,-34);bridgeShape.lineTo(13,-34);bridgeShape.quadraticCurveTo(20,-34,20,-27);bridgeShape.lineTo(20,27);bridgeShape.quadraticCurveTo(20,34,13,34);bridgeShape.lineTo(-14,34);bridgeShape.lineTo(-22,22);bridgeShape.lineTo(-61,22);bridgeShape.closePath();
+  for(const[x,z,r]of [[-37,0,4.5],[-14,0,3.3],[7,-14,4],[7,14,4]]){const h=new THREE.Path();h.absarc(x,z,r,0,TAU,true);bridgeShape.holes.push(h);}
+  const bridgeGeo=new THREE.ExtrudeGeometry(bridgeShape,{depth:7,bevelEnabled:true,bevelSize:.7,bevelThickness:.7,bevelSegments:2,curveSegments:16});bridgeGeo.rotateX(-Math.PI/2);g.add(mesh(bridgeGeo,m.steel,V(0,32,0)),box(19,7,25,m.dark,V(-61,34,0)));
+  for(const side of [-1,1]){
+   g.add(cyl(5,63,m.polished,V(-17,29,side*30)),cyl(7,13,m.dark,V(-50,29,side*30)),cyl(3.6,8,m.brass,V(-42,29,side*34),'z',12));
+   g.add(tube([V(-52,27,side*32),V(-48,36,side*37),V(-36,32,side*39),V(-30,16,side*35),V(-11,10,side*34)],1.7,m.blue,40));
+  }
+  // Low cradle belongs to the rotating front module, with no elevated stalk.
+  g.add(box(63,9,56,m.steel,V(-30,-29,0),1),box(37,13,44,m.dark,V(-42,-39,0),2));bake(g);
+  const drum=new THREE.Group();drum.position.x=18;g.add(drum);this.cameraDrum=drum;
+  const profile=[[0,-35],[27,-35],[33,-33],[37,-28],[38,-20],[38,20],[37,28],[33,33],[27,35],[0,35]].map(([r,z])=>new THREE.Vector2(r,z));
+  const shell=mesh(new THREE.LatheGeometry(profile,96),m.black);shell.rotation.x=Math.PI/2;drum.add(shell);
+  for(const side of [-1,1]){drum.add(cyl(27,1.8,m.dark,V(0,0,side*35),'z'),ring(26,.65,m.gasket,V(0,0,side*36),'z'),cyl(9,3,m.dark,V(0,0,side*36),'z'));for(const a of [.5,2.6,4.5])drum.add(bolt(2.4,m.steel,m.gasket,V(22*Math.cos(a),22*Math.sin(a),side*36)));drum.add(ring(38,.4,m.gasket,V(0,0,side*21),'z'));}
+  const bezel=plate(25,14,1.6,m.gasket,[],1);bezel.rotation.y=Math.PI/2;bezel.position.set(38,0,0);const window=plate(20,9,1,m.glass,[],.5);window.rotation.y=Math.PI/2;window.position.set(39,0,0);drum.add(bezel,window);
+  this.cameraLEDs=[];
+  for(const yy of [-16,16])for(const z of [-10,10]){const x=Math.sqrt(38**2-yy**2),normal=V(x,yy,0).normalize(),led=new THREE.Group();led.position.set(x,yy,z);led.quaternion.setFromUnitVectors(V(1,0,0),normal);led.add(cyl(4.4,2,m.steel),cyl(3.3,2.2,this.ledMaterial,V(1,0,0)));drum.add(led);this.cameraLEDs.push(led.position.clone());}
+  for(const yy of [-8,8])for(const z of [-18,18])drum.add(bolt(1.9,m.steel,m.gasket,V(37,yy,z),'x'));
+  drum.add(tube([V(-12,5,-33),V(10,0,-38),V(30,-1,-31),V(39,-1,-19)],1.6,m.black,40),box(3,17,4,m.dark,V(40,-1,-16),.5));bake(drum);
+  this.cameraEye=new THREE.Object3D();this.cameraEye.position.set(40,0,0);drum.add(this.cameraEye);
+  const coil=[];for(let i=0;i<=420;i++){const t=i/420,a=t*TAU*7;coil.push(V(-401+t*74,y+49+13*Math.cos(a),-43+10*Math.sin(a)));}this.carrier.add(tube(coil,2.2,m.black,220));
  }
  buildArm(){
-  const m=this.m,y=this.bodyY;this.pivot=V(-332,y-7,0);this.armLengths=[276,65];this.links=[];this.joints=[];const root=new THREE.Group();root.add(cyl(20,105,m.steel,this.pivot,'z'));for(const side of [-1,1])root.add(box(63,32,13,m.dark,V(-347,y-10,side*41)));bake(root);this.group.add(root);
-  for(const side of [-1,1])for(let k=0;k<2;k++){const l=this.armLengths[k],g=new THREE.Group();g.name=k?'Werkzeugneigung':'Hubarm';const p=plate(l+34,35,k?12:10,k?m.dark:m.steel,[[-l/2,0,7],[l/2,0,7]],1.5);p.position.x=l/2;g.add(p);if(!k){const inset=plate(l-55,20,2,m.dark,[],.6);inset.position.set(l/2,0,side*6);g.add(inset);for(const x of [35,l-35])g.add(bolt(3,m.steel,m.gasket,V(x,0,side*8)));}bake(g);this.group.add(g);this.links.push({o:g,side,k});}
-  for(let i=0;i<3;i++)for(const side of [-1,1]){const g=new THREE.Group();g.add(cyl(12,8,m.steel,V(),'z'),ring(12,.7,m.gasket,V(0,0,side*4),'z'),bolt(7,m.dark,m.gasket,V(0,0,side*6)));bake(g);this.group.add(g);this.joints.push({g,i,side});}
-  this.actuators=[];for(const side of [-1,1]){const body=cyl(10,160,m.steel),shaft=cyl(5.4,1,m.polished),capA=cyl(12,13,m.dark),capB=cyl(11,7,m.dark);this.group.add(body,shaft,capA,capB);this.actuators.push({body,shaft,capA,capB,side});}
-  this.receiver=new THREE.Group();this.receiver.name='Werkzeugaufnahme · Klappvorrichtung statt Fräskopf';this.group.add(this.receiver);const back=plate(58,88,28,m.dark,[[0,-24,8.2],[0,24,8.2]],1);back.rotation.y=Math.PI/2;back.position.x=-28;this.receiver.add(back);for(const side of [-1,1]){this.receiver.add(box(26,88,13,m.steel,V(-16,0,side*22.5)),box(4,88,19,m.dark,V(-6,0,side*19.5)));for(const yy of [-34,34])this.receiver.add(bolt(4,m.polished,m.gasket,V(-4,yy,side*23),'x'));}this.receiver.add(cyl(14,101,m.steel,V(-43,0,0),'z'));bake(this.receiver);this.coupling=new THREE.Object3D();this.coupling.position.set(-12,0,0);this.receiver.add(this.coupling);
+  // Long side rockers and parallel lower guides, with the fourth/tool-tilt axis
+  // at the nose. No serial elbow. Unmeasured linkage sizes follow the photos.
+  const m=this.m,y=this.bodyY;this.pivot=V(-334,y-7,0);this.armLength=Math.hypot(291,this.pivot.y);this.axisSpacing=44;this.links=[];this.joints=[];
+  const root=new THREE.Group();root.name='Drehmodul · seitliche Hubachsen';
+  for(const side of [-1,1]){const cheek=plate(64,91,15,m.steel,[[-10,21,10],[-10,-23,9]],3);cheek.position.set(-324,y-28,side*49);root.add(cheek,cyl(19,17,m.dark,V(-334,y-7,side*53),'z'),cyl(15,17,m.dark,V(-334,y-51,side*53),'z'));for(const yy of [y-7,y-51])root.add(bolt(7,m.polished,m.gasket,V(-334,yy,side*63)));}
+  root.add(box(57,11,94,m.steel,V(-333,y-70,0),2));bake(root);this.carrier.add(root);
+  for(const side of [-1,1]){
+   const l=this.armLength,g=new THREE.Group();g.name='Durchgehende seitliche Hubschwinge';
+   const s=new THREE.Shape();s.moveTo(0,-19);s.bezierCurveTo(-26,-19,-26,19,0,19);s.lineTo(38,15);s.lineTo(l-46,12);s.lineTo(l-16,18);s.bezierCurveTo(l+24,26,l+28,-24,l-12,-20);s.lineTo(l-48,-13);s.lineTo(43,-12);s.closePath();
+   for(const x of [0,l]){const h=new THREE.Path();h.absarc(x,0,8.5,0,TAU,true);s.holes.push(h);}
+   const geometry=new THREE.ExtrudeGeometry(s,{depth:12,bevelEnabled:true,bevelSize:1.2,bevelThickness:1.2,bevelSegments:3,curveSegments:24});geometry.translate(0,0,-6);g.add(mesh(geometry,m.dark));
+   for(const x of [0,l]){g.add(cyl(14,15,m.steel,V(x,0,0),'z'),ring(11,.9,m.gasket,V(x,0,side*8),'z'),bolt(7,m.polished,m.gasket,V(x,0,side*10)));}
+   for(const x of [39,l-38])g.add(bolt(2.6,m.steel,m.gasket,V(x,0,side*7)));
+   bake(g);this.group.add(g);this.links.push({o:g,side,lower:false});
+   const lower=new THREE.Group();lower.name='Parallele untere Führung';lower.add(cyl(8.5,l-32,m.polished,V(l/2,0,0)),cyl(11,18,m.steel,V(26,0,0)),cyl(11,18,m.steel,V(l-26,0,0)));
+   for(const x of [0,l])lower.add(box(27,23,14,m.steel,V(x,0,0),2),cyl(9,20,m.dark,V(x,0,0),'z'),bolt(5,m.polished,m.gasket,V(x,0,side*12)));
+   bake(lower);this.group.add(lower);this.links.push({o:lower,side,lower:true});
+  }
+  this.actuators=[];for(const side of [-1,1]){const body=cyl(10,125,m.steel),shaft=cyl(5,1,m.polished),capA=cyl(12,12,m.dark),capB=cyl(11,7,m.dark);this.group.add(body,shaft,capA,capB);this.actuators.push({body,shaft,capA,capB,side});}
+  this.receiver=new THREE.Group();this.receiver.name='Vierte Achse · Werkzeugaufnahme mit Klappvorrichtung';this.group.add(this.receiver);
+  const back=plate(58,88,28,m.dark,[[0,-24,8.2],[0,24,8.2]],1);back.rotation.y=Math.PI/2;back.position.x=-28;this.receiver.add(back);
+  for(const side of [-1,1]){const cheek=plate(37,67,11,m.steel,[[0,22,7],[0,-22,7]],2);cheek.position.set(-43,-22,side*44);this.receiver.add(cheek,box(26,88,13,m.steel,V(-16,0,side*22.5)),box(4,88,19,m.dark,V(-6,0,side*19.5)));for(const yy of [-34,34])this.receiver.add(bolt(4,m.polished,m.gasket,V(-4,yy,side*23),'x'));}
+  this.receiver.add(cyl(14,107,m.steel,V(-43,0,0),'z'),cyl(10,94,m.steel,V(-43,-44,0),'z'));
+  // Dedicated tilt-drive housing on the front transverse axis.
+  this.receiver.add(cyl(22,12,m.dark,V(-43,0,-64),'z'),ring(19,.7,m.gasket,V(-43,0,-71),'z'));
+  for(let i=0;i<6;i++){const a=i*TAU/6;this.receiver.add(bolt(2.4,m.steel,m.gasket,V(-43+16*Math.cos(a),16*Math.sin(a),-71)));}
+  bake(this.receiver);this.coupling=new THREE.Object3D();this.coupling.position.set(-12,0,0);this.receiver.add(this.coupling);
  }
  pose(lift,travel){
-  for(const w of this.wheels)w.rotation.z=-travel/this.wheelRadius;if(this.lastLift===lift)return;this.lastLift=lift;this.receiver.position.y=lift;
-  const a=this.pivot.clone(),e=V(-43,lift,0),d=e.clone().sub(a),length=d.length(),u=d.clone().divideScalar(length),[l1,l2]=this.armLengths,along=(l1*l1-l2*l2+length*length)/(2*length),height=Math.sqrt(Math.max(0,l1*l1-along*along)),elbow=a.clone().addScaledVector(u,along).addScaledVector(V(-u.y,u.x,0),height);this.armPoints=[a,elbow,e];
-  for(const{o,side,k}of this.links){const from=this.armPoints[k],to=this.armPoints[k+1];o.position.copy(from);o.position.z=side*42;o.rotation.z=Math.atan2(to.y-from.y,to.x-from.x);}for(const{g,i,side}of this.joints){g.position.copy(this.armPoints[i]);g.position.z=side*51;}
-  for(const{body,shaft,capA,capB,side}of this.actuators){const from=a.clone().add(V(-27,-25,side*28)),to=e.clone().add(V(-8,-29,side*28)),axis=to.clone().sub(from).normalize(),distance=from.distanceTo(to),q=new THREE.Quaternion().setFromUnitVectors(V(0,1,0),axis);body.position.copy(from).addScaledVector(axis,80);body.quaternion.copy(q);shaft.scale.y=distance-145;shaft.position.copy(from).addScaledVector(axis,145+(distance-145)/2);shaft.quaternion.copy(q);capA.position.copy(from);capA.quaternion.copy(q);capB.position.copy(from).addScaledVector(axis,158);capB.quaternion.copy(q);}
-  for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(-1235,this.bodyY+20,side*30),V(-1080,this.bodyY+45,side*39),V(-970,this.bodyY+68,side*38),V(-535,this.bodyY+68,side*43),V(-340,this.bodyY+42,side*56),elbow.clone().add(V(-35,9,side*50)),V(-20,lift+18,side*33)]),96,2.7,10,false);}
+  // Keeping the shield at the connection requires a small longitudinal rolling
+  // compensation as the fixed-length rockers swing. The chassis never rises.
+  const dy=lift-this.pivot.y,dx=291-Math.sqrt(this.armLength**2-dy**2);
+  this.carrier.position.x=dx;for(const w of this.wheels)w.rotation.z=-(travel+dx)/this.wheelRadius;
+  if(this.lastLift===lift)return;this.lastLift=lift;this.receiver.position.y=lift;
+  const a=this.pivot.clone().add(V(dx,0,0)),e=V(-43,lift,0),lowerA=a.clone().add(V(0,-this.axisSpacing,0)),lowerE=e.clone().add(V(0,-this.axisSpacing,0));this.armPoints=[a,e,lowerA,lowerE];
+  for(const{o,side,lower}of this.links){const from=lower?lowerA:a,to=lower?lowerE:e;o.position.copy(from);o.position.z=side*(lower?38:49);o.rotation.z=Math.atan2(to.y-from.y,to.x-from.x);}
+  for(const{body,shaft,capA,capB,side}of this.actuators){const from=lowerA.clone().add(V(10,4,side*21)),to=e.clone().add(V(-17,-17,side*21)),axis=to.clone().sub(from).normalize(),distance=from.distanceTo(to),q=new THREE.Quaternion().setFromUnitVectors(V(0,1,0),axis);body.position.copy(from).addScaledVector(axis,62.5);body.quaternion.copy(q);shaft.scale.y=distance-113;shaft.position.copy(from).addScaledVector(axis,113+(distance-113)/2);shaft.quaternion.copy(q);capA.position.copy(from);capA.quaternion.copy(q);capB.position.copy(from).addScaledVector(axis,123);capB.quaternion.copy(q);}
+  this.cameraDrum.rotation.z=Math.atan2(this.pipeRadius-65+lift-(this.anchor.y+this.bodyY+36),630);
+  for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(-1235+dx,this.bodyY+20,side*30),V(-1080+dx,this.bodyY+45,side*39),V(-970+dx,this.bodyY+68,side*38),V(-535+dx,this.bodyY+68,side*43),V(-350+dx,this.bodyY+46,side*64),a.clone().lerp(e,.62).add(V(0,24,side*65)),V(-20,lift+18,side*33)]),96,2.7,10,false);}
  }
  dispose(){const materials=new Set(),textures=new Set();this.group.traverse(o=>{if(o.isMesh){materials.add(o.material);if(o.material.bumpMap)textures.add(o.material.bumpMap);}});textures.forEach(t=>t.dispose());materials.forEach(m=>m.dispose());}
 }
