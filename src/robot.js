@@ -1,96 +1,112 @@
 import * as THREE from 'three';
+import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),TAU=Math.PI*2;
+const mat=(color,metalness=.7,roughness=.3)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
+function mesh(geometry,material,p=V()){const o=new THREE.Mesh(geometry,material);o.position.copy(p);o.castShadow=o.receiveShadow=true;return o;}
+function cyl(r,l,m,p=V(),axis='x',segments=48){const o=mesh(new THREE.CylinderGeometry(r,r,l,segments),m,p);if(axis==='x')o.rotation.z=Math.PI/2;else if(axis==='z')o.rotation.x=Math.PI/2;return o;}
+function ring(r,t,m,p=V(),axis='x'){const o=mesh(new THREE.TorusGeometry(r,t,8,64),m,p);if(axis==='x')o.rotation.y=Math.PI/2;else if(axis==='y')o.rotation.x=Math.PI/2;return o;}
+function plate(w,h,d,m,holes=[],bevel=.7){const r=Math.min(4,w/6,h/6),x=-w/2,y=-h/2,s=new THREE.Shape();s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);for(const[a,b,c]of holes){const p=new THREE.Path();p.absarc(a,b,c,0,TAU,true);s.holes.push(p);}const g=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:bevel>0,bevelSize:bevel,bevelThickness:bevel,bevelSegments:2,curveSegments:Math.min(w,h)<15?3:12});g.translate(0,0,-d/2);return mesh(g,m);}
+function box(w,h,d,m,p=V(),bevel=.7){const o=plate(w,h,d,m,[],bevel);o.position.copy(p);return o;}
+function tube(points,r,m,n=80){return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),n,r,8,false),m);}
+function rod(a,b,r,m){const d=b.clone().sub(a),o=cyl(r,d.length(),m,a.clone().add(b).multiplyScalar(.5),'y');o.quaternion.setFromUnitVectors(V(0,1,0),d.normalize());return o;}
+function bolt(r,m,black,p,axis='z'){const g=new THREE.Group();g.position.copy(p);g.add(cyl(r,2.4,m,V(),'z',24),cyl(r*.53,2.55,black,V(),'z',6));if(axis==='x')g.rotation.y=Math.PI/2;else if(axis==='y')g.rotation.x=Math.PI/2;return g;}
+function bake(group){group.updateMatrixWorld(true);const batches=new Map(),inv=group.matrixWorld.clone().invert();group.traverse(o=>{if(!o.isMesh)return;const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(inv.clone().multiply(o.matrixWorld));for(const key of Object.keys(g.attributes))if(!['position','normal','uv'].includes(key))g.deleteAttribute(key);const a=batches.get(o.material)||[];a.push(g);batches.set(o.material,a);o.geometry.dispose();});group.clear();for(const[m,list]of batches){const g=mergeGeometries(list,false);list.forEach(x=>x.dispose());if(g)group.add(mesh(g,m));}}
+function rubber(color){const m=mat(color,.02,.87),a=new Uint8Array(64*64*4);let s=17;for(let i=0;i<4096;i++){s=(Math.imul(s,1664525)+1013904223)>>>0;const c=115+(s>>>27);a.set([c,c,c,255],i*4);}const t=new THREE.DataTexture(a,64,64);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(5,3);t.needsUpdate=true;m.bumpMap=t;m.bumpScale=.22;return m;}
 
-const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
-const TAU=Math.PI*2;
-const material=(color,metalness=.65,roughness=.34)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
-function mesh(g,m,p=V()){const o=new THREE.Mesh(g,m);o.position.copy(p);o.castShadow=o.receiveShadow=true;return o;}
-function box(x,y,z,m,p=V()){return mesh(new THREE.BoxGeometry(x,y,z),m,p);}
-function cylinder(r,length,m,p=V(),axis='x',segments=48){const o=mesh(new THREE.CylinderGeometry(r,r,length,segments),m,p);if(axis==='x')o.rotation.z=Math.PI/2;else if(axis==='z')o.rotation.x=Math.PI/2;return o;}
-function tube(points,r,m){return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),64,r,8,false),m);}
-function plate(w,h,d,m,holes=[]){const s=new THREE.Shape();s.moveTo(-w/2,-h/2);s.lineTo(w/2,-h/2);s.lineTo(w/2,h/2);s.lineTo(-w/2,h/2);s.closePath();for(const[x,y,r]of holes){const p=new THREE.Path();p.absarc(x,y,r,0,TAU,true);s.holes.push(p);}const g=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:false,curveSegments:24});g.translate(0,0,-d/2);return mesh(g,m);}
-function link(length,width,depth,m){const r=width/2,s=new THREE.Shape();s.moveTo(0,r);s.lineTo(length,r);s.absarc(length,0,r,Math.PI/2,-Math.PI/2,true);s.lineTo(0,-r);s.absarc(0,0,r,-Math.PI/2,Math.PI/2,true);const g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:false,curveSegments:16});g.translate(0,0,-depth/2);return mesh(g,m);}
-function placeLink(o,a,b){o.position.copy(a);o.rotation.z=Math.atan2(b.y-a.y,b.x-a.x);}
-
-// Photo reconstruction, not an additional DiTom BOM group. Envelope and layout
-// are cross-checked against IBAK's MicroGator brochure; unmeasured details,
-// wheel kits and the tool receiver are illustrative. There is no cutting head.
-export class Robot {
+// IBAK brochure pp.16–17 specifies attachment ranges, not a dimensioned wheel
+// matrix. Dimensions below are photo-derived model parameters, NOT IBAK setup
+// specifications. The T66/T76/PANORAMO wheel chart must not be applied here.
+export const robotConfigurations={
+ 300:{kit:'base',label:'Grundfahrwagen · PUR-Profilräder',range:'DN 200–300',radius:68,width:28,track:92,tread:'pur'},
+ 400:{kit:'medium',label:'Fahrwagenzusatz DN 350–600 · schmale Spur',range:'DN 350–600',radius:96,width:48,track:112,tread:'pneumatic'},
+ 500:{kit:'medium',label:'Fahrwagenzusatz DN 350–600 · mittlere Spur',range:'DN 350–600',radius:106,width:54,track:145,tread:'pneumatic'},
+ 600:{kit:'medium',label:'Fahrwagenzusatz DN 350–600 · breite Spur',range:'DN 350–600',radius:112,width:60,track:178,tread:'pneumatic'},
+ 700:{kit:'large',label:'Fahrwagenzusatz DN 600–800 · großer Radsatz',range:'DN 600–800',radius:148,width:76,track:215,tread:'pneumatic'}
+};
+export class Robot{
  constructor(pipeRadius,anchor){
-  this.group=new THREE.Group();this.group.name='IBAK-Roboter';this.anchor=anchor.clone();this.group.position.copy(anchor);
-  this.m={steel:material('#aab5bf',.83,.3),dark:material('#20262c',.45,.4),rim:material('#8f9ba6',.86,.25),tire:material('#4b211b',.04,.84),black:material('#0b1117',.08,.52),blue:material('#087eb7',.08,.38),yellow:material('#e4b917',.1,.45),glass:material('#07171c',.4,.12)};
-  const m=this.m;this.wheelRadius=pipeRadius<180?58:68;this.track=pipeRadius<180?66:84;
-  this.wheelY=-Math.sqrt(pipeRadius**2-(this.track+16)**2)+this.wheelRadius+1-anchor.y;
-  this.bodyY=Math.max(this.wheelY+anchor.y+12,-145)-anchor.y;
-  const y=this.bodyY;this.chassis=new THREE.Group();this.group.add(this.chassis);
-  this.chassis.add(cylinder(62,566,m.dark,V(-710,y,0)));
-  for(const[x,len,r]of [[-992,42,64],[-420,74,67],[-906,16,65],[-511,16,65]])this.chassis.add(cylinder(r,len,m.steel,V(x,y,0)));
-  this.chassis.add(cylinder(48,72,m.dark,V(-1048,y,0)),cylinder(41,12,m.steel,V(-1083,y,0)),cylinder(26,30,m.black,V(-1100,y,0)));
-  // Two long removable black covers, folded metal rails and visible fasteners.
-  for(const x of [-813,-609]){
-   const top=plate(187,68,5,m.dark,[[-82,-24,2.5],[-82,24,2.5],[82,-24,2.5],[82,24,2.5]]);top.rotation.x=-Math.PI/2;top.position.set(x,y+62,0);this.chassis.add(top);
-   for(const z of [-34,34])this.chassis.add(box(184,8,4,m.steel,V(x,y+58,z)));
-   for(const dx of [-82,82])for(const z of [-24,24])this.chassis.add(cylinder(3.3,2,m.rim,V(x+dx,y+65,z),'y',12));
-  }
-  for(const side of [-1,1]){
-   this.chassis.add(box(457,22,6,m.steel,V(-706,y-18,side*62)));
-   const sidePanel=plate(125,48,3,m.dark,[[-49,-16,2.5],[49,-16,2.5],[-49,16,2.5],[49,16,2.5]]);sidePanel.position.set(-704,y,side*64);this.chassis.add(sidePanel);
-   for(const x of [-950,-540]){
-    const low=Math.min(y-15,this.wheelY),high=Math.max(y-15,this.wheelY);
-    this.chassis.add(box(42,Math.max(22,high-low+22),17,m.steel,V(x,(low+high)/2,side*(this.track-17))));
-   }
-  }
-  for(const x of [-950,-540])this.chassis.add(cylinder(18,2*this.track+9,m.dark,V(x,this.wheelY,0),'z'));
-  this.wheels=[];for(const x of [-950,-540])for(const side of [-1,1]){
-   const w=this.makeWheel(side);w.position.set(x,this.wheelY,side*this.track);this.wheels.push(w);this.chassis.add(w);
-  }
-  // Camera and its LED window sit above the front pivot, as in the photos.
-  this.cameraHead=new THREE.Group();this.cameraHead.position.set(-363,y+42,0);this.cameraHead.rotation.z=-.12;
-  const dome=mesh(new THREE.SphereGeometry(39,40,24),m.black);dome.scale.set(.95,1,1);this.cameraHead.add(dome);
-  const face=plate(52,56,5,m.dark);face.rotation.y=Math.PI/2;face.position.x=31;this.cameraHead.add(face);
-  this.cameraHead.add(cylinder(12,4,m.steel,V(35,-3,0)),cylinder(9.8,4.4,m.glass,V(37,-3,0)));
-  this.ledMaterial=new THREE.MeshStandardMaterial({color:'#ffffe6',emissive:'#ffffcf',emissiveIntensity:2.5,roughness:.15});
-  for(const z of [-14,14])for(const yy of [-20,18])this.cameraHead.add(cylinder(6,4,m.steel,V(35,yy,z)),cylinder(4.5,4.4,this.ledMaterial,V(37,yy,z)));
-  const band=mesh(new THREE.TorusGeometry(39.8,1.6,8,64),m.steel);band.rotation.y=Math.PI/2;this.cameraHead.add(band);
-  this.cameraHead.add(box(35,6,65,m.steel,V(0,39,0)));this.chassis.add(this.cameraHead);
-  const coil=[];for(let i=0;i<=320;i++){const a=i/320*TAU*6;coil.push(V(-470+i/320*107,y+62+14*Math.cos(a),14*Math.sin(a)));}this.chassis.add(tube(coil,3.1,m.black));
-  // Front yoke, articulated arm and a receiver gripping the existing T adapter.
-  this.pivot=V(-300,y+5,0);this.armLengths=[235,90];this.links=[];
-  this.chassis.add(box(95,31,73,m.dark,V(-354,y+3,0)),cylinder(21,103,m.steel,this.pivot,'z'));
-  for(const side of [-1,1])for(let k=0;k<2;k++){const o=link(this.armLengths[k],k?31:28,11,k?m.dark:m.black);this.group.add(o);this.links.push({o,side,k});}
-  this.joints=[];for(let i=0;i<3;i++)for(const side of [-1,1]){const g=new THREE.Group();g.add(cylinder(12,7,m.steel,V(),'z'),cylinder(6,8,m.dark,V(),'z',12),cylinder(3,9,m.rim,V(),'z',6));this.group.add(g);this.joints.push({g,i,side});}
-  this.actuatorBody=cylinder(12,128,m.dark);this.actuatorRod=cylinder(6,1,m.steel);this.group.add(this.actuatorBody,this.actuatorRod);
-  this.receiver=new THREE.Group();this.receiver.name='Werkzeugaufnahme ohne Fräskopf';this.group.add(this.receiver);
-  const back=plate(58,88,28,m.dark,[[0,-24,8.2],[0,24,8.2]]);back.rotation.y=Math.PI/2;back.position.x=-28;this.receiver.add(back);
-  for(const side of [-1,1]){
-   this.receiver.add(box(26,88,13,m.steel,V(-16,0,side*22.5)),box(4,88,19,m.dark,V(-6,0,side*19.5)));
-   for(const yy of [-34,34])this.receiver.add(cylinder(4,4,m.rim,V(-4,yy,side*23),'x',12));
-  }
-  this.receiver.add(cylinder(14,91,m.steel,V(-43,0,0),'z'));
-  this.coupling=new THREE.Object3D();this.coupling.position.set(-12,0,0);this.receiver.add(this.coupling);
-  this.lines=[];for(const[side,mm]of [[-1,m.blue],[1,m.yellow]]){const o=tube([V(-1080,y+37,side*38),V(-950,y+60,side*45),V(-570,y+59,side*45),V(-355,y+48,side*55),V(-170,20,side*50),V(-20,18,side*33)],3.1,mm);this.group.add(o);this.lines.push({o,side});}
-  this.tail=tube([V(-1114,y,0),V(-1190,y-10,-8),V(-1290,this.wheelY-this.wheelRadius+8,-10)],7,m.black);this.chassis.add(this.tail);
-  this.pose(0,0);
+  this.config=robotConfigurations[Math.round(pipeRadius*2)]||robotConfigurations[400];this.anchor=anchor.clone();this.pipeRadius=pipeRadius;this.group=new THREE.Group();this.group.name='IBAK MicroGator';this.group.position.copy(anchor);
+  this.m={steel:mat('#b1bdc6',.82,.28),polished:mat('#d1d6d8',.87,.22),dark:mat('#252c32',.58,.34),black:mat('#11171b',.16,.5),rim:mat('#bdc6cc',.87,.24),pur:rubber('#703c2a'),tire:rubber('#24292a'),blue:mat('#087eb2',.12,.36),yellow:mat('#d3a719',.12,.4),glass:mat('#061b24',.7,.12),gasket:mat('#050809',.03,.72),brass:mat('#ba9d5f',.72,.3)};
+  this.ledMaterial=new THREE.MeshStandardMaterial({color:'#edf7e9',emissive:'#dceee1',emissiveIntensity:1.5,roughness:.2});this.wheelRadius=this.config.radius;this.track=this.config.track;this.bodyY=-18-anchor.y;
+  this.chassis=new THREE.Group();this.chassis.name='Fahrwagengehäuse';this.group.add(this.chassis);this.wheels=[];
+  for(const x of [-940,-575])for(const side of [-1,1]){const w=this.makeWheel(side);w.position.set(x,0,side*this.track);this.wheels.push(w);}
+  // Solve contact over all tread corners and sidewalls for every wheel angle.
+  let wheelWorldY=-Infinity;for(const w of this.wheels){w.updateMatrixWorld(true);w.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=V().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld),radial=Math.hypot(p.x-w.position.x,p.y);wheelWorldY=Math.max(wheelWorldY,-Math.sqrt(pipeRadius**2-p.z**2)+radial);}});}
+  this.wheelY=wheelWorldY+.65-anchor.y;this.axleDrop=this.bodyY-this.wheelY;for(const w of this.wheels){w.position.y=this.wheelY;this.group.add(w);}
+  this.buildChassis();this.buildExtension();bake(this.chassis);this.buildCamera();this.buildArm();this.lines=[];
+  for(const[side,m]of [[-1,this.m.blue],[1,this.m.yellow]]){const o=tube([V(-1235,this.bodyY,side*30),V(-970,this.bodyY+65,side*40),V(-20,18,side*33)],2.7,m);this.group.add(o);this.lines.push({o,side});}this.pose(0,0);
  }
  makeWheel(side){
-  const m=this.m,r=this.wheelRadius,g=new THREE.Group();g.add(cylinder(r-5,27,m.tire,V(),'z'),cylinder(r-12,29,m.rim,V(),'z'),cylinder(r-23,30,m.dark,V(),'z'),cylinder(23,31,m.steel,V(),'z'));
-  for(let i=0;i<26;i++){const a=i/26*TAU,o=box(8,10,30,m.tire,V((r-4)*Math.cos(a),(r-4)*Math.sin(a),0));o.rotation.z=a;g.add(o);}
-  for(let i=0;i<6;i++){const a=i/6*TAU;g.add(cylinder(3.4,2,m.rim,V(17*Math.cos(a),17*Math.sin(a),side*16),'z',12));}
-  return g;
+  const g=new THREE.Group(),m=this.m,r=this.wheelRadius,w=this.config.width,pur=this.config.tread==='pur',t=pur?m.pur:m.tire;g.name='Antriebsrad';
+  const profile=pur?[[r*.48,-w/2],[r-6,-w/2],[r-3,-w*.34],[r-3,w*.34],[r-6,w/2],[r*.48,w/2],[r*.48,-w/2]]:[[r*.43,-w*.46],[r*.68,-w*.53],[r*.85,-w*.43],[r-5,-w*.27],[r-3,0],[r-5,w*.27],[r*.85,w*.43],[r*.68,w*.53],[r*.43,w*.46],[r*.43,-w*.46]];
+  const tire=mesh(new THREE.LatheGeometry(profile.map(p=>new THREE.Vector2(...p)),96),t);tire.rotation.x=Math.PI/2;g.add(tire);const rim=pur?r*.73:r*.5;
+  g.add(cyl(rim,w-12,m.rim,V(),'z'),cyl(18,w+6,m.dark,V(),'z'),cyl(12,w+7,m.steel,V(),'z'));
+  for(const s of [-1,1]){
+   const section=[[17,w/2+1],[rim*.48,w/2-5],[rim*.82,w/2-4],[rim-3,w/2+.8],[rim,w/2+.8],[rim,w/2-5],[17,w/2-5]].map(([r,z])=>new THREE.Vector2(r,s*z));if(s<0)section.reverse();
+   const dish=mesh(new THREE.LatheGeometry(section,64),m.polished);dish.rotation.x=Math.PI/2;g.add(dish,ring(rim-2,1.2,m.polished,V(0,0,s*(w/2+.8)),'z'),ring(17,.8,m.gasket,V(0,0,s*(w/2+3)),'z'));
+   for(let i=0;i<3;i++){const a=i*TAU/3+Math.PI/2;g.add(bolt(3.5,m.polished,m.gasket,V(rim*.6*Math.cos(a),rim*.6*Math.sin(a),s*(w/2-2))));}
+   if(!pur)g.add(cyl(2.4,10,m.brass,V(rim*.72,0,s*(w/2+2)),'z',12),cyl(3,4,m.black,V(rim*.72,0,s*(w/2+7)),'z',12));
+  }
+  if(pur){for(let i=0;i<30;i++){const a=i*TAU/30,o=box(7,9,w-1,t,V((r-3)*Math.cos(a),(r-3)*Math.sin(a),0),.45);o.rotation.z=a;g.add(o);}}
+  else{for(let row=0;row<4;row++)for(let i=0;i<40;i++){const a=(i+(row%2)*.5)*TAU/40,z=(row-1.5)*w*.19,rr=r-3-Math.abs(row-1.5)*1.5,o=box(7,r*.078,w*.23,t,V(rr*Math.cos(a),rr*Math.sin(a),z),.9);o.rotation.set(0,(row<2?1:-1)*.28,a);g.add(o);}for(const s of [-1,1])g.add(ring(r*.79,.45,m.black,V(0,0,s*w*.46),'z'));}
+  bake(g);return g;
+ }
+ buildChassis(){
+  const g=this.chassis,m=this.m,y=this.bodyY;g.add(box(490,82,102,m.dark,V(-747,y-4,0),2));
+  for(const side of [-1,1]){
+   const p=plate(472,70,7,m.steel,[[-213,-19,3],[213,-19,3],[-213,19,3],[213,19,3]]);p.position.set(-747,y-5,side*55);g.add(p);const mid=plate(197,59,3,m.polished,[[-88,-21,2.8],[-88,21,2.8],[88,-21,2.8],[88,21,2.8]]);mid.position.set(-750,y-6,side*60);g.add(mid);
+   for(const x of [-960,-845,-658,-534])for(const dy of [-23,17])g.add(bolt(3.5,m.polished,m.gasket,V(x,y+dy,side*64)));
+   for(const x of [-940,-575]){g.add(cyl(32,21,m.polished,V(x,y,side*64),'z'),cyl(25,9,m.dark,V(x,y,side*78),'z'));for(let i=0;i<6;i++){const a=i*TAU/6;g.add(bolt(3,m.steel,m.gasket,V(x+27*Math.cos(a),y+27*Math.sin(a),side*76)));}}
+   g.add(box(448,8,8,m.polished,V(-750,y-44,side*49)),box(447,4,5,m.steel,V(-749,y+50,side*49)));
+  }
+  g.add(box(434,26,95,m.black,V(-749,y+47,0),4));
+  for(const x of [-950,-825,-675,-545]){const p=plate(29,100,5,m.dark,[[-7,-38,2.6],[7,38,2.6]]);p.rotation.x=-Math.PI/2;p.position.set(x,y+63,0);g.add(p);for(const z of [-38,38])g.add(bolt(3,m.steel,m.gasket,V(x,y+66,z),'y'));}
+  const hook=plate(37,61,8,m.dark,[[0,10,9]],1);hook.position.set(-870,y+76,0);hook.rotation.z=-.32;g.add(hook,cyl(9,21,m.steel,V(-872,y+55,0),'z'));
+  // 150 mm front body envelope and discrete rotary seals.
+  for(const[x,l,r,ma]of [[-462,62,74,m.steel],[-420,21,75,m.polished],[-397,23,70,m.dark],[-376,17,68,m.steel]])g.add(cyl(r,l,ma,V(x,y,0)));
+  for(const x of [-487,-445,-431,-410,-389])g.add(ring(x===-389?69:74.7,.65,m.gasket,V(x,y,0)));
+  for(let i=0;i<12;i++){const a=i*TAU/12;g.add(bolt(3,m.polished,m.gasket,V(-366,y+58*Math.cos(a),58*Math.sin(a)),'x'));}
+  for(const side of [-1,1])g.add(box(96,90,17,m.steel,V(-1050,y,side*47),3));
+  g.add(box(82,24,111,m.polished,V(-1050,y+44,0)),box(82,24,111,m.polished,V(-1050,y-44,0)),cyl(18,109,m.dark,V(-1060,y,0),'z'));
+  for(const side of [-1,1])g.add(bolt(13,m.steel,m.gasket,V(-1060,y,side*58)),ring(19,1,m.dark,V(-1060,y,side*56),'z'));
+  for(const[x,l,r,ma]of [[-1124,65,46,m.polished],[-1199,97,43,m.steel],[-1260,30,24,m.dark],[-1284,33,16,m.gasket]])g.add(cyl(r,l,ma,V(x,y,0)));
+  for(const x of [-1100,-1147,-1160,-1238])g.add(ring(44,.8,m.gasket,V(x,y,0)));for(let i=0;i<6;i++){const a=i*TAU/6;g.add(bolt(3,m.steel,m.gasket,V(-1248,y+33*Math.cos(a),33*Math.sin(a)),'x'));}
+  for(const x of [-1290,-1298,-1306,-1314])g.add(ring(12,1.5,m.black,V(x,y,0)));g.add(tube([V(-1300,y,0),V(-1375,y-8,-5),V(-1430,this.wheelY-this.wheelRadius+20,-5)],7,m.black));
+ }
+ buildExtension(){
+  const m=this.m,y=this.bodyY,wy=this.wheelY,drop=y-wy,e=new THREE.Group();e.name=this.config.label;this.extension=e;this.chassis.add(e);
+  for(const side of [-1,1])for(const x of [-940,-575]){
+   if(this.config.kit==='base'){e.add(cyl(23,this.track-75,m.polished,V(x,wy,side*(75+(this.track-75)/2)),'z'),cyl(29,9,m.dark,V(x,wy,side*78),'z'));continue;}
+   const p=plate(88,drop+72,22,m.dark,[[0,drop/2,15],[0,-drop/2,17]],2);p.position.set(x,(y+wy)/2,side*87);e.add(p);const cover=plate(73,drop+59,3,m.black,[[0,drop/2,12],[0,-drop/2,14]],.5);cover.position.set(x,(y+wy)/2,side*101);e.add(cover);
+   for(const yy of [y,wy]){e.add(cyl(30,8,m.steel,V(x,yy,side*105),'z'),ring(25,1,m.gasket,V(x,yy,side*110),'z'));for(const dx of [-28,28])e.add(bolt(3.8,m.steel,m.gasket,V(x+dx,yy,side*105)));}
+   e.add(box(78,17,36,m.steel,V(x,y+37,side*88),1.5),rod(V(x-24,y+47,side*94),V(x+24,y+47,side*94),3,m.polished),cyl(21,this.track-103,m.polished,V(x,wy,side*(103+(this.track-103)/2)),'z'));
+   for(let d=113;d<this.track-15;d+=17)e.add(ring(22,.7,m.dark,V(x,wy,side*d),'z'));e.add(cyl(27,10,m.steel,V(x,wy,side*(this.track-this.config.width/2-6)),'z'));
+  }
+  if(this.config.kit!=='base')for(const side of [-1,1]){e.add(box(367,19,22,m.steel,V(-757,(y+wy)/2-15,side*88),1.2));for(const x of [-921,-595])e.add(bolt(4,m.steel,m.gasket,V(x,(y+wy)/2-15,side*102)));}
+  if(this.config.kit==='large'){for(const x of [-940,-575]){e.add(cyl(16,2*this.track-50,m.steel,V(x,wy,0),'z'));for(const side of [-1,1])e.add(rod(V(x-35,y-25,side*80),V(x+25,wy+24,side*(this.track-40)),8,m.steel));}for(const side of [-1,1])e.add(box(440,38,28,m.dark,V(-757,wy+35,side*(this.track-48)),2));}
+ }
+ buildCamera(){
+  const m=this.m,y=this.bodyY,g=new THREE.Group();this.cameraHead=g;g.name='CutterCam · vier LED und Reinigungsdüse';g.position.set(-332,y+44,0);g.rotation.z=.08;this.group.add(g);
+  g.add(cyl(33,62,m.black,V(-27,0,0)),cyl(34,7,m.dark,V(-54,0,0)));const head=mesh(new THREE.SphereGeometry(34,48,32),m.dark,V(17,0,0));head.scale.x=1.04;g.add(head);for(const x of [-56,-31,-5])g.add(ring(33.4,.65,m.gasket,V(x,0,0)));
+  const face=plate(37,44,3,m.black,[],2);face.rotation.y=Math.PI/2;face.position.x=46;g.add(face,cyl(8.6,3,m.polished,V(48,-1,0)),cyl(6.7,3.2,m.glass,V(49,-1,0)),ring(7.2,.65,m.black,V(51,-1,0)));
+  for(const yy of [-14,13])for(const z of [-11,11])g.add(cyl(4.3,3,m.steel,V(47.5,yy,z)),cyl(3.2,3.5,this.ledMaterial,V(49,yy,z)));for(const yy of [-22,22])for(const z of [-9,9])g.add(bolt(2.3,m.steel,m.gasket,V(44.5,yy,z),'x'));
+  const saddle=plate(52,61,5,m.steel,[[-16,-18,4],[16,-18,4],[-16,18,4],[16,18,4]],1);saddle.rotation.x=-Math.PI/2;saddle.position.set(-23,33,0);g.add(saddle);for(const z of [-28,28])g.add(cyl(6,51,m.steel,V(-24,28,z)),cyl(7,6,m.dark,V(2,28,z)));
+  for(const z of [-32,32])g.add(tube([V(-46,25,z),V(-52,33,z),V(-20,39,z)],2,m.blue,24),cyl(3.5,8,m.brass,V(-45,26,z),'y',12));g.add(tube([V(-52,-9,-27),V(-17,-20,-29),V(26,-23,-21),V(39,-16,-15)],1.7,m.black,40),box(33,4,7,m.gasket,V(20,-32,0),.2));bake(g);
+  const base=new THREE.Group();base.add(cyl(14,29,m.dark,V(-366,y+13,0),'y'),box(64,10,64,m.steel,V(-359,y+20,0)));bake(base);this.group.add(base);const coil=[];for(let i=0;i<=480;i++){const t=i/480,a=t*TAU*8;coil.push(V(-417+t*68,y+53+12*Math.cos(a),-37+12*Math.sin(a)));}this.group.add(tube(coil,2.3,m.black,240));
+ }
+ buildArm(){
+  const m=this.m,y=this.bodyY;this.pivot=V(-332,y-7,0);this.armLengths=[276,65];this.links=[];this.joints=[];const root=new THREE.Group();root.add(cyl(20,105,m.steel,this.pivot,'z'));for(const side of [-1,1])root.add(box(63,32,13,m.dark,V(-347,y-10,side*41)));bake(root);this.group.add(root);
+  for(const side of [-1,1])for(let k=0;k<2;k++){const l=this.armLengths[k],g=new THREE.Group();g.name=k?'Werkzeugneigung':'Hubarm';const p=plate(l+34,35,k?12:10,k?m.dark:m.steel,[[-l/2,0,7],[l/2,0,7]],1.5);p.position.x=l/2;g.add(p);if(!k){const inset=plate(l-55,20,2,m.dark,[],.6);inset.position.set(l/2,0,side*6);g.add(inset);for(const x of [35,l-35])g.add(bolt(3,m.steel,m.gasket,V(x,0,side*8)));}bake(g);this.group.add(g);this.links.push({o:g,side,k});}
+  for(let i=0;i<3;i++)for(const side of [-1,1]){const g=new THREE.Group();g.add(cyl(12,8,m.steel,V(),'z'),ring(12,.7,m.gasket,V(0,0,side*4),'z'),bolt(7,m.dark,m.gasket,V(0,0,side*6)));bake(g);this.group.add(g);this.joints.push({g,i,side});}
+  this.actuators=[];for(const side of [-1,1]){const body=cyl(10,160,m.steel),shaft=cyl(5.4,1,m.polished),capA=cyl(12,13,m.dark),capB=cyl(11,7,m.dark);this.group.add(body,shaft,capA,capB);this.actuators.push({body,shaft,capA,capB,side});}
+  this.receiver=new THREE.Group();this.receiver.name='Werkzeugaufnahme · Klappvorrichtung statt Fräskopf';this.group.add(this.receiver);const back=plate(58,88,28,m.dark,[[0,-24,8.2],[0,24,8.2]],1);back.rotation.y=Math.PI/2;back.position.x=-28;this.receiver.add(back);for(const side of [-1,1]){this.receiver.add(box(26,88,13,m.steel,V(-16,0,side*22.5)),box(4,88,19,m.dark,V(-6,0,side*19.5)));for(const yy of [-34,34])this.receiver.add(bolt(4,m.polished,m.gasket,V(-4,yy,side*23),'x'));}this.receiver.add(cyl(14,101,m.steel,V(-43,0,0),'z'));bake(this.receiver);this.coupling=new THREE.Object3D();this.coupling.position.set(-12,0,0);this.receiver.add(this.coupling);
  }
  pose(lift,travel){
-  for(const w of this.wheels)w.rotation.z=-travel/this.wheelRadius;
-  if(this.lastLift===lift)return;this.lastLift=lift;this.receiver.position.y=lift;
-  const a=this.pivot.clone(),e=V(-43,lift,0),d=e.clone().sub(a),length=d.length(),u=d.clone().divideScalar(length),[l1,l2]=this.armLengths;
-  const along=(l1*l1-l2*l2+length*length)/(2*length),height=Math.sqrt(Math.max(0,l1*l1-along*along));
-  const elbow=a.clone().addScaledVector(u,along).addScaledVector(V(-u.y,u.x,0),height);this.armPoints=[a,elbow,e];
-  for(const{o,side,k}of this.links){const start=this.armPoints[k].clone(),end=this.armPoints[k+1].clone();start.z=end.z=side*40;placeLink(o,start,end);}
-  for(const{g,i,side}of this.joints){g.position.copy(this.armPoints[i]);g.position.z=side*49;}
-  const from=a.clone().add(V(-30,-32,0)),to=e.clone().add(V(0,-32,0)),axis=to.clone().sub(from).normalize(),distance=from.distanceTo(to);
-  this.actuatorBody.position.copy(from).addScaledVector(axis,64);
-  // Both cylinder geometries have their long dimension on local Y.
-  this.actuatorBody.quaternion.setFromUnitVectors(V(0,1,0),axis);
-  this.actuatorRod.scale.y=distance-105;this.actuatorRod.position.copy(from).addScaledVector(axis,105+(distance-105)/2);this.actuatorRod.quaternion.setFromUnitVectors(V(0,1,0),axis);
-  for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(-1080,this.bodyY+37,side*38),V(-950,this.bodyY+60,side*45),V(-570,this.bodyY+59,side*45),V(-355,this.bodyY+48,side*55),elbow.clone().add(V(-20,20,side*54)),V(-20,lift+18,side*33)]),64,3.1,8,false);}
+  for(const w of this.wheels)w.rotation.z=-travel/this.wheelRadius;if(this.lastLift===lift)return;this.lastLift=lift;this.receiver.position.y=lift;
+  const a=this.pivot.clone(),e=V(-43,lift,0),d=e.clone().sub(a),length=d.length(),u=d.clone().divideScalar(length),[l1,l2]=this.armLengths,along=(l1*l1-l2*l2+length*length)/(2*length),height=Math.sqrt(Math.max(0,l1*l1-along*along)),elbow=a.clone().addScaledVector(u,along).addScaledVector(V(-u.y,u.x,0),height);this.armPoints=[a,elbow,e];
+  for(const{o,side,k}of this.links){const from=this.armPoints[k],to=this.armPoints[k+1];o.position.copy(from);o.position.z=side*42;o.rotation.z=Math.atan2(to.y-from.y,to.x-from.x);}for(const{g,i,side}of this.joints){g.position.copy(this.armPoints[i]);g.position.z=side*51;}
+  for(const{body,shaft,capA,capB,side}of this.actuators){const from=a.clone().add(V(-27,-25,side*28)),to=e.clone().add(V(-8,-29,side*28)),axis=to.clone().sub(from).normalize(),distance=from.distanceTo(to),q=new THREE.Quaternion().setFromUnitVectors(V(0,1,0),axis);body.position.copy(from).addScaledVector(axis,80);body.quaternion.copy(q);shaft.scale.y=distance-145;shaft.position.copy(from).addScaledVector(axis,145+(distance-145)/2);shaft.quaternion.copy(q);capA.position.copy(from);capA.quaternion.copy(q);capB.position.copy(from).addScaledVector(axis,158);capB.quaternion.copy(q);}
+  for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(-1235,this.bodyY+20,side*30),V(-1080,this.bodyY+45,side*39),V(-970,this.bodyY+68,side*38),V(-535,this.bodyY+68,side*43),V(-340,this.bodyY+42,side*56),elbow.clone().add(V(-35,9,side*50)),V(-20,lift+18,side*33)]),96,2.7,10,false);}
  }
- dispose(){const materials=new Set();this.group.traverse(o=>{if(o.isMesh)materials.add(o.material);});for(const m of materials)m.dispose();}
+ dispose(){const materials=new Set(),textures=new Set();this.group.traverse(o=>{if(o.isMesh){materials.add(o.material);if(o.material.bumpMap)textures.add(o.material.bumpMap);}});textures.forEach(t=>t.dispose());materials.forEach(m=>m.dispose());}
 }

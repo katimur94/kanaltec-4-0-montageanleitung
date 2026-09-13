@@ -57,6 +57,7 @@ function setMode(mode){
  if(src){$('refFamily').value=state.id;$('refGroup').value=state.group;showRef(state.ref);}updateInfo();updatePlayButtons();
 }
 function updateInfo(){
+ $('robotSetup').textContent=viewer?.robot?.config.label||'';
  $('hingeView').hidden=state.mode==='process'||state.group!=='z';
  const f=family();$('variantBadge').textContent=f.label;$('familyNote').textContent=f.spacer.length?f.spacer.map(n=>n+' mm').join(' + ')+' Distanzstücke im Unterteil':'Kompakte Ausführung ohne Höhendistanzstück';
  $$('button[data-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.group===state.group);b.setAttribute('aria-pressed',String(b.dataset.group===state.group));});

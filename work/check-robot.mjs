@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {Robot} from '../src/robot.js';
+import {Robot,robotConfigurations} from '../src/robot.js';
 import {families} from '../src/data.js';
 const near=(a,b,message)=>assert.ok(Math.abs(a-b)<.001,`${message}: ${a} vs ${b}`);
 for(const family of families){
  const R=family.id/2,anchor=new THREE.Vector3(-370,-20,0),r=new Robot(R,anchor);
  assert.equal(r.wheels.length,4,'Two axles, four driven wheels');
+ assert.equal(r.config.kit,family.id===300?'base':family.id<=600?'medium':'large','DN selects base, 350–600 or 600–800 attachment');
+ assert.equal(r.config,robotConfigurations[family.id],'Selected setup matches displayed DN');
  let chassisY;
  for(const lift of [-70.56,-45,0,8]){
   r.pose(lift,-430);r.group.updateMatrixWorld(true);
@@ -16,11 +18,18 @@ for(const family of families){
   for(let i=0;i<2;i++)near(r.armPoints[i].distanceTo(r.armPoints[i+1]),r.armLengths[i],'Articulated arm keeps constant link lengths');
  }
  r.pose(8,-330);r.group.updateMatrixWorld(true);near(r.wheels[0].rotation.z,330/r.wheelRadius,'Wheels rotate with travel');
- // Vertex check includes the tooth corners and the outside wheel sidewall.
+ // Vertex check includes tooth corners and sidewalls. The constructor solves
+ // the rotational envelope, so every rolling angle stays inside the pipe.
  let maximum=0;
  for(const w of r.wheels)w.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=new THREE.Vector3().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);maximum=Math.max(maximum,Math.hypot(p.y,p.z));}});
  assert.ok(maximum<=R+.2,`Wheel envelope stays inside DN ${family.id}: ${maximum}`);
  assert.ok(maximum>R-3,'Wheel tread reaches the pipe wall');
+ let bodyEnvelope=0,draws=0;
+ r.group.traverse(o=>{if(!o.isMesh)return;draws++;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=new THREE.Vector3().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);bodyEnvelope=Math.max(bodyEnvelope,Math.hypot(p.y,p.z));}});
+ assert.ok(bodyEnvelope<=R+.2,`Robot, attachment and hoses fit DN ${family.id}: ${bodyEnvelope}`);
+ assert.ok(draws<120,'Repeated static details are batched for interactive performance');
+ const tyre=r.wheels[0].children.find(o=>o.material===(r.config.tread==='pur'?r.m.pur:r.m.tire));
+ assert.ok(tyre,'PUR or pneumatic tyre matches selected setup');
  console.log(`DN ${family.id}: four wheels, coupled receiver, fixed chassis height, articulated lift and rolling motion passed.`);
  r.dispose();r.group.traverse(o=>{if(o.isMesh)o.geometry.dispose();});
 }

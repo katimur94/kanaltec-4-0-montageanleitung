@@ -340,7 +340,7 @@ export class Viewer {
  buildContext(){
   const R=this.radius+12;
   this.branchTop=R+20+Math.max(260,this.winding.travel+65);
-  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4000);
+  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600);
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
   this.damage=this.repair.cavity;
@@ -391,8 +391,8 @@ export class Viewer {
    const R=this.radius+12;this.controls.target.set(0,R,0);this.camera.position.set(-20,R-280,32);this.camera.lookAt(this.controls.target);this.controls.update();this.applyMaterials();
    if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));return;
   }
-  this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();this.poseRobot();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(this.sections.hideRobot?-570:-1950,this.bottom,-300),V(450,this.branchTop+20,280));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
-  if(view==='robot'&&this.robot){if(this.mode==='process')this.processPose();b=new THREE.Box3().setFromObject(this.robot.group);b.max.x=-270+this.model.position.x;b.min.x=Math.max(b.min.x,-1510+this.model.position.x);}
+  this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();this.poseRobot();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(this.sections.hideRobot?-570:-2250,this.bottom,-300),V(450,this.branchTop+20,300));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
+  if(view==='robot'&&this.robot){if(this.mode==='process')this.processPose();b=new THREE.Box3().setFromObject(this.robot.group);b.max.x=-270+this.model.position.x;b.min.x=Math.max(b.min.x,-1740+this.model.position.x);}
   if(view==='damage')b=new THREE.Box3(V(-265,this.radius-100,-140),V(210,this.radius+180,120));
   if(view==='winding')b=new THREE.Box3(V(-125,this.top-65,-75),V(145,this.radius+80,75));
   if(view==='hinge'){b=new THREE.Box3();for(const p of this.parts)if(p.group==='z'&&['hinge1','hinge2','hinge3','adapter','adapterbolts','hingebolts','topbolts','washers'].includes(p.key))b.expandByObject(p.node);}

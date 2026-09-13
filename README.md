@@ -10,7 +10,7 @@ Im **Kanalblick** sind nach dem Ausschalen die eingeprägten Drucksensor- und In
 
 ## Einfach verwenden
 
-Der ergänzte **IBAK-Roboter** trägt die Klappvorrichtung an seiner Werkzeugaufnahme anstelle des Fräskopfs. Vier profilierte Räder, Frontkamera, Hubarm und Leitungen sind nach Nutzerfotos und Herstelleransichten rekonstruiert. Der Arm folgt beim Anpressen der Schalung, während der Fahrwagen seine Höhe hält; die Räder drehen sich während der Fahrt. **Roboter** öffnet eine Nahansicht, **Schnitt & Sicht** erlaubt das Ausblenden. Unbemaßte Roboterdetails und Radzusätze sind angenähert und keine zusätzlichen Positionen der DiTom-Stückliste.
+Der **IBAK MicroGator** trägt die Klappvorrichtung an seiner Werkzeugaufnahme. Fahrwagengehäuse, Drehmodul, CutterCam mit vier LED, Hubzylinder, hinteres Klappgelenk, Naben und Reifen sind nach Fotos und IBAK-Prospekten modelliert. Die DN-Auswahl wechselt zwischen Grundfahrwagen, Zusatz DN 350–600 und Zusatz DN 600–800 und passt Bereifung, Spurweite und Achsversatz an. Der Schalter **Roboter anzeigen** gilt auch während der Animation; **Roboter** öffnet die Nahansicht. Quellen und Grenzen der Rekonstruktion: [ROBOTER-QUELLEN.md](ROBOTER-QUELLEN.md). Unbemaßte Rad- und Anschlussmaße sind angenähert, keine praktische Rüstanweisung und keine zusätzlichen Positionen der DiTom-Stückliste.
 
 Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `Kanaltec-4.0-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.
 
