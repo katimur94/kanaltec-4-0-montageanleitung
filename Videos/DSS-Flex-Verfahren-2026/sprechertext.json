@@ -1,0 +1,57 @@
+[
+  {
+    "start": 0.5,
+    "window": 3,
+    "text": "DSS-Flex Verfahren."
+  },
+  {
+    "start": 3.4,
+    "window": 4.6,
+    "text": "Einragende Anschlüsse, Wurzeln und undichte Übergänge."
+  },
+  {
+    "start": 8.4,
+    "window": 5.4,
+    "text": "Der Fräsroboter schneidet Einragungen und Wurzeln kontrolliert zurück."
+  },
+  {
+    "start": 14.4,
+    "window": 6.3,
+    "text": "Anschließend entsteht eine runde Fräsfläche um den Anschluss."
+  },
+  {
+    "start": 21.4,
+    "window": 7.3,
+    "text": "Im Anschluss wird die Wand vorbereitet und eine umlaufende Nut gefräst."
+  },
+  {
+    "start": 32.3,
+    "window": 8.2,
+    "text": "Die Schalung wird positioniert, angepresst und abgedichtet."
+  },
+  {
+    "start": 41.3,
+    "window": 7.3,
+    "text": "Die Anschlussblase wird abgewickelt und aufgeblasen. Sie hält den Durchgang frei."
+  },
+  {
+    "start": 49.3,
+    "window": 10.4,
+    "text": "Der Injektionsmörtel füllt den Ausbruch und dringt tief ins umgebende Erdreich ein. Die Anschlusswand wird bis über die Nut verfüllt. Der Durchgang bleibt frei."
+  },
+  {
+    "start": 62.3,
+    "window": 5.3,
+    "text": "Nach dem Aushärten zieht sich die Schalung zurück."
+  },
+  {
+    "start": 68.3,
+    "window": 4.3,
+    "text": "Große Ausbrüche verfüllt. Der Anschluss bleibt frei."
+  },
+  {
+    "start": 73.5,
+    "window": 4.1,
+    "text": "DiTom. Das DSS-Flex Verfahren."
+  }
+]

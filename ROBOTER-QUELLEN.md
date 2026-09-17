@@ -1,5 +1,36 @@
 # MicroGator: Quellen und Modellzuordnung
 
+## 17.09.2026 – Drehachse hinter CutterCam, Hubarme ohne seitliches Gelenk
+
+Nutzerkorrektur: Links-/Rechtsbewegung entsteht an der Drehachse unmittelbar hinter der Kamera; die Arme dienen ausschließlich dem Heben/Senken. Erneut mit dem [IBAK-Fräserprospekt](https://www.ibak.de/fileadmin/website/ansprechpartner/flyer_prospekte/fraeserprospekt_a4_de_en.pdf), gedruckte S. 6–7, abgeglichen: Punkt 4 beschreibt das Drehmodul, Punkt 5 die separate vierte Achse zum Kippen des Motors.
+
+`src/robot.js` besitzt jetzt eine gemeinsame vordere Baugruppe mit Längsdrehachse hinter CutterCam. Frontflansch, Kamera, Armhalterungen, Hubschwingen, Führungen und Fräskopf drehen gemeinsam. Die Arme bewegen sich ausschließlich in der lokalen Hubebene; es gibt keine seitliche Verschiebung und kein seitliches Schwenkgelenk an den Armen. Der Fahrwagen samt Rädern bleibt unverdreht, die Leitungen folgen dem Übergang zur gedrehten Front. `src/model.js` löst die Fräsbahn über Modulwinkel, Hub und Längsfahrt. Die Werkzeugaufnahme bleibt dabei mit den Armenden verbunden. Achslage und Maße sind weiterhin fotografische Modellannahmen, keine neue Herstellerbemaßung.
+
+Geprüft: feste Gliedlängen, Werkzeugkontakt, verbundene Aufnahme, nur ebene Armbewegung, gemeinsame Kameradrehung und stabiler Fahrwagen über alle fünf DN; Rücksprünge und Schalungsphasen bleiben erhalten. Das Filmstudio zeigt das Drehmodul beim Rundfräsen zusätzlich in einer weiteren Ansicht.
+
+## 17.09.2026 – Ergänzung aus Nutzerkorrektur
+
+Einragung, Wurzeln, kreisförmige Fräsfläche und durchgehende Verpressung bis über die Nut sind aktuelle Nutzeranforderungen. Der zurückgefräste mittlere Rand liegt im Modell 18 mm über dem Hauptrohrscheitel; die Nutmitte liegt 50 mm darüber. Zusätzliche 3-mm-Vertiefung bis 16 mm hinter das obere Nutende als Platz für Mörtel bei unverändertem Durchgang. Das sind Darstellungsannahmen; keine neue IBAK-Maß- oder Verfahrensfreigabe. Das recherchierte Fräskopfmodell bleibt erhalten.
+
+## 17.09.2026 – Vertiefte Recherche und neuer Fräskopf
+
+Die vorherige Nachbildung wurde vom Nutzer als unähnlich zurückgewiesen. Sie ist keine freigegebene Originalrekonstruktion. Der erneute Abgleich stützt sich auf:
+
+- [IBAK-Fräserprospekt](https://www.ibak.de/fileadmin/website/ansprechpartner/flyer_prospekte/fraeserprospekt_a4_de_en.pdf), gedruckte S. 6–7: kompakter längsliegender Motorblock, oben aufgesetzte Spindel mit Flansch und Hals, FrontCam vor dem Motor sowie vierte Achse. S. 16–17 trennt Standardmotor BG1 und BG0 für tieferliegende Anschlussbereiche. Verwendet wird die BG1-Bauform als Formreferenz; keine Vermischung mit MicroGator 150 oder Air.
+- [IBAK-Anwenderbericht](https://www.ibak.de/infos/magazin/artikel/microgator-leistungsstark-und-zuverlaessig): Pilzkopf mit Diamantbeschichtung für vorbereitendes Fräsen; andere Werkzeuge für andere Bearbeitungsschritte.
+- [SDT-Werkzeugkatalog für IBAK-kompatible Roboter](https://sdt-tec.com/us/downloads/getpdf/SUJBSy1TRFQtMDQtMjAyNV8w), S. 14–17: gewölbte Pilzköpfe mit radialen/seitlichen Segmenten, Scheibenwerkzeuge für umlaufende Nuten, weitere Kopfvarianten. SDT ist Werkzeughersteller; damit ist die Artikelnummer des roten Werkzeugs im Nutzerfoto **nicht** identifiziert.
+- [Nutzerfoto](references/fraeskopf-nutzerfoto.jpg): rote Krone mit einzelnen rauen dunklen Segmenten, schwarzer Motorblock, kurze Spindel, Frontoptik und Warnmarkierung.
+
+`src/cutter.js` ersetzt den hochkant stehenden Kasten durch den längsliegenden Motor, verschraubten Flansch, konischen Spindelhals, metallischen Werkzeugstutzen, vordere FrontCam und gewölbte rote Krone. Die Schalungsaufnahme wird beim Fräsen durch den zugehörigen Fräskopfträger ersetzt. Motorlage und Werkzeugkontakt berücksichtigen jetzt den seitlichen Versatz der Spindel. Gehäusemaße, verdeckte Befestigungen und Werkzeugsegmentzahl bleiben Näherungen.
+
+Aktuelle Darstellungsparameter: Fräserdurchmesser 60 mm, Profilstärke 16 mm, Nut 16 mm hoch/6 mm tief, 50 mm hinter der mittleren Anschlusskante. Werkzeugmitte 205 mm über und 62 mm vor dem modellierten Trägerursprung. Diese Angaben sind **keine Herstellermaße**. Der Fotovergleich `Fraeskopf-Vergleich.html` zeigt dieselbe Geometrie wie die Animation frei drehbar neben dem Originalfoto. Frühere Maße im folgenden historischen Abschnitt sind überholt.
+
+## Früherer Entwurf 17.09.2026 – inzwischen ersetzt
+
+Zusätzliche Formreferenz: Nutzerfoto vom 17.09.2026, [Fräskopf und Fräser](references/fraeskopf-nutzerfoto.jpg). Schwarzes kantiges Gehäuse, metallische Seitenplatten und Befestigungen, kurzer abgestufter Werkzeugstutzen, roter Träger mit dunklen Schneiden sowie gelbes Warnzeichen nachgebildet. Kein Hersteller-CAD; verdeckte Details und Maße bleiben geschätzt.
+
+Vor dem Schalungseinsatz zeigt die Animation nun ein getrenntes Fräswerkzeug: umlaufender Außenabtrag (eine Werkzeugbreite, eine Werkzeugstärke tief), danach eine Ringnut ca. 50 mm hinter der mittleren Anschlusskante. Diese Verfahrensvorgabe stammt vom Nutzer. 32 mm Fräserdurchmesser, 10 mm Stärke, die feste 240-mm-Werkzeugbaugruppe und deren räumliche Führung sind Darstellungsannahmen, keine neu belegten IBAK-Maße oder Rüstanweisungen. Der Werkzeugwechsel erfolgt als Szenenwechsel außerhalb der Schadstelle. Während der Schalungsphasen bleibt der zusätzliche Fräser ausgeblendet; bisherige Kupplung und Schwingenlängen bleiben erhalten.
+
 Prüfstand: 13.09.2026. Ausgangspunkt sind die zwei vom Nutzer bereitgestellten Fotos und die [IBAK-Downloadseite](https://www.ibak.de/en/info/flyers-and-brochures).
 
 ## Belegte Bauform und Größenbereiche

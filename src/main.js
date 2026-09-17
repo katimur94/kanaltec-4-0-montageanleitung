@@ -3,17 +3,19 @@ import {families,groupInfo,bom,stages,sources,videos,PHASE} from './data.js';
 import assets from './assets.json';
 const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)];
 const lastStage=stages.length-1, endTime=stages.length-.001;
+$('timeline').max=Math.round(endTime*1000);
 const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:false,ref:'drawings',lastStage:-1};
 const safe=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const opts=families.map(f=>`<option value="${f.id}"${f.id===400?' selected':''}>${f.label}</option>`).join('');$('family').innerHTML=opts;$('refFamily').innerHTML=opts;
+$('resetView').insertAdjacentHTML('beforebegin','<button data-view="milling" id="millingView" title="Fräser und Abtrag von der Rohrinnenseite betrachten">Fräsdetail</button>');
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="robot" id="robotView" title="IBAK-Fahrwagen, Hubarm und Werkzeugaufnahme">Roboter</button>');
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="tool" id="toolView" title="CutterCam, Hubschwingen und vordere Werkzeugachse im Detail">Werkzeugarm</button><button data-view="shaft" id="shaftView" title="Nahansicht auf die Blasenwelle; folgt der Welle während der Animation">Wellenkamera</button>');
 $('viewSettingsPanel').querySelector('p').insertAdjacentHTML('beforebegin','<label><input id="hideRobot" type="checkbox"> IBAK-Roboter ausblenden</label>');
 $('groupButtons').innerHTML=Object.entries(groupInfo).map(([key,g],i)=>`<button class="groupbutton" data-group="${key}" style="--gcolor:${g.color}"><span class="groupicon">0${i+1}</span><span><strong>${g.short}</strong><small>${key==='s'?'Schild, Blase & Träger':key==='h'?'Tragstruktur & Antrieb':key==='z'?'Verbindung zum Roboter':'Abstützung & Distanzstücke'}</small></span><span class="chevron">›</span></button>`).join('');
-$('stageButtons').innerHTML=stages.map((s,i)=>`<button class="groupbutton" data-stage="${i}"><span class="stage-no">0${i+1}</span><strong>${s.title}</strong></button>`).join('');
+$('stageButtons').innerHTML=stages.map((s,i)=>`<button class="groupbutton" data-stage="${i}"><span class="stage-no">${String(i+1).padStart(2,'0')}</span><strong>${s.title}</strong></button>`).join('');
 $('labelsLayer').innerHTML=Object.entries(groupInfo).map(([g,d],i)=>`<div id="label-${g}" class="modellabel" style="--gcolor:${d.color}"><i></i><span>0${i+1}</span>${d.short}</div>`).join('')+[0,1,2,3,4].map(i=>`<div id="process-label-${i}" class="modellabel" hidden style="--gcolor:#399c94"></div>`).join('');
 $('sourceLinks').innerHTML=sources.map(s=>`<a class="source-card" href="${s.url}" target="_blank" rel="noopener noreferrer"><strong>${s.title} ↗</strong><span>${s.note}</span></a>`).join('');
-videos[1].title='Stutzensanierung mit Kanaltec 4.0';videos[2].title='Die Revolution in der Stutzensanierung – Kanaltec 4.0';
+videos[1].title='Historische Videoreferenz · Stutzensanierung';videos[2].title='Historische Videoreferenz · Verfahrensdarstellung';
 $('videoLinks').innerHTML=videos.map((v,i)=>`<a class="source-card" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener noreferrer"><strong>0${i+1} · ${v.title} ↗</strong><span>YouTube · Hermes Technologie</span></a>`).join('');
 $('photo1').src=assets.photos[0];$('photo2').src=assets.photos[1];
 let viewer;
@@ -66,14 +68,14 @@ function updateInfo(){
  $$('button[data-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.group===state.group);b.setAttribute('aria-pressed',String(b.dataset.group===state.group));});
  if(state.mode==='process'){$('viewEyebrow').textContent='SANIERUNG IM SCHNITTMODELL';$('viewTitle').innerHTML='So funktioniert<span>’s.</span>';updateStage(true);return;}
  $('viewEyebrow').textContent=state.mode==='explode'?'BAUGRUPPEN & EINZELTEILE':state.group==='all'?'INTERAKTIVE GESAMTANSICHT':'BAUGRUPPE IM DETAIL';
- $('viewTitle').innerHTML=state.group==='all'?(state.mode==='explode'?'Das System <span>entdecken.</span>':'Kanaltec <span>4.0</span>'):safe(groupInfo[state.group].short);
+ $('viewTitle').innerHTML=state.group==='all'?(state.mode==='explode'?'Das System <span>entdecken.</span>':'DSS-Flex <span>Verfahren</span>'):safe(groupInfo[state.group].short);
  if(state.group==='all'){$('detailIndex').textContent='01—04';$('detailTitle').textContent=state.mode==='explode'?'Den Aufbau sichtbar machen.':'Vier Baugruppen. Ein System.';$('detailText').textContent=state.mode==='explode'?'Mit dem Regler öffnest du den Aufbau. Wähle links eine Baugruppe, um die Einzelteile mit ihren Positionsnummern aus der PDF zu untersuchen.':'Der IBAK-Roboter fährt das Schalungssystem über die Klappvorrichtung zum Anschluss. Seine Werkzeugaufnahme trägt die Schalung anstelle des Fräskopfs. Wähle „Roboter“ für eine Nahansicht oder untersuche links die vier Schalungsbaugruppen.';$('detailCaption').textContent='Fünf Größenvarianten nach der Montageanleitung · DiTom GmbH Kanaltechnik';}
  else{const g=groupInfo[state.group];$('detailIndex').textContent='0'+(Object.keys(groupInfo).indexOf(state.group)+1);$('detailTitle').textContent=g.name;$('detailText').textContent=g.text;$('detailCaption').textContent='Originalzeichnung: Seite '+(f.page+g.offset)+' · '+f.label+(state.group==='s'&&state.id===600?' · Stücklistenzuordnung siehe Quellen':'');}
 }
 function setExplosion(v,fit=false){viewer?.setExplode(v);$('explosion').value=Math.round(v*100);$('explosionValue').textContent=Math.round(v*100)+' %';if(fit)viewer?.fit();}
 function updateStage(force=false){
  const idx=Math.min(lastStage,Math.floor(state.time)),s=stages[idx];viewer?.setProcess(state.time);$('timeline').value=Math.round(state.time*1000);$('stageCount').textContent=(idx+1)+' / '+stages.length;
- if(force||idx!==state.lastStage){state.lastStage=idx;$('detailIndex').textContent='0'+(idx+1);$('detailTitle').textContent=s.title;$('detailText').textContent=s.text;$('detailCaption').textContent=s.caption;$$('button[data-stage]').forEach(b=>{b.classList.toggle('selected',+b.dataset.stage===idx);b.setAttribute('aria-current',+b.dataset.stage===idx?'step':'false');});$('prevStage').disabled=idx===0;$('nextStage').disabled=idx===lastStage;}
+ if(force||idx!==state.lastStage){state.lastStage=idx;$('detailIndex').textContent=String(idx+1).padStart(2,'0');$('detailTitle').textContent=s.title;$('detailText').textContent=s.text;$('detailCaption').textContent=s.caption;$$('button[data-stage]').forEach(b=>{b.classList.toggle('selected',+b.dataset.stage===idx);b.setAttribute('aria-current',+b.dataset.stage===idx?'step':'false');});$('prevStage').disabled=idx===0;$('nextStage').disabled=idx===lastStage;}
 }
 function updatePlayButtons(){$('processPlay').textContent=state.playing?'Ⅱ':'▶';$('processPlay').setAttribute('aria-label',state.playing?'Ablauf pausieren':'Ablauf abspielen');$('explodePlay').textContent=state.explodePlaying?'Ⅱ':'▶';$('explodePlay').setAttribute('aria-label',state.explodePlaying?'Explosionsanimation pausieren':'Explosionsanimation starten');}
 function togglePlay(){if(state.mode==='explode'){state.explodePlaying=!state.explodePlaying;if(state.explodePlaying)viewer?.fitExplosion();if(viewer?.targetExplode>=.99)state.explodeDirection=-1;else if(viewer?.targetExplode<=.01)state.explodeDirection=1;}else{if(state.mode!=='process')setMode('process');if(state.time>=endTime-.02)state.time=0;state.playUntil=endTime;state.playing=!state.playing;}updatePlayButtons();}
@@ -127,7 +129,7 @@ $('openPdf').onclick=()=>{const bytes=Uint8Array.from(atob(assets.pdf.split(',')
 $('drawingImage').onclick=()=>largeImage($('drawingImage').src,$('drawingImage').alt);for(const id of ['photo1','photo2'])$(id).onclick=()=>largeImage($(id).src,$(id).alt);
 $('closeImage').onclick=()=>$('imageDialog').close();$('help').onclick=()=>$('helpDialog').showModal();$('closeHelp').onclick=()=>$('helpDialog').close();
 for(const id of ['helpDialog','imageDialog'])$(id).onclick=e=>{if(e.target===$(id))$(id).close();};
-$('saveImage').onclick=()=>{if(!viewer)return;const a=document.createElement('a');a.href=viewer.screenshot();a.download='Kanaltec-4.0-DN'+state.id+'-'+state.mode+'.png';a.click();notify('3D-Ansicht als PNG gespeichert.');};
+$('saveImage').onclick=()=>{if(!viewer)return;const a=document.createElement('a');a.href=viewer.screenshot();a.download='DSS-Flex-Verfahren-DN'+state.id+'-'+state.mode+'.png';a.click();notify('3D-Ansicht als PNG gespeichert.');};
 document.addEventListener('keydown',e=>{
  if(e.altKey||e.ctrlKey||e.metaKey||document.querySelector('dialog[open]')||e.target.isContentEditable)return;
  const timelineControl=['timeline','explosion'].includes(e.target.id);
@@ -145,8 +147,10 @@ if(viewer)viewer.onFrame=dt=>{
  // Public, read-only DOM evidence for offline QA; no network services are used.
  $('viewport').dataset.modelParts=viewer.parts.length;$('viewport').dataset.group=state.group;$('viewport').dataset.mode=state.mode;$('viewport').dataset.explosion=viewer.explode.toFixed(3);$('viewport').dataset.stage=Math.min(lastStage,Math.floor(state.time));$('viewport').dataset.view=viewer.currentView;
  if(state.mode==='process'){
+  $('mechanismReadout').hidden=state.time<PHASE.POSITION;
+  $('viewport').dataset.millingOuter=viewer.repair.millingProgress?.outer??0;$('viewport').dataset.millingInner=viewer.repair.millingProgress?.inner??0;
   const full=String(viewer.sensorFull);if($('sensorStatus').dataset.full!==full){$('sensorStatus').dataset.full=full;$('sensorText').textContent=viewer.sensorFull?'Leuchtet · Gegendruck meldet voll':'Aus · keine Vollmeldung';}
-  const n=Math.floor(state.time),f=state.time-n,drive=n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';
+  const n=Math.floor(state.time),f=state.time-n,drive=n<PHASE.POSITION?'Vorbereitung · Schalung noch nicht im Einsatz':n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';
   if($('driveStatus').textContent!==drive)$('driveStatus').textContent=drive;
   const windingDetail=viewer.winding.fullyUnwound?'Keine Restwicklung · Wellenfläche ausgerichtet · Luftweg frei':`Restwicklung ${viewer.winding.remainingTurns.toFixed(2).replace('.',',')} Umdr. · ca. 3 mm je Wandlage · noch keine Luft`;
   if($('windingDetail').textContent!==windingDetail)$('windingDetail').textContent=windingDetail;

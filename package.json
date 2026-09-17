@@ -1,11 +1,11 @@
 {
-  "name": "kanaltec-4-0-praesentation",
+  "name": "dss-flex-verfahren-praesentation",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node work/build.mjs",
-    "test": "node work/check-model.mjs && node work/check-robot.mjs"
+    "test": "node work/check-model.mjs && node work/check-robot.mjs && node work/check-milling.mjs"
   },
   "dependencies": {
     "three": "0.160.1"

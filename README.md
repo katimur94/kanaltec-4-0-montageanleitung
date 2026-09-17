@@ -1,4 +1,12 @@
-# Kanaltec 4.0 – interaktive 3D-Präsentation
+# DSS-Flex Verfahren – interaktive 3D-Präsentation
+
+Aktueller Name: **DSS-Flex Verfahren**. Dieses Repository enthält die interaktive 3D-Animation, alle sechs aktuellen Werbevideos und die PowerPoint mit eingebetteten Animationen.
+
+[3D-Animation](https://katimur94.github.io/kanaltec-4-0-montageanleitung/) · [Videogalerie](https://katimur94.github.io/kanaltec-4-0-montageanleitung/Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html) · [PowerPoint herunterladen](https://katimur94.github.io/kanaltec-4-0-montageanleitung/Praesentationen/DSS-Flex-Verfahren.pptx)
+
+**Fräskopf nach Recherche überarbeitet:** Lokaler, drehbarer [Fotovergleich](Fraeskopf-Vergleich.html) mit dem Nutzerfoto. IBAK-Prospekt und Werkzeughersteller-Katalog bilden die Formreferenzen für Motor, Spindel und segmentierte Pilzkrone; die genaue Werkzeugnummer bleibt offen. Quellen und Abgrenzungen: [ROBOTER-QUELLEN.md](ROBOTER-QUELLEN.md).
+
+**Stand 17.09.2026:** Der Ablauf beginnt mit dem Rückfräsen von Einragung und Wurzeln, dem Fräsen rund um den Anschluss, einer umlaufenden Nut ca. 5 cm im Anschluss und dem Wechsel zur Schalung. Danach folgen die Sanierungsphasen einschließlich tiefer Verpressung im Erdreich. **Fräsdetail** zeigt Werkzeug und Abtrag von innen. Werkzeugmaße, Bewegungsführung und Ausdehnung im Erdreich sind schematisch. Bedienung: [START-HIER.md](START-HIER.md).
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
 
@@ -18,7 +26,7 @@ Im **Kanalblick** sind nach dem Ausschalen die eingeprägten Drucksensor- und In
 
 Der **IBAK MicroGator** trägt die Klappvorrichtung an seiner Werkzeugaufnahme. Fahrwagengehäuse, Drehmodul, CutterCam mit vier LED, Hubzylinder, hinteres Klappgelenk, Naben und Reifen sind nach Fotos und IBAK-Prospekten modelliert. Die DN-Auswahl wechselt zwischen Grundfahrwagen, Zusatz DN 350–600 und Zusatz DN 600–800 und passt Bereifung, Spurweite und Achsversatz an. Der Schalter **Roboter anzeigen** gilt auch während der Animation; **Roboter** öffnet die Nahansicht. Quellen und Grenzen der Rekonstruktion: [ROBOTER-QUELLEN.md](ROBOTER-QUELLEN.md). Unbemaßte Rad- und Anschlussmaße sind angenähert, keine praktische Rüstanweisung und keine zusätzlichen Positionen der DiTom-Stückliste.
 
-Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `Kanaltec-4.0-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.
+Die Live-Seite im Browser öffnen. Für eine Offline-Präsentation `DSS-Flex-Verfahren-Praesentation.html` herunterladen und per Doppelklick öffnen. Modell, Logo, Fotos und Originalzeichnungen einschließlich PDF sind eingebettet; externe Quellen und YouTube-Videos benötigen Internet. Die HTML-Datei ist etwa 20 MB groß.
 
 Die vollständige Bedienung steht in [START-HIER.md](START-HIER.md). Unbemaßte Geometrien und Teile des Funktionsablaufs sind angenähert; die Präsentation erläutert das System und ist keine bemaßte Fertigungszeichnung.
 
@@ -34,7 +42,7 @@ npm test
 npm run build
 ```
 
-`src/` enthält Modell, Animation, Oberfläche und eingebettete Quellen. `work/build.mjs` erzeugt zwei inhaltsgleiche, eigenständige Dateien: `index.html` für Pages und `Kanaltec-4.0-Praesentation.html` für die Offline-Nutzung. `work/check-model.mjs` prüft die Baugruppen und die Wickelmechanik für alle fünf Baugrößen; `work/check-robot.mjs` zusätzlich die Roboterkupplung, den Hubarm, die Radbewegung und den Radfreigang.
+`src/` enthält Modell, Animation, Oberfläche und eingebettete Quellen. `work/build.mjs` erzeugt zwei inhaltsgleiche, eigenständige Dateien: `index.html` für Pages und `DSS-Flex-Verfahren-Praesentation.html` für die Offline-Nutzung. `work/check-model.mjs` prüft die Baugruppen und die Wickelmechanik für alle fünf Baugrößen; `work/check-robot.mjs` zusätzlich die Roboterkupplung, den Hubarm, die Radbewegung und den Radfreigang.
 
 ## Veröffentlichung
 

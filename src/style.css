@@ -96,3 +96,5 @@ html[data-theme=dark]{color-scheme:dark}
 .main-panel>#loading{position:static;padding:12px;min-height:0}
 .viewport:fullscreen{width:100vw;height:100dvh;min-height:0;max-height:none;border:0;border-radius:0}
 .viewport::backdrop{background:#101b24}
+
+.download-links{display:flex;gap:18px;flex-wrap:wrap}.download-links a{color:inherit;text-decoration:underline;text-underline-offset:3px}

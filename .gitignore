@@ -6,3 +6,13 @@ Thumbs.db
 .env
 .env.*
 Montageanleitung_Kanaltec_4_0.pdf
+
+# Publish only the current final DSS-Flex media, never production reports or older exports.
+/Videos/*
+!/Videos/DSS-Flex-Verfahren-2026/
+/Videos/DSS-Flex-Verfahren-2026/*
+!/Videos/DSS-Flex-Verfahren-2026/*.mp4
+!/Videos/DSS-Flex-Verfahren-2026/*.jpg
+!/Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html
+!/Videos/DSS-Flex-Verfahren-2026/sprechertext.json
+__pycache__/

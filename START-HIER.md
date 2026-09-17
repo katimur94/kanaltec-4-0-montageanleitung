@@ -1,4 +1,18 @@
-# Kanaltec 4.0 präsentieren
+# DSS-Flex Verfahren präsentieren
+
+**PowerPoint:** `Praesentationen/DSS-Flex-Verfahren.pptx` öffnen und **F5** drücken. Zehn Folien mit Übergängen, Texteinblendungen und acht eingebetteten Videos. Die Clips starten automatisch, zur nächsten Folie geht es mit der rechten Pfeiltaste. Details siehe [POWERPOINT.md](POWERPOINT.md).
+
+**Videos und PowerPoint auf Pages:** Die Fußzeile der 3D-Animation enthält **Videos ansehen** und **PowerPoint herunterladen**. Die Videogalerie bietet alle drei Formate mit und ohne Sprecher und verlinkt zurück zur Animation. Nach dem Herunterladen funktioniert die PowerPoint mit ihren eingebetteten Videos offline.
+
+**Neuer Name:** Die Animation und Werbevideos heißen jetzt **DSS-Flex Verfahren**. Die lokale Videogalerie liegt unter `Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html`; sie enthält drei Formate, jeweils mit Sprecher und nur mit Musik. Die eigenständige Animation heißt `DSS-Flex-Verfahren-Praesentation.html`.
+
+**Verpressung im Erdreich:** Unter **So funktioniert’s → Schadstelle** und **Schnitt & Sicht → Rohr im Schnitt** zeigt die Injektion jetzt den wachsenden Mörtelkörper im Boden. Nach dem Ausschalen bleibt er im Schnitt sichtbar; der Anschluss innen bleibt frei. Im Werbevideo ist die fertige Verpressung zusätzlich direkt vor dem Logo-Abschluss zu sehen.
+
+**Korrigierte Fräsbewegung:** Unter **So funktioniert’s → Werkzeugarm** ist die Drehachse direkt hinter CutterCam zu sehen. Beim Rundfräsen dreht das vordere Modul nach links/rechts; die Arme heben und senken innerhalb ihrer Hubebene. Mit der Zeitachse lassen sich beide Drehrichtungen vergleichen. Im Werbevideo zeigen Sekunden 14–20 dieselbe Baugruppe im weiteren Bildausschnitt.
+
+**Fräskopf mit dem Original vergleichen:** `Fraeskopf-Vergleich.html` per Doppelklick öffnen. Links steht dein Originalfoto, rechts die neu recherchierte 3D-Nachbildung. Mit Maus/Finger drehen, mit dem Rad zoomen oder **Schräg / Seite / Vorne / Oben** wählen. Die Datei funktioniert offline und zeigt dieselbe Fräskopfgeometrie wie die Animation. Die genaue Werkzeug-Artikelnummer und Maße sind nicht bestätigt.
+
+**Neu – Fräsen vor der Schalung:** Die lokal gebaute HTML-Datei öffnen und **So funktioniert’s** wählen. Die ersten drei Schritte zeigen **Anschluss freifräsen**, **Nut im Anschluss fräsen** und **Zur Schalung wechseln**. Über **Fräsdetail** und **Schnitt & Sicht → Rohr im Schnitt** lässt sich der Abtrag von innen betrachten. **Vorführen** spielt alle zehn Schritte ab. Die Nut liegt als geschlossener Ring ca. 5 cm hinter der mittleren Anschlusskante. Fräserdurchmesser 60 mm und Stärke 16 mm sind schematische Modellannahmen; Breite und Tiefe des äußeren Abtrags folgen diesen Werkzeugmaßen.
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
 
@@ -14,12 +28,12 @@
 
 Der Schalter **Roboter anzeigen** direkt über dem Modell blendet den Fahrwagen ein oder aus, auch während der Animation. Der Ablauf läuft beim Umschalten weiter. Die Auswahl gilt auch in der Explosionsansicht und bleibt beim Größenwechsel sowie nach dem Neuladen gespeichert, soweit der Browser lokale Speicherung erlaubt. Der Schalter ist mit **Schnitt & Sicht → IBAK-Roboter ausblenden** synchronisiert.
 
-Die Datei **Kanaltec-4.0-Praesentation.html** per Doppelklick in Edge, Chrome oder Firefox öffnen. Modell, Bilder, Originalzeichnungen und Animationen sind in dieser einen Datei enthalten. Zum Weitergeben oder für einen USB-Stick genügt die HTML-Datei. Externe Videos und Herstellerseiten benötigen Internet.
+Die Datei **DSS-Flex-Verfahren-Praesentation.html** per Doppelklick in Edge, Chrome oder Firefox öffnen. Modell, Bilder, Originalzeichnungen und Animationen sind in dieser einen Datei enthalten. Zum Weitergeben oder für einen USB-Stick genügt die HTML-Datei. Externe Videos und Herstellerseiten benötigen Internet.
 
 1. Oben über **Dunkel / Hell** den Darstellungsmodus wählen. Die Auswahl wird im Browser gespeichert, soweit lokale Speicherung erlaubt ist.
 2. Unter **3D erkunden** eine Größe und eine Baugruppe wählen. Oberhalb der 3D-Fläche **Drehen / Verschieben** wählen und mit der Maus oder einem Finger ziehen. Die vier Richtungsknöpfe bewegen das Modell nach links, rechts, oben oder unten. Rechts ziehen verschiebt auch im Drehmodus; mit dem Mausrad zoomen. Zwei Finger verschieben und zoomen. **R** zentriert die Ansicht. Die Pfeiltasten der Tastatur bleiben für Animationsschritte reserviert.
 3. **Explosionsansicht** öffnen und den Schieberegler oder die Abspieltaste verwenden. Über **Stückliste ansehen** lässt sich jedes aufgeführte Bauteil auswählen und hervorheben.
-4. **Vorführen** startet die sieben Sanierungsschritte. Jeder Schritt kann auch einzeln angewählt werden; die Leertaste startet oder pausiert.
+4. **Vorführen** startet die zehn Schritte einschließlich Fräsvorbereitung. Jeder Schritt kann auch einzeln angewählt werden; die Leertaste startet oder pausiert.
 5. **Originalzeichnung** zeigt die zugehörige PDF-Seite. Ein Klick vergrößert die Zeichnung. Die vollständige PDF und die Fotos stehen unter **Originale & Quellen** bereit.
 
 Über **Schnitt & Sicht** oberhalb der 3D-Fläche wählst du unabhängig voneinander **Rohr aufschneiden**, **Schalung aufschneiden** und **Vordere Halterung ausblenden**. Die Schalung und ihre Halterung sind zunächst vollständig sichtbar. Die Einstellungen bleiben bei Kamerawechseln erhalten und werden im Browser gespeichert, soweit möglich. **Durchblick** schaltet die transparente Darstellung um.
@@ -47,3 +61,11 @@ Quellen für spätere Anpassungen liegen unter `src`. Nach `npm ci` lautet der l
 **Öffnungen der drei Schalungslagen:** Nur das äußere Schalungsschild hat die drei getrennten Funktionsöffnungen. Schalungsträger und die dazwischenliegende Dichtblase haben jeweils einen großen ovalen Durchbruch. Der Injektionsanschluss sitzt von unten am äußeren Schild und folgt ihm in der Explosionsansicht. Die verdeckte Ovalkontur ist anhand der ergänzenden Systembeschreibung angenähert.
 
 Unter **Zentraleinheit → Klappvorrichtung** öffnest du die Nahansicht der Verbindung zum Roboter. Sie steht in **3D erkunden** und in der **Explosionsansicht** zur Verfügung. Die Kamera fokussiert Pos. 7–10 und deren Befestigungen aus PDF-Seite 10; mit Drehen und Verschieben kannst du beide Seiten prüfen. Es werden dabei keine Bauteile ausgeblendet.
+
+## Neue Schadens- und Verpressungsdarstellung (17.09.2026)
+
+Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die runde Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: erst Hohlraumfüllung, danach Mörtel bis über die Nut. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
+
+## Fertige Werbevideos vom 17.09.2026
+
+Die lokale Datei `Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html` öffnet die dunkle Übersicht mit sechs abspielbaren MP4-Dateien: Querformat, Hochformat und 4:5, jeweils mit Sprecher oder nur Musik. Alle zeigen ausschließlich Fräsen und Sanierung im Darkmode mit transparentem DiTom-Logo oben links und vollständig geschlossenem Mörtelabschluss. Die großen Ausgaben liegen lokal und gehören nicht zum Website-Build. Für eine neue Produktion siehe `work/VIDEO-PRODUKTION.md`.

@@ -1,6 +1,6 @@
-# Projektstand und Übergabe – Kanaltec 4.0
+# Projektstand und Übergabe – DSS-Flex Verfahren
 
-Stand: **13.09.2026**. Diese Datei beschreibt die aktuelle Implementierung, nicht die ältere Demo aus der ersten Projektphase.
+Stand: **17.09.2026**. Diese Datei beschreibt die aktuelle Implementierung, nicht die ältere Demo aus der ersten Projektphase. Der Nutzer hat die Veröffentlichung des gesamten aktuellen DSS-Flex-Stands einschließlich Videos und PowerPoint auf GitHub und Pages beauftragt.
 
 ## Auf einem anderen Computer beginnen
 
@@ -8,13 +8,35 @@ Stand: **13.09.2026**. Diese Datei beschreibt die aktuelle Implementierung, nich
 2. In den Ordner wechseln: `cd kanaltec-4-0-montageanleitung`
 3. Zuerst diese Datei, [FORTSCHRITT.md](FORTSCHRITT.md) und [AGENTS.md](AGENTS.md) lesen.
 4. Mit Node.js ab Version 20: `npm ci`, danach `npm test` und `npm run build`.
-5. `index.html` im Browser öffnen. Für reine Präsentationen reicht die Datei `Kanaltec-4.0-Praesentation.html`, ohne Node oder Installation.
+5. `index.html` im Browser öffnen. Für reine Präsentationen reicht die Datei `DSS-Flex-Verfahren-Praesentation.html`, ohne Node oder Installation.
 
 Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für die Seite erforderlichen Ressourcen ein. Es gibt kein Backend, keine benötigte `.env` und keine erforderlichen Telegramm- oder Sprachzugänge. Die Web-Präsentation lässt sich vollständig aus diesem Repository weiterentwickeln. Die früher separat erstellten Videodateien und lokalen Produktionsskripte gehören nicht zu diesem portablen Web-Build; aktuelle Modelländerungen aktualisieren solche Videos nicht automatisch.
 
 **Live:** https://katimur94.github.io/kanaltec-4-0-montageanleitung/
 
 ## Zuletzt erledigt
+
+**Veröffentlichungsumfang:** Sources und beide eigenständigen HTML-Ausgaben, Fräskopfvergleich, sechs aktuelle MP4-Dateien samt Galerie/Vorschaubildern sowie `Praesentationen/DSS-Flex-Verfahren.pptx`. Die Fußzeile der Animation und die Galerie verbinden die Ausgaben miteinander. Der alte Dateiname `Kanaltec-4.0-Praesentation.html` leitet zur DSS-Flex-Präsentation weiter. Nur finale DSS-Flex-Medien sind in `.gitignore` freigegeben, ältere Filmstände und lokale QA-/Produktionslaufzeiten bleiben ausgeschlossen. Die Git-Historie wird auf Basis des vorhandenen Repository-Stands fortgesetzt. Abschluss/Live-Prüfung werden erst nach erfolgreichem Push dokumentiert.
+
+**PowerPoint-Präsentation (17.09.2026):** `Praesentationen/DSS-Flex-Verfahren.pptx` mit zehn bearbeitbaren Folien, Darkmode, DiTom-Logo oben links, weichen Übergängen und Texteinblendungen. Sieben stumme Prozessclips und der vollständige Film mit Sprecher sind eingebettet. Jede Folie in PowerPoint gerendert und visuell geprüft, alle acht Videos in der Bildschirmpräsentation automatisch gestartet und Wiedergabefortschritt bestätigt. Bedienung und Umfang siehe `POWERPOINT.md`. Lokale Ausgabe, keine Veröffentlichung.
+
+**Umbenennung in DSS-Flex Verfahren (17.09.2026):** Aktueller Produktname in Oberfläche, Bildexport, Film-Titelkarten und Sprechertext. Die eigenständige Präsentation heißt `DSS-Flex-Verfahren-Praesentation.html`. Neue Videos werden unter `Videos/DSS-Flex-Verfahren-2026/` mit dem Dateipräfix `DiTom-DSS-Flex-Verfahren-` bereitgestellt. DiTom bleibt Firmenname und Logo. Originaldokumente, historische Chronikeinträge, externe Quellenadressen und bestehende Repository-URLs bleiben als Herkunftsnachweis erhalten; deren Bezeichnungen sind keine aktuelle Produktbeschriftung. Die Umbenennung betrifft den lokalen Stand, keine neue Veröffentlichung.
+
+**Tiefe Verpressung im Erdreich (17.09.2026):** `src/ground-grout.js` ergänzt einen während der Injektion wachsenden, unregelmäßigen Mörtelkörper außerhalb des Rohrs. Die Schnittansicht zeigt das umgebende Erdreich und eingeschlossene Bodenkörner; Kanal und Anschlussquerschnitt bleiben frei. Unter **Schadstelle** passt der gesamte Körper in die Ansicht. Im Film folgt auf den freien Anschluss bei Sekunden 70–73 eine eigene Schnittansicht des verpressten Bodens. Zwei Sprecherpassagen wurden angepasst. Bodenstruktur und Ausdehnung sind schematische Darstellungsparameter, keine zugesicherte Eindringtiefe.
+
+**Drehachse hinter CutterCam korrigiert (17.09.2026):** Beim Fräsen erzeugt das gemeinsame Drehmodul die Links-/Rechtsbewegung. Frontflansch, Kamera, Armhalterung und Fräskopf drehen um die Längsachse; die Hubarme bleiben in ihrer lokalen Hubebene. Fahrwagen und Räder bleiben gerade. Die Fräsbahn wird über Modulwinkel, Hub und Längsfahrt erreicht, mit durchgehend verbundenen Arm-/Werkzeugachsen. Alle fünf DN und die Ansichten im Browser geprüft; beide HTML-Ausgaben neu gebaut. Die Filmkamera zeigt das Drehmodul während des Rundfräsens ausdrücklich mit.
+
+**Logo, Darkmode und Mörtelabschluss korrigiert (17.09.2026):** Das Filmstudio zeichnet das originale transparente Logo oben links ohne helle Hintergrundplatte; auch Auftakt, Abschluss und lokale Galerie sind dunkel. Die Mörtelhülse folgt den beiden Nutstufen exakt. Der vollständige Füllzustand wird separat berechnet, sodass ein vorheriger Zustand knapp unter 100 % keinen offenen Rand mehr festhält. Modellprüfungen einschließlich Rücksprung-Regression für alle fünf DN bestanden, beide HTML-Dateien neu gebaut und inhaltsgleich; lokale Browserkontrolle ohne Fehler.
+
+**Neue Prozess-Werbevideos (17.09.2026):** Aktueller Fräs- und Sanierungsvorgang einschließlich Wurzeln/Einragung und Verpressung bis über die Nut, ohne Explosionsansicht. 78 Sekunden mit originalem DiTom-Logo, je drei Formate mit neuer deutscher synthetischer Sprecherstimme/Musik oder nur Musik. Sechs fertige und geprüfte MP4-Dateien unter `Videos/DSS-Flex-Verfahren-2026/`, dort `Videos-ansehen.html` zum lokalen Abspielen. Auf Nutzerkorrektur kein Telegram-Versand. Reproduzierbare Filmproduktion unter `work/`; Details siehe `WERBEVIDEOS.md` und `work/VIDEO-PRODUKTION.md`.
+
+
+**Aktuell: Einragender Anschluss, Wurzeln und durchgehende Verpressung.** Phase 0 schneidet zuerst den in die Haltung ragenden Rohrteil und verzweigte Wurzeln zurück und fräst anschließend eine runde Außenkontur (auf der abgewickelten Rohrinnenfläche). Phase 1 bereitet die Anschlusswand bis über die Nut vor. Nach der Hohlraumfüllung steigt Mörtel lückenlos von der zurückgefrästen Kante bis 16 mm über das obere Nutende; die innere Mörtelfläche bleibt exakt auf dem ursprünglichen Anschlussradius. Eine 3-mm-Vertiefung schafft den Platz dafür. Nutmitte weiterhin ca. 50 mm hinter der mittleren zurückgefrästen Kante. Alle zusätzlichen Maße/Schadensformen sind Darstellungsannahmen. Zeitachse, zehn Phasen und Schalungsmechanik bleiben erhalten.
+
+
+**Aktuell: Fräskopf nach vertiefter Recherche ersetzt.** Der erste Foto-Nachbau wurde als unähnlich beanstandet. Maßgeblich ist jetzt `src/cutter.js`: längsliegender BG1-ähnlicher Motorblock, Flansch/Spindelhals oben, FrontCam vorne und gewölbte segmentierte rote Fräserkrone. Ein separater, offline drehbarer `Fraeskopf-Vergleich.html` zeigt Originalfoto und Modell nebeneinander. IBAK und SDT wurden als Primärquellen bildlich ausgewertet; die Artikelnummer des Werkzeugs im Foto bleibt ungeklärt. Aktuelle Formzuordnung und Grenzen stehen oben in `ROBOTER-QUELLEN.md`.
+
+**Fräsen vor der Schalung:** Drei neue Phasen vor dem bekannten Ablauf: Außenabtrag um den Anschluss, umlaufende Nut ca. 50 mm hinter der mittleren Anschlusskante, Werkzeugrückzug und Wechsel zur Schalung. Außenabtrag eine Fräserbreite breit/eine Fräserstärke tief. Fräskopf nach dem Nutzerfoto vom 17.09.2026: schwarzes kantiges Motorgehäuse, Seitenbleche, kurze Metallspindel, rot-schwarzer Schneidkopf mit einzelnen Schneiden und gelbes Warnzeichen. Die erste Ausführung mit langer dünner Welle wurde ersetzt. Maße sind geschätzt: 60 mm Fräserdurchmesser, 16 mm Stärke; Nut 16 mm hoch und 6 mm tief. Kein CAD und keine bestätigte Hersteller-Rüstkonfiguration. Die neue Ansicht **Fräsdetail** zeigt den Abtrag von innen. Zehn Phasen, Vor-/Rücksprünge und alle fünf DN geprüft. Quellen, Bedienung und Prüfstand siehe Chronik.
 
 **Neue Werbefilme:** Sechs Exporte mit Logoanimation und Modell-Highlights in drei Formaten, je mit Sprecher/Musik oder nur Musik. Details, Prüfstand und lokale Produktionsdateien: [WERBEVIDEOS.md](WERBEVIDEOS.md). Der persönliche Telegram-Skill und seine verschlüsselten Zugangsdaten bleiben außerhalb des Repositories.
 
@@ -56,13 +78,16 @@ Die Animationszeit ist eine Phasenzahl, keine reale Zeit in Sekunden. `PHASE` in
 
 | Zeitbereich | Phase |
 |---|---|
-| 0–1 | Positionieren mit flachem Bumper |
-| 1–2 | Bumper aufblasen / Schild anpressen |
-| 2–3 | Dichtblase zwischen Schild und Träger aufblasen |
-| 3–4 | Anschlussblase vollständig abwickeln, kurze Pause, danach aufblasen |
-| 4–5 | Schlauch füllen und Mörtel injizieren |
-| 5–6 | Aushärten |
-| 6–6,999 | Anschlussblase vakuumieren / aufwickeln, Dichtblase entspannen, Bumper absenken, wegfahren |
+| 0–1 | Einragenden Anschluss und Wurzeln zurückfräsen; kreisförmig um den Anschluss fräsen |
+| 1–2 | Anschlusswand vertiefen; umlaufende Nut ca. 5 cm hinter der zurückgefrästen Kante fräsen |
+| 2–3 | Fräser absenken, zurückfahren, Szenenwechsel auf Schalung |
+| 3–4 | Positionieren mit flachem Bumper |
+| 4–5 | Bumper aufblasen / Schild anpressen |
+| 5–6 | Dichtblase zwischen Schild und Träger aufblasen |
+| 6–7 | Anschlussblase vollständig abwickeln, kurze Pause, danach aufblasen |
+| 7–8 | Schlauch füllen und Mörtel injizieren |
+| 8–9 | Aushärten |
+| 9–9,999 | Anschlussblase vakuumieren / aufwickeln, Dichtblase entspannen, Bumper absenken, wegfahren |
 
 Die Phasentasten springen auf `Phase + 0,92`, also fast an das Ende. Für Ankunfts- oder Hub-Zwischenstände die Zeitachse oder Pfeiltasten nutzen. Die Geometrie muss auch nach einem direkten Rücksprung stimmen; keine nur vorwärts funktionierenden Zustandsketten einbauen.
 
@@ -78,14 +103,18 @@ X verläuft längs des Kanals, Y nach oben, Z quer zum Kanal. Modelllängen sind
 | `src/model.js` | DiTom-Bauteile, Bohrungen, Anordnung, Explosion, Prozesspositionen, Kameras und Nachführung |
 | `src/bladder.js` | Wickelgeometrie, starre Blasenteile, Montagefuß, Restwicklung und Freigabe der Inflation |
 | `src/robot.js` | MicroGator, CutterCam, Schwingen, Radkonfigurationen und Kopplung |
+| `src/milling.js` | Fräskopf nach Foto, geschätzte Werkzeugmaße, Fräszeiten und Kontaktbahn |
+| `src/cutter.js` | Recherchierte Motor-/Fräskopfgeometrie; gemeinsam für Animation und Fotovergleich |
 | `src/repair.js` | Rohrbruch, Infiltration, `shieldWaterPath`, Tropfen, Schlauch-/Mörtelfüllung |
 | `src/repair-surface.js` | Materialoberflächen, bündige Gussfläche und Abdrücke |
+| `src/ground-grout.js` | Erdreich, wachsender äußerer Verpresskörper und gefüllte Schnittansicht |
 | `src/data.js` | Varianten, PDF-Stücklisten, Phasen, Quellenlinks; unsichere Teile ausdrücklich markieren |
 | `src/assets.json` | Eingebettete PDF, Seitenbilder und Fotos; keine Zugangsdaten |
 | `src/index.template.html`, `src/style.css` | Seitenaufbau und Gestaltung |
 | `work/build.mjs` | Portabler Build der beiden eigenständigen HTML-Dateien |
 | `work/check-model.mjs` | DiTom-Geometrie, Blasenablauf, Mörtel, Wasserführung und Wellenkamera über alle fünf DN |
 | `work/check-robot.mjs` | Kupplung, Parallelführung, Radbewegung und Rohrfreigang über alle fünf DN |
+| `work/check-milling.mjs` | Werkzeugkontakt, Abtrag, Ringnut, feste Gliedlängen, Wiederverfüllung und Rücksprünge über alle fünf DN |
 
 Nicht die minifizierte Ausgabe in `index.html` bearbeiten. Quellen ändern und neu bauen. Auf dem ursprünglichen Arbeitscomputer existiert zusätzlich ein äußerer Entwicklungsordner mit `work/runtime` und `work/prepare-github.mjs`; das ist keine Voraussetzung auf anderen Computern. Im geklonten Repository kommen Three.js und esbuild ausschließlich über `npm ci` aus der Lockdatei.
 

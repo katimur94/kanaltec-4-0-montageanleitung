@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {Viewer} from '../src/model.js';
-import {families,bom} from '../src/data.js';
+import {families,bom,PHASE} from '../src/data.js';
 import {ports,bladderMount,windingSpec,passage} from '../src/bladder.js';
 import {imprints} from '../src/repair-surface.js';
 
@@ -158,7 +158,7 @@ for(const f of families){
  assert.ok(v.parts.some(p=>p.group==='h'&&p.key==='rail'&&!p.node.visible),'Holder hidden only on user setting');
  v.setSections({pipe:true,shield:false,holder:false});assert.ok(v.parts.every(p=>p.node.visible),'User can restore complete holder');v.fit();
  v.mode='process';v.context.visible=true;
- const pose=t=>{v.time=t;v.updateParts();v.processPose();v.model.updateMatrixWorld(true);};
+ const pose=t=>{v.time=t+PHASE.POSITION;v.updateParts();v.processPose();v.model.updateMatrixWorld(true);};
  // Moving shield intercepts infiltration; water follows the intact physical
  // shell even when the presentation hides a half for explanation.
  pose(0);assert.ok(v.repair.streams.every(s=>!s.path.caught),'Before arrival water falls at the defect');
@@ -196,7 +196,7 @@ for(const f of families){
  near(crownRay(220)[0].point.y,v.radius+30,'Intact pipe retains its wall outside the breakout',.15);
  const branchBox=new THREE.Box3().setFromObject(v.branchFull);
  near(branchBox.max.y,v.branchTop,'Branch surface reaches actual branch top');
- assert.ok(branchBox.min.y>v.radius+45&&branchBox.min.y<v.radius+80,'Branch has a broken lower edge above the main crown');
+ assert.ok(branchBox.min.y>v.radius+20&&branchBox.min.y<v.radius+36,'Branch has a broken lower edge above the main crown');
  pose(4.09);assert.ok(v.repair.hoseFront>.45&&v.repair.hoseFront<.55,'Mortar front first advances along the hose');
  assert.equal(v.repair.fill,0,'Cavity cannot fill before mortar reaches the inlet');assert.equal(v.repair.outlet.visible,false,'No mortar appears ahead of the hose front');
  pose(4.31);const early=Array.from(v.repair.mortarGeometry.attributes.position.array),earlyFill=v.repair.fill;
@@ -277,7 +277,7 @@ for(const f of families){
  pose(6.875);near(bumperPart.node.scale.y,vacuumHeight,'Bumper vacuum-flat before further travel');near(v.model.position.x,0,'Vacuum completed before departing');
  assert.ok(ports.inletX< -ports.opening&&ports.sensorX>ports.opening,'Three separate openings ordered as photograph');
  near(v.hosePoints.at(-1)[0],ports.inletX,'Hose ends at separate inlet');assert.ok(v.hosePoints.at(-1)[1]<v.radius-8,'Hose approaches shield from below');
- for(const t of [0,.92,1.92,2.92,3.92,4.92,5.92,6.92]){v.time=t;v.updateParts();v.processPose();assert.ok(v.model.position.toArray().every(Number.isFinite));assert.ok(v.mortar.scale.y>0);}
+ for(const t of [0,.92,1.92,2.92,3.92,4.92,5.92,6.92]){pose(t);assert.ok(v.model.position.toArray().every(Number.isFinite));assert.ok(v.mortar.scale.y>0);}
  assert.ok(v.model.position.x<0&&v.mortar.visible,'After removal repair remains at branch');
  // A shaft camera must keep the drive in frame through travel and bumper lift,
  // including backward seeking, without changing the user's visibility choices.

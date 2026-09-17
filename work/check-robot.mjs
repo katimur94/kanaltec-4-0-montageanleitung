@@ -32,11 +32,28 @@ for(const family of families){
  assert.ok(maximum<=R+.2,`Wheel envelope stays inside DN ${family.id}: ${maximum}`);
  assert.ok(maximum>R-3,'Wheel tread reaches the pipe wall');
  let bodyEnvelope=0,draws=0;
- r.group.traverse(o=>{if(!o.isMesh)return;draws++;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=new THREE.Vector3().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);bodyEnvelope=Math.max(bodyEnvelope,Math.hypot(p.y,p.z));}});
+ r.group.traverseVisible(o=>{if(!o.isMesh)return;draws++;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=new THREE.Vector3().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);bodyEnvelope=Math.max(bodyEnvelope,Math.hypot(p.y,p.z));}});
  assert.ok(bodyEnvelope<=R+.2,`Robot, attachment and hoses fit DN ${family.id}: ${bodyEnvelope}`);
  assert.ok(draws<120,'Repeated static details are batched for interactive performance');
  const tyre=r.wheels[0].children.find(o=>o.material===(r.config.tread==='pur'?r.m.pur:r.m.tire));
  assert.ok(tyre,'PUR or pneumatic tyre matches selected setup');
+ // Left/right cutting uses the longitudinal rotary joint behind CutterCam.
+ // A fixed lift pose must remain identical in the module's own lift plane.
+ r.pose(-45,0,0,0);r.group.updateMatrixWorld(true);
+ const localLinks=r.links.map(({o})=>({p:o.position.clone(),q:o.quaternion.clone()}));
+ const cameraLocal=r.front.worldToLocal(r.cameraEye.getWorldPosition(new THREE.Vector3()));
+ const wheel=r.wheels[0].getWorldPosition(new THREE.Vector3());
+ assert.ok(r.rotationAxis.x<r.cameraHead.position.x,'Rotary axis origin is behind CutterCam');
+ for(const roll of [-.65,-.2,.2,.65,0]){
+  r.pose(-45,0,roll,0);r.group.updateMatrixWorld(true);
+  near(r.wheels[0].getWorldPosition(new THREE.Vector3()).distanceTo(wheel),0,'Rolling module does not sway the crawler');
+  for(let i=0;i<r.links.length;i++){
+   near(r.links[i].o.position.distanceTo(localLinks[i].p),0,'No lateral translation at lift links');
+   near(r.links[i].o.quaternion.angleTo(localLinks[i].q),0,'No lateral arm joint');
+  }
+  const expected=cameraLocal.clone().sub(r.rotationAxis).applyAxisAngle(new THREE.Vector3(1,0,0),roll).add(r.rotationAxis).add(anchor);
+  near(r.cameraEye.getWorldPosition(new THREE.Vector3()).distanceTo(expected),0,'Camera follows the same rotary axis as the arm assembly');
+ }
  console.log(`DN ${family.id}: four wheels, coupled receiver, fixed chassis height, articulated lift and rolling motion passed.`);
  r.dispose();r.group.traverse(o=>{if(o.isMesh)o.geometry.dispose();});
 }
