@@ -8,9 +8,11 @@ Beide zeigen die geschlossene Schalung ohne Anschlussblase, mittigen Einfüllstu
 
 **Geprüft:** Beide MP4 vollständig decodiert, 60 Sekunden und H.264/AAC/Full HD/30 Bilder pro Sekunde bestätigt, keine Untertitel, Audiopeak −5,5 dB ohne Clipping. Kontaktbögen der endgültigen MP4 visuell geprüft. Beide Filme in Edge abgespielt und auf Sekunde 52,5 zur korrigierten Endfläche gesprungen, ohne Browserfehler. Produktionsanleitung in [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md); Veröffentlichung und Telegram-Zustellung werden in [FORTSCHRITT.md](FORTSCHRITT.md) dokumentiert.
 
-## Bisherige sechs Filme mit offenem Anschluss
+## Sechs Filme mit offenem Anschluss – ebenfalls runder
 
-**Alle sechs Fassungen sind neu erstellt und geprüft.** Modellbasis: `6683ef0`. Die neun aktuellen Prozessphasen ersetzen die frühere Schnittfolge mit Nutfräsen. Gezeigt werden die oberhalb des Schildes verkürzte Anschlussblase, der Mörtelanstieg bis zur halben oberen Blasenhöhe, die kleine ovale Reparaturfläche, das detaillierte Erdreich sowie der dickere Opferschlauch vom 45°-Messingwinkel hinunter zum Roboterarm und neben der CutterCam nach hinten.
+**Aktualisierung der offenen Anschlussvariante:** Auf die anschließende Nutzerkorrektur ist die äußere Reparaturfläche mit Blase ebenfalls kompakter und nur leicht oval (240 × 210 mm in der Rohrabwicklung). Der Anschluss bleibt frei; beide Abdrücke und die Füllhöhe bleiben erhalten. Alle drei Bildformate wurden aus diesem Stand neu erstellt, jeweils mit Sprecher und nur mit Musik. Die sechs fertigen Dateien wurden vollständig decodiert, die Kontaktbögen visuell geprüft und alle Fassungen in Edge bei Sekunde 69 abgespielt; keine Browserfehler. Der Hochformat-Kanalblick zeigt den ganzen verbreiterten Rand.
+
+Die ursprüngliche Produktion basierte auf `6683ef0`. Die neun aktuellen Prozessphasen ersetzen die frühere Schnittfolge mit Nutfräsen. Gezeigt werden die oberhalb des Schildes verkürzte Anschlussblase, der Mörtelanstieg bis zur halben oberen Blasenhöhe, die kleine ovale Reparaturfläche, das detaillierte Erdreich sowie der dickere Opferschlauch vom 45°-Messingwinkel hinunter zum Roboterarm und neben der CutterCam nach hinten.
 
 Je Format eine deutsche synthetische Sprecherfassung mit Musik und eine Fassung nur mit Musik:
 

@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Auch die Reparaturfläche mit Blase runder
+
+**Nutzerkorrektur:** Bei der Variante mit Blase ist das Endergebnis ebenfalls zu oval.
+
+**Umsetzung:** Offene Anschlussvariante erhält eine kompakte Ellipse von 240 × 210 mm in der Rohrabwicklung statt ungefähr 243 × 134 mm. Projiziertes Seitenverhältnis über alle fünf DN etwa 1,16–1,24. Anschlussdurchgang, beide Abdrücke, Blasenmechanik und Mörtelfüllhöhe bleiben erhalten. Gemeinsame Kontur für Rohrwand, fertige Gussfläche und Außenfräsbahn; ursprüngliche Längsabstands-/Breitenregel durch die aktuelle Nutzerkorrektur ersetzt. Geschlossene Varianten behalten ihre zuletzt korrigierte Kontur. Darstellungsmaße, keine Herstellerbemaßung.
+
+**Modellprüfung:** `npm ci`, vollständiges `npm test` und `npm run build` im portablen Repository bestanden. Ergänzter Test über alle fünf DN: tatsächlich erzeugte Fläche nur leicht oval; kompletter Schaden, beide vollständigen Abdrücke und offener Anschluss liegen innerhalb der Kontur; zentrale Öffnung per Strahlprüfung frei, umliegende Mörtelflächen vorhanden. Bestehende Blasen-/Roboter-/Fräs-, Wasser-, Schnitt- und Rücksprungprüfungen sowie beide Verschlussvarianten bestanden. Browsermodell bei DN 300/700 im Kanalblick ohne Rohrschnitt und mit Rücksprung geprüft; keine Browserfehler. Beide neu gebauten HTML-Ausgaben inhaltsgleich und mit dem äußeren Arbeitsordner synchronisiert.
+
+**Videos:** Die sechs vorhandenen Fassungen der offenen Variante vollständig neu gerendert: 16:9, 9:16 und 4:5, jeweils Sprecher/Musik und nur Musik, weiterhin 78 Sekunden mit H.264/30 Bildern pro Sekunde, AAC Stereo und Faststart. Vorhandene Tonspuren beibehalten. Bildwinkel des Kanalblicks für Hochformat vergrößert, damit die gesamte rundere Fläche sichtbar bleibt und die Kamera innerhalb des Rohrs bleibt. Alle sechs MP4 vollständig decodiert und auf Format, Dauer, fehlende Untertitel und Dateigröße unter 49 MB geprüft. Spitzen −1,5 dB mit Sprecher und −5,3 dB nur Musik. Vorschauen und Kontaktbögen aus den endgültigen MP4 in allen drei Formaten visuell geprüft. Alle sechs in Edge bei Sekunde 69 geladen und abgespielt; keine Medien-/Browserfehler. Die zwei Verschlussfilme in derselben Galerie ebenfalls geprüft und unverändert erhalten. Galerie nutzt jetzt auch für diese sechs MP4 inhaltsabhängige Versionskennungen. Publikation und Live-Prüfung dieses korrigierten Stands folgen.
+
 ## 20.09.2026 – Verschlussfläche kompakter und nur leicht oval
 
 **Nutzerkorrektur:** Fertige Verpressung ist zu lang gezogen; runder, aber leicht oval darstellen.

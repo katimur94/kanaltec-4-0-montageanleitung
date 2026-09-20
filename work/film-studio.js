@@ -59,7 +59,8 @@ function frame(t){
   const delta=pos.clone().sub(target),factor=portrait?(s.key==='Drehmodul'?2.15:s.key==='Rundfräsen'?1.95:1.7):1;delta.multiplyScalar(factor*(1.035-.07*smooth(u)));
   delta.applyAxisAngle(new THREE.Vector3(0,1,0),(u-.5)*.08);pos.copy(target).add(delta);
  }
- viewer.camera.position.copy(pos);viewer.camera.up.set(0,1,0);viewer.camera.fov=s.inside?(portrait?65:60):38;viewer.camera.updateProjectionMatrix();viewer.camera.lookAt(target);
+ // Widen the vertical film's field of view without moving outside the pipe.
+ viewer.camera.position.copy(pos);viewer.camera.up.set(0,1,0);viewer.camera.fov=s.inside?(portrait?78:60):38;viewer.camera.updateProjectionMatrix();viewer.camera.lookAt(target);
  viewer.inspectionLamp.visible=true;
  if(s.inside||s.repairOnly)viewer.model.visible=false;
  viewer.renderer.render(viewer.scene,viewer.camera);ctx.drawImage(viewer.renderer.domElement,0,0,width,height);

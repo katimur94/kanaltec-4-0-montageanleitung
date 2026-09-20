@@ -1,10 +1,14 @@
 # Schadstelle und Reparaturfläche – Bildabgleich 20.09.2026
 
+## Anschluss mit Blase ebenfalls runder
+
+Anschließende Nutzerkorrektur: Auch die Reparaturfläche des offen gehaltenen Anschlusses ist zu oval. Ihre Kontur beträgt jetzt 240 × 210 mm in der Rohrabwicklung statt ungefähr 243 × 134 mm. In der Scheitelprojektion liegt das Seitenverhältnis über alle fünf DN etwa zwischen 1,16 und 1,24. Der offene Anschluss, Zulauf- und Sensorabdruck bleiben an ihrer bisherigen Lage und vollständig innerhalb der Fläche. Rohrwand und Außenfräsbahn verwenden dieselbe korrigierte Kontur. Die Blasenbewegung und Füllhöhe bleiben erhalten. Diese Darstellungsmaße ersetzen die unten dokumentierten schmalen historischen Konturen und sind keine Herstellerangaben.
+
 ## Neue Nutzerkorrektur: Verschlüsse runder, nur leicht oval
 
 Für **Loch verschließen** und **Stillgelegten Anschluss verschließen** ersetzt eine kompakte Ellipse die zuvor zu lang gezogene Endfläche. In der Rohrabwicklung 260 × 230 mm statt 295 × 150 mm; das Seitenverhältnis liegt bei etwa 1,13 statt 1,97. Durch die Rohrkrümmung beträgt das Verhältnis in der Scheitelprojektion je nach DN ungefähr 1,15–1,25. Die Fläche folgt weiterhin der Rohrinnenwand. Darstellung nach direkter Nutzerkorrektur, keine Herstellerbemaßung.
 
-Die neue gemeinsame Kontur wird für Gussfläche, umgebende Rohrwand, Schnittkante und gegebenenfalls Außenfräsbahn verwendet. Der Schaden sowie beide vollständigen Abdrücke liegen innerhalb der Fläche, die innerhalb des angepressten Schildes bleibt. Einfüllstutzen und Sensor bleiben an ihrer tatsächlichen Lage; mittiger Zulauf und nahezu vollständige Anschlussfüllung gelten weiterhin. Die bisherigen Angaben zur schmalen Kontur im folgenden Abschnitt beschreiben die **offen gehaltene Anschlussvariante** und historische Schritte.
+Die neue gemeinsame Kontur wird für Gussfläche, umgebende Rohrwand, Schnittkante und gegebenenfalls Außenfräsbahn verwendet. Der Schaden sowie beide vollständigen Abdrücke liegen innerhalb der Fläche, die innerhalb des angepressten Schildes bleibt. Einfüllstutzen und Sensor bleiben an ihrer tatsächlichen Lage; mittiger Zulauf und nahezu vollständige Anschlussfüllung gelten weiterhin. Die folgenden Angaben zur schmalen Kontur dokumentieren historische Schritte.
 
 ## Angesehene Praxisbilder
 

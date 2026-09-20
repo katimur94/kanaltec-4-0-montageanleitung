@@ -15,9 +15,9 @@ Reproduktion mit den oben beschriebenen Node-/Python-Laufzeiten und Umgebungsvar
 
 Ausgaben: `Videos/DSS-Flex-Verfahren-2026/DiTom-DSS-Flex-{Loch|Anschluss}-verschliessen-Musik.mp4`. Zwischenstände, Kontaktbögen und Prüfberichte liegen ausschließlich in `work/qa/closure-video/`. Die realen Verfahrenszeiten werden für den Film verkürzt; Anschlussfüllquote, Schadensform und Bodenverpressung sind schematische Darstellungsparameter.
 
-## Bisherige sechs Filme mit offenem Anschluss
+## Sechs Filme mit offenem Anschluss – runde Konturkorrektur
 
-**Produktion 20.09.2026:** Modellbasis `6683ef0`. Schnittfolge und Sprechertext verwenden die neun aktuellen Phasen ohne Nutfräsen, die oberhalb des Schildes verkürzte Blase, den Mörtelanstieg bis zur halben oberen Blasenhöhe, die kleine ovale Reparaturfläche und die Schlauchführung vom Messingwinkel hinunter zum Roboterarm. Der Abschluss zeigt das detaillierte Erdreich und den verfüllten Hohlraum.
+**Produktion 20.09.2026, anschließend korrigiert:** Ursprüngliche Modellbasis `6683ef0`, nun mit der Nutzerkorrektur zur runderen Fläche bei offener Anschlussvariante (240 × 210 mm in der Rohrabwicklung). Hochformat-Kanalblick mit erweitertem Bildwinkel, sodass die gesamte Kontur sichtbar bleibt. Schnittfolge und Sprechertext verwenden die neun aktuellen Phasen ohne Nutfräsen, die oberhalb des Schildes verkürzte Blase, den Mörtelanstieg bis zur halben oberen Blasenhöhe, die kleine ovale Reparaturfläche und die Schlauchführung vom Messingwinkel hinunter zum Roboterarm. Der Abschluss zeigt das detaillierte Erdreich und den verfüllten Hohlraum.
 
 Produktname auf beiden Titelkarten: **DSS-Flex Verfahren**. Sprecher-Auftakt: „DSS-Flex Verfahren.“; Abschluss: „DiTom. Das DSS-Flex Verfahren.“ MP4-Dateipräfix: `DiTom-DSS-Flex-Verfahren-`. Firmenlogo und Kontaktadresse bleiben DiTom.
 
@@ -31,7 +31,8 @@ Gezeigt wird die DN-400-Variante. Das Filmstudio verwendet direkt `src/model.js`
 4. `node work/build-film.mjs` bündelt das lokale Studio unter `work/qa/video/studio`.
 5. `KANALTEC_QA_RUNTIME` auf ein Node-Paketverzeichnis mit Playwright setzen, `KANALTEC_FFMPEG` auf die ausführbare FFmpeg-Datei. Microsoft Edge muss installiert sein.
 6. `node work/render-film.mjs --qa` erzeugt Einzelbilder zum Kameraabgleich, einschließlich der vollständig geschlossenen Verpressung bei Sekunde 61. `node work/render-film.mjs` rendert drei H.264-Filme bildgenau mit 30 Bildern/s. Der interne HTTP-Server bindet nur an die lokale Loopback-Adresse und endet automatisch.
-7. `python work/finish-film.py` erzeugt sechs vertonte MP4-Dateien, decodiert jede vollständig, kontrolliert Video-/Audioeigenschaften und extrahiert Kontaktbögen aus den fertigen Filmen.
+7. `python work/finish-film.py` erzeugt sechs vertonte MP4-Dateien, decodiert jede vollständig, kontrolliert Video-/Audioeigenschaften und extrahiert Kontaktbögen aus den fertigen Filmen. Die beiden zusätzlichen Verschlussfilme bleiben in der Galerie erhalten; die neuen Filmdateien erhalten inhaltsabhängige Versionskennungen in den Links.
+8. `node work/verify-films.mjs` prüft alle sechs Fassungen mit Zeitsprung auf Sekunde 69 und Wiedergabe; nach Veröffentlichung mit `--live` wiederholen.
 
 Ausgaben: `Videos/DSS-Flex-Verfahren-2026/`, einschließlich lokaler Galerie, Sprechertext, Audio-/Render-/Prüfberichten. Produktionszwischenstände und Werkzeugpakete liegen unter dem ignorierten `work/qa/`. Die aktuellen finalen MP4-Dateien, Galerie und Vorschaubilder werden auf Nutzerauftrag auf GitHub Pages veröffentlicht. Produktionszwischenstände, Laufzeitpakete und Prüfberichte bleiben ausgeschlossen.
 

@@ -37,6 +37,8 @@ for kind,label in cases:
 gallery=OUT/'Videos-ansehen.html';content=gallery.read_text(encoding='utf-8')
 content=re.sub(r'<!-- closure-films:start -->.*?<!-- closure-films:end -->','',content,flags=re.S)
 section='<!-- closure-films:start --><h2>Neu: Loch und stillgelegten Anschluss verschließen</h2><p>Geschlossene Schalung ohne Anschlussblase · Mittiger Einfüllstutzen · Kompakte, leicht ovale Endfläche · Ohne Einragung direkt verpressen · Nur Musik, kein Sprecher.</p><section>'+''.join(cards)+'</section><!-- closure-films:end -->'
-content=content.replace('<section>',section+'<section>',1)
+open_heading='<h2>Anschluss mit Blase offen halten · Leicht ovale Reparaturfläche</h2>'
+anchor=open_heading if open_heading in content else '<section>'
+content=content.replace(anchor,section+anchor,1)
 gallery.write_text(content,encoding='utf-8')
 print('Two closure films validated and added to the existing gallery.')
