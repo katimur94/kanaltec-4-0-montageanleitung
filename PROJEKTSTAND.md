@@ -18,6 +18,8 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 
 ## Aktuelle Änderung 20.09.2026
 
+**Nachkorrektur der Flächengröße:** Auf erneute Nutzerkorrektur deutlich schmalere Ellipse mit ungefähr 330 × 134 mm in der abgewickelten Rohrfläche, statt zuvor etwa 444 × 226–270 mm. Längen-/Breitenverhältnis etwa 2,46. Ausbruch am Hauptrohr passend verkleinert, damit er vollständig innerhalb der Reparatur liegt. Abdrücke, Anschlussdurchgang und Mörtelanstieg bleiben unverändert. Maße sind Darstellungsparameter.
+
 Die fertige Mörtelfläche folgt jetzt einer länglichen ovalen Kontur innerhalb der Schalung; Außenfräsbahn und Rohrabtrag passen dazu. Die Fläche bleibt am Scheitel örtlich begrenzt, beide Abdrücke sind unverändert. Asymmetrischer Rohrbruch, einseitig ausgewaschener tatsächlicher Bodenhohlraum, dunkle Feuchtespuren und feinere ungleichmäßige Rinnsale ersetzen die regelmäßigen Formen. Bildreferenzen und Darstellungsgrenzen: [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md). Kanalblick mit größerem Bildwinkel zeigt die Reparatur samt umgebendem Altrohr.
 
 Nutfräsphase und Innenwandvertiefung entfernt. Nach dem Freifräsen folgt direkt der Werkzeugwechsel; insgesamt neun Phasen. Die Rohrwand bleibt ungefräst. Auf anschließende Nutzerkorrektur steigt Injektionsmörtel nach der Hohlraumfüllung dennoch im Anschluss bis zur Hälfte der ausgefahrenen Blasenhöhe oberhalb des angepressten Schildes. Die glatte Mörtelschicht nutzt den im Modell vorhandenen Spalt zwischen Blase (Radius 39,55 mm) und Rohr (Radius 40 mm), ohne Nut oder zusätzliche Wandvertiefung. Diese Spaltmaße sind reine Darstellungsparameter. Der freie Durchgang wird von der Blase geformt; die Verpressung im Erdreich bleibt erhalten.

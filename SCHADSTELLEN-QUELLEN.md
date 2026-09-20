@@ -8,6 +8,8 @@
 
 ## Umsetzung und Grenzen
 
+Nach erneuter Nutzerkorrektur zur weiterhin zu großen/runden Fläche wurde die Kontur auf eine schmale Ellipse von ungefähr 330 × 134 mm reduziert (Abwicklung der Rohrfläche; Darstellungsannahme). Diese Größe gilt für alle fünf DN. Der unmittelbare Hauptrohrausbruch wurde entsprechend verkleinert; der dahinterliegende ausgewaschene Bodenraum bleibt erhalten.
+
 Die Innenfläche folgt einer länglichen ovalen Kontur innerhalb der modellierten 500-mm-Schalung. Die seitliche Ausdehnung berücksichtigt alle fünf DN; die Außenfräsbahn und die Rohrgeometrie verwenden dieselbe Kontur. Sensor- und Zulaufabdruck sind geometrisch unverändert. Die Kanalblick-Kamera zeigt mehr vom angrenzenden Altrohr.
 
 Der ursprüngliche runde Ausbruch ist durch einen asymmetrischen Bruchrand ersetzt. Im Erdreich bleibt vor der Injektion ein echter, ungleich breiter Hohlraum neben dem Anschluss frei; seine dunkle Innenwand und die Schnittkante werden sichtbar. Bodensteine liegen außerhalb dieses Leerraums. Der anschließende Mörtelkörper füllt diesen Bereich mit auf.

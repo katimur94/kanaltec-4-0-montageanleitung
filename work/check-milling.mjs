@@ -63,10 +63,11 @@ for(const family of families){
   const a=i/160*Math.PI*2,[expectedX,expectedArc]=repairFootprint(R,a),x=pa.getX(2*161+i),arc=Math.atan2(pa.getZ(2*161+i),pa.getY(2*161+i))*R;
   near(x,expectedX);near(arc,expectedArc);
   assert.ok(Math.abs(x)<230&&Math.abs(arc)<(R-12)*.84,'Finished patch stays within the oval shield with lateral sealing margin');
-  const [hx,ha]=breakoutContour(a);assert.ok(Math.hypot(hx,ha)<Math.hypot(expectedX,expectedArc),'Repair encloses the whole broken edge');
+  const [hx,ha]=breakoutContour(a);assert.ok((hx/165)**2+(ha/67)**2<.98,'Compact oval encloses the whole broken edge');
  }
  const castBounds=new THREE.Box3().setFromObject(v.repair.innerSkin),castSize=castBounds.getSize(new THREE.Vector3());
- assert.ok(castSize.x>castSize.z*1.65,'Casting is longitudinally oval, not a circle');
+ assert.ok(castSize.x>castSize.z*2.4,'Casting is distinctly elongated, not a broad round patch');
+ assert.ok(castSize.x<332&&castSize.z<135,'Casting is reduced to about 330 by 134 mm');
  assert.ok(castBounds.min.y>R*.69,'Casting remains localized at the crown, not half of the main pipe');
  assert.ok(Math.abs(breakoutContour(0)[0]+breakoutContour(Math.PI)[0])>20,'Breakout is asymmetric');
  assert.ok(new Set(v.repair.streams.map(s=>s.radius)).size>=5,'Different seepage strengths instead of identical jets');

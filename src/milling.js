@@ -5,8 +5,8 @@ export const millingSpec={width:60,depth:16,motorLength:205,spindleX:62,outerRad
 // Developed oval, inset from the 500 mm shield and its lateral sealing edge.
 // Illustrative casting footprint, not a manufacturer dimension.
 export function repairFootprint(R,a){
- const x=222,z=Math.min(135,(R-12)*.82),c=Math.cos(a),s=Math.sin(a);
- const d=Math.pow(Math.pow(Math.abs(c)/x,2.6)+Math.pow(Math.abs(s)/z,2.6),-1/2.6);
+ const x=165,z=67,c=Math.cos(a),s=Math.sin(a);
+ const d=1/Math.sqrt((c/x)**2+(s/z)**2);
  const edge=1+.003*Math.sin(11*a)+.002*Math.cos(17*a);
  return [d*c*edge,d*s*edge];
 }

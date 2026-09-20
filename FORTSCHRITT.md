@@ -1,5 +1,11 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Mörtelfläche nochmals deutlich kleiner und schmaler
+
+Nutzerkorrektur: Die vorige Fläche wirkt weiterhin zu groß und kreisförmig. Die gemeinsame Reparatur-/Fräskontur ist jetzt eine schmale Ellipse von ungefähr 330 × 134 mm in der Rohrabwicklung, statt 444 × 226–270 mm. Das Verhältnis von Länge zu Breite steigt auf etwa 2,46; die Fläche sinkt je nach DN um ungefähr 60–66 %. Diese Maße sind Modellparameter, keine Herstellerangaben. Den unmittelbaren Hauptrohrausbruch entsprechend verkleinert, damit kein offener Bruch außerhalb der Reparatur verbleibt. Bodenhohlraum, beide Abdrücke, freie Anschlussöffnung, drei Wicklungen und Mörtelanstieg bleiben erhalten.
+
+Geprüft: `npm ci`, `npm test`, `npm run build` im Repository erfolgreich für alle fünf DN. Bestehende Regression ergänzt um maximale Flächengröße, deutlich längliches Verhältnis und vollständige Einfassung des verkleinerten Bruchrands. Lokale Kanalblick-Sichtprüfung bestätigt die deutlich kleinere Fläche und erhaltene Abdrücke. Beide HTML-Dateien neu gebaut; lokale Änderung, keine Veröffentlichung oder neuen Medienexporte.
+
 ## 20.09.2026 – Örtliche ovale Reparaturfläche und realistischere Schadstelle
 
 **Nutzerkorrektur:** Die fertige Fläche soll ungefähr der ovalen Schalung folgen, statt kreisrund und wie eine halbe Rohrbeschichtung zu wirken. Bestehende Abdrücke ausdrücklich erhalten. Infiltration und Anschluss-Hohlraum anhand echter Beispiele überarbeiten.
