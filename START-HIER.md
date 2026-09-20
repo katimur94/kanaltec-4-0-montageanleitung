@@ -16,9 +16,9 @@
 
 **PowerPoint:** `Praesentationen/DSS-Flex-Verfahren.pptx` öffnen und **F5** drücken. Zehn Folien mit Übergängen, Texteinblendungen und acht eingebetteten Videos. Die Clips starten automatisch, zur nächsten Folie geht es mit der rechten Pfeiltaste. Details siehe [POWERPOINT.md](POWERPOINT.md).
 
-**Videos und PowerPoint auf Pages:** Die Fußzeile der 3D-Animation enthält **Videos ansehen** und **PowerPoint herunterladen**. Die Videogalerie bietet alle drei Formate mit und ohne Sprecher und verlinkt zurück zur Animation. Nach dem Herunterladen funktioniert die PowerPoint mit ihren eingebetteten Videos offline.
+**Videos und PowerPoint auf Pages:** Die Fußzeile der 3D-Animation enthält **Videos ansehen** und **PowerPoint herunterladen**. Die Videogalerie bietet zusätzlich **Loch verschließen** und **Anschluss verschließen** in Full HD, jeweils 60 Sekunden nur mit Musik. Die bisherigen drei Formate mit und ohne Sprecher bleiben verfügbar; die Galerie verlinkt zurück zur Animation. Nach dem Herunterladen funktioniert die PowerPoint mit ihren eingebetteten Videos offline.
 
-**Neuer Name:** Die Animation und Werbevideos heißen jetzt **DSS-Flex Verfahren**. Die lokale Videogalerie liegt unter `Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html`; sie enthält drei Formate, jeweils mit Sprecher und nur mit Musik. Die eigenständige Animation heißt `DSS-Flex-Verfahren-Praesentation.html`.
+**Neuer Name:** Die Animation und Werbevideos heißen jetzt **DSS-Flex Verfahren**. Die lokale Videogalerie liegt unter `Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html`; sie enthält die beiden Verschlussfilme sowie die bisherigen drei Formate, jeweils mit Sprecher und nur mit Musik. Die eigenständige Animation heißt `DSS-Flex-Verfahren-Praesentation.html`.
 
 **Verpressung im Erdreich:** Unter **So funktioniert’s → Schadstelle** und **Schnitt & Sicht → Rohr im Schnitt** zeigt die Injektion jetzt den wachsenden Mörtelkörper im Boden. Nach dem Ausschalen bleibt er im Schnitt sichtbar; der Anschluss innen bleibt frei. Im Werbevideo ist die fertige Verpressung zusätzlich direkt vor dem Logo-Abschluss zu sehen.
 
@@ -84,6 +84,6 @@ Unter **Zentraleinheit → Klappvorrichtung** öffnest du die Nahansicht der Ver
 
 Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die örtlich begrenzte ovale Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: Mörtel vom Zulauf durch die Schadstelle bis ins umgebende Erdreich und im Anschluss bis zur halben Blasenhöhe. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
 
-## Fertige Werbevideos vom 17.09.2026
+## Fertige Werbevideos vom 20.09.2026
 
-Die lokale Datei `Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html` öffnet die dunkle Übersicht mit sechs abspielbaren MP4-Dateien: Querformat, Hochformat und 4:5, jeweils mit Sprecher oder nur Musik. Alle zeigen ausschließlich Fräsen und Sanierung im Darkmode mit transparentem DiTom-Logo oben links und vollständig geschlossenem Mörtelabschluss. Die großen Ausgaben liegen lokal und gehören nicht zum Website-Build. Für eine neue Produktion siehe `work/VIDEO-PRODUKTION.md`.
+Die lokale Datei `Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html` öffnet die dunkle Übersicht mit acht abspielbaren MP4-Dateien: zwei neue Verschlussfilme im Querformat, nur mit Musik, sowie die bisherigen sechs Filme in Querformat, Hochformat und 4:5, jeweils mit Sprecher oder nur Musik. Die Verschlussfilme zeigen den direkten Ablauf ohne Fräsen und den fast vollständig verfüllten stillgelegten Anschluss beziehungsweise das geschlossene Rohrloch. Darkmode und transparentes DiTom-Logo bleiben erhalten. Die MP4-Dateien sind eigenständige Dateien in der Pages-Videogalerie. Für eine neue Produktion siehe `work/VIDEO-PRODUKTION.md`.

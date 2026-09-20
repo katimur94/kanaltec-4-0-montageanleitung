@@ -9,7 +9,7 @@ const output='Videos/DSS-Flex-Verfahren-2026';
 await page.goto(pathToFileURL(path.resolve(output,'Videos-ansehen.html')).href);
 await page.waitForFunction(()=>[...document.querySelectorAll('video')].every(v=>v.readyState>=1),{},{timeout:60000});
 const results=[];
-for(const video of await page.locator('video').all()){
+for(const video of await page.locator('video:not([src*="verschliessen"])').all()){
  const result=await video.evaluate(async v=>{
   v.muted=true;v.currentTime=10;await new Promise(resolve=>v.addEventListener('seeked',resolve,{once:true}));
   await v.play();await new Promise(resolve=>setTimeout(resolve,500));v.pause();

@@ -1,5 +1,17 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Verschlussvarianten veröffentlicht und zwei Musikfilme erstellt
+
+**Auftrag:** Aktuellen Stand pushen und Pages aktualisieren; Videos zu „Loch verschließen“ und „Anschluss verschließen“, ohne Sprecher, nur Musik, über Telegram senden.
+
+**Modell veröffentlicht:** Bestehende Historie mit den lokalen Modell-/Druckfortschritten normal auf `main` gepusht. Pages-Build für `426422f44ca0f666605d06fafeb83e70ea5c1499` erfolgreich (`built`, kein Fehler). Live-Seite in Edge geladen, beide geschlossenen Anwendungen gewählt und die Voreinstellung „ohne Fräsen“ bestätigt; keine Browserfehler. Bestehende vollständige Modellprüfungen und beide HTML-Builds bleiben unverändert.
+
+**Filme:** Zwei zusätzliche MP4 auf Modellbasis `426422f`, je 60 Sekunden, 1920 × 1080, H.264/30 Bilder pro Sekunde, AAC Stereo und Faststart. Geschlossene Schalung ohne Anschlussblase; realer Einfüllstutzen mittig unter der Öffnung; direkter Ablauf ohne Fräsen, großer Hohlraum und Infiltration. Anschlussfüllung fast bis zur Oberkante, am Rohrloch kein fiktiver Anschluss. Aufnahmen der unbesetzten Welle, des Mörtelanstiegs, Ausschalen, geschlossene Endfläche und verfüllter Boden. Originales DiTom-Logo und Titelkarten, keine Untertitel. Eigene deterministische Instrumentalmusik ohne Sprachquellen; lokale Produktionsskripte `work/*closure*` dokumentiert.
+
+**Prüfungen:** Vorschaubilder beider Abläufe und Kontaktbögen aus den fertigen MP4 visuell angesehen. Beide Dateien vollständig mit FFmpeg decodiert; Auflösung, Dauer, Bildrate, H.264/AAC, keine Untertitel und Größe unter 49 MB bestätigt. Audiopeak jeweils −5,5 dB ohne Clipping. Größen: Loch 19.429.241 Byte, Anschluss 17.089.104 Byte. Beide lokal in Edge abgespielt und per Zeitsprung auf Sekunde 40 geprüft; keine Browserfehler. Beide Renderberichte ebenfalls ohne Browserfehler. Bestehende Galerie um zwei Filme ergänzt; bisherige sechs Exporte bleiben erhalten.
+
+**Telegram:** Private Konfiguration geprüft. Beide angefragten MP4 mit dem projektgebundenen `telegram-delivery`-Skill gesendet; Telegram bestätigte jeweils `ok: true` und eine Nachrichten-ID. Keine Zugangsdaten oder privaten Empfangskennungen im Repository. Produktionszwischenstände und Prüfberichte bleiben unter ignoriertem `work/qa/`. Die neue Videogalerie wird mit diesem Stand veröffentlicht; die bestätigte Pages-Prüfung folgt als eigener Chronikeintrag.
+
 ## 20.09.2026 – Mittiger Einfüllstutzen, direktes Verpressen und nahezu volle Anschlussfüllung
 
 **Nutzerkorrektur:** Einfüllstutzen mittig auf dem zu schließenden Anschluss/Loch positionieren. Wenn nichts einragt, ohne Fräsen direkt verpressen. Stillgelegten Anschluss fast komplett füllen.

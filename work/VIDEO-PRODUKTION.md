@@ -1,5 +1,22 @@
 # Werbung: DSS-Flex Verfahren
 
+## Zusätzliche Verschlussfilme – 20.09.2026
+
+Modellbasis `426422f`: **Loch verschließen** und **Anschluss verschließen**, jeweils 60 Sekunden, 1920 × 1080, H.264 mit 30 Bildern/s, AAC Stereo und Faststart. Beide verwenden DN 400, geschlossene Schalung und Welle ohne Anschlussblase, großen Hohlraum mit Infiltration und den direkten Ablauf ohne Fräsen. Der Einfüllstutzen steht mittig unter der Schadstelle; der stillgelegte Anschluss wird nahezu vollständig gefüllt. Nur eigene Instrumentalmusik, keine Sprachaufnahme. Marken- und Titelkarten, keine Untertitel oder Website-Oberfläche.
+
+Reproduktion mit den oben beschriebenen Node-/Python-Laufzeiten und Umgebungsvariablen:
+
+1. `node work/build-closure-film.mjs`
+2. `node work/render-closure-film.mjs --qa` für beide Kontaktbildserien; Kameras vor dem Filmrendern prüfen.
+3. `node work/render-closure-film.mjs` (optional nur `--pipe` oder `--closure`).
+4. `python work/closure-music.py` erzeugt die eigene 60-Sekunden-Musik, ohne Sprachdienst oder Sprachdateien.
+5. `python work/finish-closure-films.py` vertont beide Filme, decodiert sie vollständig, prüft Format, Audiopeak und Versandgröße, extrahiert Kontaktbögen und ergänzt die bestehende Videogalerie. Bei einer erneuten Gesamtproduktion diesen Schritt nach `finish-film.py` ausführen.
+6. `node work/verify-closure-films.mjs` prüft Abspielen und Zeitsprung; mit `--live` nach der Pages-Veröffentlichung wiederholen.
+
+Ausgaben: `Videos/DSS-Flex-Verfahren-2026/DiTom-DSS-Flex-{Loch|Anschluss}-verschliessen-Musik.mp4`. Zwischenstände, Kontaktbögen und Prüfberichte liegen ausschließlich in `work/qa/closure-video/`. Die realen Verfahrenszeiten werden für den Film verkürzt; Anschlussfüllquote, Schadensform und Bodenverpressung sind schematische Darstellungsparameter.
+
+## Bisherige sechs Filme mit offenem Anschluss
+
 **Produktion 20.09.2026:** Modellbasis `6683ef0`. Schnittfolge und Sprechertext verwenden die neun aktuellen Phasen ohne Nutfräsen, die oberhalb des Schildes verkürzte Blase, den Mörtelanstieg bis zur halben oberen Blasenhöhe, die kleine ovale Reparaturfläche und die Schlauchführung vom Messingwinkel hinunter zum Roboterarm. Der Abschluss zeigt das detaillierte Erdreich und den verfüllten Hohlraum.
 
 Produktname auf beiden Titelkarten: **DSS-Flex Verfahren**. Sprecher-Auftakt: „DSS-Flex Verfahren.“; Abschluss: „DiTom. Das DSS-Flex Verfahren.“ MP4-Dateipräfix: `DiTom-DSS-Flex-Verfahren-`. Firmenlogo und Kontaktadresse bleiben DiTom.
