@@ -1,5 +1,17 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Örtliche ovale Reparaturfläche und realistischere Schadstelle
+
+**Nutzerkorrektur:** Die fertige Fläche soll ungefähr der ovalen Schalung folgen, statt kreisrund und wie eine halbe Rohrbeschichtung zu wirken. Bestehende Abdrücke ausdrücklich erhalten. Infiltration und Anschluss-Hohlraum anhand echter Beispiele überarbeiten.
+
+**Bildabgleich:** Originale Vorher-/Nachher-Bilder von KASSELWASSER und das Infiltrationsfoto von BLD im Browser angesehen; IBAK-Anwenderbericht zur Anschlusseinbindung gelesen. Beobachtungen, verwendete Aspekte und Grenzen in `SCHADSTELLEN-QUELLEN.md` dokumentiert. Keine fremden Bilder eingebettet und keine verborgenen Hohlraummaße aus Fotos als gesichert ausgegeben.
+
+**Geändert:** Längliche, seitlich begrenzte Kontur innerhalb des Schildes, DN-abhängig und gemeinsam für Mörtelfläche, Rohrabtrag und Außenfräsbahn. Unveränderte Sensor-/Zulaufabdrücke und bündige Oberfläche. Größerer Bildwinkel im Kanalblick zeigt angrenzendes Altrohr. Asymmetrischer Bruchrand, ungleich ausgewaschener echter Leerraum im Boden, dunklere feuchte Hohlraumwände und Bodensteine außerhalb des Leerraums. Sieben ungleich verteilte feinere Rinnsale mit wechselndem Querschnitt, unterschiedlichen Stärken, unregelmäßigen Tropfenabständen und lokalen Feuchtespuren. Physisches Abfangen durch die vollständige Schalung bleibt unabhängig von Ansichtsschnitten erhalten.
+
+**Geprüft:** `npm ci`, `npm test`, `npm run build` im portablen Repository bestanden. Alle fünf DN einschließlich Roboter, Wicklung, halber oberer Blasenhöhe, Mörtelanstieg, Abdrücken, Wasserführung und Rücksprüngen geprüft. Ergänzte Regressionen für ovalen Umriss innerhalb der Schalung, lokale Begrenzung am Scheitel, vollständige Abdeckung des Ausbruchs, asymmetrischen Schaden, unterschiedliche Wasserstärken und den zuerst leeren, anschließend verfüllten Bodenhohlraum. In Edge Ausgangsschaden, Ankunft, vollständigen Schild, Anpressen, Verfüllung, Rücksprung sowie Endflächen DN 300/700 visuell geprüft; keine Browserfehler. Beide eigenständigen HTML-Ausgaben neu gebaut und äußeren Ordner mit Repository synchronisiert.
+
+**Stand:** Lokale Änderung; keine Veröffentlichung und keine neuen Video-/PowerPoint-Exporte. Die Geometrie ist eine anhand von Praxisbildern überarbeitete Veranschaulichung, keine vermessene Rekonstruktion eines einzelnen Schadens.
+
 ## 20.09.2026 – Injektionsmörtel ohne Nut bis zur halben Blasenhöhe
 
 **Nutzerkorrektur:** Auch ohne Nut soll Mörtel im Anschluss bis zur Hälfte der Blase hochgehen. Maßgeblich ist die ausgefahrene Blasenhöhe oberhalb des angepressten Schildes.

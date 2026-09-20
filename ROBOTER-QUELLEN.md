@@ -1,5 +1,9 @@
 # MicroGator: Quellen und Modellzuordnung
 
+## 20.09.2026 – Örtliche ovale Reparaturkontur
+
+Auf die aktuelle Nutzerkorrektur zur ovalen Schalungsfläche ist auch die äußere Fräsbahn an dieselbe längliche, seitlich begrenzte Kontur angepasst. Der frühere kreisförmige Bereich reichte bei kleinen DN zu weit um den Rohrumfang. Werkzeug, Gelenke, Abtragtiefe und Werkzeugwechsel bleiben erhalten. Keine neue Herstellerbemaßung; siehe [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md).
+
 ## 20.09.2026 – Nutfräsen entfernt
 
 Die aktuelle Nutzeranweisung entfernt die innere Fräsphase einschließlich Ringnut und Innenwandvertiefung. Nach Rückschnitt und äußerem Rundfräsen folgt direkt der Werkzeugwechsel. Fräskopf, Drehmodul und Hubarme bleiben erhalten. Die folgenden Einträge dokumentieren historische Recherche und frühere Anforderungen; ihre Nutmaße gelten nicht mehr für die aktuelle Animation.

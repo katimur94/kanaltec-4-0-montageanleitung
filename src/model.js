@@ -440,7 +440,7 @@ export class Viewer {
  fit(view='iso'){
   this.currentView=view;this.shaftTracking=null;
   if(this.inspectionLamp)this.inspectionLamp.visible=['channel','shaft'].includes(view);
-  this.camera.fov=view==='channel'?58:view==='shaft'?44:34;this.camera.updateProjectionMatrix();this.controls.minDistance=view==='shaft'?70:180;
+  this.camera.fov=view==='channel'?72:view==='shaft'?44:34;this.camera.updateProjectionMatrix();this.controls.minDistance=view==='shaft'?70:180;
   if(view==='shaft'){
    this.explode=this.targetExplode;this.updateParts();if(this.mode==='process')this.processPose();else this.resetPose();
    const center=this.shaftFocus();this.camera.position.copy(center).add(V(-260,-80,0));this.controls.target.copy(center);this.controls.update();this.shaftTracking=center;this.applyMaterials();

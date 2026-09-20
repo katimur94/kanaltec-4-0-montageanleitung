@@ -1,5 +1,7 @@
 # DSS-Flex Verfahren präsentieren
 
+**Überarbeitete Schadstelle (20.09.2026):** Unter **Kanalblick** ist die längliche ovale Reparaturfläche mit unveränderten Abdrücken und angrenzendem Altrohr sichtbar. **Schadstelle → Rohr im Schnitt** zeigt vor der Injektion einen ausgewaschenen Hohlraum neben dem Anschluss, danach dessen Verfüllung. Die Wasserfäden und Tropfen sind feiner und unregelmäßiger; zur Kontrolle der Wasserführung die Schalung vollständig anzeigen. Referenzen: [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md).
+
 **PowerPoint:** `Praesentationen/DSS-Flex-Verfahren.pptx` öffnen und **F5** drücken. Zehn Folien mit Übergängen, Texteinblendungen und acht eingebetteten Videos. Die Clips starten automatisch, zur nächsten Folie geht es mit der rechten Pfeiltaste. Details siehe [POWERPOINT.md](POWERPOINT.md).
 
 **Videos und PowerPoint auf Pages:** Die Fußzeile der 3D-Animation enthält **Videos ansehen** und **PowerPoint herunterladen**. Die Videogalerie bietet alle drei Formate mit und ohne Sprecher und verlinkt zurück zur Animation. Nach dem Herunterladen funktioniert die PowerPoint mit ihren eingebetteten Videos offline.
@@ -68,7 +70,7 @@ Unter **Zentraleinheit → Klappvorrichtung** öffnest du die Nahansicht der Ver
 
 ## Neue Schadens- und Verpressungsdarstellung (17.09.2026)
 
-Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die runde Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: Mörtel vom Zulauf durch die Schadstelle bis ins umgebende Erdreich und im Anschluss bis zur halben Blasenhöhe. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
+Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die örtlich begrenzte ovale Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: Mörtel vom Zulauf durch die Schadstelle bis ins umgebende Erdreich und im Anschluss bis zur halben Blasenhöhe. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
 
 ## Fertige Werbevideos vom 17.09.2026
 

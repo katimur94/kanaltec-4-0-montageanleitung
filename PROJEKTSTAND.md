@@ -2,7 +2,7 @@
 
 **Lokaler Abgleich 20.09.2026:** GitHub-Commit `07f4d35` ist in `work/github-pages` und im äußeren Arbeitsordner übernommen, einschließlich Videos und PowerPoint. Hier kann direkt mit `npm test` und `npm run build` weitergearbeitet werden. Lokale Sicherung und Prüfstand siehe neuesten Eintrag in `FORTSCHRITT.md`. Die Synchronisation ist die Grundlage der anschließend dokumentierten lokalen Änderungen.
 
-Stand: **20.09.2026**. Aktuelle lokale Modelländerung: Nutfräsen entfernt und Anschlussblase oberhalb des Schildes halbiert. Dieser Stand ist noch nicht veröffentlicht.
+Stand: **20.09.2026**. Aktuelle lokale Modelländerung: ovale örtliche Reparaturfläche, asymmetrischer ausgewaschener Anschluss und feinere Infiltration. Nutfräsen bleibt entfernt, Anschlussblase oberhalb des Schildes halbiert und Mörtelanstieg bis zur halben Blasenhöhe erhalten. Dieser Stand ist noch nicht veröffentlicht.
 
 ## Auf einem anderen Computer beginnen
 
@@ -17,6 +17,8 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 **Live:** https://katimur94.github.io/kanaltec-4-0-montageanleitung/
 
 ## Aktuelle Änderung 20.09.2026
+
+Die fertige Mörtelfläche folgt jetzt einer länglichen ovalen Kontur innerhalb der Schalung; Außenfräsbahn und Rohrabtrag passen dazu. Die Fläche bleibt am Scheitel örtlich begrenzt, beide Abdrücke sind unverändert. Asymmetrischer Rohrbruch, einseitig ausgewaschener tatsächlicher Bodenhohlraum, dunkle Feuchtespuren und feinere ungleichmäßige Rinnsale ersetzen die regelmäßigen Formen. Bildreferenzen und Darstellungsgrenzen: [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md). Kanalblick mit größerem Bildwinkel zeigt die Reparatur samt umgebendem Altrohr.
 
 Nutfräsphase und Innenwandvertiefung entfernt. Nach dem Freifräsen folgt direkt der Werkzeugwechsel; insgesamt neun Phasen. Die Rohrwand bleibt ungefräst. Auf anschließende Nutzerkorrektur steigt Injektionsmörtel nach der Hohlraumfüllung dennoch im Anschluss bis zur Hälfte der ausgefahrenen Blasenhöhe oberhalb des angepressten Schildes. Die glatte Mörtelschicht nutzt den im Modell vorhandenen Spalt zwischen Blase (Radius 39,55 mm) und Rohr (Radius 40 mm), ohne Nut oder zusätzliche Wandvertiefung. Diese Spaltmaße sind reine Darstellungsparameter. Der freie Durchgang wird von der Blase geformt; die Verpressung im Erdreich bleibt erhalten.
 

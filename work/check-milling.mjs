@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {Viewer} from '../src/model.js';
 import {families,PHASE,stages} from '../src/data.js';
-import {millingSpec,millingState,millingTarget} from '../src/milling.js';
+import {millingSpec,millingState,millingTarget,repairFootprint} from '../src/milling.js';
 import {damagedPipeGeometry,brokenBranch,breakoutContour,branchBottom} from '../src/repair.js';
 import {passage} from '../src/bladder.js';
 import {makeCutter} from '../src/cutter.js';
@@ -59,7 +59,17 @@ for(const family of families){
  v.repair.setMilling(1,1);const complete=Array.from(v.pipe.geometry.attributes.position.array);
  v.repair.setMilling(1,.91);v.repair.setMilling(1,.999);v.repair.setMilling(1,1);
  assert.deepEqual(Array.from(v.pipe.geometry.attributes.position.array),complete,'Final pipe repair restores after backward seeking');
- for(let i=0;i<=160;i++){const x=pa.getX(2*161+i),arc=Math.atan2(pa.getZ(2*161+i),pa.getY(2*161+i))*R;near(Math.hypot(x,arc),millingSpec.outerRadius);}
+ for(let i=0;i<=160;i++){
+  const a=i/160*Math.PI*2,[expectedX,expectedArc]=repairFootprint(R,a),x=pa.getX(2*161+i),arc=Math.atan2(pa.getZ(2*161+i),pa.getY(2*161+i))*R;
+  near(x,expectedX);near(arc,expectedArc);
+  assert.ok(Math.abs(x)<230&&Math.abs(arc)<(R-12)*.84,'Finished patch stays within the oval shield with lateral sealing margin');
+  const [hx,ha]=breakoutContour(a);assert.ok(Math.hypot(hx,ha)<Math.hypot(expectedX,expectedArc),'Repair encloses the whole broken edge');
+ }
+ const castBounds=new THREE.Box3().setFromObject(v.repair.innerSkin),castSize=castBounds.getSize(new THREE.Vector3());
+ assert.ok(castSize.x>castSize.z*1.65,'Casting is longitudinally oval, not a circle');
+ assert.ok(castBounds.min.y>R*.69,'Casting remains localized at the crown, not half of the main pipe');
+ assert.ok(Math.abs(breakoutContour(0)[0]+breakoutContour(Math.PI)[0])>20,'Breakout is asymmetric');
+ assert.ok(new Set(v.repair.streams.map(s=>s.radius)).size>=5,'Different seepage strengths instead of identical jets');
  pose(0);assert.ok(v.repair.projection.visible&&v.repair.roots.visible);const initial=Array.from(v.repair.projection.geometry.attributes.position.array);
  assert.ok(new THREE.Box3().setFromObject(v.repair.projection).min.y<R,'Initial lateral projects into main sewer');
  pose(.45);assert.ok(!v.repair.projection.visible&&!v.repair.roots.visible,'Projection and roots removed before circular milling');
@@ -87,9 +97,14 @@ for(const family of families){
  pose(PHASE.MORTAR+.75);assert.deepEqual(Array.from(v.repair.branchMortar.geometry.attributes.position.array),intermediate,'Backward seek restores intermediate lining');
  pose(0);assert.ok(!v.repair.branchMortar.visible&&!v.repair.branchMortarSection.visible,'Rewind removes the lining');
  pose(0);assert.ok(!v.repair.ground.grout.visible,'No ground grout before injection');
+ v.repair.ground.group.updateMatrixWorld(true);
+ const voidRay=new THREE.Raycaster(new THREE.Vector3(80,R+60,50),new THREE.Vector3(0,0,-1),.001,50.1);
+ assert.equal(voidRay.intersectObject(v.repair.ground.soilSection).length,0,'Cut soil leaves an actual washed-out void beside the branch');
  pose(PHASE.MORTAR+.52);const groundEarly=Array.from(v.repair.ground.grout.geometry.attributes.position.array);
  pose(PHASE.REMOVE+.99);const ground=v.repair.ground,ga=ground.grout.geometry.attributes.position;
  assert.equal(ground.lastFill,1,'Ground injection finishes completely');
+ ground.group.updateMatrixWorld(true);
+ assert.ok(voidRay.intersectObject(ground.groutSection).length>0,'Injection subsequently fills the previously empty bedding cavity');
  let spread=0,depth=0;
  for(let i=0;i<ga.count;i++){
   const radial=Math.hypot(ga.getX(i),ga.getZ(i));spread=Math.max(spread,radial);depth=Math.max(depth,ga.getY(i)-R);
