@@ -18,7 +18,7 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 
 ## Aktuelle Änderung 20.09.2026
 
-**Nachkorrektur der Flächengröße:** Auf erneute Nutzerkorrektur deutlich schmalere Ellipse mit ungefähr 330 × 134 mm in der abgewickelten Rohrfläche, statt zuvor etwa 444 × 226–270 mm. Längen-/Breitenverhältnis etwa 2,46. Ausbruch am Hauptrohr passend verkleinert, damit er vollständig innerhalb der Reparatur liegt. Abdrücke, Anschlussdurchgang und Mörtelanstieg bleiben unverändert. Maße sind Darstellungsparameter.
+**Nachkorrektur der Endabstände:** Die ovale Form und Breite sind akzeptiert. Auf Nutzerkorrektur ist der freie Längsabstand zwischen dem äußeren Rand jedes Abdrucks und der jeweiligen Mörtelrundung exakt halbiert. Gesamtfläche jetzt ungefähr 243 × 134 mm in der Rohrabwicklung; Abdrücke, Breite und Mörtelanstieg unverändert. Der unmittelbare Hauptrohrausbruch ist entsprechend kürzer, damit er innerhalb der Reparatur liegt. Maße sind Darstellungsparameter.
 
 Die fertige Mörtelfläche folgt jetzt einer länglichen ovalen Kontur innerhalb der Schalung; Außenfräsbahn und Rohrabtrag passen dazu. Die Fläche bleibt am Scheitel örtlich begrenzt, beide Abdrücke sind unverändert. Asymmetrischer Rohrbruch, einseitig ausgewaschener tatsächlicher Bodenhohlraum, dunkle Feuchtespuren und feinere ungleichmäßige Rinnsale ersetzen die regelmäßigen Formen. Bildreferenzen und Darstellungsgrenzen: [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md). Kanalblick mit größerem Bildwinkel zeigt die Reparatur samt umgebendem Altrohr.
 

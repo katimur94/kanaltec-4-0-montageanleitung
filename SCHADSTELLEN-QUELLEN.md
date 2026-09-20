@@ -8,6 +8,8 @@
 
 ## Umsetzung und Grenzen
 
+Letzte Nutzerkorrektur: Bei beibehaltener ovaler Form und Breite ist der Abstand zwischen dem äußeren Rand jedes Abdrucks und der jeweiligen Längsrundung halbiert. Dadurch beträgt die Gesamtlänge jetzt ungefähr 243 mm bei unverändert etwa 134 mm Breite. Die Abdrücke bleiben an derselben Stelle und in derselben Größe. Der nachfolgend dokumentierte 330-mm-Stand ist damit ersetzt.
+
 Nach erneuter Nutzerkorrektur zur weiterhin zu großen/runden Fläche wurde die Kontur auf eine schmale Ellipse von ungefähr 330 × 134 mm reduziert (Abwicklung der Rohrfläche; Darstellungsannahme). Diese Größe gilt für alle fünf DN. Der unmittelbare Hauptrohrausbruch wurde entsprechend verkleinert; der dahinterliegende ausgewaschene Bodenraum bleibt erhalten.
 
 Die Innenfläche folgt einer länglichen ovalen Kontur innerhalb der modellierten 500-mm-Schalung. Die seitliche Ausdehnung berücksichtigt alle fünf DN; die Außenfräsbahn und die Rohrgeometrie verwenden dieselbe Kontur. Sensor- und Zulaufabdruck sind geometrisch unverändert. Die Kanalblick-Kamera zeigt mehr vom angrenzenden Altrohr.

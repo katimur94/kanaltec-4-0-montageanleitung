@@ -15,7 +15,7 @@ const cutPlane=new THREE.Plane(V(0,0,-1),0);
 export function breakoutContour(a){
  const wave=t=>1+.13*Math.cos(t-.4)+.10*Math.sin(3*t+.8)+.045*Math.sin(9*t+1.2)+.027*Math.cos(17*t);
  const k=a/TAU*40,j=Math.floor(k),jag=THREE.MathUtils.lerp(wave(j/40*TAU),wave((j+1)/40*TAU),k-j);
- return [96*Math.cos(a)*jag,48*Math.sin(a)*jag];
+ return [80*Math.cos(a)*jag,48*Math.sin(a)*jag];
 }
 function surfacePoint(R,x,arc,depth=0){return V(x,(R+depth)*Math.cos(arc/R),(R+depth)*Math.sin(arc/R));}
 export function branchBottom(R,a){const k=a/TAU*40,bin=Math.floor(k),edge=t=>R+millingSpec.branchEdge+3*Math.sin(t*5+.6)+2*Math.cos(t*11);return THREE.MathUtils.lerp(edge(bin/40*TAU),edge((bin+1)/40*TAU),k-bin);}

@@ -192,7 +192,7 @@ for(const f of families){
  pose(.99);assert.deepEqual(v.repair.streams.map(s=>s.path.lip.toArray()),waterBeforeCut,'Backward seeking restores runoff without stale geometry');
  v.context.updateMatrixWorld(true);
  const crownRay=(x,z=0)=>new THREE.Raycaster(new THREE.Vector3(x,v.radius+150,z),new THREE.Vector3(0,-1,0),.001,190).intersectObject(v.pipeFull,true);
- assert.equal(crownRay(115).length,0,'Large breakout removes crown wall well beyond the old circular opening');
+ assert.equal(crownRay(90).length,0,'Asymmetric breakout removes crown wall beyond the branch opening');
  near(crownRay(220)[0].point.y,v.radius+30,'Intact pipe retains its wall outside the breakout',.15);
  const branchBox=new THREE.Box3().setFromObject(v.branchFull);
  near(branchBox.max.y,v.branchTop,'Branch surface reaches actual branch top');

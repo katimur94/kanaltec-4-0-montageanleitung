@@ -1,5 +1,11 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Freie Mörtelenden hinter den Abdrücken halbiert
+
+Die ovale Form ist vom Nutzer akzeptiert; nur die Strecke vom Abdruck zur jeweiligen äußeren Rundung war noch zu lang. Beide freien Längsabstände sind jetzt exakt halbiert, gemessen ab dem äußeren Rand des jeweiligen Abdrucks. Daraus ergeben sich rund 42 mm am Sensor und 46 mm am Zulauf, insgesamt etwa 243 × 134 mm Fläche in der Rohrabwicklung. Nur die Längskoordinaten der Kontur werden verkürzt; Breite, Abdruckpositionen und Abdruckgeometrien bleiben identisch. Der unmittelbare Bruchrand ist passend in Längsrichtung verkleinert, damit er vollständig unter der Reparatur liegt. Blasenmechanik und Mörtelanstieg bleiben erhalten.
+
+`npm ci`, `npm test` und `npm run build` im Repository bestanden; alle fünf DN geprüft. Regression prüft die exakte Halbierung beider Endabstände, unveränderte Querbreite und Einfassung des Ausbruchs. Fertige Kanalansicht lokal im Browser visuell geprüft, beide Abdrücke erhalten, keine Browserfehler. Beide HTML-Ausgaben neu gebaut und mit den Quellen synchronisiert. Keine Veröffentlichung und keine neuen Medienexporte.
+
 ## 20.09.2026 – Mörtelfläche nochmals deutlich kleiner und schmaler
 
 Nutzerkorrektur: Die vorige Fläche wirkt weiterhin zu groß und kreisförmig. Die gemeinsame Reparatur-/Fräskontur ist jetzt eine schmale Ellipse von ungefähr 330 × 134 mm in der Rohrabwicklung, statt 444 × 226–270 mm. Das Verhältnis von Länge zu Breite steigt auf etwa 2,46; die Fläche sinkt je nach DN um ungefähr 60–66 %. Diese Maße sind Modellparameter, keine Herstellerangaben. Den unmittelbaren Hauptrohrausbruch entsprechend verkleinert, damit kein offener Bruch außerhalb der Reparatur verbleibt. Bodenhohlraum, beide Abdrücke, freie Anschlussöffnung, drei Wicklungen und Mörtelanstieg bleiben erhalten.
