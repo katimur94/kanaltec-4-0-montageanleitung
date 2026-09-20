@@ -1,5 +1,7 @@
 # Projektstand und Übergabe – DSS-Flex Verfahren
 
+**Geschlossene Schalung (20.09.2026):** Zusätzliche Anwendungsauswahl für stillgelegte Anschlüsse und Löcher im Hauptrohr. Äußeres Schild ohne mittlere Blasenöffnung; gleiche Welle ohne Anschlussblase und ohne Wickelbewegung. Mörtelzulauf, Drucksensor, Träger, Dichtblase, Befestigungen, Bumper und Roboter bleiben erhalten. Beide neuen Anwendungen bieten Infiltration ein/aus und großen oder örtlich begrenzten Hohlraum. Geschlossene Mörtelfläche mit den bisherigen beiden Abdrücken; stillgelegter Anschluss mit massivem Verschluss, Rohrloch ohne fiktives Anschlussrohr oder axialen Durchgang im verfüllten Boden. Neun Schritte; an Stelle des Blaseneinfahrens wird die Abdichtung gehalten. Die ursprüngliche offene Variante bleibt Standard. Bedienung: [START-HIER.md](START-HIER.md). Lokale Erweiterung nach Nutzerangabe; neue Hohlraumformen und Verschlusstiefe sind Darstellungsparameter. Vorhandene Videos, PowerPoint und Druckmodelle zeigen weiterhin ihre bisherigen Varianten.
+
 **Neue Detail-Druckausgabe (20.09.2026):** Näher am Pages-Modell, mit getrennten Schrauben, Radprofilen, Mechanik und dünnen Schläuchen. Drei Motive in je zehn Größen, insgesamt 138 geprüfte STL-/3MF-Dateien einschließlich großer Segmente. Lokale Vorschau: `Druckmodelle/DSS-Flex-Detail-2026/Druckmodelle-ansehen.html`. Die bisherige robustere Ausgabe bleibt erhalten. Dünne Originalbauteile verlangen eine Slicerprüfung; kein Probedruck. [Anleitung und Reproduktion](3D-DRUCK-DETAIL.md). Große Detailassets bleiben lokal, keine neue Pages-Veröffentlichung.
 
 **3D-Druckmodelle (20.09.2026):** Drei Motive in je zehn Größen von 8 bis 60 cm, jeweils STL und 3MF mit Farbbereichen. 40-/60-cm-Ausgaben zusätzlich segmentiert. [Offline-Vorschau](Druckmodelle/DSS-Flex-2026/Druckmodelle-ansehen.html) öffnen, Motiv und Größe wählen, mit **Seite** den Rohrschnitt betrachten; **Einfarbig ansehen** blendet die Farben aus. [Druckanleitung](Druckmodelle/DSS-Flex-2026/DRUCKANLEITUNG.md) vor dem Slicen lesen. Digitale Geometrieprüfung bestanden, kein physischer Probedruck. Lokale Ausgabe, noch nicht auf Pages veröffentlicht.
@@ -81,7 +83,7 @@ Implementierung: Die externe `.scene-controls` enthält alle Ansichtswerkzeuge; 
 | Quellen | DiTom-Montageanleitung Stand 03/2026, bereitgestellte Bilder und Nutzerkorrekturen. Kein CAD vorhanden. Unbemaßte Teile sind rekonstruiert, nicht als fertigungsgerecht bestätigt. |
 | Schalung | Drei physische Lagen: Träger, flächige Dichtblase, äußeres Schild. Nur das äußere Schild hat drei getrennte Funktionsöffnungen. Träger und Dichtblase besitzen eine große ovale Freistellung. |
 | Befestigung | Schildaufnahmen, Schellen, Schrauben und zugehörige Bohrungen wurden nach der PDF korrigiert; insbesondere Aufnahmen auf PDF S. 22 und Haltergewinde. |
-| Öffnungen | Große mittlere Blasenöffnung; kleiner separater Mörtelzulauf und separater roter Drucksensor. Der Mörtelschlauch ist von unten am äußeren Schild befestigt und folgt ihm in der Explosion. |
+| Öffnungen | Offene Variante: große mittlere Blasenöffnung. Geschlossene Variante: Schildmitte geschlossen. Beide: kleiner separater Mörtelzulauf und separater roter Drucksensor. Der Mörtelschlauch ist von unten am äußeren Schild befestigt und folgt ihm in der Explosion. |
 | Welle | Zur Roboterkupplung gerichtetes freies Ende. Eine flache Befestigungsseite mit blindem Innengewinde, gegenüber eine geschlossene runde Wickelfläche. Die Gewindeöffnung liegt mittig unter der Schildöffnung. |
 | Anschlussblase | Ausgefahrene Länge oberhalb des Schildes gegenüber 17.09.2026 halbiert; unten und an den drei Wicklungen unverändert. Eingeschraubt mit Außengewinde, nahezu bündig auf der flachen Wellenfläche. Starres rundes Fußstück, ca. 70 mm nach Nutzerangabe. Flexible Haut beginnt darüber. Kein schmaler konischer Hals. |
 | Wicklung | Mindestens drei volle Windungen. Ca. 3 mm je vakuumierter Wandlage, ca. 6 mm für zwei aufeinanderliegende Wände. Drehung der Welle wickelt die Blase ab; keine Kolbenbewegung. Vor Luftfüllung vollständig abwickeln, ohne Restknick. |
@@ -132,12 +134,14 @@ X verläuft längs des Kanals, Y nach oben, Z quer zum Kanal. Modelllängen sind
 | `src/repair-surface.js` | Materialoberflächen, bündige Gussfläche und Abdrücke |
 | `src/ground-grout.js` | Erdreich, wachsender äußerer Verpresskörper und gefüllte Schnittansicht |
 | `src/data.js` | Varianten, PDF-Stücklisten, Phasen, Quellenlinks; unsichere Teile ausdrücklich markieren |
+| `src/closure.js` | Anwendungsauswahl und Beschreibungen für geschlossene Schalung; ursprüngliche PDF-Stücklisten unverändert |
 | `src/assets.json` | Eingebettete PDF, Seitenbilder und Fotos; keine Zugangsdaten |
 | `src/index.template.html`, `src/style.css` | Seitenaufbau und Gestaltung |
 | `work/build.mjs` | Portabler Build der beiden eigenständigen HTML-Dateien |
 | `work/check-model.mjs` | DiTom-Geometrie, Blasenablauf, Mörtel, Wasserführung und Wellenkamera über alle fünf DN |
 | `work/check-robot.mjs` | Kupplung, Parallelführung, Radbewegung und Rohrfreigang über alle fünf DN |
 | `work/check-milling.mjs` | Werkzeugkontakt, Außenabtrag, unveränderter Anschlussquerschnitt, feste Gliedlängen, Wiederverfüllung und Rücksprünge über alle fünf DN |
+| `work/check-closure.mjs` | Geschlossene Schildmitte, erhaltene Funktionsöffnungen, massiver Verschluss, Rohrloch ohne Anschluss, trockene/nasse Fälle und Rücksprünge über alle fünf DN |
 
 Nicht die minifizierte Ausgabe in `index.html` bearbeiten. Quellen ändern und neu bauen. Auf dem ursprünglichen Arbeitscomputer existiert zusätzlich ein äußerer Entwicklungsordner mit `work/runtime` und `work/prepare-github.mjs`; das ist keine Voraussetzung auf anderen Computern. Im geklonten Repository kommen Three.js und esbuild ausschließlich über `npm ci` aus der Lockdatei.
 

@@ -70,12 +70,12 @@ export function brokenBranch(R,top){
 }
 // Smooth mortar lining in the existing gap around the inflated bladder.
 // No groove or wall removal. The lower rim overlaps the filled defect by 1 mm.
-export function branchMortarGeometry(R,top,fill){
+export function branchMortarGeometry(R,top,fill,closed=false){
  const pos=[],uv=[],idx=[],caps=[],stride=N+1,rows=24;
  for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=N;i++){
-  const a=i/N*TAU,base=branchBottom(R,a)-1;
+  const a=i/N*TAU,base=closed?R+12:branchBottom(R,a)-1;
   const y=THREE.MathUtils.lerp(base,top,clamp(fill)*j/rows);
-  const r=side?passage.radius:passage.mouldRadius;
+  const r=side?passage.radius:closed?0:passage.mouldRadius;
   pos.push(r*Math.cos(a),y,r*Math.sin(a));uv.push(a*2,(y-R)/60);
  }
  const count=(rows+1)*stride;
@@ -125,11 +125,13 @@ export function shieldWaterPath(R,start,edge,shield){
 }
 
 export class RepairScene {
- constructor(R,branchTop,hosePoints,inletX,pipeLength=1350,branchFillTop=R){
+ constructor(R,branchTop,hosePoints,inletX,pipeLength=1350,branchFillTop=R,options={}){
+  this.options=options;this.closed=!!options.kind&&options.kind!=='open';this.hasBranch=options.kind!=='pipe';
+  if(this.closed)branchFillTop=R+70; // Illustrative closure depth, not a design specification.
   this.branchFillTop=branchFillTop;this.branchFill=0;this.R=R;this.pipeLength=pipeLength;this.branchTop=branchTop;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
   this.texture=concreteTexture();
   this.pipeTextures=surfaceTextures('pipe');this.mortarTextures=surfaceTextures('mortar');
-  this.soilTextures=surfaceTextures('soil');this.ground=new GroundGrout(R,this.soilTextures,this.mortarTextures);this.group.add(this.ground.group);
+  this.soilTextures=surfaceTextures('soil');this.ground=new GroundGrout(R,this.soilTextures,this.mortarTextures,options);this.group.add(this.ground.group);
   this.concrete=new THREE.MeshStandardMaterial({color:'#422b21',...this.pipeTextures,bumpScale:.12,roughness:1,metalness:0,envMapIntensity:.18,side:THREE.DoubleSide});
   this.concrete.vertexColors=true;this.concrete.color.set('#ffffff');this.cutConcrete=this.concrete.clone();this.cutConcrete.clippingPlanes=[cutPlane];
   const pg=damagedPipeGeometry(R,pipeLength,18),bg=brokenBranch(R,branchTop);
@@ -181,7 +183,7 @@ export class RepairScene {
 
   this.mortarMaterial=new THREE.MeshStandardMaterial({color:'#444743',roughness:.75,side:THREE.DoubleSide});
   this.skinMaterial=new THREE.MeshStandardMaterial({color:'#555652',...this.mortarTextures,bumpScale:.16,roughness:.95,envMapIntensity:.35,vertexColors:true,side:THREE.DoubleSide});
-  this.innerSkin=mouldSurface(R,a=>repairFootprint(R,a),this.skinMaterial);this.group.add(this.innerSkin);
+  this.innerSkin=mouldSurface(R,a=>repairFootprint(R,a),this.skinMaterial,this.closed);this.group.add(this.innerSkin);
   this.mortarGeometry=new THREE.BufferGeometry();
   this.mortarGeometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*3),3));
   this.mortarGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*2),2));
@@ -193,6 +195,7 @@ export class RepairScene {
   this.branchMortarMaterial=new THREE.MeshStandardMaterial({color:'#666764',...this.mortarTextures,bumpScale:.08,roughness:.9,side:THREE.DoubleSide});
   this.branchMortar=makeMesh(branchMortarGeometry(R,branchFillTop,0),this.branchMortarMaterial);
   this.branchMortarSection=makeMesh(this.branchMortar.geometry.clone(),this.sectionMaterial);
+  if(this.closed)this.branchMortarSection.castShadow=this.branchMortarSection.receiveShadow=false;
   this.group.add(this.branchMortar,this.branchMortarSection);this.lastBranchFill=-1;
   this.lastFill=-1;
 
@@ -239,8 +242,8 @@ export class RepairScene {
   // .99 to 1 used to freeze a short sleeve, leaving a visible unfilled rim.
   const o=Math.floor(outer*N)/N,f=Math.floor(clamp(fill)*40)/40,key=[o,f,trim].join(',');
   if(key===this.millingKey)return;this.millingKey=key;this.millingProgress={outer:o,fill:f,trim};
-  this.projection.geometry.dispose();this.projection.geometry=projectingBranchGeometry(this.R,trim);this.projection.visible=trim<1;
-  this.roots.visible=trim<1;
+  this.projection.geometry.dispose();this.projection.geometry=projectingBranchGeometry(this.R,trim);this.projection.visible=this.hasBranch&&trim<1;
+  this.roots.visible=this.hasBranch&&trim<1;
   for(const root of this.rootStrands){const start=root.userData.rootStart||0,remain=clamp(1-trim*1.25);root.visible=remain>start;root.geometry.setDrawRange(0,Math.floor(root.geometry.index.count*(start?1:remain)/60)*60);}
   for(const [a,c,g] of [[this.pipe,this.pipeFull,damagedPipeGeometry(this.R,this.pipeLength,18,o,f)],[this.branch,this.branchFull,brokenBranch(this.R,this.branchTop)]]){a.geometry.dispose();a.geometry=c.geometry=g;}
   const pos=[],idx=[],uv=[],R=this.R;
@@ -252,7 +255,7 @@ export class RepairScene {
    rect(Math.min(edge,end),Math.max(edge,end),R+depth,R+18);
    rect(Math.min(end,sign*this.pipeLength/2),Math.max(end,sign*this.pipeLength/2),R,R+18);
    const x0=sign*passage.radius,x1=sign*(passage.radius+passage.wall);
-   rect(Math.min(x0,x1),Math.max(x0,x1),branchBottom(R,a),this.branchTop);
+   if(this.hasBranch)rect(Math.min(x0,x1),Math.max(x0,x1),branchBottom(R,a),this.branchTop);
   }
   this.pipeCaps.geometry.dispose();this.pipeCaps.geometry=geometry(pos,idx,uv);
  }
@@ -263,7 +266,7 @@ export class RepairScene {
   this.ground.setCut(cut,cutPlane);
   this.cut=cut;this.section.visible=cut&&this.fill>.0001;this.branchMortarSection.visible=cut&&this.branchFill>0;
   this.pipeCaps.visible=cut;
-  this.pipe.visible=this.branch.visible=cut;this.pipeFull.visible=this.branchFull.visible=!cut;
+  this.pipe.visible=cut;this.pipeFull.visible=!cut;this.branch.visible=this.hasBranch&&cut;this.branchFull.visible=this.hasBranch&&!cut;
   for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.branchMortarMaterial,this.projectionMaterial,this.rootMaterial,this.dampMaterial])m.clippingPlanes=cut?[cutPlane]:null;
   // A display cut removes pipe geometry, not half of the water hitting the
   // intact shield. Keep both lateral paths visible; real surfaces still occlude.
@@ -271,14 +274,15 @@ export class RepairScene {
   this.cracks.traverse(o=>{if(o.isMesh)o.material.clippingPlanes=cut?[cutPlane]:null;});
  }
  point(a,q,h){
-  const [x,arc]=breakoutContour(a),edge=surfacePoint(this.R,x,arc),r=passage.radius;
+  const [x,arc]=breakoutContour(a),edge=surfacePoint(this.R,x,arc),r=this.closed?0:passage.radius;
   // One-sided washout with shelves and coarse fracture facets, not a cone.
   const bulge=Math.sin(h*Math.PI)*(18+12*Math.cos(a-.7)+5*Math.sin(a*3+h*8)+3*Math.sin(a*11-h*15));
-  const outerRadius=soilCavityRadius(a,0);
+  const outerRadius=soilCavityRadius(a,0,this.options);
   const ox=THREE.MathUtils.lerp(edge.x,outerRadius*Math.cos(a),h)+Math.cos(a)*bulge,oz=THREE.MathUtils.lerp(edge.z,outerRadius*Math.sin(a),h)+Math.sin(a)*bulge;
   const px=THREE.MathUtils.lerp(r*Math.cos(a),ox,q),pz=THREE.MathUtils.lerp(r*Math.sin(a),oz,q);
   const by=Math.sqrt(Math.max(0,this.R**2-pz*pz));
-  return V(px,THREE.MathUtils.lerp(by,branchBottom(this.R,a),h),pz);
+  const top=this.closed?THREE.MathUtils.lerp(this.R+18,branchBottom(this.R,a),q):branchBottom(this.R,a);
+  return V(px,THREE.MathUtils.lerp(by,top,h),pz);
  }
  arrival(a,q){const p=this.point(a,q,0);return Math.min(.24,Math.hypot(p.x-this.inletX,p.z)/240*.24);}
  fillGeometry(fill){
@@ -294,7 +298,7 @@ export class RepairScene {
   for(let j=0;j<RADIAL;j++)for(let i=0;i<N;i++){
    const a=j*stride+i,b=a+stride;if(Math.max(heights[a],heights[a+1],heights[b],heights[b+1])<=.00001)continue;
    if(fill<1)idx.push(a,b,a+1,b,b+1,a+1);
-   if(fill<1)idx.push(a+layer,a+1+layer,b+layer,b+layer,a+1+layer,b+1+layer);
+   if(fill<1||this.closed)idx.push(a+layer,a+1+layer,b+layer,b+layer,a+1+layer,b+1+layer);
   }
   for(const j of [0,RADIAL])for(let i=0;i<N;i++){const a=j*stride+i;if(Math.max(heights[a],heights[a+1])>0)idx.push(a,a+1,a+layer,a+layer,a+1,a+1+layer);}
   this.mortarGeometry.setIndex(idx);attr.needsUpdate=uv.needsUpdate=true;this.mortarGeometry.computeVertexNormals();this.mortarGeometry.computeBoundingSphere();
@@ -303,14 +307,15 @@ export class RepairScene {
   this.sectionGeometry.setIndex(caps);this.sectionGeometry.computeVertexNormals();
  }
  updateBranchMortar(fill){
-  this.branchFill=clamp((fill-.62)/.38);
+  this.branchFill=this.hasBranch?clamp((fill-.62)/.38):0;
   this.branchMortar.visible=this.branchFill>0;this.branchMortarSection.visible=this.cut&&this.branchMortar.visible;
   if(this.branchFill===this.lastBranchFill)return;
   this.lastBranchFill=this.branchFill;
   this.branchMortar.geometry.dispose();this.branchMortarSection.geometry.dispose();
-  this.branchMortar.geometry=branchMortarGeometry(this.R,this.branchFillTop,this.branchFill);
+  this.branchMortar.geometry=branchMortarGeometry(this.R,this.branchFillTop,this.branchFill,this.closed);
   this.branchMortarSection.geometry=this.branchMortar.geometry.clone();
   this.branchMortarSection.geometry.setIndex(this.branchMortar.geometry.userData.sectionIndices);
+  if(this.closed)this.branchMortarSection.geometry.computeVertexNormals();
  }
  update({time,fill,hoseFront,injecting,sealed,cured,shield=null}){
   this.ground.update(fill,cured);this.updateBranchMortar(fill);
@@ -328,8 +333,8 @@ export class RepairScene {
    const tangent=this.feedCurve.getTangentAt(u),radial=V(0,0,1).cross(tangent).normalize().applyAxisAngle(tangent,i*2.4);
    o.position.copy(this.feedCurve.getPointAt(u)).addScaledVector(radial,2.7);
   }
-  this.waterActivity=1-smooth(fill/.86);this.water.visible=this.waterActivity>.001;
-  this.damp.visible=fill<.62;
+  this.waterActivity=this.options.infiltration===false?0:1-smooth(fill/.86);this.water.visible=this.waterActivity>.001;
+  this.damp.visible=this.options.infiltration!==false&&fill<.62;
   this.waterMaterial.opacity=.30*this.waterActivity;
   const runoffStrength=1-smooth(((shield?.press||0)-.9)/.1);this.runoffMaterial.opacity=.38*this.waterActivity*runoffStrength;
   const poseKey=shield?[shield.x,shield.lift,shield.seal].join(','):'no-shield';

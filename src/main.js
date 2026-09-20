@@ -1,12 +1,15 @@
 import {Viewer} from './model.js';
-import {families,groupInfo,bom,stages,sources,videos,PHASE} from './data.js';
+import {families,groupInfo,bom,stages as originalStages,sources,videos,PHASE} from './data.js';
+import {repairCases,stagesForRepair} from './closure.js';
 import assets from './assets.json';
 const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)];
+const stages=[...originalStages];
 const lastStage=stages.length-1, endTime=stages.length-.001;
 $('timeline').max=Math.round(endTime*1000);
 const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:false,ref:'drawings',lastStage:-1};
 const safe=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const opts=families.map(f=>`<option value="${f.id}"${f.id===400?' selected':''}>${f.label}</option>`).join('');$('family').innerHTML=opts;$('refFamily').innerHTML=opts;
+$('repairCase').innerHTML=repairCases.map(c=>`<option value="${c.id}">${c.label}</option>`).join('');
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="milling" id="millingView" title="Fräser und Abtrag von der Rohrinnenseite betrachten">Fräsdetail</button>');
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="robot" id="robotView" title="IBAK-Fahrwagen, Hubarm und Werkzeugaufnahme">Roboter</button>');
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="tool" id="toolView" title="CutterCam, Hubschwingen und vordere Werkzeugachse im Detail">Werkzeugarm</button><button data-view="shaft" id="shaftView" title="Nahansicht auf die Blasenwelle; folgt der Welle während der Animation">Wellenkamera</button>');
@@ -62,6 +65,11 @@ function setMode(mode){
  if(src){$('refFamily').value=state.id;$('refGroup').value=state.group;showRef(state.ref);}updateInfo();updatePlayButtons();
 }
 function updateInfo(){
+ const closed=!!viewer?.closedMould;
+ $('closureOptions').hidden=!closed;
+ $('repairCaseNote').textContent=closed?'Geschlossenes Schild · Welle ohne Anschlussblase. Mörtelzulauf und Drucksensor bleiben erhalten.':'Schalung mit mittlerer Öffnung und Anschlussblase für den freien Durchgang.';
+ $('driveView').textContent=closed?'Wellenantrieb':'Blasenantrieb';$('windingView').hidden=closed||state.mode!=='process';
+ $('hideBladder').disabled=closed;$('mechanismReadout').querySelector('.eyebrow').textContent=closed?'WELLE OHNE BLASE':'BLASENANTRIEB';
  $('robotSetup').textContent=viewer?.robot?.config.label||'';
  $('hingeView').hidden=state.mode==='process'||state.group!=='z';
  const f=family();$('variantBadge').textContent=f.label;$('familyNote').textContent=f.spacer.length?f.spacer.map(n=>n+' mm').join(' + ')+' Distanzstücke im Unterteil':'Kompakte Ausführung ohne Höhendistanzstück';
@@ -70,7 +78,7 @@ function updateInfo(){
  $('viewEyebrow').textContent=state.mode==='explode'?'BAUGRUPPEN & EINZELTEILE':state.group==='all'?'INTERAKTIVE GESAMTANSICHT':'BAUGRUPPE IM DETAIL';
  $('viewTitle').innerHTML=state.group==='all'?(state.mode==='explode'?'Das System <span>entdecken.</span>':'DSS-Flex <span>Verfahren</span>'):safe(groupInfo[state.group].short);
  if(state.group==='all'){$('detailIndex').textContent='01—04';$('detailTitle').textContent=state.mode==='explode'?'Den Aufbau sichtbar machen.':'Vier Baugruppen. Ein System.';$('detailText').textContent=state.mode==='explode'?'Mit dem Regler öffnest du den Aufbau. Wähle links eine Baugruppe, um die Einzelteile mit ihren Positionsnummern aus der PDF zu untersuchen.':'Der IBAK-Roboter fährt das Schalungssystem über die Klappvorrichtung zum Anschluss. Seine Werkzeugaufnahme trägt die Schalung anstelle des Fräskopfs. Wähle „Roboter“ für eine Nahansicht oder untersuche links die vier Schalungsbaugruppen.';$('detailCaption').textContent='Fünf Größenvarianten nach der Montageanleitung · DiTom GmbH Kanaltechnik';}
- else{const g=groupInfo[state.group];$('detailIndex').textContent='0'+(Object.keys(groupInfo).indexOf(state.group)+1);$('detailTitle').textContent=g.name;$('detailText').textContent=g.text;$('detailCaption').textContent='Originalzeichnung: Seite '+(f.page+g.offset)+' · '+f.label+(state.group==='s'&&state.id===600?' · Stücklistenzuordnung siehe Quellen':'');}
+ else{const g=groupInfo[state.group];$('detailIndex').textContent='0'+(Object.keys(groupInfo).indexOf(state.group)+1);$('detailTitle').textContent=g.name;$('detailText').textContent=closed&&state.group==='s'?'Drei gekrümmte Lagen mit unveränderten Befestigungen: Träger, Dichtblase und äußeres Schild. Das äußere Schild ist in der Mitte geschlossen; Mörtelzulauf und Drucksensor bleiben erhalten. Die Welle trägt keine Anschlussblase.':g.text;$('detailCaption').textContent='Originalzeichnung: Seite '+(f.page+g.offset)+' · '+f.label+(closed?' · Geschlossene Variante nach Nutzerangabe, nicht in der Originalzeichnung.':'')+(state.group==='s'&&state.id===600?' · Stücklistenzuordnung siehe Quellen':'');}
 }
 function setExplosion(v,fit=false){viewer?.setExplode(v);$('explosion').value=Math.round(v*100);$('explosionValue').textContent=Math.round(v*100)+' %';if(fit)viewer?.fit();}
 function updateStage(force=false){
@@ -81,6 +89,7 @@ function updatePlayButtons(){$('processPlay').textContent=state.playing?'Ⅱ':'�
 function togglePlay(){if(state.mode==='explode'){state.explodePlaying=!state.explodePlaying;if(state.explodePlaying)viewer?.fitExplosion();if(viewer?.targetExplode>=.99)state.explodeDirection=-1;else if(viewer?.targetExplode<=.01)state.explodeDirection=1;}else{if(state.mode!=='process')setMode('process');if(state.time>=endTime-.02)state.time=0;state.playUntil=endTime;state.playing=!state.playing;}updatePlayButtons();}
 function renderBom(){
  const gs=state.group==='all'?Object.keys(groupInfo):[state.group];$('bomTitle').textContent=state.group==='all'?'Stücklisten der vier Baugruppen':groupInfo[state.group].name+' · Stückliste';$('bomNote').textContent='Positionen und Mengen aus der PDF. Auf einen Eintrag klicken, um die entsprechenden Bauteile im Modell hervorzuheben.';
+ if(viewer?.closedMould)$('bomNote').textContent+=' Die PDF zeigt die ursprüngliche Ausführung mit Blasenöffnung. Das geschlossene Schild ohne Anschlussblase folgt der Nutzerangabe; die ursprünglichen Positionsnummern bleiben erhalten.';
  $('bomTables').innerHTML=gs.map(g=>`<div class="bom-group-title">${groupInfo[g].name}<span class="small"> · PDF S. ${family().page+groupInfo[g].offset}</span></div><table class="bomtable"><thead><tr><th>POS.</th><th>BENENNUNG</th><th>MENGE</th></tr></thead><tbody>${bom(state.id,g).map(p=>`<tr class="${p.kind==='alias'?'alias':''}"><td>${p.pos}</td><td>${p.unplaced?`<span>${safe(p.name.replaceAll('_',' '))}</span>`:`<button data-part="${g}:${p.aliasOf||p.pos}">${safe(p.name.replaceAll('_',' '))}</button>`}${p.kind==='alias'?`<small>Zuordnung zu Pos. ${p.aliasOf} nach der gezeichneten Dreilagigkeit; nicht als zusätzliche Lage modelliert.</small>`:''}${p.note?`<small>${p.note}</small>`:''}</td><td>${p.qty}</td></tr>`).join('')}</tbody></table>`).join('');
  $$('[data-part]').forEach(b=>b.onclick=()=>{const[g,pos]=b.dataset.part.split(':');const part=viewer?.parts.find(p=>p.group===g&&p.pos===+pos);selectPart(part);$('viewport').scrollIntoView({behavior:'smooth',block:'nearest'});});
 }
@@ -94,6 +103,14 @@ $$('button[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));$$('bu
 $$('button[data-stage]').forEach(b=>b.onclick=()=>{state.playing=false;state.time=+b.dataset.stage+.92;updateStage();updatePlayButtons();});
 $$('[data-view]').forEach(b=>b.onclick=()=>{if(['robot','tool'].includes(b.dataset.view)){$('hideRobot').checked=false;updateSections();if(state.group!=='all')setGroup('all');}if(b.dataset.view==='shaft'&&!['all','h'].includes(state.group))setGroup('all');stopRotation();viewer?.fit(b.dataset.view);$$('[data-view]').forEach(x=>x.classList.toggle('active',x===b));});
 $('family').onchange=()=>{const view=viewer?.currentView;state.id=+$('family').value;state.playing=false;state.explodePlaying=false;viewer?.build(state.id);if(viewer){viewer.setMode(state.mode);viewer.setGroup(state.group);viewer.setExplode(state.mode==='explode'?+$('explosion').value/100:0);viewer.fit(view);}updateInfo();selectPart(null);updatePlayButtons();if(!$('bomPanel').hidden)renderBom();};
+function changeRepair(){
+ const kind=$('repairCase').value;
+ if(viewer)viewer.repairOptions={kind,cavity:$('cavitySize').value,infiltration:kind==='open'||$('infiltration').checked};
+ stages.splice(0,stages.length,...stagesForRepair(kind));
+ $$('button[data-stage]').forEach(b=>b.querySelector('strong').textContent=stages[+b.dataset.stage].title);
+ state.lastStage=-1;$('family').onchange();
+}
+$('repairCase').onchange=changeRepair;$('cavitySize').onchange=changeRepair;$('infiltration').onchange=changeRepair;
 $('drawing').onclick=openDrawing;$('fidelity').onclick=()=>{state.ref='research';setMode('sources');};
 $('ghost').onclick=()=>{const on=$('ghost').getAttribute('aria-pressed')!=='true';$('ghost').setAttribute('aria-pressed',String(on));viewer?.setGhost(on);};
 $('labels').onclick=()=>{state.labels=!state.labels;$('labels').setAttribute('aria-pressed',String(state.labels));};
@@ -151,12 +168,15 @@ if(viewer)viewer.onFrame=dt=>{
   $('viewport').dataset.millingOuter=viewer.repair.millingProgress?.outer??0;
   const full=String(viewer.sensorFull);if($('sensorStatus').dataset.full!==full){$('sensorStatus').dataset.full=full;$('sensorText').textContent=viewer.sensorFull?'Leuchtet · Gegendruck meldet voll':'Aus · keine Vollmeldung';}
   const n=Math.floor(state.time),f=state.time-n,drive=n<PHASE.POSITION?'Vorbereitung · Schalung noch nicht im Einsatz':n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';
-  if($('driveStatus').textContent!==drive)$('driveStatus').textContent=drive;
+  const driveText=viewer.closedMould?'Welle ohne Anschlussblase · keine Wickelbewegung':drive;
+  if($('driveStatus').textContent!==driveText)$('driveStatus').textContent=driveText;
   const windingDetail=viewer.winding.fullyUnwound?'Keine Restwicklung · Wellenfläche ausgerichtet · Luftweg frei':`Restwicklung ${viewer.winding.remainingTurns.toFixed(2).replace('.',',')} Umdr. · ca. 3 mm je Wandlage · noch keine Luft`;
-  if($('windingDetail').textContent!==windingDetail)$('windingDetail').textContent=windingDetail;
+  const windingText=viewer.closedMould?'Geschlossenes Schild · Mörtelzulauf und Drucksensor erhalten':windingDetail;
+  if($('windingDetail').textContent!==windingText)$('windingDetail').textContent=windingText;
   $('viewport').dataset.bladderInflation=viewer.winding.inflation.toFixed(4);
   const bumper=viewer.bumperAir<.001?'Vakuumiert · flache Fahrtstellung':viewer.bumperAir>.999?'Aufgeblasen · Schalung angepresst':n===PHASE.REMOVE?'Vakuumieren · Schalung absenken':'Aufblasen · Schalung anheben';if($('bumperStatus').textContent!==bumper)$('bumperStatus').textContent=bumper;
-  $('viewport').dataset.shaftAngle=viewer.winding.shaftAngle.toFixed(4);$('viewport').dataset.bladderExtension=viewer.winding.extension.toFixed(4);$('viewport').dataset.storedBladder=viewer.winding.storedLength.toFixed(3);$('viewport').dataset.sensorFull=full;
+  $('viewport').dataset.repairCase=viewer.repairOptions.kind;$('viewport').dataset.waterActivity=viewer.repair.waterActivity.toFixed(4);
+  $('viewport').dataset.shaftAngle=viewer.shaftPart.node.rotation.x.toFixed(4);$('viewport').dataset.bladderExtension=viewer.winding.extension.toFixed(4);$('viewport').dataset.storedBladder=(viewer.closedMould?0:viewer.winding.storedLength).toFixed(3);$('viewport').dataset.sensorFull=full;
   const seal=viewer.sealAir<.001?'Entspannt · zwischen Schild und Träger':viewer.sealAir>.999?'Aufgeblasen · Schalung abgedichtet':n===PHASE.REMOVE?'Entspannen · Abdichtung lösen':'Aufblasen · letzte Abdichtung herstellen';if($('sealStatus').textContent!==seal)$('sealStatus').textContent=seal;
   $('viewport').dataset.sealAir=viewer.sealAir.toFixed(4);
   $('viewport').dataset.bumperAir=viewer.bumperAir.toFixed(4);$('viewport').dataset.upperLift=viewer.upperLift.toFixed(3);

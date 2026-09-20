@@ -98,3 +98,4 @@ html[data-theme=dark]{color-scheme:dark}
 .viewport::backdrop{background:#101b24}
 
 .download-links{display:flex;gap:18px;flex-wrap:wrap}.download-links a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.repair-config select{width:100%;max-width:100%;font-size:12px}.repair-config .water-option{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px}.repair-config .water-option input{width:auto}.repair-config #closureOptions>label:first-child{display:block;font-size:12px;margin-bottom:5px}

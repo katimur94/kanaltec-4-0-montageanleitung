@@ -77,7 +77,7 @@ function shell(rad,thick,length,halfAngle,holes=true,extraHoles=[],corner=38){
  // Only the outer shield has three separate ports. Carrier and sealing bladder
  // have one shared oval clearance (user description; PDF contour is obscured).
  if(holes==='oval'){const p=new THREE.Path();p.absellipse(0,0,90,42,0,Math.PI*2,true,0);s.holes.push(p);}
- else if(holes)for(const [hx,rr]of [[0,ports.opening],[ports.sensorX,ports.sensorRadius],[ports.inletX,ports.inletRadius]]){const p=new THREE.Path();p.absarc(hx,0,rr,0,Math.PI*2,true);s.holes.push(p);}
+ else if(holes)for(const [hx,rr]of [...(holes==='closed'?[]:[[0,ports.opening]]),[ports.sensorX,ports.sensorRadius],[ports.inletX,ports.inletRadius]]){const p=new THREE.Path();p.absarc(hx,0,rr,0,Math.PI*2,true);s.holes.push(p);}
  for(const [hx,hy,rr]of extraHoles){const p=new THREE.Path();p.absarc(hx,hy,rr,0,Math.PI*2,true);s.holes.push(p);}
  const raw=new THREE.ExtrudeGeometry(s,{depth:thick,bevelEnabled:false,curveSegments:32,steps:1});
  // Subdivision prevents long planar triangles across the curved sheet.
@@ -202,6 +202,8 @@ export class Viewer {
   const node=new THREE.Group();node.position.copy(position);node.add(object);this.model.add(node);const p={group:g,pos:row.pos,key:row.key,index:i,name:row.name,qty:row.qty,kind:row.kind,note:row.note,node,base:position.clone(),delta:explode,originalRotation:node.quaternion.clone()};node.userData.part=p;this.parts.push(p);return p;
  }
  build(id){
+  this.repairOptions??={kind:'open',infiltration:true,cavity:'large'};
+  this.closedMould=this.repairOptions.kind!=='open';
   this.sections??={pipe:true,shield:false,holder:false};
   this.clear();this.id=id;this.family=families.find(f=>f.id===id);this.radius=id/2-12;const R=this.radius,top=Math.sqrt((R-28)**2-53**2)-3,bottom=-125-this.family.spacer.reduce((a,b)=>a+b,0),sideH=top-22;
   this.bottom=bottom;this.top=top;this.floor.position.y=bottom-13;
@@ -213,7 +215,7 @@ export class Viewer {
      if(['shield','mat','carrier'].includes(key)){
       const rr=R-(key==='shield'?0:key==='mat'?5:8),thick=key==='shield'?2:key==='mat'?5:3;
       const fixingHoles=key==='carrier'?shieldFixings(R).map(p=>[p.x,rr*p.angle,2.5]):[];
-      o.add(mesh(shell(rr,thick,500,1.13,key==='shield'?true:'oval',fixingHoles),palettes[key==='shield'?'gold':key==='mat'?'rubber':'metal']));delta=V(0,key==='shield'?330:key==='mat'?205:95,0);
+      o.add(mesh(shell(rr,thick,500,1.13,key==='shield'?(this.closedMould?'closed':true):'oval',fixingHoles),palettes[key==='shield'?'gold':key==='mat'?'rubber':'metal']));delta=V(0,key==='shield'?330:key==='mat'?205:95,0);
      }else if(key==='mounts'){
       pos=V(0,top+3,s*53);o.add(drilledSleeve(13,10.3,180,-60));delta=V(0,30,s*90);
      }else if(key==='straps'){
@@ -319,9 +321,10 @@ export class Viewer {
  poseMechanism(extension,inflation,lift){
   if(!this.winding)return;
   const proc=this.mode==='process',shaft=this.shaftPart;
-  this.winding.group.visible=!this.sections?.hideBladder&&(this.group==='all'||this.group==='h');
+  if(this.closedMould)extension=inflation=0;
+  this.winding.group.visible=!this.closedMould&&!this.sections?.hideBladder&&(this.group==='all'||this.group==='h');
   this.winding.group.position.copy(shaft.node.position).sub(shaft.base);
-  this.winding.update(extension,inflation);shaft.node.rotation.x=this.winding.shaftAngle;
+  this.winding.update(extension,inflation);shaft.node.rotation.x=this.closedMould?0:this.winding.shaftAngle;
   this.inlet.visible=this.sensor.visible=this.group==='all'||this.group==='s';
   this.inlet.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.inletX,this.radius-10+3*this.sealAir,0));
   this.sensor.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.sensorX,this.radius+2+3*this.sealAir,0));
@@ -365,7 +368,7 @@ export class Viewer {
   const pressedShieldY=this.winding.shieldTop+8;
   const deployedTipY=this.radius+1.5+this.winding.travel+7+8;
   this.branchFillTop=THREE.MathUtils.lerp(pressedShieldY,deployedTipY,.5);
-  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600,this.branchFillTop);
+  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600,this.branchFillTop,this.repairOptions);
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
   this.damage=this.repair.cavity;
@@ -412,6 +415,7 @@ export class Viewer {
  }
  preparationPose(){
   const t=this.time,R=this.radius+12,state=millingState(t);
+  if(this.repairOptions.kind==='pipe'){state.trim=1;state.trimming=false;state.outer=clamp((t-.12)/.78,0,1);state.angle=state.outer*Math.PI*2;}
   this.poseSeal(0);this.bumperAir=0;this.upperLift=0;this.sensorFull=false;
   this.model.position.set(0,0,0);this.poseMechanism(0,0,0);
   this.repair.setMilling(state.outer,0,state.trim);
@@ -426,7 +430,7 @@ export class Viewer {
    const target=millingTarget(R,state,breakoutContour,branchBottom,passage.radius);
    // Entry, withdrawal and a between-pass move are deterministic when seeking.
    let retract=t<.12?1-smooth(t/.12):0;
-   if(t>=.4&&t<.43){
+   if(this.repairOptions.kind!=='pipe'&&t>=.4&&t<.43){
     const from=millingTarget(R,{trimming:true,trim:1,angle:Math.PI*6},breakoutContour,branchBottom,passage.radius);
     target.point.copy(from.point).lerp(millingTarget(R,{branch:false,angle:0},breakoutContour,branchBottom,passage.radius).point,smooth((t-.4)/.03));
    }
@@ -462,7 +466,7 @@ export class Viewer {
   this.camera.fov=view==='channel'?72:view==='shaft'?44:34;this.camera.updateProjectionMatrix();this.controls.minDistance=view==='shaft'?70:180;
   if(view==='shaft'){
    this.explode=this.targetExplode;this.updateParts();if(this.mode==='process')this.processPose();else this.resetPose();
-   const center=this.shaftFocus();this.camera.position.copy(center).add(V(-260,-80,0));this.controls.target.copy(center);this.controls.update();this.shaftTracking=center;this.applyMaterials();
+   const center=this.shaftFocus();this.camera.position.copy(center).add(this.closedMould?V(-170,-55,120):V(-260,-80,0));this.controls.target.copy(center);this.controls.update();this.shaftTracking=center;this.applyMaterials();
    if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));return;
   }
   if(view==='channel'){
@@ -489,8 +493,8 @@ export class Viewer {
  project(point){const p=point.clone().project(this.camera);return{x:(p.x+1)/2*this.el.clientWidth,y:(1-p.y)/2*this.el.clientHeight,visible:p.z<1&&p.z>-1};}
  anchor(g){const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible&&p.group===g&&p.kind==='part')b.expandByObject(p.node);return b.isEmpty()?null:b.getCenter(V());}
  processAnchors(){if(this.time<PHASE.POSITION)return [{name:this.time<PHASE.CHANGE?'Fräsbahn · eine Fräserbreite':'Werkzeugwechsel außerhalb der Schadstelle',point:V(0,this.radius+70,0)}];const x=this.model.position.x,y=this.winding.group.position.y;return [
-  {name:this.time<PHASE.MORTAR?(this.winding.fullyUnwound?'Blase fast bündig eingeschraubt':'Blase eingeschraubt · auf der Welle'):'Injektionsmörtel',side:'left',point:this.time<PHASE.MORTAR?V(x,this.shaftPart.base.y+y+bladderMount.seat,0):V(0,this.radius+55,75)},
-  {name:'Starre runde Blasenspitze',point:V(x,this.winding.tip.position.y+y+7,0)},
+  {name:this.time<PHASE.MORTAR?(this.closedMould?'Welle ohne Anschlussblase':this.winding.fullyUnwound?'Blase fast bündig eingeschraubt':'Blase eingeschraubt · auf der Welle'):'Injektionsmörtel',side:'left',point:this.time<PHASE.MORTAR?V(x,this.shaftPart.base.y+y+bladderMount.seat,0):V(0,this.radius+55,75)},
+  {name:this.closedMould?'Geschlossenes Schalungsschild':'Starre runde Blasenspitze',point:this.closedMould?V(x,this.radius+this.upperLift+3*this.sealAir,0):V(x,this.winding.tip.position.y+y+7,0)},
   {name:'45°-Messingwinkel · Opferschlauch',side:'left',point:V(x+ports.inletX,this.inlet.position.y-13,0)},
   {name:this.sensorFull?'Drucksensor · voll':'Drucksensor',point:V(x+ports.sensorX,this.sensor.position.y+2,0)},
   {name:'Dichtblase zwischen Schild & Träger',side:'left',point:V(x-185,this.radius-2+3*this.sealAir+y,0)}
