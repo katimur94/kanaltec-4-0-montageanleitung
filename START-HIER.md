@@ -12,7 +12,9 @@
 
 **Fräskopf mit dem Original vergleichen:** `Fraeskopf-Vergleich.html` per Doppelklick öffnen. Links steht dein Originalfoto, rechts die neu recherchierte 3D-Nachbildung. Mit Maus/Finger drehen, mit dem Rad zoomen oder **Schräg / Seite / Vorne / Oben** wählen. Die Datei funktioniert offline und zeigt dieselbe Fräskopfgeometrie wie die Animation. Die genaue Werkzeug-Artikelnummer und Maße sind nicht bestätigt.
 
-**Neu – Fräsen vor der Schalung:** Die lokal gebaute HTML-Datei öffnen und **So funktioniert’s** wählen. Die ersten drei Schritte zeigen **Anschluss freifräsen**, **Nut im Anschluss fräsen** und **Zur Schalung wechseln**. Über **Fräsdetail** und **Schnitt & Sicht → Rohr im Schnitt** lässt sich der Abtrag von innen betrachten. **Vorführen** spielt alle zehn Schritte ab. Die Nut liegt als geschlossener Ring ca. 5 cm hinter der mittleren Anschlusskante. Fräserdurchmesser 60 mm und Stärke 16 mm sind schematische Modellannahmen; Breite und Tiefe des äußeren Abtrags folgen diesen Werkzeugmaßen.
+**Fräsen vor der Schalung:** Unter **So funktioniert’s** folgen **Anschluss freifräsen** und **Zur Schalung wechseln** direkt aufeinander. Das Nutfräsen und die innere Ausfräsung sind entfernt. **Vorführen** spielt neun Schritte ab. Über **Fräsdetail** und **Schnitt & Sicht → Rohr im Schnitt** lässt sich der verbleibende äußere Abtrag betrachten. Fräserdurchmesser 60 mm und Stärke 16 mm bleiben schematische Modellannahmen.
+
+**Kürzere Anschlussblase (20.09.2026):** Nur der vollständig ausgefahrene Teil oberhalb des angepressten Schildes ist halb so lang wie zuvor, einschließlich der Spitze. Wellenfuß, Durchmesser, starre Spitze und drei Wicklungen bleiben erhalten. Unter **Anschlussblase einfahren → Blasenantrieb** ist die Änderung sichtbar.
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
 
@@ -33,7 +35,7 @@ Die Datei **DSS-Flex-Verfahren-Praesentation.html** per Doppelklick in Edge, Chr
 1. Oben über **Dunkel / Hell** den Darstellungsmodus wählen. Die Auswahl wird im Browser gespeichert, soweit lokale Speicherung erlaubt ist.
 2. Unter **3D erkunden** eine Größe und eine Baugruppe wählen. Oberhalb der 3D-Fläche **Drehen / Verschieben** wählen und mit der Maus oder einem Finger ziehen. Die vier Richtungsknöpfe bewegen das Modell nach links, rechts, oben oder unten. Rechts ziehen verschiebt auch im Drehmodus; mit dem Mausrad zoomen. Zwei Finger verschieben und zoomen. **R** zentriert die Ansicht. Die Pfeiltasten der Tastatur bleiben für Animationsschritte reserviert.
 3. **Explosionsansicht** öffnen und den Schieberegler oder die Abspieltaste verwenden. Über **Stückliste ansehen** lässt sich jedes aufgeführte Bauteil auswählen und hervorheben.
-4. **Vorführen** startet die zehn Schritte einschließlich Fräsvorbereitung. Jeder Schritt kann auch einzeln angewählt werden; die Leertaste startet oder pausiert.
+4. **Vorführen** startet die neun Schritte einschließlich Fräsvorbereitung. Jeder Schritt kann auch einzeln angewählt werden; die Leertaste startet oder pausiert.
 5. **Originalzeichnung** zeigt die zugehörige PDF-Seite. Ein Klick vergrößert die Zeichnung. Die vollständige PDF und die Fotos stehen unter **Originale & Quellen** bereit.
 
 Über **Schnitt & Sicht** oberhalb der 3D-Fläche wählst du unabhängig voneinander **Rohr aufschneiden**, **Schalung aufschneiden** und **Vordere Halterung ausblenden**. Die Schalung und ihre Halterung sind zunächst vollständig sichtbar. Die Einstellungen bleiben bei Kamerawechseln erhalten und werden im Browser gespeichert, soweit möglich. **Durchblick** schaltet die transparente Darstellung um.
@@ -50,7 +52,7 @@ Unter der Zeitachse findest du **Animationsgeschwindigkeit** von **0,1× bis 4×
 
 Die Animation zeigt die Blase auf der drehenden Welle beim Ab- und Aufwickeln, den starren runden Kopf in der Schildöffnung und die Mörtelzufuhr von unten durch die separate kleine Öffnung. Die rote Signallampe unter dem Modell zeigt die simulierte Vollmeldung des Drucksensors. Der Bumper bleibt während der Fahrt vakuumiert und flach; er wird erst an der Anschlussposition aufgeblasen und vor der Weiterfahrt wieder vakuumiert.
 
-**Die zwei Blasen haben unterschiedliche Aufgaben:** In Schritt 3 wird die flächige Dichtblase zwischen Schalungsträger und Schild aufgeblasen. Erst danach fährt in Schritt 4 die auf der Welle gewickelte Anschlussblase in den Anschluss. Beim Ausschalen wird die Anschlussblase zurückgewickelt, die Dichtblase entspannt und schließlich der Bumper vakuumiert. Die Statusanzeigen zeigen die Zustände getrennt an.
+**Die zwei Blasen haben unterschiedliche Aufgaben:** In Schritt 5 wird die flächige Dichtblase zwischen Schalungsträger und Schild aufgeblasen. Erst danach fährt in Schritt 6 die auf der Welle gewickelte Anschlussblase in den Anschluss. Beim Ausschalen wird die Anschlussblase zurückgewickelt, die Dichtblase entspannt und schließlich der Bumper vakuumiert. Die Statusanzeigen zeigen die Zustände getrennt an.
 
 **F** schaltet das 3D-Vollbild um; **Umschalt + F** oder **F11** zeigt die ganze Seite im Vollbild. **Bild speichern** exportiert die aktuelle 3D-Ansicht als PNG.
 
@@ -64,7 +66,7 @@ Unter **Zentraleinheit → Klappvorrichtung** öffnest du die Nahansicht der Ver
 
 ## Neue Schadens- und Verpressungsdarstellung (17.09.2026)
 
-Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die runde Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: erst Hohlraumfüllung, danach Mörtel bis über die Nut. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
+Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die runde Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: Mörtel vom Zulauf durch die Schadstelle bis ins umgebende Erdreich. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
 
 ## Fertige Werbevideos vom 17.09.2026
 

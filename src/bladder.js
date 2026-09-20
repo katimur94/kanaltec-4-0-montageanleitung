@@ -9,6 +9,7 @@ export const passage={radius:ports.opening,wall:12};
 export const bladderMount={flat:6.5,seat:7.1,radius:35,capHeight:6,threadBottom:-2.5,threadTop:6.4};
 // Each collapsed wall is about 3 mm: two walls form a 6 mm folded bladder.
 export const windingSpec={turns:3,wall:3,folded:6,layerGap:.3};
+export const bladderLengthSpec={aboveShieldScale:.5,pressedShieldOffset:5,tipHeight:7};
 const clamp=THREE.MathUtils.clamp,lerp=THREE.MathUtils.lerp;
 const smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const flat=bladderMount.flat,rootHeight=bladderMount.seat+bladderMount.capHeight,initialAngle=windingSpec.turns*2*Math.PI,layerPitch=(windingSpec.folded+windingSpec.layerGap)/(2*Math.PI),rows=576,columns=48;
@@ -23,8 +24,9 @@ function indexedSurface(n,m){
 function contactRadius(a){const c=Math.cos(a);return (c>flat/17?flat/c:17)+(rootHeight-flat)+layerPitch*a;}
 function coilPoint(a,angle){const r=contactRadius(a),phase=a-angle;return V(0,r*Math.cos(phase),r*Math.sin(phase));}
 function woundLength(angle){let length=0,previous=coilPoint(0,angle);const n=Math.max(1,Math.ceil(angle*100));for(let i=1;i<=n;i++){const p=coilPoint(angle*i/n,angle);length+=p.distanceTo(previous);previous=p;}return length;}
-// Derive insertion travel from the material in three complete turns. Keeping
-// the former 145 mm stroke would leave material wrapped or stretch the bladder.
+// Reference path for the unchanged three visible turns. The user-requested
+// shorter deployed bladder is an illustrative deformation, not an inextensible
+// material simulation: shaft, layer thickness and winding path stay unchanged.
 const travel=woundLength(initialAngle)-contactRadius(initialAngle)+rootHeight;
 function windingState(extension){
  if(extension===0)return {angle:initialAngle,stored:woundLength(initialAngle),end:contactRadius(initialAngle)};
@@ -43,8 +45,11 @@ export class BladderMechanism {
  constructor(radius,shaftY){
   this.radius=radius;this.shaftY=shaftY;this.group=new THREE.Group();
   this.initialAngle=windingTable[0].angle;
-  this.travel=travel;this.spec=windingSpec;
-  this.totalLength=radius+1.5+travel-shaftY-rootHeight;
+  this.referenceTravel=travel;this.spec=windingSpec;
+  this.shieldTop=radius+bladderLengthSpec.pressedShieldOffset;
+  this.referenceAboveShield=radius+1.5+travel+bladderLengthSpec.tipHeight-this.shieldTop;
+  this.travel=travel-this.referenceAboveShield*(1-bladderLengthSpec.aboveShieldScale);
+  this.totalLength=radius+1.5+this.travel-shaftY-rootHeight;
   const ribs=rubberRibs();this.material=new THREE.MeshStandardMaterial({color:'#30383b',roughness:.8,metalness:0,side:THREE.DoubleSide,map:ribs,bumpMap:ribs,bumpScale:.16});
   this.coilGeometry=indexedSurface(rows,columns);this.coil=new THREE.Mesh(this.coilGeometry,this.material);this.group.add(this.coil);
   this.bodyGeometry=indexedSurface(112,columns);this.body=new THREE.Mesh(this.bodyGeometry,this.material);this.group.add(this.body);
@@ -73,9 +78,10 @@ export class BladderMechanism {
   this.extension=extension;this.inflation=inflation;
   const state=poseAt(extension),angle=state.angle;
   this.shaftAngle=-angle;this.remainingTurns=angle/(2*Math.PI);
-  this.storedLength=state.stored;this.deployedLength=this.totalLength-state.stored;
+  this.storedLength=state.stored;
   this.fullyUnwound=extension===1;this.attachment.rotation.x=this.shaftAngle;
-  const tipY=this.radius+1.5+travel*extension,baseY=this.shaftY+state.end;
+  const tipY=this.radius+1.5+this.travel*extension,baseY=this.shaftY+state.end;
+  this.deployedLength=tipY-baseY;
   const cp=this.coilGeometry.attributes.position,cu=this.coilGeometry.attributes.uv;this.coil.visible=!this.fullyUnwound;
   for(let i=0;i<=rows;i++){
    const t=i/rows,a=t*angle,centre=coilPoint(a,angle);centre.y+=this.shaftY;

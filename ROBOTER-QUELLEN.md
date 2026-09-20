@@ -1,5 +1,9 @@
 # MicroGator: Quellen und Modellzuordnung
 
+## 20.09.2026 – Nutfräsen entfernt
+
+Die aktuelle Nutzeranweisung entfernt die innere Fräsphase einschließlich Ringnut und Innenwandvertiefung. Nach Rückschnitt und äußerem Rundfräsen folgt direkt der Werkzeugwechsel. Fräskopf, Drehmodul und Hubarme bleiben erhalten. Die folgenden Einträge dokumentieren historische Recherche und frühere Anforderungen; ihre Nutmaße gelten nicht mehr für die aktuelle Animation.
+
 ## 17.09.2026 – Drehachse hinter CutterCam, Hubarme ohne seitliches Gelenk
 
 Nutzerkorrektur: Links-/Rechtsbewegung entsteht an der Drehachse unmittelbar hinter der Kamera; die Arme dienen ausschließlich dem Heben/Senken. Erneut mit dem [IBAK-Fräserprospekt](https://www.ibak.de/fileadmin/website/ansprechpartner/flyer_prospekte/fraeserprospekt_a4_de_en.pdf), gedruckte S. 6–7, abgeglichen: Punkt 4 beschreibt das Drehmodul, Punkt 5 die separate vierte Achse zum Kippen des Motors.

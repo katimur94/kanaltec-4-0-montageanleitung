@@ -1,5 +1,27 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Nutfräsen entfernt, Blase nur oberhalb des Schildes halbiert
+
+**Nutzerkorrektur:** Nutfräsen aus dem Ablauf entfernen. Auf Nachfrage ausdrücklich nur den Teil der ausgefahrenen Anschlussblase oberhalb des Schildes halbieren; drei Wicklungen beibehalten.
+
+**Geändert:** Neun statt zehn Phasen. Nach Rückschnitt und äußerem Rundfräsen folgt unmittelbar der Rückzug und Wechsel zur Schalung. Innere Ringnut, Innenwandvertiefung und zugehörige Mörtelhülse entfernt; der Anschlussquerschnitt bleibt unverändert. Mörtel füllt weiterhin die Schadstelle und das Erdreich. Phasennummern, Zeitachse, Beschriftungen, Tests und Browserprüfskript angepasst.
+
+**Blase:** Ausgefahrene Höhe vom Scheitel des angepressten Schildes bis zur Oberseite der starren Spitze exakt auf 50 % des bisherigen Werts gesetzt. Durchmesser, Fuß, Spitzengröße, Wickelpfad, drei Umdrehungen und 3-mm-Wandlagen bleiben erhalten. Vor Luftfüllung wird vollständig abgewickelt. Die kürzere Ausfahrlänge bei unveränderter Wicklung ist eine schematische Verformung, keine längenkonstante Materialsimulation. Anschlussrohrhöhe unverändert.
+
+**Prüfung:** Modell-, Wickel-, Wasser-, Roboter- und Fräsprüfungen für alle fünf DN bestanden, einschließlich Halbierung oberhalb des Schildes, drei vollständiger Umdrehungen, unverändertem Anschlussradius und Rücksprüngen. Lokaler Build erfolgreich. In Edge Blasenantrieb, Wicklung mit Schalungsschnitt, DN 300/700, äußerer Fräsvorgang, fertiger Anschluss und Rücksprung visuell geprüft; keine Browserfehler. Beide HTML-Ausgaben und Quellen im äußeren Arbeitsordner sowie im Repository synchronisiert.
+
+**Medien und Veröffentlichung:** Vorhandene Videos und PowerPoint nicht neu exportiert; deren abweichender Modellstand ist in den Anleitungen gekennzeichnet. Vor neuem Filmexport müssen die alten Szenenzeiten und Sprechertexte umgestellt werden. Lokaler Stand, kein Push und keine neue Pages-Veröffentlichung.
+
+
+## 20.09.2026 – Aktuellen GitHub-Stand lokal übernommen
+
+GitHub-Commit `07f4d35` per Fast-forward in `work/github-pages` übernommen. Alle 64 versionierten Dateien einschließlich Quellen, Dokumentation, HTML-Ausgaben, sechs DSS-Flex-Videos und PowerPoint in den äußeren Arbeitsordner synchronisiert. Vorherige lokale Dateien unter `work/local-backup-20260920-170111` gesichert; zusätzliche ältere Medien und private Produktionsdateien erhalten.
+
+Beide Arbeitsordner nutzen jetzt die unveränderten portablen Quellen und dieselbe package.json/Lockdatei. Abhängigkeiten in beiden Ordnern mit `npm ci` installiert. `work/prepare-github.mjs` übernimmt die bereits versionierten Dateien ohne alte Import-Umschreibungen oder Überschreiben der aktuellen Paketkonfiguration; neue öffentliche Dateien müssen im Repository ausdrücklich ergänzt werden.
+
+Prüfung: `npm test` im Repository für alle fünf DN bestanden; `npm run build` in beiden Ordnern erfolgreich. Erzeugte HTML-Dateien stimmen abgesehen von Windows-Zeilenenden mit GitHub überein. Anschließend Original-Zeilenenden wiederhergestellt. Lokale 3D- und Prozessansicht in Edge visuell geprüft, keine Browserfehler. Keine erneute vollständige Video-/PowerPoint-Prüfung. Repository bleibt unverändert auf `origin/main`; kein Push und keine Veröffentlichung. Dieser lokale Synchronisationsvermerk steht nur im äußeren Arbeitsordner.
+
+
 ## 17.09.2026 – Veröffentlichung des vollständigen DSS-Flex-Stands vorbereitet
 
 **Auftrag:** Aktuellen Stand in `katimur94/kanaltec-4-0-montageanleitung` pushen und GitHub Pages aktualisieren.

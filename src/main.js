@@ -148,7 +148,7 @@ if(viewer)viewer.onFrame=dt=>{
  $('viewport').dataset.modelParts=viewer.parts.length;$('viewport').dataset.group=state.group;$('viewport').dataset.mode=state.mode;$('viewport').dataset.explosion=viewer.explode.toFixed(3);$('viewport').dataset.stage=Math.min(lastStage,Math.floor(state.time));$('viewport').dataset.view=viewer.currentView;
  if(state.mode==='process'){
   $('mechanismReadout').hidden=state.time<PHASE.POSITION;
-  $('viewport').dataset.millingOuter=viewer.repair.millingProgress?.outer??0;$('viewport').dataset.millingInner=viewer.repair.millingProgress?.inner??0;
+  $('viewport').dataset.millingOuter=viewer.repair.millingProgress?.outer??0;
   const full=String(viewer.sensorFull);if($('sensorStatus').dataset.full!==full){$('sensorStatus').dataset.full=full;$('sensorText').textContent=viewer.sensorFull?'Leuchtet · Gegendruck meldet voll':'Aus · keine Vollmeldung';}
   const n=Math.floor(state.time),f=state.time-n,drive=n<PHASE.POSITION?'Vorbereitung · Schalung noch nicht im Einsatz':n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';
   if($('driveStatus').textContent!==drive)$('driveStatus').textContent=drive;

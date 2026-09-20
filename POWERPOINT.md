@@ -1,5 +1,7 @@
 # DSS-Flex Verfahren als PowerPoint
 
+**Modellstand-Hinweis 20.09.2026:** Vorhandene Exporte und Film-Sprechertexte beziehen sich auf den Stand vom 17.09.2026 mit Nutfräsen und längerer Anschlussblase. Die aktuelle Web-Animation hat neun Phasen und eine oberhalb des Schildes halbierte Blase. Medien wurden nicht neu exportiert; vor der nächsten Produktion Filmzeiten, Szenen und Sprechertext anpassen.
+
 Die Präsentation liegt unter `Praesentationen/DSS-Flex-Verfahren.pptx`.
 
 Für die beauftragte GitHub-Pages-Veröffentlichung ist die finale PPTX mit allen eingebetteten Videos enthalten. Der Download ist in der Fußzeile der 3D-Präsentation und in der Videogalerie verlinkt.

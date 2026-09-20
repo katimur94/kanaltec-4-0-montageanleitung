@@ -1,5 +1,7 @@
 # Werbung: DSS-Flex Verfahren
 
+**Modellstand-Hinweis 20.09.2026:** Vorhandene Exporte und Film-Sprechertexte beziehen sich auf den Stand vom 17.09.2026 mit Nutfräsen und längerer Anschlussblase. Die aktuelle Web-Animation hat neun Phasen und eine oberhalb des Schildes halbierte Blase. Medien wurden nicht neu exportiert; vor der nächsten Produktion Filmzeiten, Szenen und Sprechertext anpassen.
+
 Produktname auf beiden Titelkarten: **DSS-Flex Verfahren**. Sprecher-Auftakt: „DSS-Flex Verfahren.“; Abschluss: „DiTom. Das DSS-Flex Verfahren.“ MP4-Dateipräfix: `DiTom-DSS-Flex-Verfahren-`. Firmenlogo und Kontaktadresse bleiben DiTom.
 
 Gezeigt wird die DN-400-Variante. Das Filmstudio verwendet direkt `src/model.js` und dessen aktuelles Schadens-, Fräs- und Sanierungsmodell. Es rendert nur den Prozess; keine Explosionsansicht, Website-Oberfläche oder Untertitel. Das originale Logo wird aus `src/logo-transparent.png` übernommen und ohne zusätzliche Hintergrundfläche oben links gezeichnet. Film, Logo-Karten und lokale Galerie verwenden den Darkmode.

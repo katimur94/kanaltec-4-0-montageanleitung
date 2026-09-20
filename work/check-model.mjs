@@ -245,7 +245,7 @@ for(const f of families){
  const windingRows=woundSurface.count/49-1;
  for(const i of [Math.floor(windingRows*.4),Math.floor(windingRows*.7)]){const a=i*49+12,b=i*49+36;const dy=woundSurface.getY(a)-woundSurface.getY(b),dz=woundSurface.getZ(a)-woundSurface.getZ(b);near(Math.hypot(dy,dz),6,'Wound bladder retains two 3 mm wall layers',.001);}
  for(const f of [0,.2,.4,.6,.76,.999]){
-  pose(3+f);near(v.winding.storedLength+v.winding.deployedLength,v.winding.totalLength,'Bladder material length conserved',.001);
+  pose(3+f);assert.ok(v.winding.deployedLength>0,'Shortened straight segment remains connected above the winding');
   assert.ok(v.winding.storedLength<=stored+.001&&Math.abs(v.winding.shaftAngle)<=rotation+.001&&v.winding.tip.position.y>=tipHeight-.001,'Rotation releases wound bladder toward aligned zero position as head advances');
   near(shaft.node.rotation.x,v.winding.shaftAngle,'Actual shaft follows winding');
   near(new THREE.Box3().setFromObject(v.winding.tip).getSize(new THREE.Vector3()).x,capSize.x,'Head remains rigid');
@@ -253,6 +253,8 @@ for(const f of families){
  }
  near(initialRotation-rotation,6*Math.PI,'Complete three-turn unwinding, no shortened angular motion');assert.ok(v.winding.tip.position.y+v.winding.group.position.y+7<v.branchTop,'Extended bladder fits within displayed branch');
  pose(3.74);near(v.winding.storedLength,0,'No residual winding before inflation');near(v.winding.inflation,0,'Full unwinding has a separate pause before air');near(shaft.node.rotation.x,0,'Flat face points up parallel to branch opening');assert.equal(v.winding.coil.visible,false,'No wound bladder rendered in fully deployed state');
+ near(v.winding.tip.position.y+7-v.winding.shieldTop,v.winding.referenceAboveShield*.5,'Only the deployed length above the pressed shield is halved',.001);
+ const shortenedTip=v.winding.tip.position.y;pose(6.99);pose(3.74);near(v.winding.tip.position.y,shortenedTip,'Backward seeking restores shortened deployment');
  const skin=v.winding.bodyGeometry.attributes.position;
  for(let i=0;i<=112;i++){const a=i*49,b=a+24;near((skin.getX(a)+skin.getX(b))/2,0,'Straight bladder centre along branch X');near((skin.getZ(a)+skin.getZ(b))/2,0,'Straight bladder centre along branch Z');}
  const footTop=bladderMount.seat+bladderMount.capHeight;

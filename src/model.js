@@ -342,7 +342,7 @@ export class Viewer {
  }
  buildContext(){
   const R=this.radius+12;
-  this.branchTop=R+20+Math.max(260,this.winding.travel+65);
+  this.branchTop=R+20+Math.max(260,this.winding.referenceTravel+65);
   this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600);
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
@@ -383,7 +383,7 @@ export class Viewer {
   const fill=stage<PHASE.MORTAR?0:stage===PHASE.MORTAR?smooth((f-.18)/.72):1;
   this.sensorFull=(stage===PHASE.MORTAR&&fill>=.995)||stage===PHASE.CURE||(stage===PHASE.REMOVE&&f<.14);
   this.sensor.children[1].material.emissive.set(this.sensorFull?'#e92916':'#000000');this.sensor.children[1].material.emissiveIntensity=this.sensorFull?1.5:0;
-  this.repair.setMilling(1,1,fill);
+  this.repair.setMilling(1,fill);
   this.robot.cutter.group.visible=false;
   this.repair.update({time:t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE,shield:{x:this.model.position.x,lift,seal,press}});
 
@@ -392,8 +392,8 @@ export class Viewer {
   const t=this.time,R=this.radius+12,state=millingState(t);
   this.poseSeal(0);this.bumperAir=0;this.upperLift=0;this.sensorFull=false;
   this.model.position.set(0,0,0);this.poseMechanism(0,0,0);
-  this.repair.setMilling(state.outer,state.inner,0,state.trim);
-  const change=state.exchange,returning=change?smooth((t-2.25)/.25):0,withMould=change&&t>=2.55;
+  this.repair.setMilling(state.outer,0,state.trim);
+  const change=state.exchange,returning=change?smooth((t-PHASE.CHANGE-.25)/.25):0,withMould=change&&t>=PHASE.CHANGE+.55;
   if(withMould){
    this.model.position.x=-430;const lift=-70.56;this.upperLift=lift;
    for(const p of this.parts){if(p.group!=='u')p.node.position.y+=lift;if(p.key==='bumper'){p.node.scale.y=.28;p.node.position.y-=35.28;}}
@@ -408,12 +408,7 @@ export class Viewer {
     const from=millingTarget(R,{trimming:true,trim:1,angle:Math.PI*6},breakoutContour,branchBottom,passage.radius);
     target.point.copy(from.point).lerp(millingTarget(R,{branch:false,angle:0},breakoutContour,branchBottom,passage.radius).point,smooth((t-.4)/.03));
    }
-   if(t>=.9&&t<1.12){
-    const from=millingTarget(R,{branch:false,angle:Math.PI*2},breakoutContour,branchBottom,passage.radius);
-    const to=millingTarget(R,{branch:true,angle:0,inner:0},breakoutContour,branchBottom,passage.radius);
-    const u=smooth((t-.9)/.22);target.point.copy(from.point).lerp(to.point,u);target.normal.copy(from.normal).lerp(to.normal,u).normalize();
-   }
-   if(change){target.point.y-=160*smooth((t-2)/.25);retract=0;}
+   if(change){target.point.y-=160*smooth((t-PHASE.CHANGE)/.25);retract=0;}
    target.point.y-=retract*40;
    this.robot.group.position.copy(this.robotAnchor.base);
    // Solve the target in the rotary module's radial plane. All sideways reach
@@ -471,7 +466,7 @@ export class Viewer {
  }
  project(point){const p=point.clone().project(this.camera);return{x:(p.x+1)/2*this.el.clientWidth,y:(1-p.y)/2*this.el.clientHeight,visible:p.z<1&&p.z>-1};}
  anchor(g){const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible&&p.group===g&&p.kind==='part')b.expandByObject(p.node);return b.isEmpty()?null:b.getCenter(V());}
- processAnchors(){if(this.time<PHASE.POSITION)return [{name:this.time<1?'Fräsbahn · eine Fräserbreite':this.time<2?'Umlaufende Nut · ca. 5 cm im Anschluss':'Werkzeugwechsel außerhalb der Schadstelle',point:V(0,this.radius+70,0)}];const x=this.model.position.x,y=this.winding.group.position.y;return [
+ processAnchors(){if(this.time<PHASE.POSITION)return [{name:this.time<PHASE.CHANGE?'Fräsbahn · eine Fräserbreite':'Werkzeugwechsel außerhalb der Schadstelle',point:V(0,this.radius+70,0)}];const x=this.model.position.x,y=this.winding.group.position.y;return [
   {name:this.time<PHASE.MORTAR?(this.winding.fullyUnwound?'Blase fast bündig eingeschraubt':'Blase eingeschraubt · auf der Welle'):'Injektionsmörtel',side:'left',point:this.time<PHASE.MORTAR?V(x,this.shaftPart.base.y+y+bladderMount.seat,0):V(0,this.radius+55,75)},
   {name:'Starre runde Blasenspitze',point:V(x,this.winding.tip.position.y+y+7,0)},
   {name:'Mörtelzufuhr von unten',side:'left',point:V(x+ports.inletX,this.inlet.position.y-13,0)},

@@ -6,7 +6,9 @@ Aktueller Name: **DSS-Flex Verfahren**. Dieses Repository enthält die interakti
 
 **Fräskopf nach Recherche überarbeitet:** Lokaler, drehbarer [Fotovergleich](Fraeskopf-Vergleich.html) mit dem Nutzerfoto. IBAK-Prospekt und Werkzeughersteller-Katalog bilden die Formreferenzen für Motor, Spindel und segmentierte Pilzkrone; die genaue Werkzeugnummer bleibt offen. Quellen und Abgrenzungen: [ROBOTER-QUELLEN.md](ROBOTER-QUELLEN.md).
 
-**Stand 17.09.2026:** Der Ablauf beginnt mit dem Rückfräsen von Einragung und Wurzeln, dem Fräsen rund um den Anschluss, einer umlaufenden Nut ca. 5 cm im Anschluss und dem Wechsel zur Schalung. Danach folgen die Sanierungsphasen einschließlich tiefer Verpressung im Erdreich. **Fräsdetail** zeigt Werkzeug und Abtrag von innen. Werkzeugmaße, Bewegungsführung und Ausdehnung im Erdreich sind schematisch. Bedienung: [START-HIER.md](START-HIER.md).
+**Stand 20.09.2026:** Neun Schritte: Rückfräsen von Einragung und Wurzeln, Fräsen rund um den Anschluss, danach direkter Wechsel zur Schalung und Sanierung einschließlich tiefer Verpressung im Erdreich. Nutfräsen und innere Ringnut sind entfernt. Die ausgefahrene Anschlussblase ist nur oberhalb des Schildes halb so lang; die drei Wicklungen bleiben erhalten. Werkzeugmaße, Wickelübergang und Ausdehnung im Erdreich sind schematisch. Bedienung: [START-HIER.md](START-HIER.md).
+
+Die Videos und PowerPoint vom 17.09.2026 zeigen noch den vorherigen Ablauf mit Nutfräsen und längerer Blase; sie wurden bei dieser Modelländerung nicht neu exportiert.
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
 

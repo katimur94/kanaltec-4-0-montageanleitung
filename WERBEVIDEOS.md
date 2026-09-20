@@ -1,5 +1,7 @@
 # Aktuelle Werbung: DSS-Flex Verfahren – 17.09.2026
 
+**Modellstand-Hinweis 20.09.2026:** Vorhandene Exporte und Film-Sprechertexte beziehen sich auf den Stand vom 17.09.2026 mit Nutfräsen und längerer Anschlussblase. Die aktuelle Web-Animation hat neun Phasen und eine oberhalb des Schildes halbierte Blase. Medien wurden nicht neu exportiert; vor der nächsten Produktion Filmzeiten, Szenen und Sprechertext anpassen.
+
 **Umbenennung:** Titelkarten, Galerie, MP4-Dateinamen und Sprecher-Auftakt/-Abschluss verwenden **DSS-Flex Verfahren**. Firmenlogo und Firmenname bleiben DiTom. Neue Ausgaben unter `Videos/DSS-Flex-Verfahren-2026/`, Dateipräfix `DiTom-DSS-Flex-Verfahren-`.
 
 Status: **Alle sechs Fassungen fertig und geprüft.** Jede MP4 vollständig decodiert, Auflösung/30 Bilder pro Sekunde/H.264/AAC und fehlende Untertitelspuren kontrolliert. Länge jeweils 78 Sekunden, Dateien ca. 27–45 MiB. Kontaktbögen aus den final codierten Dateien aller drei Formate visuell geprüft. Browseraufnahme ohne Fehler; alle sechs Videos in Edge geladen, abgespielt und per Zeitsprung geprüft. Tonspitzen unter 0 dBFS (Sprecher −1,3 dB, Musik −5,3 dB). Prüfberichte und lokale Galerie liegen bei den Filmen.

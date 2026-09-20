@@ -55,49 +55,17 @@ export function damagedPipeGeometry(R,length,thickness,progress=0,fill=0){
  }
  const result=geometry(positions,indices,uv);result.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return result;
 }
-// Relief and casting share the original bore; mortar never narrows it.
-export function branchProfile(R,a){
- const base=branchBottom(R,a),center=R+millingSpec.branchEdge+millingSpec.insertion;
- return [base,center-millingSpec.depth/2,center-millingSpec.depth/2,center+millingSpec.depth/2,center+millingSpec.depth/2,center+millingSpec.depth/2+millingSpec.overrun];
-}
-export function branchRemoval(R,a,y,progress,groove=false){
- const h=branchProfile(R,a),sweep=clamp(progress/.7),front=THREE.MathUtils.lerp(R+millingSpec.branchEdge,h[5]+millingSpec.depth/2,sweep);
- const prepared=clamp((front-y+millingSpec.depth/2)/millingSpec.depth)*(progress>0?1:0);
- const ring=groove&&progress>.7&&a/TAU<=clamp((progress-.7)/.3);
- return Math.max(millingSpec.relief*prepared,ring?millingSpec.grooveDepth:0);
-}
-export function brokenBranch(R,top,progress=0,fill=0){
- const pos=[],uv=[],idx=[],colors=[],rows=7,stride=N+1;
- for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=N;i++){
-  const a=i/N*TAU,profile=branchProfile(R,a),heights=[...profile,profile[5],top],y=heights[j];
-  const cut=!side&&j<=5?branchRemoval(R,a,y,progress,j===2||j===3):0;
-  const r=passage.radius+side*passage.wall+cut;
+// The branch bore stays intact: there is no internal milling or mortar sleeve.
+export function brokenBranch(R,top){
+ const pos=[],uv=[],idx=[],colors=[],stride=N+1;
+ for(let side=0;side<2;side++)for(let j=0;j<2;j++)for(let i=0;i<=N;i++){
+  const a=i/N*TAU,y=j?top:branchBottom(R,a),r=passage.radius+side*passage.wall;
   pos.push(r*Math.cos(a),y,r*Math.sin(a));uv.push(a*2,(y-R)/120);
-  const c=new THREE.Color(cut>0?'#b18d70':'#422b21');colors.push(c.r,c.g,c.b);
+  const c=new THREE.Color('#422b21');colors.push(c.r,c.g,c.b);
  }
- const count=(rows+1)*stride;
- for(let side=0;side<2;side++)for(let j=0;j<rows;j++)for(let i=0;i<N;i++){const a=side*count+j*stride+i,b=a+stride;idx.push(a,b,a+1,b,b+1,a+1);}
- for(const j of [0,rows])for(let i=0;i<N;i++){const a=j*stride+i,b=a+count;idx.push(a,b,a+1,b,b+1,a+1);}
+ for(let side=0;side<2;side++)for(let i=0;i<N;i++){const a=side*2*stride+i,b=a+stride;idx.push(a,b,a+1,b,b+1,a+1);}
+ for(const j of [0,1])for(let i=0;i<N;i++){const a=j*stride+i,b=a+2*stride;idx.push(a,b,a+1,b,b+1,a+1);}
  const result=geometry(pos,idx,uv);result.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return result;
-}
-export function packedBranchGeometry(R,fill){
- const pos=[],uv=[],idx=[],stride=N+1,rows=40;
- for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=N;i++){
-  const a=i/N*TAU,h=branchProfile(R,a),u=clamp((fill-.2)/.8),top=THREE.MathUtils.lerp(h[0],h[5],u);
-  // Duplicate rows at both groove shoulders give the casting exactly the same
-  // stepped profile as the cut wall, rather than diagonal slivers at its edges.
-  const level=j<=12?THREE.MathUtils.lerp(h[0],h[1],j/12):j<=24?THREE.MathUtils.lerp(h[1],h[3],(j-13)/11):THREE.MathUtils.lerp(h[3],h[5],(j-25)/15);
-  const y=Math.min(level,top),inGroove=level>top?top>=h[1]&&top<=h[3]:j>=13&&j<=24;
-  const depth=inGroove?millingSpec.grooveDepth:millingSpec.relief;
-  const r=passage.radius+(side?depth:0);
-  pos.push(r*Math.cos(a),y,r*Math.sin(a));uv.push(a*2,(y-R)/60);
- }
- const count=(rows+1)*stride;
- for(let side=0;side<2;side++)for(let j=0;j<rows;j++)for(let i=0;i<N;i++){const a=side*count+j*stride+i,b=a+stride;idx.push(a,b,a+1,b,b+1,a+1);}
- for(const j of [0,rows])for(let i=0;i<N;i++){const a=j*stride+i,b=a+count;idx.push(a,b,a+1,b,b+1,a+1);}
- const result=geometry(pos,idx,uv),caps=[];
- for(const i of [0,N/2])for(let j=0;j<rows;j++){const a=j*stride+i,b=a+stride;caps.push(a,b,a+count,b,b+count,a+count);}
- result.userData.sectionIndices=caps;return result;
 }
 export function projectingBranchGeometry(R,trim){
  const pos=[],uv=[],idx=[],stride=N+1;
@@ -184,8 +152,6 @@ export class RepairScene {
   this.mortarMaterial=new THREE.MeshStandardMaterial({color:'#444743',roughness:.75,side:THREE.DoubleSide});
   this.skinMaterial=new THREE.MeshStandardMaterial({color:'#555652',...this.mortarTextures,bumpScale:.16,roughness:.95,envMapIntensity:.35,vertexColors:true,side:THREE.DoubleSide});
   this.innerSkin=mouldSurface(R,a=>[millingSpec.outerRadius*Math.cos(a),millingSpec.outerRadius*Math.sin(a)],this.skinMaterial);this.group.add(this.innerSkin);
-  this.packedMaterial=new THREE.MeshStandardMaterial({color:'#686963',...this.mortarTextures,bumpScale:.22,roughness:.82,side:THREE.DoubleSide});
-  this.packedBranch=makeMesh(packedBranchGeometry(R,0),this.packedMaterial);this.group.add(this.packedBranch);
   this.mortarGeometry=new THREE.BufferGeometry();
   this.mortarGeometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*3),3));
   this.mortarGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*2),2));
@@ -193,7 +159,6 @@ export class RepairScene {
   this.sectionGeometry=new THREE.BufferGeometry();this.sectionGeometry.setAttribute('position',this.mortarGeometry.attributes.position);this.sectionGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(this.mortarGeometry.attributes.uv.array.length),2));
   // The exposed section face must not clip against its own coplanar plane.
   this.sectionMaterial=new THREE.MeshStandardMaterial({color:'#65695f',...this.mortarTextures,bumpScale:.08,roughness:.95,side:THREE.DoubleSide});
-  this.packedSection=makeMesh(packedBranchGeometry(R,0),this.sectionMaterial);this.group.add(this.packedSection);
   this.section=makeMesh(this.sectionGeometry,this.sectionMaterial);this.section.castShadow=this.section.receiveShadow=false;this.section.frustumCulled=false;this.group.add(this.section);
   this.lastFill=-1;
 
@@ -224,19 +189,17 @@ export class RepairScene {
   this.splash=new THREE.Group();this.water.add(this.splash);
   for(let i=0;i<7;i++){const o=makeMesh(new THREE.TorusGeometry(6,.45,5,36),this.runoffMaterial);this.splash.add(o);}
   this.water.traverse(o=>{if(o.isMesh)o.castShadow=o.receiveShadow=false;});
-  this.setMilling(0,0,0,0);this.setCut(true);this.update({time:0,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false});
+  this.setMilling(0,0,0);this.setCut(true);this.update({time:0,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false});
  }
- setMilling(outer,inner,fill=0,trim=1){
+ setMilling(outer,fill=0,trim=1){
   // Reserve the terminal cache key for an actually complete fill. Rounding
   // .99 to 1 used to freeze a short sleeve, leaving a visible unfilled rim.
-  const o=Math.floor(outer*N)/N,b=Math.floor(inner*N)/N,f=Math.floor(clamp(fill)*40)/40,key=[o,b,f,trim].join(',');
-  if(key===this.millingKey)return;this.millingKey=key;this.millingProgress={outer:o,inner:b,fill:f,trim};
+  const o=Math.floor(outer*N)/N,f=Math.floor(clamp(fill)*40)/40,key=[o,f,trim].join(',');
+  if(key===this.millingKey)return;this.millingKey=key;this.millingProgress={outer:o,fill:f,trim};
   this.projection.geometry.dispose();this.projection.geometry=projectingBranchGeometry(this.R,trim);this.projection.visible=trim<1;
   this.roots.visible=trim<1;
   for(const root of this.rootStrands){const start=root.userData.rootStart||0,remain=clamp(1-trim*1.25);root.visible=remain>start;root.geometry.setDrawRange(0,Math.floor(root.geometry.index.count*(start?1:remain)/60)*60);}
-  this.packedBranch.geometry.dispose();this.packedBranch.geometry=packedBranchGeometry(this.R,clamp((f-.62)/.38));this.packedBranch.visible=f>.696;
-  this.packedSection.geometry.dispose();this.packedSection.geometry=this.packedBranch.geometry.clone();this.packedSection.geometry.setIndex(this.packedBranch.geometry.userData.sectionIndices);this.packedSection.visible=this.cut&&this.packedBranch.visible;
-  for(const [a,c,g] of [[this.pipe,this.pipeFull,damagedPipeGeometry(this.R,this.pipeLength,18,o,f)],[this.branch,this.branchFull,brokenBranch(this.R,this.branchTop,b,f)]]){a.geometry.dispose();a.geometry=c.geometry=g;}
+  for(const [a,c,g] of [[this.pipe,this.pipeFull,damagedPipeGeometry(this.R,this.pipeLength,18,o,f)],[this.branch,this.branchFull,brokenBranch(this.R,this.branchTop)]]){a.geometry.dispose();a.geometry=c.geometry=g;}
   const pos=[],idx=[],uv=[],R=this.R;
   const rect=(x0,x1,y0,y1)=>{const k=pos.length/3;pos.push(x0,y0,0,x1,y0,0,x1,y1,0,x0,y1,0);uv.push(x0/120,y0/120,x1/120,y0/120,x1/120,y1/120,x0/120,y1/120);idx.push(k,k+1,k+2,k,k+2,k+3);};
   rect(-this.pipeLength/2,this.pipeLength/2,-R-18,-R);
@@ -245,11 +208,8 @@ export class RepairScene {
    const depth=o>0&&a/TAU<=o?millingSpec.depth*(1-f):0;
    rect(Math.min(edge,end),Math.max(edge,end),R+depth,R+18);
    rect(Math.min(end,sign*this.pipeLength/2),Math.max(end,sign*this.pipeLength/2),R,R+18);
-   const bottom=branchBottom(R,a),low=R+millingSpec.branchEdge+50-millingSpec.depth/2,high=R+millingSpec.branchEdge+50+millingSpec.depth/2;
-   const groove=branchRemoval(R,a,(low+high)/2,b,true);
-   for(const [y0,y1,d] of [[bottom,low,branchRemoval(R,a,low,b)],[low,high,groove],[high,high+millingSpec.overrun,branchRemoval(R,a,high,b)],[high+millingSpec.overrun,this.branchTop,0]]){
-    const x0=sign*(passage.radius+d),x1=sign*(passage.radius+passage.wall);rect(Math.min(x0,x1),Math.max(x0,x1),y0,y1);
-   }
+   const x0=sign*passage.radius,x1=sign*(passage.radius+passage.wall);
+   rect(Math.min(x0,x1),Math.max(x0,x1),branchBottom(R,a),this.branchTop);
   }
   this.pipeCaps.geometry.dispose();this.pipeCaps.geometry=geometry(pos,idx,uv);
  }
@@ -258,10 +218,10 @@ export class RepairScene {
  }
  setCut(cut){
   this.ground.setCut(cut,cutPlane);
-  this.cut=cut;this.section.visible=cut&&this.fill>.0001;this.packedSection.visible=cut&&this.packedBranch.visible;
+  this.cut=cut;this.section.visible=cut&&this.fill>.0001;
   this.pipeCaps.visible=cut;
   this.pipe.visible=this.branch.visible=cut;this.pipeFull.visible=this.branchFull.visible=!cut;
-  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.packedMaterial,this.projectionMaterial,this.rootMaterial])m.clippingPlanes=cut?[cutPlane]:null;
+  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.projectionMaterial,this.rootMaterial])m.clippingPlanes=cut?[cutPlane]:null;
   // A display cut removes pipe geometry, not half of the water hitting the
   // intact shield. Keep both lateral paths visible; real surfaces still occlude.
   this.waterMaterial.clippingPlanes=this.runoffMaterial.clippingPlanes=null;
@@ -305,7 +265,6 @@ export class RepairScene {
   this.section.visible=this.cut&&this.mortar.visible;
   this.mortarMaterial.color.set(cured?'#666764':'#444642');this.mortarMaterial.roughness=cured?.96:.68;
   this.skinMaterial.color.copy(this.mortarMaterial.color);
-  this.packedMaterial.color.copy(this.mortarMaterial.color);this.packedMaterial.roughness=cured?.95:.68;
   this.sectionMaterial.color.copy(this.mortarMaterial.color);this.sectionMaterial.roughness=this.mortarMaterial.roughness;
   this.feedCore.geometry.setDrawRange(0,Math.floor(hoseFront*240)*10*6);this.feedCore.visible=hoseFront>0;
   this.outlet.visible=injecting&&hoseFront>=1;

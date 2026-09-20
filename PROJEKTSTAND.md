@@ -1,6 +1,8 @@
 # Projektstand und Übergabe – DSS-Flex Verfahren
 
-Stand: **17.09.2026**. Diese Datei beschreibt die aktuelle Implementierung, nicht die ältere Demo aus der ersten Projektphase. Der Nutzer hat die Veröffentlichung des gesamten aktuellen DSS-Flex-Stands einschließlich Videos und PowerPoint auf GitHub und Pages beauftragt.
+**Lokaler Abgleich 20.09.2026:** GitHub-Commit `07f4d35` ist in `work/github-pages` und im äußeren Arbeitsordner übernommen, einschließlich Videos und PowerPoint. Hier kann direkt mit `npm test` und `npm run build` weitergearbeitet werden. Lokale Sicherung und Prüfstand siehe neuesten Eintrag in `FORTSCHRITT.md`. Die Synchronisation ist die Grundlage der anschließend dokumentierten lokalen Änderungen.
+
+Stand: **20.09.2026**. Aktuelle lokale Modelländerung: Nutfräsen entfernt und Anschlussblase oberhalb des Schildes halbiert. Dieser Stand ist noch nicht veröffentlicht.
 
 ## Auf einem anderen Computer beginnen
 
@@ -14,7 +16,15 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 
 **Live:** https://katimur94.github.io/kanaltec-4-0-montageanleitung/
 
-## Zuletzt erledigt
+## Aktuelle Änderung 20.09.2026
+
+Nutfräsphase, Innenwandvertiefung und innere Mörtelhülse entfernt. Nach dem Freifräsen folgt direkt der Werkzeugwechsel; insgesamt neun Phasen. Der Anschluss hat über seine gesamte Höhe den ursprünglichen Innenradius. Die Mörtelfüllung im Schaden und im Erdreich bleibt erhalten.
+
+Die volle Blasenhöhe **oberhalb des angepressten Schildes bis zur starren Spitze** beträgt exakt 50 % des bisherigen Werts. Wellenfuß, Spitzengröße, Durchmesser und die drei Wicklungen samt Schichtdicke bleiben unverändert. `referenceTravel` hält den ursprünglichen Wickelpfad fest; `travel` bestimmt den verkürzten Ausfahrweg. Diese Kombination wird als schematische Verformung dargestellt, nicht als Simulation mit unveränderlicher Materiallänge. Die Länge des dargestellten Anschlussrohrs bleibt erhalten.
+
+Vorhandene MP4 und PowerPoint stammen vom 17.09.2026 und zeigen noch den früheren Ablauf. Vor einem neuen Filmexport müssen Filmzeiten und Sprechertext an die neun Phasen angepasst werden.
+
+## Vorherige Arbeiten (Stand 17.09.2026, teilweise durch obige Änderung ersetzt)
 
 **Veröffentlichungsumfang:** Sources und beide eigenständigen HTML-Ausgaben, Fräskopfvergleich, sechs aktuelle MP4-Dateien samt Galerie/Vorschaubildern sowie `Praesentationen/DSS-Flex-Verfahren.pptx`. Die Fußzeile der Animation und die Galerie verbinden die Ausgaben miteinander. Der alte Dateiname `Kanaltec-4.0-Praesentation.html` leitet zur DSS-Flex-Präsentation weiter. Nur finale DSS-Flex-Medien sind in `.gitignore` freigegeben, ältere Filmstände und lokale QA-/Produktionslaufzeiten bleiben ausgeschlossen. Die Git-Historie wird auf Basis des vorhandenen Repository-Stands fortgesetzt. Abschluss/Live-Prüfung werden erst nach erfolgreichem Push dokumentiert.
 
@@ -31,10 +41,10 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 **Neue Prozess-Werbevideos (17.09.2026):** Aktueller Fräs- und Sanierungsvorgang einschließlich Wurzeln/Einragung und Verpressung bis über die Nut, ohne Explosionsansicht. 78 Sekunden mit originalem DiTom-Logo, je drei Formate mit neuer deutscher synthetischer Sprecherstimme/Musik oder nur Musik. Sechs fertige und geprüfte MP4-Dateien unter `Videos/DSS-Flex-Verfahren-2026/`, dort `Videos-ansehen.html` zum lokalen Abspielen. Auf Nutzerkorrektur kein Telegram-Versand. Reproduzierbare Filmproduktion unter `work/`; Details siehe `WERBEVIDEOS.md` und `work/VIDEO-PRODUKTION.md`.
 
 
-**Aktuell: Einragender Anschluss, Wurzeln und durchgehende Verpressung.** Phase 0 schneidet zuerst den in die Haltung ragenden Rohrteil und verzweigte Wurzeln zurück und fräst anschließend eine runde Außenkontur (auf der abgewickelten Rohrinnenfläche). Phase 1 bereitet die Anschlusswand bis über die Nut vor. Nach der Hohlraumfüllung steigt Mörtel lückenlos von der zurückgefrästen Kante bis 16 mm über das obere Nutende; die innere Mörtelfläche bleibt exakt auf dem ursprünglichen Anschlussradius. Eine 3-mm-Vertiefung schafft den Platz dafür. Nutmitte weiterhin ca. 50 mm hinter der mittleren zurückgefrästen Kante. Alle zusätzlichen Maße/Schadensformen sind Darstellungsannahmen. Zeitachse, zehn Phasen und Schalungsmechanik bleiben erhalten.
+**Früherer Stand: Einragender Anschluss, Wurzeln und durchgehende Verpressung.** Phase 0 schneidet zuerst den in die Haltung ragenden Rohrteil und verzweigte Wurzeln zurück und fräst anschließend eine runde Außenkontur (auf der abgewickelten Rohrinnenfläche). Phase 1 bereitet die Anschlusswand bis über die Nut vor. Nach der Hohlraumfüllung steigt Mörtel lückenlos von der zurückgefrästen Kante bis 16 mm über das obere Nutende; die innere Mörtelfläche bleibt exakt auf dem ursprünglichen Anschlussradius. Eine 3-mm-Vertiefung schafft den Platz dafür. Nutmitte weiterhin ca. 50 mm hinter der mittleren zurückgefrästen Kante. Alle zusätzlichen Maße/Schadensformen sind Darstellungsannahmen. Zeitachse, zehn Phasen und Schalungsmechanik bleiben erhalten.
 
 
-**Aktuell: Fräskopf nach vertiefter Recherche ersetzt.** Der erste Foto-Nachbau wurde als unähnlich beanstandet. Maßgeblich ist jetzt `src/cutter.js`: längsliegender BG1-ähnlicher Motorblock, Flansch/Spindelhals oben, FrontCam vorne und gewölbte segmentierte rote Fräserkrone. Ein separater, offline drehbarer `Fraeskopf-Vergleich.html` zeigt Originalfoto und Modell nebeneinander. IBAK und SDT wurden als Primärquellen bildlich ausgewertet; die Artikelnummer des Werkzeugs im Foto bleibt ungeklärt. Aktuelle Formzuordnung und Grenzen stehen oben in `ROBOTER-QUELLEN.md`.
+**Fräskopf nach vertiefter Recherche ersetzt.** Der erste Foto-Nachbau wurde als unähnlich beanstandet. Maßgeblich ist jetzt `src/cutter.js`: längsliegender BG1-ähnlicher Motorblock, Flansch/Spindelhals oben, FrontCam vorne und gewölbte segmentierte rote Fräserkrone. Ein separater, offline drehbarer `Fraeskopf-Vergleich.html` zeigt Originalfoto und Modell nebeneinander. IBAK und SDT wurden als Primärquellen bildlich ausgewertet; die Artikelnummer des Werkzeugs im Foto bleibt ungeklärt. Aktuelle Formzuordnung und Grenzen stehen oben in `ROBOTER-QUELLEN.md`.
 
 **Fräsen vor der Schalung:** Drei neue Phasen vor dem bekannten Ablauf: Außenabtrag um den Anschluss, umlaufende Nut ca. 50 mm hinter der mittleren Anschlusskante, Werkzeugrückzug und Wechsel zur Schalung. Außenabtrag eine Fräserbreite breit/eine Fräserstärke tief. Fräskopf nach dem Nutzerfoto vom 17.09.2026: schwarzes kantiges Motorgehäuse, Seitenbleche, kurze Metallspindel, rot-schwarzer Schneidkopf mit einzelnen Schneiden und gelbes Warnzeichen. Die erste Ausführung mit langer dünner Welle wurde ersetzt. Maße sind geschätzt: 60 mm Fräserdurchmesser, 16 mm Stärke; Nut 16 mm hoch und 6 mm tief. Kein CAD und keine bestätigte Hersteller-Rüstkonfiguration. Die neue Ansicht **Fräsdetail** zeigt den Abtrag von innen. Zehn Phasen, Vor-/Rücksprünge und alle fünf DN geprüft. Quellen, Bedienung und Prüfstand siehe Chronik.
 
@@ -59,7 +69,7 @@ Implementierung: Die externe `.scene-controls` enthält alle Ansichtswerkzeuge; 
 | Befestigung | Schildaufnahmen, Schellen, Schrauben und zugehörige Bohrungen wurden nach der PDF korrigiert; insbesondere Aufnahmen auf PDF S. 22 und Haltergewinde. |
 | Öffnungen | Große mittlere Blasenöffnung; kleiner separater Mörtelzulauf und separater roter Drucksensor. Der Mörtelschlauch ist von unten am äußeren Schild befestigt und folgt ihm in der Explosion. |
 | Welle | Zur Roboterkupplung gerichtetes freies Ende. Eine flache Befestigungsseite mit blindem Innengewinde, gegenüber eine geschlossene runde Wickelfläche. Die Gewindeöffnung liegt mittig unter der Schildöffnung. |
-| Anschlussblase | Eingeschraubt mit Außengewinde, nahezu bündig auf der flachen Wellenfläche. Starres rundes Fußstück, ca. 70 mm nach Nutzerangabe. Flexible Haut beginnt darüber. Kein schmaler konischer Hals. |
+| Anschlussblase | Ausgefahrene Länge oberhalb des Schildes gegenüber 17.09.2026 halbiert; unten und an den drei Wicklungen unverändert. Eingeschraubt mit Außengewinde, nahezu bündig auf der flachen Wellenfläche. Starres rundes Fußstück, ca. 70 mm nach Nutzerangabe. Flexible Haut beginnt darüber. Kein schmaler konischer Hals. |
 | Wicklung | Mindestens drei volle Windungen. Ca. 3 mm je vakuumierter Wandlage, ca. 6 mm für zwei aufeinanderliegende Wände. Drehung der Welle wickelt die Blase ab; keine Kolbenbewegung. Vor Luftfüllung vollständig abwickeln, ohne Restknick. |
 | Spitze | Starr und rund, etwas kleiner als die Schildöffnung; ragt in eingezogener Stellung leicht durch diese Öffnung. |
 | Bumper / Dichtblase | Während Fahrt Bumper vakuumiert und flach. Erst positionieren, dann Bumper aufblasen, dann separate Dichtblase zwischen Schild und Träger aufblasen, danach Anschlussblase abwickeln und aufblasen. |
@@ -79,15 +89,14 @@ Die Animationszeit ist eine Phasenzahl, keine reale Zeit in Sekunden. `PHASE` in
 | Zeitbereich | Phase |
 |---|---|
 | 0–1 | Einragenden Anschluss und Wurzeln zurückfräsen; kreisförmig um den Anschluss fräsen |
-| 1–2 | Anschlusswand vertiefen; umlaufende Nut ca. 5 cm hinter der zurückgefrästen Kante fräsen |
-| 2–3 | Fräser absenken, zurückfahren, Szenenwechsel auf Schalung |
-| 3–4 | Positionieren mit flachem Bumper |
-| 4–5 | Bumper aufblasen / Schild anpressen |
-| 5–6 | Dichtblase zwischen Schild und Träger aufblasen |
-| 6–7 | Anschlussblase vollständig abwickeln, kurze Pause, danach aufblasen |
-| 7–8 | Schlauch füllen und Mörtel injizieren |
-| 8–9 | Aushärten |
-| 9–9,999 | Anschlussblase vakuumieren / aufwickeln, Dichtblase entspannen, Bumper absenken, wegfahren |
+| 1–2 | Fräser absenken, zurückfahren, Szenenwechsel auf Schalung |
+| 2–3 | Positionieren mit flachem Bumper |
+| 3–4 | Bumper aufblasen / Schild anpressen |
+| 4–5 | Dichtblase zwischen Schild und Träger aufblasen |
+| 5–6 | Anschlussblase vollständig abwickeln, kurze Pause, danach aufblasen |
+| 6–7 | Schlauch füllen und Mörtel injizieren |
+| 7–8 | Aushärten |
+| 8–8,999 | Anschlussblase vakuumieren / aufwickeln, Dichtblase entspannen, Bumper absenken, wegfahren |
 
 Die Phasentasten springen auf `Phase + 0,92`, also fast an das Ende. Für Ankunfts- oder Hub-Zwischenstände die Zeitachse oder Pfeiltasten nutzen. Die Geometrie muss auch nach einem direkten Rücksprung stimmen; keine nur vorwärts funktionierenden Zustandsketten einbauen.
 
@@ -114,7 +123,7 @@ X verläuft längs des Kanals, Y nach oben, Z quer zum Kanal. Modelllängen sind
 | `work/build.mjs` | Portabler Build der beiden eigenständigen HTML-Dateien |
 | `work/check-model.mjs` | DiTom-Geometrie, Blasenablauf, Mörtel, Wasserführung und Wellenkamera über alle fünf DN |
 | `work/check-robot.mjs` | Kupplung, Parallelführung, Radbewegung und Rohrfreigang über alle fünf DN |
-| `work/check-milling.mjs` | Werkzeugkontakt, Abtrag, Ringnut, feste Gliedlängen, Wiederverfüllung und Rücksprünge über alle fünf DN |
+| `work/check-milling.mjs` | Werkzeugkontakt, Außenabtrag, unveränderter Anschlussquerschnitt, feste Gliedlängen, Wiederverfüllung und Rücksprünge über alle fünf DN |
 
 Nicht die minifizierte Ausgabe in `index.html` bearbeiten. Quellen ändern und neu bauen. Auf dem ursprünglichen Arbeitscomputer existiert zusätzlich ein äußerer Entwicklungsordner mit `work/runtime` und `work/prepare-github.mjs`; das ist keine Voraussetzung auf anderen Computern. Im geklonten Repository kommen Three.js und esbuild ausschließlich über `npm ci` aus der Lockdatei.
 
