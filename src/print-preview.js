@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {ThreeMFLoader} from 'three/examples/jsm/loaders/3MFLoader.js';
+import {toCreasedNormals} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 const data=window.PRINT_DATA,scene=new THREE.Scene();scene.background=new THREE.Color('#17222c');
 const camera=new THREE.PerspectiveCamera(36,1,.1,5000),renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));document.querySelector('#view').append(renderer.domElement);
@@ -8,13 +9,15 @@ const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamp
 scene.add(new THREE.HemisphereLight('#f0f7ff','#77889c',2));const lamp=new THREE.DirectionalLight('#ffffff',3);lamp.position.set(-100,-100,250);scene.add(lamp);
 let model;const select=document.querySelector('#model'),size=document.querySelector('#size');
 for(const [i,row]of data.models.entries()){const name={'01-Roboter-und-Schalung':'Roboter mit Schalungssystem','02-Nur-Schalung':'Nur Schalungssystem','03-Rohrsanierung-Schnitt':'Rohrsanierung im Schnitt'}[row.kind];select.add(new Option(name,String(i)));}
+select.value=String(data.initialModel||0);
 for(const row of data.variants)size.add(new Option(row.label,row.id));size.value='06-Standard-200-FDM';
 function update(){
+ const chosen=data.models[Number(select.value)];if(!chosen.base64){window.location.href=chosen.href;return;}
  if(model){scene.remove(model);model.traverse(o=>{if(o.isMesh){o.geometry.dispose();o.material.dispose();}});}
  const bytes=Uint8Array.from(atob(data.models[Number(select.value)].base64),c=>c.charCodeAt(0));model=new ThreeMFLoader().parse(bytes.buffer);scene.add(model);
  model.rotation.x=-Math.PI/2;const box=new THREE.Box3().setFromObject(model),c=box.getCenter(new THREE.Vector3()),s=box.getSize(new THREE.Vector3());model.position.sub(c);
  camera.position.set(-s.x*.65,Math.max(s.x*.36,s.y*1.5),s.x*.8);controls.target.set(0,0,0);controls.update();
- model.traverse(o=>{if(o.isMesh){o.userData.color=o.material.color.clone();o.material.roughness=.65;o.material.metalness=.05;}});mono();links();
+ model.traverse(o=>{if(o.isMesh){const old=o.geometry;o.geometry=toCreasedNormals(old,Math.PI/5);if(old!==o.geometry)old.dispose();o.userData.color=o.material.color.clone();o.material.roughness=.5;o.material.metalness=.1;}});mono();links();
 }
 function mono(){model?.traverse(o=>{if(o.isMesh)o.material.color.copy(document.querySelector('#mono').checked?new THREE.Color('#c3cad0'):o.userData.color);});}
 function links(){const kind=data.models[Number(select.value)].kind,row=data.reports.find(r=>r.variant===size.value&&r.model===kind);document.querySelector('#dimensions').textContent=row.dimensions_mm.join(' × ')+' mm';document.querySelector('#stl').href=size.value+'/'+kind+'-einfarbig.stl';document.querySelector('#color').href=size.value+'/'+kind+'-farbig.3mf';}

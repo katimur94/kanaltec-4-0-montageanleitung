@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Detailausgabe näher am Pages-Modell
+
+Nutzer beanstandete die grobe Druckdarstellung. Zusätzlicher Export aus Originalflächen statt globaler Voxelverdickung: feinere Radprofile, Schrauben, Gelenke, Stangen, Bohrungen und Schläuche, durchgängig triangulierte Schildrundungen. Nur einzelne offene Hüllen lokal repariert; Schnittgeometrie und Materialvolumen per Boolean-Operationen erzeugt. Bestehende Animation und robuste Erstfassung erhalten.
+
+Drei Motive in je zehn Größen, STL und farbige 3MF; 400-/600-mm-Versionen zusätzlich segmentiert. Alle 138 Dateien unabhängig erneut eingelesen und geprüft, offizielle lib3mf ohne Warnungen. Alle drei echten Detail-3MF im Browser visuell geprüft, einschließlich Schnitt/Seite und Modellwechsel; keine Browserfehler. `npm ci`, vorhandene Modelltests für alle fünf DN und Build erfolgreich; zusätzlicher Exporttest für Schalennetz, Abmessungen und Bauteilanzahl bestanden. STL-Präzisionskorrektur höchstens 0,0005 mm pro Koordinate. Kein physischer Probedruck; kleine Details benötigen Wandstärken-/Slicerprüfung. Detail-STLs dürfen mehrere geschlossene Teilkörper enthalten.
+
+Lokale Ausgabe `Druckmodelle/DSS-Flex-Detail-2026/`, getrennte Vorschauseiten und ZIPs. Die umfangreichen Druckassets bleiben lokal und werden nicht automatisch veröffentlicht; Erzeugungscode und Dokumentation versioniert. Anleitung, Reproduktion und Grenzen: [3D-DRUCK-DETAIL.md](3D-DRUCK-DETAIL.md).
+
 ## 20.09.2026 – Zehn Größen für den 3D-Druck
 
 Auf Nutzerauftrag drei statische DN-400-Anschauungsmodelle aus Modellbasis `d0ac2f3` aufbereitet: Roboter mit Schalung, Schalung allein sowie Rohrsanierung im seitlichen Schnitt mit ausgefahrener Anschlussblase und Mörtelfüllung. Je Motiv zehn Standflächenlängen: 80, 100, 120, 150, 180, 200, 250, 300, 400 und 600 mm. Die zwei kleinsten Ausgaben mit feineren Verstärkungen für Harzdruck, übrige mit stärkeren FDM-Verbindungen. Jeweils einfarbige STL und 3MF mit getrennten Farbbereichen. Große Ausgaben zusätzlich in maximal etwa 170 mm große Klebesegmente geteilt.

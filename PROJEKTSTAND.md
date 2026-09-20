@@ -1,5 +1,7 @@
 # Projektstand und Übergabe – DSS-Flex Verfahren
 
+**Neue Detail-Druckausgabe (20.09.2026):** Näher am Pages-Modell, mit getrennten Schrauben, Radprofilen, Mechanik und dünnen Schläuchen. Drei Motive in je zehn Größen, insgesamt 138 geprüfte STL-/3MF-Dateien einschließlich großer Segmente. Lokale Vorschau: `Druckmodelle/DSS-Flex-Detail-2026/Druckmodelle-ansehen.html`. Die bisherige robustere Ausgabe bleibt erhalten. Dünne Originalbauteile verlangen eine Slicerprüfung; kein Probedruck. [Anleitung und Reproduktion](3D-DRUCK-DETAIL.md). Große Detailassets bleiben lokal, keine neue Pages-Veröffentlichung.
+
 **3D-Druckmodelle (20.09.2026):** Drei Motive in je zehn Größen von 8 bis 60 cm, jeweils STL und 3MF mit Farbbereichen. 40-/60-cm-Ausgaben zusätzlich segmentiert. [Offline-Vorschau](Druckmodelle/DSS-Flex-2026/Druckmodelle-ansehen.html) öffnen, Motiv und Größe wählen, mit **Seite** den Rohrschnitt betrachten; **Einfarbig ansehen** blendet die Farben aus. [Druckanleitung](Druckmodelle/DSS-Flex-2026/DRUCKANLEITUNG.md) vor dem Slicen lesen. Digitale Geometrieprüfung bestanden, kein physischer Probedruck. Lokale Ausgabe, noch nicht auf Pages veröffentlicht.
 
 **Lokaler Abgleich 20.09.2026:** GitHub-Commit `07f4d35` ist in `work/github-pages` und im äußeren Arbeitsordner übernommen, einschließlich Videos und PowerPoint. Hier kann direkt mit `npm test` und `npm run build` weitergearbeitet werden. Lokale Sicherung und Prüfstand siehe neuesten Eintrag in `FORTSCHRITT.md`. Die Synchronisation ist die Grundlage der anschließend dokumentierten lokalen Änderungen.

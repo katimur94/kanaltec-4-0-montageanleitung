@@ -16,6 +16,10 @@ const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const mat=(color,metalness=.7,roughness=.32)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
 const palettes={metal:mat('#adb7bf'),darkMetal:mat('#6c7a83'),gold:mat('#c6ae42',.38,.36),rubber:mat('#191e23',.02,.66),bolt:mat('#75818c',.8,.22),black:mat('#202932',.35,.4),teal:mat('#26a6a0',.15,.35)};
 const cached=new Map();
+let printGeometryMode=false;
+// Export-only conforming subdivision: neighbouring triangles share every edge.
+// The interactive presentation keeps its existing geometry and animation.
+export function setPrintGeometryMode(enabled){printGeometryMode=enabled;cached.clear();}
 function geo(key,fn){if(!cached.has(key))cached.set(key,fn());return cached.get(key);}
 function mesh(g,m,p=V(),r){const o=new THREE.Mesh(g,m);o.position.copy(p);if(r)o.rotation.set(...r);o.castShadow=true;o.receiveShadow=true;return o;}
 function box(w,h,d,m,p=V()){return mesh(geo(`b${w},${h},${d}`,()=>new THREE.BoxGeometry(w,h,d)),m,p);}
@@ -78,7 +82,7 @@ function shell(rad,thick,length,halfAngle,holes=true,extraHoles=[],corner=38){
  const raw=new THREE.ExtrudeGeometry(s,{depth:thick,bevelEnabled:false,curveSegments:32,steps:1});
  // Subdivision prevents long planar triangles across the curved sheet.
  let triangles=[];const ps=raw.getAttribute('position');for(let i=0;i<ps.count;i+=3)triangles.push([V(ps.getX(i),ps.getY(i),ps.getZ(i)),V(ps.getX(i+1),ps.getY(i+1),ps.getZ(i+1)),V(ps.getX(i+2),ps.getY(i+2),ps.getZ(i+2))]);
- for(let k=0;k<(rad<30?6:5);k++){const next=[];for(const t of triangles){const [a,b,c]=t;const max=Math.max(a.distanceTo(b),b.distanceTo(c),c.distanceTo(a));if(max<(rad<30?3:25)){next.push(t);continue;}const ab=a.clone().add(b).multiplyScalar(.5),bc=b.clone().add(c).multiplyScalar(.5),ca=c.clone().add(a).multiplyScalar(.5);next.push([a,ab,ca],[ab,b,bc],[ca,bc,c],[ab,bc,ca]);}triangles=next;}
+ for(let k=0;k<(printGeometryMode?(rad<30?2:4):rad<30?6:5);k++){const next=[];for(const t of triangles){const [a,b,c]=t;const max=Math.max(a.distanceTo(b),b.distanceTo(c),c.distanceTo(a));if(!printGeometryMode&&max<(rad<30?3:25)){next.push(t);continue;}const ab=a.clone().add(b).multiplyScalar(.5),bc=b.clone().add(c).multiplyScalar(.5),ca=c.clone().add(a).multiplyScalar(.5);next.push([a,ab,ca],[ab,b,bc],[ca,bc,c],[ab,bc,ca]);}triangles=next;}
  const arr=[];for(const t of triangles)for(const p of t){const ang=p.y/rad,rr=rad+p.z;arr.push(p.x,rr*Math.cos(ang),rr*Math.sin(ang));}
  raw.dispose();const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));const welded=mergeVertices(g,.001);g.dispose();welded.computeVertexNormals();return welded;
 }

@@ -3,7 +3,7 @@ import sys,json,xml.etree.ElementTree as ET
 from pathlib import Path
 sys.path.insert(0,str(Path('work/qa/print-runtime').resolve()))
 import trimesh,numpy as np,lib3mf
-ROOT=Path('Druckmodelle/DSS-Flex-2026');wrapper=lib3mf.get_wrapper();results=[]
+ROOT=Path('Druckmodelle/DSS-Flex-Detail-2026' if '--detail' in sys.argv else 'Druckmodelle/DSS-Flex-2026');wrapper=lib3mf.get_wrapper();results=[]
 for path in sorted(ROOT.rglob('*')):
  if path.suffix not in ('.stl','.3mf'):continue
  if path.suffix=='.stl':

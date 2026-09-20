@@ -1,8 +1,9 @@
 // Static print snapshots from the same source model; rendering cuts become real cuts later.
 import * as THREE from 'three';
-import {Viewer} from '../src/model.js';
+import {Viewer,setPrintGeometryMode} from '../src/model.js';
 import {mkdir,writeFile} from 'node:fs/promises';
-const out='work/qa/print-source';await mkdir(out,{recursive:true});
+const detail=process.argv.includes('--detail');if(detail)setPrintGeometryMode(true);
+const out=detail?'work/qa/print-detail-source':'work/qa/print-source';await mkdir(out,{recursive:true});
 const v=Object.create(Viewer.prototype);
 Object.assign(v,{model:new THREE.Group(),context:new THREE.Group(),floor:new THREE.Object3D(),parts:[],group:'all',mode:'explore',explode:0,targetExplode:0,selected:null,faint:false,camera:new THREE.PerspectiveCamera(34,1.5,1,15000)});
 v.controls={target:new THREE.Vector3(),update(){v.camera.lookAt(this.target);}};
@@ -19,7 +20,7 @@ function color(o){
  return 2;
 }
  for(const kind of ['01-Roboter-und-Schalung','02-Nur-Schalung','03-Rohrsanierung-Schnitt']){
- if(process.argv[2]&&process.argv[2]!==kind)continue;
+ const selected=process.argv.slice(2).find(a=>!a.startsWith('--'));if(selected&&selected!==kind)continue;
  v.build(400);v.mode='process';v.time=kind.startsWith('03')?6.999:2.999;v.updateParts();v.processPose();
  const scene=kind.startsWith('03'),solo=kind.startsWith('02');
  v.model.updateMatrixWorld(true);v.context.updateMatrixWorld(true);

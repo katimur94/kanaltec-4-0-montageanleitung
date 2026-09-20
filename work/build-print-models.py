@@ -79,7 +79,7 @@ def write3mf(dest,meshes,scale,shift):
  for i,(material,mesh) in enumerate(meshes.items(),2):
   objects.append(i);out.write(f'<object id="{i}" type="model" name="{COLORS[material][0]}" pid="1" pindex="{material-1}"><mesh><vertices>')
   v=(mesh.vertices+shift)*scale
-  for x,y,z in v:out.write(f'<vertex x="{x:.5f}" y="{y:.5f}" z="{z:.5f}"/>')
+  for x,y,z in v:out.write(f'<vertex x="{x:.8f}" y="{y:.8f}" z="{z:.8f}"/>')
   out.write('</vertices><triangles>')
   for a,b,c in mesh.faces:out.write(f'<triangle v1="{a}" v2="{b}" v3="{c}"/>')
   out.write('</triangles></mesh></object>')
