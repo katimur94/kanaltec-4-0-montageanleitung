@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Dickerer Injektionsschlauch direkt hinunter zum Roboterarm
+
+**Nutzerkorrektur:** Injektionsöffnung etwas größer, Schlauch etwas dicker. Direkt hinter dem Messingwinkel nach unten und an der im Browserbild markierten vorderen Armaufnahme entlangführen.
+
+**Umsetzung:** Öffnungsdurchmesser von 14 auf 16 mm und Schlauchaußendurchmesser von 9 auf 11 mm erhöht; illustrative Modellmaße, keine Herstellerangaben. Durchlass, Verschraubungen und sichtbarer Mörtelstrang angepasst. Der Schlauch fällt unmittelbar nach dem 45°-Winkel ab, folgt der vorderen Armaufnahme beim Hub und läuft neben der CutterCam bis hinter den Roboter. Zulaufabdruck passend vergrößert; Sensorabdruck, schmale ovale Reparaturfläche und halbierte freie Endabstände erhalten. Prozessbeschreibung und Bedienhinweise aktualisiert.
+
+**Prüfung:** `npm ci`, `npm test` und `npm run build` im portablen Repository bestanden. Alle fünf DN einschließlich direkter Phasensprünge geprüft; ergänzte Prüfungen für Öffnungs-/Schlauchdurchmesser, Abstieg am Winkel, Führung an der bewegten Armaufnahme und Wellenfreigang. In Edge Schlauchabstieg, Werkzeugarm und Winkel visuell geprüft, zusätzlich abgesenkte Stellung DN 300 und angepresste Stellung DN 700; keine Browserfehler. Beide HTML-Ausgaben und Fräskopfvergleich neu gebaut, äußerer Ordner und Repository synchronisiert. Lokal gespeichert; keine Veröffentlichung.
+
 ## 20.09.2026 – Unregelmäßiges Erdreich, Messingwinkel und Opferschlauch
 
 **Nutzerkorrektur:** Erdreich detaillierter und ohne Kastenform. Injektionsrundung nur etwas kleiner als der Druckschalter. Unter dem Schild ein 45°-Messingwinkel mit einem Ende an der Injektionsöffnung und dem anderen am Opferschlauch. Schlauch neben CutterCam bis hinter den Roboter; nach jeder Verpressung/Aushärtung wechseln, Messingwinkel reinigen und wiederverwenden.

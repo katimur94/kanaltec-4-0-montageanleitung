@@ -8,7 +8,7 @@ import {RepairScene} from './repair.js';
 import {Robot} from './robot.js';
 import {millingState,millingTarget,millingSpec} from './milling.js';
 import {breakoutContour,branchBottom} from './repair.js';
-import {injectionFitting} from './injection-fitting.js';
+import {injectionFitting,injectionSpec} from './injection-fitting.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=THREE.MathUtils.clamp;
@@ -306,9 +306,10 @@ export class Viewer {
   this.robotAnchor=this.parts.find(p=>p.group==='z'&&p.key==='adapter');this.robot=new Robot(R+12,this.robotAnchor.base);this.model.add(this.robot.group);
   const robotY=this.robot.bodyY+this.robotAnchor.base.y;
   const end=this.inlet.userData.hoseEnd.clone().add(V(ports.inletX,R-10,0));
-  const approach=end.clone().addScaledVector(this.inlet.userData.hoseDirection,20);
-  this.hosePoints=[[-1950,robotY+28,96],[-1750,robotY+32,96],[-1350,robotY+48,100],[-950,robotY+48,100],[-735,robotY+40,84],[-676,robotY+36,76],[-550,robotY+48,76],[-320,R-94,68],[-145,R-73,26],approach.toArray(),end.toArray()];
-  this.feed=hose(this.hosePoints,4.5,new THREE.MeshStandardMaterial({color:'#adbac0',roughness:.43,transparent:true,opacity:.48,depthWrite:false}));this.feed.name='Opferschlauch · nach jeder Aushärtung wechseln';this.model.add(this.feed);
+  const approach=end.clone().addScaledVector(this.inlet.userData.hoseDirection,12);
+  const armY=this.robotAnchor.base.y,dropX=end.x-28;
+  this.hosePoints=[[-1950,robotY+28,96],[-1750,robotY+32,96],[-1350,robotY+48,100],[-950,robotY+48,100],[-735,robotY+40,84],[-676,robotY+36,76],[-550,robotY+25,76],[-413,armY+14,68],[-320,armY+18,68],[-165,armY+28,64],[dropX,armY+50,60],[dropX,end.y-55,25],approach.toArray(),end.toArray()];
+  this.feed=hose(this.hosePoints,injectionSpec.hoseRadius,new THREE.MeshStandardMaterial({color:'#adbac0',roughness:.43,transparent:true,opacity:.48,depthWrite:false}));this.feed.name='Opferschlauch · nach jeder Aushärtung wechseln';this.model.add(this.feed);
   this.feedLift=null;this.sensorFull=false;this.poseMechanism(0,0,0);
  }
  poseMechanism(extension,inflation,lift){
@@ -322,8 +323,19 @@ export class Viewer {
   this.sensor.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.sensorX,this.radius+2+3*this.sealAir,0));
   this.feed.visible=proc;this.feed.position.set(0,0,0);
   this.poseRobot(lift);
-  const offset=this.shieldPart.node.position.clone().sub(this.shieldPart.base);offset.y+=3*this.sealAir;const dx=this.robot.frontBase.position.x,feedPose=[...offset.toArray(),dx].join(',');
-  if(this.feedLift!==feedPose){this.feedLift=feedPose;const points=this.hosePoints.map((p,i)=>V(...p).addScaledVector(offset,i<7?0:i===7?.45:1).add(V(i>=2&&i<=6?dx:0,0,0)));this.feedCurve=new THREE.CatmullRomCurve3(points);this.feed.geometry.dispose();this.feed.geometry=new THREE.TubeGeometry(this.feedCurve,144,4.5,10,false);this.repair?.setFeedPoints([...points,...this.inlet.userData.flowPoints.slice(0,-1).reverse().map(p=>p.clone().add(this.inlet.position))]);}
+  const offset=this.shieldPart.node.position.clone().sub(this.shieldPart.base);offset.y+=3*this.sealAir;
+  const arm=this.robot.group.position.clone().add(this.robot.armPoints[1]),dx=this.robot.frontBase.position.x,feedPose=[...offset.toArray(),...arm.toArray(),dx].join(',');
+  if(this.feedLift!==feedPose){
+   this.feedLift=feedPose;
+   const points=this.hosePoints.map((p,i)=>V(...p).addScaledVector(offset,i>=11?1:0).add(V(i>=2&&i<=6?dx:0,0,0)));
+   // The marked front arm guides the hose. The rise to the fitting stays local:
+   // from the elbow it drops down first, then follows the arm towards CutterCam.
+   points[7].set(arm.x,arm.y+14,68);points[8].set(arm.x+93,arm.y+18,68);
+   points[9].set(-165+offset.x,arm.y+28,64);points[10].set(points[11].x,arm.y+50,60);
+   this.feedRoutePoints=points;this.feedCurve=new THREE.CatmullRomCurve3(points);
+   this.feed.geometry.dispose();this.feed.geometry=new THREE.TubeGeometry(this.feedCurve,192,injectionSpec.hoseRadius,12,false);
+   this.repair?.setFeedPoints([...points,...this.inlet.userData.flowPoints.slice(0,-1).reverse().map(p=>p.clone().add(this.inlet.position))]);
+  }
   if(this.repair){this.repair.hoseGroup.visible=proc;this.repair.hoseGroup.position.set(0,0,0);}
   if(!proc){this.sensorFull=false;this.sensor.children[1].material.emissive.set('#000000');}
  }

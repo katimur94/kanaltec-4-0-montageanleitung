@@ -1,5 +1,9 @@
 # MicroGator: Quellen und Modellzuordnung
 
+## 20.09.2026 – Führung nach markiertem Roboterarm
+
+Weitere Nutzerkorrektur mit Browsermarkierung an der vorderen Armaufnahme: Schlauch unmittelbar nach dem Winkel nach unten und an dieser Aufnahme entlang führen. Öffnung und Schlauch etwas größer. Modellöffnung jetzt 16 mm, Schlauch außen 11 mm; illustrative Werte. Armführung bewegt sich mit der Aufnahme, die rückwärtige Leitung bleibt neben CutterCam bis hinter dem Roboter. Die Markierung konkretisiert die vorherige allgemeine Schlauchbeschreibung.
+
 ## 20.09.2026 – Opferschlauch und Messingwinkel nach Nutzerbeschreibung
 
 Direkte Nutzerangabe: Die Injektionsrundung ist nur wenig kleiner als der Druckschalter; unter der Schalung sitzt ein 45°-Messingwinkel. Ein Ende an der Injektionsöffnung, das andere am Opferschlauch; Schlauchführung neben CutterCam bis hinter den Roboter. Schlauch nach Verpressung/Aushärtung wechseln, Messingwinkel reinigen und wiederverwenden. Entsprechend modelliert, ohne neue Stücklistenpositionen oder behauptete Herstellermaße. Die Fräser-, Gelenk- und Kamerageometrie bleibt erhalten.

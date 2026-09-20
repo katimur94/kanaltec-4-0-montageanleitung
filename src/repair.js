@@ -3,6 +3,7 @@ import {passage} from './bladder.js';
 import {surfaceTextures,mouldSurface} from './repair-surface.js';
 import {millingSpec,repairFootprint} from './milling.js';
 import {GroundGrout,soilCavityRadius} from './ground-grout.js';
+import {injectionSpec} from './injection-fitting.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=x=>THREE.MathUtils.clamp(x,0,1);
@@ -199,11 +200,11 @@ export class RepairScene {
   // front; suspended aggregate moves behind it, never ahead of it or outside it.
   this.feedCurve=new THREE.CatmullRomCurve3(hosePoints.map(p=>V(...p)));
   this.feedMaterial=new THREE.MeshStandardMaterial({color:'#8b8a79',roughness:.52});
-  this.feedCore=tube(this.feedCurve,3.25,this.feedMaterial,240);this.feedCore.frustumCulled=false;this.hoseGroup.add(this.feedCore);
+  this.feedCore=tube(this.feedCurve,injectionSpec.coreRadius,this.feedMaterial,240);this.feedCore.frustumCulled=false;this.hoseGroup.add(this.feedCore);
   this.flow=[];const grainMat=new THREE.MeshStandardMaterial({color:'#b0aa98',roughness:.7});
   for(let i=0;i<38;i++){const o=makeMesh(new THREE.SphereGeometry(.75,7,5),grainMat);this.hoseGroup.add(o);this.flow.push(o);}
   this.outletCurve=new THREE.CatmullRomCurve3([V(inletX,R-20,0),V(inletX,R-6,0),V(inletX,R+2,0),V(inletX-8,R+7,0)]);
-  this.outlet=tube(this.outletCurve,3.4,this.feedMaterial,36);this.group.add(this.outlet);
+  this.outlet=tube(this.outletCurve,injectionSpec.coreRadius,this.feedMaterial,36);this.group.add(this.outlet);
 
   this.water=new THREE.Group();this.group.add(this.water);this.streams=[];this.drops=[];this.waterTraces=[];
   this.waterMaterial=new THREE.MeshPhysicalMaterial({color:'#c4d0cc',transparent:true,opacity:.3,roughness:.1,metalness:0,clearcoat:1,side:THREE.DoubleSide,depthWrite:false});
@@ -256,7 +257,7 @@ export class RepairScene {
   this.pipeCaps.geometry.dispose();this.pipeCaps.geometry=geometry(pos,idx,uv);
  }
  setFeedPoints(points){
-  this.feedCurve=new THREE.CatmullRomCurve3(points.map(p=>p.clone()));this.feedCore.geometry.dispose();this.feedCore.geometry=new THREE.TubeGeometry(this.feedCurve,240,3.25,10,false);
+  this.feedCurve=new THREE.CatmullRomCurve3(points.map(p=>p.clone()));this.feedCore.geometry.dispose();this.feedCore.geometry=new THREE.TubeGeometry(this.feedCurve,240,injectionSpec.coreRadius,10,false);
  }
  setCut(cut){
   this.ground.setCut(cut,cutPlane);

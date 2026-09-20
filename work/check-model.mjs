@@ -35,7 +35,7 @@ for(const f of families){
  const hoseCurve=new THREE.CatmullRomCurve3(v.hosePoints.map(p=>new THREE.Vector3(...p)));let minClearance=Infinity;
  for(let i=0;i<=1600;i++){
   const p=hoseCurve.getPoint(i/1600),dx=Math.max(-55-p.x,0,p.x-93),dr=Math.max(Math.hypot(p.y-shaft.base.y,p.z)-20,0);
-  minClearance=Math.min(minClearance,Math.hypot(dx,dr)-4.5);
+  minClearance=Math.min(minClearance,Math.hypot(dx,dr)-5.5);
  }
  assert.ok(minClearance>2,`Hose clears full shaft rotation envelope including hose thickness: ${minClearance.toFixed(2)} mm`);
  near(shaft.base.y,housing.base.y,'Shaft/housing axis height');near(motor.base.y,housing.base.y,'Motor/housing axis height');
@@ -82,6 +82,11 @@ for(const f of families){
   near(v.inlet.userData.hoseDirection.dot(new THREE.Vector3(0,-1,0)),Math.SQRT1_2,'Brass outlet turns 45 degrees');
   assert.ok(v.inlet.userData.flangeRadius<12&&v.inlet.userData.flangeRadius>11,'Inlet collar is only slightly smaller than the sensor ring');
   near(v.feedCurve.getPoint(0).y,v.hosePoints[0][1],'Rear supply stays at the crawler height');
+  const guide=v.feedRoutePoints[7],arm=v.robot.group.position.clone().add(v.robot.armPoints[1]);
+  near(guide.x,arm.x,'Hose follows the marked front arm connection');near(guide.y,arm.y+14,'Hose stays at arm height while lifting');
+  const drop=v.feedRoutePoints.at(-3);
+  assert.ok(end.y-drop.y>=54&&Math.abs(end.x-drop.x)<=29,'Hose drops directly after the elbow, before running rearward');
+  near(v.feed.geometry.parameters.radius,5.5,'Opferschlauch has the larger diameter');
  };
  for(const e of [0,.5,1]){v.explode=e;v.updateParts();v.resetPose();checkInlet();}
  v.explode=0;v.updateParts();v.resetPose();
@@ -286,6 +291,7 @@ for(const f of families){
  assert.ok(v.hosePoints[0][0]<v.robotAnchor.base.x-1430,'Opferschlauch reaches behind the whole crawler');
  near(v.hosePoints[5][0],v.robotAnchor.base.x+v.robot.cameraHead.position.x,'Hose passes beside CutterCam');
  assert.ok(v.hosePoints[5][2]>60&&v.hosePoints[5][2]<95,'Hose stays beside the camera housing and clear of the lens');
+ near(ports.inletRadius,8,'Injection opening is enlarged to 16 mm in the illustrative model');
  for(const t of [0,.92,1.92,2.92,3.92,4.92,5.92,6.92]){pose(t);assert.ok(v.model.position.toArray().every(Number.isFinite));assert.ok(v.mortar.scale.y>0);}
  assert.ok(v.model.position.x<0&&v.mortar.visible,'After removal repair remains at branch');
  // A shaft camera must keep the drive in frame through travel and bumper lift,

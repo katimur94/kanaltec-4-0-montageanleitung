@@ -63,13 +63,13 @@ for(const family of families){
   const a=i/160*Math.PI*2,[expectedX,expectedArc]=repairFootprint(R,a),x=pa.getX(2*161+i),arc=Math.atan2(pa.getZ(2*161+i),pa.getY(2*161+i))*R;
   near(x,expectedX);near(arc,expectedArc);
   assert.ok(Math.abs(x)<230&&Math.abs(arc)<(R-12)*.84,'Finished patch stays within the oval shield with lateral sealing margin');
-  const [hx,ha]=breakoutContour(a);assert.ok(((hx-2.3275)/121.4125)**2+(ha/67)**2<.98,'Shorter oval encloses the whole broken edge');
+  const [hx,ha]=breakoutContour(a);assert.ok(((hx-2.0775)/121.6625)**2+(ha/67)**2<.98,'Shorter oval encloses the whole broken edge');
  }
  const castBounds=new THREE.Box3().setFromObject(v.repair.innerSkin),castSize=castBounds.getSize(new THREE.Vector3());
  assert.ok(castSize.x>castSize.z*1.8,'Shorter casting retains its oval shape');
  assert.ok(castSize.x<244&&castSize.z<135,'Only the longitudinal size is shortened');
  near(repairFootprint(R,0)[0]-82.15,(165*1.002-82.15)/2);
- near(-73.5-repairFootprint(R,Math.PI)[0],(-73.5+165*.998)/2);
+ near(-74.5-repairFootprint(R,Math.PI)[0],(-74.5+165*.998)/2);
  near(repairFootprint(R,Math.PI/2)[1],67*(1+.003*Math.sin(11*Math.PI/2)+.002*Math.cos(17*Math.PI/2)));
  assert.ok(castBounds.min.y>R*.69,'Casting remains localized at the crown, not half of the main pipe');
  assert.ok(Math.abs(breakoutContour(0)[0]+breakoutContour(Math.PI)[0])>20,'Breakout is asymmetric');

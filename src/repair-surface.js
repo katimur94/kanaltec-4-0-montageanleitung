@@ -20,7 +20,7 @@ export function surfaceTextures(kind){
 // the mortar, away from the sewer lumen; neither detail creates an obstruction.
 export const imprints=[
  {key:'sensor',x:ports.sensorX,z:0,r:12.15,rings:[[12.15,0],[11.3,.35],[10.5,1.45],[9.6,.65],[9,2.5],[0,2.5]]},
- {key:'inlet',x:ports.inletX,z:0,r:7.5,rings:[[7.5,0],[6.9,1.1],[5.65,1.1],[5.3,.25],[0,.25]]}
+ {key:'inlet',x:ports.inletX,z:0,r:ports.inletRadius+.5,rings:[[7.5,0],[6.9,1.1],[5.65,1.1],[5.3,.25],[0,.25]].map(([r,d])=>[r*(ports.inletRadius+.5)/7.5,d])}
 ];
 export function mouldY(R,z){return Math.sqrt(Math.max(0,R*R-z*z));}
 

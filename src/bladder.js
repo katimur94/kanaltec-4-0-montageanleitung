@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 // User-described assembly: threaded bladder foot in the single flat shaft face.
 // Dimensions and elastic folds are reconstructed, not manufacturing dimensions.
-export const ports={opening:40,tip:36,inletX:-66,inletRadius:7,sensorX:70,sensorRadius:9};
+export const ports={opening:40,tip:36,inletX:-66,inletRadius:8,sensorX:70,sensorRadius:9};
 // The illustrative branch and its moulded passage share the shield aperture.
 // The former independently chosen branch diameter created a false reducer.
 export const passage={radius:ports.opening,wall:12,mouldRadius:ports.opening-.45};
