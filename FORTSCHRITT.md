@@ -10,6 +10,10 @@
 
 **Skill:** `.agents/skills/telegram-delivery/` enthält sechs geheimnisfreie Quelldateien, natürliche deutsche Telegram-Auslöser, Versandbestätigung und Schutz vor unbeabsichtigter Wiederholung. Persönliche Installation auf diesem Computer aktualisiert. Installationsskript für weitere Computer, sichere DPAPI-Konfiguration unter Windows und optional OS-Schlüsselbund unter macOS/Linux ergänzt. Skill-Validierung, Python-Syntax, Konfigurationsschutz mit künstlichen Testdaten und Lesbarkeit des bestehenden Windows-Zugangs geprüft; andere Betriebssysteme hier nicht praktisch geprüft. Neue Computer benötigen einmalig ihren eigenen sicheren Zugang. Keine Tokens, Empfänger-IDs, privaten Konfigurationsdateien oder Versandprotokolle im Repository. Portables ZIP lokal: `work/qa/Telegram-Versand-Skill.zip`.
 
+**Telegram-Zustellung:** Alle sechs neuen MP4 und das portable Skill-ZIP am 20.09.2026 erfolgreich zugestellt. Für jede der sieben Sendungen liegt eine positive Telegram-Bestätigung mit Nachrichten-ID im privaten lokalen Versandprotokoll vor.
+
+**Medien-Veröffentlichung:** Commit `8edfeab` auf `main` gepusht; Pages-Build für genau diesen Commit erfolgreich. Live-Galerie zeigt Stand 20.09.2026. Alle sechs MP4 über HTTPS mit Status 200 und exakt den neuen Dateigrößen erreichbar; Auflösung und 78 Sekunden Laufzeit im Browser bestätigt. Alle sechs Live-Videos ab dem Anfang erfolgreich abgespielt. Der erste automatisierte Live-Zeitsprung wartete über das Werkzeugzeitlimit hinaus; nach frischem Laden lief die Wiedergabe aller sechs Dateien. Lokale Zeitsprünge waren bereits für alle sechs Filme erfolgreich geprüft.
+
 ## 20.09.2026 – Dickerer Injektionsschlauch direkt hinunter zum Roboterarm
 
 **Nutzerkorrektur:** Injektionsöffnung etwas größer, Schlauch etwas dicker. Direkt hinter dem Messingwinkel nach unten und an der im Browserbild markierten vorderen Armaufnahme entlangführen.
