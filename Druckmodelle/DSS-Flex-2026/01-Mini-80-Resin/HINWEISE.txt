@@ -1,0 +1,8 @@
+DSS-Flex 01-Mini-80-Resin
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [80.0, 15.39, 16.24] mm
+02-Nur-Schalung: [80.0, 38.43, 40.74] mm
+03-Rohrsanierung-Schnitt: [80.0, 19.63, 40.57] mm

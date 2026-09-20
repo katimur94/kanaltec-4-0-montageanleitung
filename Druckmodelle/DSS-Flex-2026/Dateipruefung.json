@@ -1,0 +1,1202 @@
+[
+  {
+    "file": "01-Mini-80-Resin/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      80.0,
+      15.391,
+      16.237
+    ]
+  },
+  {
+    "file": "01-Mini-80-Resin/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "01-Mini-80-Resin/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      80.0,
+      38.433,
+      40.742
+    ]
+  },
+  {
+    "file": "01-Mini-80-Resin/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "01-Mini-80-Resin/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      80.0,
+      19.632,
+      40.573
+    ]
+  },
+  {
+    "file": "01-Mini-80-Resin/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "02-Klein-100-Resin/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      100.0,
+      19.239,
+      20.296
+    ]
+  },
+  {
+    "file": "02-Klein-100-Resin/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "02-Klein-100-Resin/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      100.0,
+      48.041,
+      50.928
+    ]
+  },
+  {
+    "file": "02-Klein-100-Resin/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "02-Klein-100-Resin/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      100.0,
+      24.54,
+      50.716
+    ]
+  },
+  {
+    "file": "02-Klein-100-Resin/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "03-Kompakt-120-FDM/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      120.0,
+      23.206,
+      24.46
+    ]
+  },
+  {
+    "file": "03-Kompakt-120-FDM/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "03-Kompakt-120-FDM/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      120.0,
+      57.755,
+      61.224
+    ]
+  },
+  {
+    "file": "03-Kompakt-120-FDM/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "03-Kompakt-120-FDM/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      120.0,
+      29.545,
+      60.911
+    ]
+  },
+  {
+    "file": "03-Kompakt-120-FDM/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "04-Kompakt-150-FDM/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      150.0,
+      29.007,
+      30.575
+    ]
+  },
+  {
+    "file": "04-Kompakt-150-FDM/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "04-Kompakt-150-FDM/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      150.0,
+      72.194,
+      76.531
+    ]
+  },
+  {
+    "file": "04-Kompakt-150-FDM/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "04-Kompakt-150-FDM/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      150.0,
+      36.931,
+      76.138
+    ]
+  },
+  {
+    "file": "04-Kompakt-150-FDM/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "05-Standard-180-FDM/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      180.0,
+      34.808,
+      36.69
+    ]
+  },
+  {
+    "file": "05-Standard-180-FDM/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "05-Standard-180-FDM/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      180.0,
+      86.633,
+      91.837
+    ]
+  },
+  {
+    "file": "05-Standard-180-FDM/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "05-Standard-180-FDM/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      180.0,
+      44.317,
+      91.366
+    ]
+  },
+  {
+    "file": "05-Standard-180-FDM/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "06-Standard-200-FDM/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      200.0,
+      38.676,
+      40.767
+    ]
+  },
+  {
+    "file": "06-Standard-200-FDM/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "06-Standard-200-FDM/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      200.0,
+      96.259,
+      102.041
+    ]
+  },
+  {
+    "file": "06-Standard-200-FDM/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "06-Standard-200-FDM/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      200.0,
+      49.241,
+      101.518
+    ]
+  },
+  {
+    "file": "06-Standard-200-FDM/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "07-Gross-250-FDM/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      250.0,
+      48.345,
+      50.958
+    ]
+  },
+  {
+    "file": "07-Gross-250-FDM/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "07-Gross-250-FDM/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      250.0,
+      120.323,
+      127.551
+    ]
+  },
+  {
+    "file": "07-Gross-250-FDM/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "07-Gross-250-FDM/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      250.0,
+      61.551,
+      126.897
+    ]
+  },
+  {
+    "file": "07-Gross-250-FDM/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "08-Gross-300-FDM/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      300.0,
+      58.014,
+      61.15
+    ]
+  },
+  {
+    "file": "08-Gross-300-FDM/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "08-Gross-300-FDM/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      300.0,
+      144.388,
+      153.061
+    ]
+  },
+  {
+    "file": "08-Gross-300-FDM/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "08-Gross-300-FDM/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      300.0,
+      73.862,
+      152.277
+    ]
+  },
+  {
+    "file": "08-Gross-300-FDM/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      400.0,
+      77.352,
+      81.533
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-Segmente/X01-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-Segmente/X01-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.338,
+      77.352,
+      75.958
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-Segmente/X02-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-Segmente/X02-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.338,
+      77.352,
+      81.533
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-Segmente/X03-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "09-XL-400-segmentiert/01-Roboter-und-Schalung-Segmente/X03-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      61.324,
+      77.352,
+      81.533
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      400.0,
+      192.517,
+      204.082
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      84.354,
+      146.939,
+      31.293
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      23.129,
+      169.388
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 1
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      84.354,
+      0.68,
+      0.68
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      146.939,
+      34.694
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      23.129,
+      169.388
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 1
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      0.68,
+      0.68
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      61.224,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      8.163,
+      146.939,
+      31.293
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      61.224,
+      23.129,
+      169.388
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 1
+  },
+  {
+    "file": "09-XL-400-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      8.163,
+      0.68,
+      0.68
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      400.0,
+      98.482,
+      203.035
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X01-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X01-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.983,
+      98.482,
+      95.11
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X02-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X02-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.983,
+      98.482,
+      169.983
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X02-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 1
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X02-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      22.26,
+      13.491,
+      33.052
+    ]
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X03-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 7
+  },
+  {
+    "file": "09-XL-400-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X03-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      60.034,
+      98.482,
+      142.327
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      600.0,
+      116.028,
+      122.3
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X01-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X01-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.338,
+      116.028,
+      113.937
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X02-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X02-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.338,
+      116.028,
+      113.937
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X03-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X03-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.338,
+      116.028,
+      122.3
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X04-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "10-XXL-600-segmentiert/01-Roboter-und-Schalung-Segmente/X04-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      91.986,
+      116.028,
+      122.3
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      600.0,
+      288.776,
+      306.122
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      143.878,
+      161.224,
+      131.633
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      119.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X01-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      132.653,
+      111.224,
+      130.612
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      161.224,
+      136.735
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      119.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X02-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      111.224,
+      136.735
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      161.224,
+      136.735
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      119.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 4
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X03-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.388,
+      111.224,
+      136.735
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      91.837,
+      169.388,
+      169.388
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      83.673,
+      159.184,
+      131.633
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y02-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 1
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y02-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      91.837,
+      119.388,
+      15.306
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y02-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 3
+  },
+  {
+    "file": "10-XXL-600-segmentiert/02-Nur-Schalung-Segmente/X04-Y02-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      12.245,
+      109.184,
+      88.776
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-einfarbig.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      600.0,
+      147.723,
+      304.553
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X01-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X01-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.983,
+      147.723,
+      142.664
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X02-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 6
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X02-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.983,
+      147.723,
+      142.664
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X03-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 9
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X03-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      169.983,
+      147.723,
+      169.983
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X03-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 5
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X03-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      123.44,
+      104.216,
+      134.57
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X04-Y01-Z01-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 7
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X04-Y01-Z01.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      90.051,
+      147.723,
+      169.983
+    ]
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X04-Y01-Z02-farbig.3mf",
+    "official_lib3mf": "passed",
+    "warnings": 0,
+    "manifold_material_volumes": 2
+  },
+  {
+    "file": "10-XXL-600-segmentiert/03-Rohrsanierung-Schnitt-Segmente/X04-Y01-Z02.stl",
+    "watertight": true,
+    "positive_volume": true,
+    "dimensions_mm": [
+      58.685,
+      91.062,
+      43.508
+    ]
+  }
+]

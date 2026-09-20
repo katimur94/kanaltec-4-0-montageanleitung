@@ -1,0 +1,8 @@
+DSS-Flex 10-XXL-600-segmentiert
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [600.0, 116.03, 122.3] mm
+02-Nur-Schalung: [600.0, 288.78, 306.12] mm
+03-Rohrsanierung-Schnitt: [600.0, 147.72, 304.55] mm

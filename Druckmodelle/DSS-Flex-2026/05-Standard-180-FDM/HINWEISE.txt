@@ -1,0 +1,8 @@
+DSS-Flex 05-Standard-180-FDM
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [180.0, 34.81, 36.69] mm
+02-Nur-Schalung: [180.0, 86.63, 91.84] mm
+03-Rohrsanierung-Schnitt: [180.0, 44.32, 91.37] mm

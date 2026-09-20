@@ -1,5 +1,7 @@
 # DSS-Flex Verfahren – interaktive 3D-Präsentation
 
+**3D-Druckmodelle (20.09.2026):** Drei Motive in je zehn Größen von 8 bis 60 cm, jeweils STL und 3MF mit Farbbereichen. 40-/60-cm-Ausgaben zusätzlich segmentiert. [Offline-Vorschau](Druckmodelle/DSS-Flex-2026/Druckmodelle-ansehen.html) öffnen, Motiv und Größe wählen, mit **Seite** den Rohrschnitt betrachten; **Einfarbig ansehen** blendet die Farben aus. [Druckanleitung](Druckmodelle/DSS-Flex-2026/DRUCKANLEITUNG.md) vor dem Slicen lesen. Digitale Geometrieprüfung bestanden, kein physischer Probedruck. Lokale Ausgabe, noch nicht auf Pages veröffentlicht.
+
 Aktueller Name: **DSS-Flex Verfahren**. Dieses Repository enthält die interaktive 3D-Animation, alle sechs aktuellen Werbevideos und die PowerPoint mit eingebetteten Animationen.
 
 [3D-Animation](https://katimur94.github.io/kanaltec-4-0-montageanleitung/) · [Videogalerie](https://katimur94.github.io/kanaltec-4-0-montageanleitung/Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html) · [PowerPoint herunterladen](https://katimur94.github.io/kanaltec-4-0-montageanleitung/Praesentationen/DSS-Flex-Verfahren.pptx)

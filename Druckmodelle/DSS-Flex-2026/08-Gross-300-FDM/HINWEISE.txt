@@ -1,0 +1,8 @@
+DSS-Flex 08-Gross-300-FDM
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [300.0, 58.01, 61.15] mm
+02-Nur-Schalung: [300.0, 144.39, 153.06] mm
+03-Rohrsanierung-Schnitt: [300.0, 73.86, 152.28] mm

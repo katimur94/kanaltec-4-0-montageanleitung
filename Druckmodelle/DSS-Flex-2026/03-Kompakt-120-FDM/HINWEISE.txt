@@ -1,0 +1,8 @@
+DSS-Flex 03-Kompakt-120-FDM
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [120.0, 23.21, 24.46] mm
+02-Nur-Schalung: [120.0, 57.76, 61.22] mm
+03-Rohrsanierung-Schnitt: [120.0, 29.54, 60.91] mm

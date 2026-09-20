@@ -1,5 +1,7 @@
 # Projektstand und Übergabe – DSS-Flex Verfahren
 
+**3D-Druckmodelle (20.09.2026):** Drei Motive in je zehn Größen von 8 bis 60 cm, jeweils STL und 3MF mit Farbbereichen. 40-/60-cm-Ausgaben zusätzlich segmentiert. [Offline-Vorschau](Druckmodelle/DSS-Flex-2026/Druckmodelle-ansehen.html) öffnen, Motiv und Größe wählen, mit **Seite** den Rohrschnitt betrachten; **Einfarbig ansehen** blendet die Farben aus. [Druckanleitung](Druckmodelle/DSS-Flex-2026/DRUCKANLEITUNG.md) vor dem Slicen lesen. Digitale Geometrieprüfung bestanden, kein physischer Probedruck. Lokale Ausgabe, noch nicht auf Pages veröffentlicht.
+
 **Lokaler Abgleich 20.09.2026:** GitHub-Commit `07f4d35` ist in `work/github-pages` und im äußeren Arbeitsordner übernommen, einschließlich Videos und PowerPoint. Hier kann direkt mit `npm test` und `npm run build` weitergearbeitet werden. Lokale Sicherung und Prüfstand siehe neuesten Eintrag in `FORTSCHRITT.md`. Die Synchronisation ist die Grundlage der anschließend dokumentierten lokalen Änderungen.
 
 Stand: **20.09.2026**. Modellstand `6683ef0` ist auf GitHub und Pages veröffentlicht: kleine ovale Reparaturfläche, detailliertes Erdreich, asymmetrischer ausgewaschener Anschluss und feinere Infiltration, Messingwinkel und dickerer Opferschlauch direkt hinunter zum Roboterarm. Nutfräsen bleibt entfernt, Anschlussblase oberhalb des Schildes halbiert und Mörtelanstieg bis zur halben Blasenhöhe erhalten. Pages-Build für diesen Commit erfolgreich; Live-Animation im Browser geprüft.

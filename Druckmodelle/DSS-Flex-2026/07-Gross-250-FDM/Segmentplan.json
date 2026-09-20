@@ -1,0 +1,56 @@
+[
+  {
+    "variant": "07-Gross-250-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      250.0,
+      48.34,
+      50.96
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 161.19,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.4355,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "07-Gross-250-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      250.0,
+      120.32,
+      127.55
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 536.63,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.4252,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "07-Gross-250-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      250.0,
+      61.55,
+      126.9
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 320.97,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.4216,
+    "color_volumes": 9,
+    "segments": []
+  }
+]

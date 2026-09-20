@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Zehn Größen für den 3D-Druck
+
+Auf Nutzerauftrag drei statische DN-400-Anschauungsmodelle aus Modellbasis `d0ac2f3` aufbereitet: Roboter mit Schalung, Schalung allein sowie Rohrsanierung im seitlichen Schnitt mit ausgefahrener Anschlussblase und Mörtelfüllung. Je Motiv zehn Standflächenlängen: 80, 100, 120, 150, 180, 200, 250, 300, 400 und 600 mm. Die zwei kleinsten Ausgaben mit feineren Verstärkungen für Harzdruck, übrige mit stärkeren FDM-Verbindungen. Jeweils einfarbige STL und 3MF mit getrennten Farbbereichen. Große Ausgaben zusätzlich in maximal etwa 170 mm große Klebesegmente geteilt.
+
+Erzeugung unter `work/export-print-source.mjs`, `work/build-print-models.py` und weiteren `work/*print*`-Hilfen reproduzierbar. Lokale Ergebnisse: `Druckmodelle/DSS-Flex-2026/`; zehn einzelne ZIPs und ein Gesamt-ZIP daneben. Offline-Vorschau lädt tatsächliche 3MF-Druckkörper, mit Modellwahl, Größenwahl, Seitenansicht und Einfarbansicht. Alle drei Motive visuell im Browser geprüft, keine Browserfehler. Alle 150 STL-/3MF-Dateien erneut eingelesen: geschlossene, orientierte Körper mit positivem Volumen; 3MF streng mit offizieller lib3mf ohne Warnungen geprüft. Alle 30 Gesamt-STLs zusammenhängend; Segmentabmessungen geprüft. Berichte liegen bei den Dateien.
+
+Grenzen: feste Schaustücke mit dauerhaften Standflächen/Stützen, vereinfachten und verstärkten Details sowie sichtbaren Voxelstufen. Unterschiedliche Motivmaßstäbe, keine funktionsfähige Mechanik, kein kalibriertes Maschinenprofil, kein physischer Probedruck. Slicer-Stützen und Materialzuordnung sind vor dem Druck zu prüfen. Die 3MF-Farbbereiche benötigen einen geeigneten Slicer/Drucker; große Segmente haben plane Klebeflächen ohne Passstifte. Diese Druckausgabe ist lokal erstellt und noch nicht auf Pages veröffentlicht.
+
+Abschlussprüfung im portablen Repository: `npm ci`, `npm test` (alle fünf DN einschließlich Roboter, Fräsen und Rücksprüngen) und `npm run build` erfolgreich. Beide eigenständigen HTML-Ausgaben sowie äußerer Arbeitsordner synchronisiert. Alle elf ZIP-Archive per CRC geprüft. Quellen und Druckausgaben lokal versioniert; keine Veröffentlichung beauftragt.
+
 ## 20.09.2026 – Private Drive-Sicherung für Telegram
 
 Auf ausdrücklichen Nutzerauftrag Telegram-Zugangsdaten im verbundenen persönlichen Google Drive hinterlegt. Vor dem Übertragen anhand einer leeren Platzhalterdatei geprüft: nicht geteilt, ausschließlich Eigentümerberechtigung. Nach dem Upload dieselben privaten Berechtigungen erneut bestätigt. Die abgerufene Konfiguration stimmt per SHA-256 mit dem ursprünglichen lokalen Export überein; temporärer Klartext-Export entfernt. Die bestehende verschlüsselte lokale Konfiguration unverändert und weiterhin lesbar.

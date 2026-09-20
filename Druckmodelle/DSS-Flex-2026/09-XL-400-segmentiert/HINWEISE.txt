@@ -1,0 +1,8 @@
+DSS-Flex 09-XL-400-segmentiert
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [400.0, 77.35, 81.53] mm
+02-Nur-Schalung: [400.0, 192.52, 204.08] mm
+03-Rohrsanierung-Schnitt: [400.0, 98.48, 203.04] mm

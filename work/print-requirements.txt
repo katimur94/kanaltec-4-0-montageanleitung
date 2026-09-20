@@ -1,0 +1,9 @@
+trimesh==5.1.0
+manifold3d==3.5.3
+numpy
+scipy
+scikit-image
+pillow
+networkx
+lxml
+lib3mf==2.5.0

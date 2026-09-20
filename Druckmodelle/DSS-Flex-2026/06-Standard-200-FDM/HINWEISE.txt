@@ -1,0 +1,8 @@
+DSS-Flex 06-Standard-200-FDM
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [200.0, 38.68, 40.77] mm
+02-Nur-Schalung: [200.0, 96.26, 102.04] mm
+03-Rohrsanierung-Schnitt: [200.0, 49.24, 101.52] mm

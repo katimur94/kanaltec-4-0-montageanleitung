@@ -1,0 +1,1628 @@
+[
+  {
+    "variant": "03-Kompakt-120-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      120.0,
+      23.21,
+      24.46
+    ],
+    "layer_suggestion_mm": 0.12,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 17.83,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.2091,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "04-Kompakt-150-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      150.0,
+      29.01,
+      30.57
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 34.82,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.2613,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "05-Standard-180-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      180.0,
+      34.81,
+      36.69
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 60.16,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.3136,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "06-Standard-200-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      200.0,
+      38.68,
+      40.77
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 82.53,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.3484,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "07-Gross-250-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      250.0,
+      48.34,
+      50.96
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 161.19,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.4355,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "08-Gross-300-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      300.0,
+      58.01,
+      61.15
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 278.54,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.5226,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "09-XL-400-segmentiert",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      400.0,
+      77.35,
+      81.53
+    ],
+    "layer_suggestion_mm": 0.24,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 660.24,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.6969,
+    "color_volumes": 6,
+    "segments": [
+      {
+        "name": "X01-Y01-Z01",
+        "assembly_grid": [
+          1,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.34,
+          77.35,
+          75.96
+        ],
+        "origin_mm": [
+          0.348,
+          0.348,
+          0.348
+        ],
+        "local_shift_mm": [
+          0.348,
+          0.348,
+          0.348
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z01",
+        "assembly_grid": [
+          2,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.34,
+          77.35,
+          81.53
+        ],
+        "origin_mm": [
+          169.686,
+          0.348,
+          0.348
+        ],
+        "local_shift_mm": [
+          0.348,
+          0.348,
+          0.348
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z01",
+        "assembly_grid": [
+          3,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          61.32,
+          77.35,
+          81.53
+        ],
+        "origin_mm": [
+          339.024,
+          0.348,
+          0.348
+        ],
+        "local_shift_mm": [
+          0.348,
+          0.348,
+          0.348
+        ],
+        "watertight": true
+      }
+    ]
+  },
+  {
+    "variant": "10-XXL-600-segmentiert",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      600.0,
+      116.03,
+      122.3
+    ],
+    "layer_suggestion_mm": 0.28,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 2228.32,
+    "triangles": 30518,
+    "voxel_pitch_mm": 1.0453,
+    "color_volumes": 6,
+    "segments": [
+      {
+        "name": "X01-Y01-Z01",
+        "assembly_grid": [
+          1,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.34,
+          116.03,
+          113.94
+        ],
+        "origin_mm": [
+          0.523,
+          0.523,
+          0.523
+        ],
+        "local_shift_mm": [
+          0.523,
+          0.523,
+          0.523
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z01",
+        "assembly_grid": [
+          2,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.34,
+          116.03,
+          113.94
+        ],
+        "origin_mm": [
+          169.861,
+          0.523,
+          0.523
+        ],
+        "local_shift_mm": [
+          0.523,
+          0.523,
+          0.523
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z01",
+        "assembly_grid": [
+          3,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.34,
+          116.03,
+          122.3
+        ],
+        "origin_mm": [
+          339.199,
+          0.523,
+          0.523
+        ],
+        "local_shift_mm": [
+          0.523,
+          0.523,
+          0.523
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y01-Z01",
+        "assembly_grid": [
+          4,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          91.99,
+          116.03,
+          122.3
+        ],
+        "origin_mm": [
+          508.537,
+          0.523,
+          0.523
+        ],
+        "local_shift_mm": [
+          0.523,
+          0.523,
+          0.523
+        ],
+        "watertight": true
+      }
+    ]
+  },
+  {
+    "variant": "01-Mini-80-Resin",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      80.0,
+      15.39,
+      16.24
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 4.39,
+    "triangles": 28226,
+    "voxel_pitch_mm": 0.1691,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "02-Klein-100-Resin",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      100.0,
+      19.24,
+      20.3
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 8.58,
+    "triangles": 28226,
+    "voxel_pitch_mm": 0.2114,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "03-Kompakt-120-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      120.0,
+      57.76,
+      61.22
+    ],
+    "layer_suggestion_mm": 0.12,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 59.35,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.2041,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "04-Kompakt-150-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      150.0,
+      72.19,
+      76.53
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 115.91,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.2551,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "05-Standard-180-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      180.0,
+      86.63,
+      91.84
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 200.3,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.3061,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "06-Standard-200-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      200.0,
+      96.26,
+      102.04
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 274.75,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.3401,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "07-Gross-250-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      250.0,
+      120.32,
+      127.55
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 536.63,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.4252,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "08-Gross-300-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      300.0,
+      144.39,
+      153.06
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 927.29,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.5102,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "09-XL-400-segmentiert",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      400.0,
+      192.52,
+      204.08
+    ],
+    "layer_suggestion_mm": 0.24,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 2198.03,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.6803,
+    "color_volumes": 5,
+    "segments": [
+      {
+        "name": "X01-Y01-Z01",
+        "assembly_grid": [
+          1,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X01-Y01-Z02",
+        "assembly_grid": [
+          1,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          84.35,
+          146.94,
+          31.29
+        ],
+        "origin_mm": [
+          0.34,
+          0.34,
+          169.728
+        ],
+        "local_shift_mm": [
+          -84.694,
+          -22.109,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X01-Y02-Z01",
+        "assembly_grid": [
+          1,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          23.13,
+          169.39
+        ],
+        "origin_mm": [
+          0.34,
+          169.728,
+          0.34
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X01-Y02-Z02",
+        "assembly_grid": [
+          1,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          84.35,
+          0.68,
+          0.68
+        ],
+        "origin_mm": [
+          0.34,
+          169.728,
+          169.728
+        ],
+        "local_shift_mm": [
+          -84.694,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z01",
+        "assembly_grid": [
+          2,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          169.728,
+          0.34,
+          0.34
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z02",
+        "assembly_grid": [
+          2,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          169.39,
+          146.94,
+          34.69
+        ],
+        "origin_mm": [
+          169.728,
+          0.34,
+          169.728
+        ],
+        "local_shift_mm": [
+          0.34,
+          -22.109,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y02-Z01",
+        "assembly_grid": [
+          2,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          23.13,
+          169.39
+        ],
+        "origin_mm": [
+          169.728,
+          169.728,
+          0.34
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y02-Z02",
+        "assembly_grid": [
+          2,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          169.39,
+          0.68,
+          0.68
+        ],
+        "origin_mm": [
+          169.728,
+          169.728,
+          169.728
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z01",
+        "assembly_grid": [
+          3,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          61.22,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          339.116,
+          0.34,
+          0.34
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z02",
+        "assembly_grid": [
+          3,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          8.16,
+          146.94,
+          31.29
+        ],
+        "origin_mm": [
+          339.116,
+          0.34,
+          169.728
+        ],
+        "local_shift_mm": [
+          0.34,
+          -22.109,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y02-Z01",
+        "assembly_grid": [
+          3,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          61.22,
+          23.13,
+          169.39
+        ],
+        "origin_mm": [
+          339.116,
+          169.728,
+          0.34
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y02-Z02",
+        "assembly_grid": [
+          3,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          8.16,
+          0.68,
+          0.68
+        ],
+        "origin_mm": [
+          339.116,
+          169.728,
+          169.728
+        ],
+        "local_shift_mm": [
+          0.34,
+          0.34,
+          0.34
+        ],
+        "watertight": true
+      }
+    ]
+  },
+  {
+    "variant": "10-XXL-600-segmentiert",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      600.0,
+      288.78,
+      306.12
+    ],
+    "layer_suggestion_mm": 0.28,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 7418.34,
+    "triangles": 53906,
+    "voxel_pitch_mm": 1.0204,
+    "color_volumes": 5,
+    "segments": [
+      {
+        "name": "X01-Y01-Z01",
+        "assembly_grid": [
+          1,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X01-Y01-Z02",
+        "assembly_grid": [
+          1,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          143.88,
+          161.22,
+          131.63
+        ],
+        "origin_mm": [
+          0.51,
+          0.51,
+          169.898
+        ],
+        "local_shift_mm": [
+          -25.0,
+          -7.653,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X01-Y02-Z01",
+        "assembly_grid": [
+          1,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          119.39,
+          169.39
+        ],
+        "origin_mm": [
+          0.51,
+          169.898,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X01-Y02-Z02",
+        "assembly_grid": [
+          1,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          132.65,
+          111.22,
+          130.61
+        ],
+        "origin_mm": [
+          0.51,
+          169.898,
+          169.898
+        ],
+        "local_shift_mm": [
+          -36.224,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z01",
+        "assembly_grid": [
+          2,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          169.898,
+          0.51,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z02",
+        "assembly_grid": [
+          2,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          169.39,
+          161.22,
+          136.73
+        ],
+        "origin_mm": [
+          169.898,
+          0.51,
+          169.898
+        ],
+        "local_shift_mm": [
+          0.51,
+          -7.653,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y02-Z01",
+        "assembly_grid": [
+          2,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          119.39,
+          169.39
+        ],
+        "origin_mm": [
+          169.898,
+          169.898,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y02-Z02",
+        "assembly_grid": [
+          2,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          169.39,
+          111.22,
+          136.73
+        ],
+        "origin_mm": [
+          169.898,
+          169.898,
+          169.898
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z01",
+        "assembly_grid": [
+          3,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          339.286,
+          0.51,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z02",
+        "assembly_grid": [
+          3,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          169.39,
+          161.22,
+          136.73
+        ],
+        "origin_mm": [
+          339.286,
+          0.51,
+          169.898
+        ],
+        "local_shift_mm": [
+          0.51,
+          -7.653,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y02-Z01",
+        "assembly_grid": [
+          3,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          169.39,
+          119.39,
+          169.39
+        ],
+        "origin_mm": [
+          339.286,
+          169.898,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y02-Z02",
+        "assembly_grid": [
+          3,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          169.39,
+          111.22,
+          136.73
+        ],
+        "origin_mm": [
+          339.286,
+          169.898,
+          169.898
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y01-Z01",
+        "assembly_grid": [
+          4,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          91.84,
+          169.39,
+          169.39
+        ],
+        "origin_mm": [
+          508.673,
+          0.51,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y01-Z02",
+        "assembly_grid": [
+          4,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          83.67,
+          159.18,
+          131.63
+        ],
+        "origin_mm": [
+          508.673,
+          0.51,
+          169.898
+        ],
+        "local_shift_mm": [
+          0.51,
+          -9.694,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y02-Z01",
+        "assembly_grid": [
+          4,
+          2,
+          1
+        ],
+        "dimensions_mm": [
+          91.84,
+          119.39,
+          15.31
+        ],
+        "origin_mm": [
+          508.673,
+          169.898,
+          0.51
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          0.51
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y02-Z02",
+        "assembly_grid": [
+          4,
+          2,
+          2
+        ],
+        "dimensions_mm": [
+          12.24,
+          109.18,
+          88.78
+        ],
+        "origin_mm": [
+          508.673,
+          169.898,
+          169.898
+        ],
+        "local_shift_mm": [
+          0.51,
+          0.51,
+          -41.327
+        ],
+        "watertight": true
+      }
+    ]
+  },
+  {
+    "variant": "01-Mini-80-Resin",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      80.0,
+      38.43,
+      40.74
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 14.66,
+    "triangles": 52414,
+    "voxel_pitch_mm": 0.1649,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "02-Klein-100-Resin",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      100.0,
+      48.04,
+      50.93
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 28.63,
+    "triangles": 52414,
+    "voxel_pitch_mm": 0.2062,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "03-Kompakt-120-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      120.0,
+      29.54,
+      60.91
+    ],
+    "layer_suggestion_mm": 0.12,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 35.5,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.2024,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "04-Kompakt-150-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      150.0,
+      36.93,
+      76.14
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 69.33,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.253,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "05-Standard-180-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      180.0,
+      44.32,
+      91.37
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 119.8,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.3035,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "06-Standard-200-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      200.0,
+      49.24,
+      101.52
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 164.34,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.3373,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "07-Gross-250-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      250.0,
+      61.55,
+      126.9
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 320.97,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.4216,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "08-Gross-300-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      300.0,
+      73.86,
+      152.28
+    ],
+    "layer_suggestion_mm": 0.2,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 554.64,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.5059,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "09-XL-400-segmentiert",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      400.0,
+      98.48,
+      203.04
+    ],
+    "layer_suggestion_mm": 0.24,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 1314.71,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.6745,
+    "color_volumes": 9,
+    "segments": [
+      {
+        "name": "X01-Y01-Z01",
+        "assembly_grid": [
+          1,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.98,
+          98.48,
+          95.11
+        ],
+        "origin_mm": [
+          0.337,
+          0.337,
+          0.337
+        ],
+        "local_shift_mm": [
+          0.337,
+          0.337,
+          0.337
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z01",
+        "assembly_grid": [
+          2,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.98,
+          98.48,
+          169.98
+        ],
+        "origin_mm": [
+          170.32,
+          0.337,
+          0.337
+        ],
+        "local_shift_mm": [
+          0.337,
+          0.337,
+          0.337
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z02",
+        "assembly_grid": [
+          2,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          22.26,
+          13.49,
+          33.05
+        ],
+        "origin_mm": [
+          170.32,
+          0.337,
+          170.32
+        ],
+        "local_shift_mm": [
+          -138.617,
+          -30.017,
+          0.337
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z01",
+        "assembly_grid": [
+          3,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          60.03,
+          98.48,
+          142.33
+        ],
+        "origin_mm": [
+          340.304,
+          0.337,
+          0.337
+        ],
+        "local_shift_mm": [
+          0.337,
+          0.337,
+          0.337
+        ],
+        "watertight": true
+      }
+    ]
+  },
+  {
+    "variant": "10-XXL-600-segmentiert",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      600.0,
+      147.72,
+      304.55
+    ],
+    "layer_suggestion_mm": 0.28,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 4437.15,
+    "triangles": 56110,
+    "voxel_pitch_mm": 1.0118,
+    "color_volumes": 9,
+    "segments": [
+      {
+        "name": "X01-Y01-Z01",
+        "assembly_grid": [
+          1,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.98,
+          147.72,
+          142.66
+        ],
+        "origin_mm": [
+          0.506,
+          0.506,
+          0.506
+        ],
+        "local_shift_mm": [
+          0.506,
+          0.506,
+          0.506
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X02-Y01-Z01",
+        "assembly_grid": [
+          2,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.98,
+          147.72,
+          142.66
+        ],
+        "origin_mm": [
+          170.489,
+          0.506,
+          0.506
+        ],
+        "local_shift_mm": [
+          0.506,
+          0.506,
+          0.506
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z01",
+        "assembly_grid": [
+          3,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          169.98,
+          147.72,
+          169.98
+        ],
+        "origin_mm": [
+          340.472,
+          0.506,
+          0.506
+        ],
+        "local_shift_mm": [
+          0.506,
+          0.506,
+          0.506
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X03-Y01-Z02",
+        "assembly_grid": [
+          3,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          123.44,
+          104.22,
+          134.57
+        ],
+        "origin_mm": [
+          340.472,
+          0.506,
+          170.489
+        ],
+        "local_shift_mm": [
+          -46.037,
+          -34.907,
+          0.506
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y01-Z01",
+        "assembly_grid": [
+          4,
+          1,
+          1
+        ],
+        "dimensions_mm": [
+          90.05,
+          147.72,
+          169.98
+        ],
+        "origin_mm": [
+          510.455,
+          0.506,
+          0.506
+        ],
+        "local_shift_mm": [
+          0.506,
+          0.506,
+          0.506
+        ],
+        "watertight": true
+      },
+      {
+        "name": "X04-Y01-Z02",
+        "assembly_grid": [
+          4,
+          1,
+          2
+        ],
+        "dimensions_mm": [
+          58.68,
+          91.06,
+          43.51
+        ],
+        "origin_mm": [
+          510.455,
+          0.506,
+          170.489
+        ],
+        "local_shift_mm": [
+          0.506,
+          -45.025,
+          0.506
+        ],
+        "watertight": true
+      }
+    ]
+  },
+  {
+    "variant": "01-Mini-80-Resin",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      80.0,
+      19.63,
+      40.57
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 8.4,
+    "triangles": 51876,
+    "voxel_pitch_mm": 0.1636,
+    "color_volumes": 9,
+    "segments": []
+  },
+  {
+    "variant": "02-Klein-100-Resin",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      100.0,
+      24.54,
+      50.72
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 16.41,
+    "triangles": 51876,
+    "voxel_pitch_mm": 0.2045,
+    "color_volumes": 9,
+    "segments": []
+  }
+]

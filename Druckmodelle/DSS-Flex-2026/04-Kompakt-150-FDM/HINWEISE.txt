@@ -1,0 +1,8 @@
+DSS-Flex 04-Kompakt-150-FDM
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [150.0, 29.01, 30.57] mm
+02-Nur-Schalung: [150.0, 72.19, 76.53] mm
+03-Rohrsanierung-Schnitt: [150.0, 36.93, 76.14] mm

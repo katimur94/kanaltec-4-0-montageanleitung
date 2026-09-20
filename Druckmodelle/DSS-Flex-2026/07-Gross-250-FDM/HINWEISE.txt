@@ -1,0 +1,8 @@
+DSS-Flex 07-Gross-250-FDM
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [250.0, 48.34, 50.96] mm
+02-Nur-Schalung: [250.0, 120.32, 127.55] mm
+03-Rohrsanierung-Schnitt: [250.0, 61.55, 126.9] mm

@@ -1,0 +1,56 @@
+[
+  {
+    "variant": "04-Kompakt-150-FDM",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      150.0,
+      29.01,
+      30.57
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 34.82,
+    "triangles": 30518,
+    "voxel_pitch_mm": 0.2613,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "04-Kompakt-150-FDM",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      150.0,
+      72.19,
+      76.53
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 115.91,
+    "triangles": 53906,
+    "voxel_pitch_mm": 0.2551,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "04-Kompakt-150-FDM",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      150.0,
+      36.93,
+      76.14
+    ],
+    "layer_suggestion_mm": 0.16,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 69.33,
+    "triangles": 56110,
+    "voxel_pitch_mm": 0.253,
+    "color_volumes": 9,
+    "segments": []
+  }
+]

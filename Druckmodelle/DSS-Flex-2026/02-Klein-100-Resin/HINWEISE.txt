@@ -1,0 +1,8 @@
+DSS-Flex 02-Klein-100-Resin
+
+Drei Anschauungsmodelle, jeweils STL einfarbig und 3MF mit Materialbereichen.
+Die DRUCKANLEITUNG.md vor dem Drucken lesen. Kein fertiges Maschinenprofil.
+
+01-Roboter-und-Schalung: [100.0, 19.24, 20.3] mm
+02-Nur-Schalung: [100.0, 48.04, 50.93] mm
+03-Rohrsanierung-Schnitt: [100.0, 24.54, 50.72] mm

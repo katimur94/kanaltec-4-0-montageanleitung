@@ -1,0 +1,56 @@
+[
+  {
+    "variant": "02-Klein-100-Resin",
+    "model": "01-Roboter-und-Schalung",
+    "dimensions_mm": [
+      100.0,
+      19.24,
+      20.3
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 8.58,
+    "triangles": 28226,
+    "voxel_pitch_mm": 0.2114,
+    "color_volumes": 6,
+    "segments": []
+  },
+  {
+    "variant": "02-Klein-100-Resin",
+    "model": "02-Nur-Schalung",
+    "dimensions_mm": [
+      100.0,
+      48.04,
+      50.93
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 28.63,
+    "triangles": 52414,
+    "voxel_pitch_mm": 0.2062,
+    "color_volumes": 5,
+    "segments": []
+  },
+  {
+    "variant": "02-Klein-100-Resin",
+    "model": "03-Rohrsanierung-Schnitt",
+    "dimensions_mm": [
+      100.0,
+      24.54,
+      50.72
+    ],
+    "layer_suggestion_mm": 0.05,
+    "watertight": true,
+    "positive_volume": true,
+    "components": 1,
+    "volume_cm3": 16.41,
+    "triangles": 51876,
+    "voxel_pitch_mm": 0.2045,
+    "color_volumes": 9,
+    "segments": []
+  }
+]
