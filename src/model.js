@@ -343,7 +343,10 @@ export class Viewer {
  buildContext(){
   const R=this.radius+12;
   this.branchTop=R+20+Math.max(260,this.winding.referenceTravel+65);
-  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600);
+  const pressedShieldY=this.winding.shieldTop+8;
+  const deployedTipY=this.radius+1.5+this.winding.travel+7+8;
+  this.branchFillTop=THREE.MathUtils.lerp(pressedShieldY,deployedTipY,.5);
+  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600,this.branchFillTop);
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
   this.damage=this.repair.cavity;

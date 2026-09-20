@@ -18,7 +18,7 @@ Der Build erzeugt beide HTML-Dateien inhaltsgleich und bettet sämtliche für di
 
 ## Aktuelle Änderung 20.09.2026
 
-Nutfräsphase, Innenwandvertiefung und innere Mörtelhülse entfernt. Nach dem Freifräsen folgt direkt der Werkzeugwechsel; insgesamt neun Phasen. Der Anschluss hat über seine gesamte Höhe den ursprünglichen Innenradius. Die Mörtelfüllung im Schaden und im Erdreich bleibt erhalten.
+Nutfräsphase und Innenwandvertiefung entfernt. Nach dem Freifräsen folgt direkt der Werkzeugwechsel; insgesamt neun Phasen. Die Rohrwand bleibt ungefräst. Auf anschließende Nutzerkorrektur steigt Injektionsmörtel nach der Hohlraumfüllung dennoch im Anschluss bis zur Hälfte der ausgefahrenen Blasenhöhe oberhalb des angepressten Schildes. Die glatte Mörtelschicht nutzt den im Modell vorhandenen Spalt zwischen Blase (Radius 39,55 mm) und Rohr (Radius 40 mm), ohne Nut oder zusätzliche Wandvertiefung. Diese Spaltmaße sind reine Darstellungsparameter. Der freie Durchgang wird von der Blase geformt; die Verpressung im Erdreich bleibt erhalten.
 
 Die volle Blasenhöhe **oberhalb des angepressten Schildes bis zur starren Spitze** beträgt exakt 50 % des bisherigen Werts. Wellenfuß, Spitzengröße, Durchmesser und die drei Wicklungen samt Schichtdicke bleiben unverändert. `referenceTravel` hält den ursprünglichen Wickelpfad fest; `travel` bestimmt den verkürzten Ausfahrweg. Diese Kombination wird als schematische Verformung dargestellt, nicht als Simulation mit unveränderlicher Materiallänge. Die Länge des dargestellten Anschlussrohrs bleibt erhalten.
 

@@ -6,7 +6,7 @@ Aktueller Name: **DSS-Flex Verfahren**. Dieses Repository enthält die interakti
 
 **Fräskopf nach Recherche überarbeitet:** Lokaler, drehbarer [Fotovergleich](Fraeskopf-Vergleich.html) mit dem Nutzerfoto. IBAK-Prospekt und Werkzeughersteller-Katalog bilden die Formreferenzen für Motor, Spindel und segmentierte Pilzkrone; die genaue Werkzeugnummer bleibt offen. Quellen und Abgrenzungen: [ROBOTER-QUELLEN.md](ROBOTER-QUELLEN.md).
 
-**Stand 20.09.2026:** Neun Schritte: Rückfräsen von Einragung und Wurzeln, Fräsen rund um den Anschluss, danach direkter Wechsel zur Schalung und Sanierung einschließlich tiefer Verpressung im Erdreich. Nutfräsen und innere Ringnut sind entfernt. Die ausgefahrene Anschlussblase ist nur oberhalb des Schildes halb so lang; die drei Wicklungen bleiben erhalten. Werkzeugmaße, Wickelübergang und Ausdehnung im Erdreich sind schematisch. Bedienung: [START-HIER.md](START-HIER.md).
+**Stand 20.09.2026:** Neun Schritte: Rückfräsen von Einragung und Wurzeln, Fräsen rund um den Anschluss, danach direkter Wechsel zur Schalung und Sanierung einschließlich tiefer Verpressung im Erdreich. Nutfräsen und innere Ringnut sind entfernt. Die ausgefahrene Anschlussblase ist nur oberhalb des Schildes halb so lang; die drei Wicklungen bleiben erhalten. Der Injektionsmörtel steigt auch ohne Nut bis zur Hälfte dieser Blasenhöhe im Anschluss. Werkzeugmaße, Wickelübergang und Ausdehnung im Erdreich sind schematisch. Bedienung: [START-HIER.md](START-HIER.md).
 
 Die Videos und PowerPoint vom 17.09.2026 zeigen noch den vorherigen Ablauf mit Nutfräsen und längerer Blase; sie wurden bei dieser Modelländerung nicht neu exportiert.
 

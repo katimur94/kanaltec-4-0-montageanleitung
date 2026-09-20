@@ -5,7 +5,7 @@ import * as THREE from 'three';
 export const ports={opening:40,tip:36,inletX:-66,inletRadius:7,sensorX:70,sensorRadius:9};
 // The illustrative branch and its moulded passage share the shield aperture.
 // The former independently chosen branch diameter created a false reducer.
-export const passage={radius:ports.opening,wall:12};
+export const passage={radius:ports.opening,wall:12,mouldRadius:ports.opening-.45};
 export const bladderMount={flat:6.5,seat:7.1,radius:35,capHeight:6,threadBottom:-2.5,threadTop:6.4};
 // Each collapsed wall is about 3 mm: two walls form a 6 mm folded bladder.
 export const windingSpec={turns:3,wall:3,folded:6,layerGap:.3};

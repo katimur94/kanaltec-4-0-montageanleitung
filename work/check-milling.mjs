@@ -64,6 +64,28 @@ for(const family of families){
  assert.ok(new THREE.Box3().setFromObject(v.repair.projection).min.y<R,'Initial lateral projects into main sewer');
  pose(.45);assert.ok(!v.repair.projection.visible&&!v.repair.roots.visible,'Projection and roots removed before circular milling');
  pose(PHASE.REMOVE+.99);assert.ok(v.repair.mortar.visible&&v.repair.innerSkin.visible);pose(0);assert.deepEqual(Array.from(v.repair.projection.geometry.attributes.position.array),initial);assert.ok(v.repair.roots.visible&&!v.repair.mortar.visible);
+ // Mortar rises in the intact branch only after the defect has filled.
+ pose(PHASE.MORTAR+.52);assert.ok(!v.repair.branchMortar.visible,'No isolated mortar before the cavity fills');
+ pose(PHASE.MORTAR+.75);assert.ok(v.repair.branchMortar.visible&&v.repair.lastFill===1,'Rising lining joins a filled defect');
+ const intermediate=Array.from(v.repair.branchMortar.geometry.attributes.position.array);
+ const intermediateTop=new THREE.Box3().setFromObject(v.repair.branchMortar).max.y;
+ pose(PHASE.MORTAR+.95);
+ const shieldY=v.winding.shieldTop+v.winding.group.position.y;
+ const bladderTop=v.winding.tip.getWorldPosition(new THREE.Vector3()).y+7;
+ const lining=v.repair.branchMortar.geometry.attributes.position;
+ near(new THREE.Box3().setFromObject(v.repair.branchMortar).max.y,(shieldY+bladderTop)/2);
+ assert.ok(intermediateTop<v.repair.branchFillTop,'Lining grows upwards progressively');
+ for(let i=0;i<lining.count;i++){
+  const r=Math.hypot(lining.getX(i),lining.getZ(i));
+  assert.ok(r>=passage.mouldRadius-.001&&r<=passage.radius+.001,'Mortar occupies only the existing gap outside the bladder');
+ }
+ for(let i=0;i<=160;i++)near(lining.getY(i),branchBottom(R,i/160*Math.PI*2)-1);
+ const finalLining=Array.from(lining.array);
+ v.setSections({pipe:false,hideBladder:true});assert.deepEqual(Array.from(lining.array),finalLining,'View settings do not change the lining');
+ assert.ok(!v.repair.branchMortarSection.visible);v.setSections({pipe:true,hideBladder:false});assert.ok(v.repair.branchMortarSection.visible);
+ pose(PHASE.REMOVE+.99);assert.deepEqual(Array.from(v.repair.branchMortar.geometry.attributes.position.array),finalLining,'Cured lining stays after removal');
+ pose(PHASE.MORTAR+.75);assert.deepEqual(Array.from(v.repair.branchMortar.geometry.attributes.position.array),intermediate,'Backward seek restores intermediate lining');
+ pose(0);assert.ok(!v.repair.branchMortar.visible&&!v.repair.branchMortarSection.visible,'Rewind removes the lining');
  pose(0);assert.ok(!v.repair.ground.grout.visible,'No ground grout before injection');
  pose(PHASE.MORTAR+.52);const groundEarly=Array.from(v.repair.ground.grout.geometry.attributes.position.array);
  pose(PHASE.REMOVE+.99);const ground=v.repair.ground,ga=ground.grout.geometry.attributes.position;

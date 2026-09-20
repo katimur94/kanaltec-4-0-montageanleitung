@@ -14,6 +14,8 @@
 
 **Fräsen vor der Schalung:** Unter **So funktioniert’s** folgen **Anschluss freifräsen** und **Zur Schalung wechseln** direkt aufeinander. Das Nutfräsen und die innere Ausfräsung sind entfernt. **Vorführen** spielt neun Schritte ab. Über **Fräsdetail** und **Schnitt & Sicht → Rohr im Schnitt** lässt sich der verbleibende äußere Abtrag betrachten. Fräserdurchmesser 60 mm und Stärke 16 mm bleiben schematische Modellannahmen.
 
+**Mörtel im Anschluss (20.09.2026):** Unter **Mörtel injizieren → Blasenantrieb** steigt der Mörtel nach der Hohlraumfüllung bis zur halben Höhe der ausgefahrenen Blase oberhalb des Schildes. Mit **Rohr im Schnitt** und **Anschlussblase ausblenden** wird die glatte graue Innenfläche sichtbar. Die Nut bleibt entfernt. Nach dem Ausschalen bleibt diese Schicht zurück.
+
 **Kürzere Anschlussblase (20.09.2026):** Nur der vollständig ausgefahrene Teil oberhalb des angepressten Schildes ist halb so lang wie zuvor, einschließlich der Spitze. Wellenfuß, Durchmesser, starre Spitze und drei Wicklungen bleiben erhalten. Unter **Anschlussblase einfahren → Blasenantrieb** ist die Änderung sichtbar.
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
@@ -66,7 +68,7 @@ Unter **Zentraleinheit → Klappvorrichtung** öffnest du die Nahansicht der Ver
 
 ## Neue Schadens- und Verpressungsdarstellung (17.09.2026)
 
-Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die runde Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: Mörtel vom Zulauf durch die Schadstelle bis ins umgebende Erdreich. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
+Unter **So funktioniert’s** am Anfang der Zeitachse sind einragender Anschluss und Wurzeln zu sehen. **Fräsdetail** zeigt zuerst deren Rückschnitt, danach die runde Fräsfläche. Unter **Schnitt & Sicht** Rohrschnitt einschalten. Für den Mörtelweg zusätzlich Schalung im Schnitt und Anschlussblase ausblenden: Mörtel vom Zulauf durch die Schadstelle bis ins umgebende Erdreich und im Anschluss bis zur halben Blasenhöhe. Nach **Ausschalen & kontrollieren** bleibt der ursprüngliche Anschlussdurchgang frei. Zurückspulen stellt den Schaden wieder her.
 
 ## Fertige Werbevideos vom 17.09.2026
 

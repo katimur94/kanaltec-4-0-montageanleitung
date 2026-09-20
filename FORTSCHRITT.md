@@ -1,5 +1,14 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Injektionsmörtel ohne Nut bis zur halben Blasenhöhe
+
+**Nutzerkorrektur:** Auch ohne Nut soll Mörtel im Anschluss bis zur Hälfte der Blase hochgehen. Maßgeblich ist die ausgefahrene Blasenhöhe oberhalb des angepressten Schildes.
+
+**Umsetzung:** Nach der Hohlraumfüllung steigt eine glatte, geschlossene Mörtelschicht vom Anschlussrand bis zur exakt berechneten halben Blasenhöhe. Sie liegt im bereits modellierten Spalt zwischen aufgeblasener Blase (Radius 39,55 mm) und unveränderter Rohrwand (Innenradius 40 mm). Keine Nut, kein zusätzlicher Innenabtrag. Diese Spaltmaße sind Darstellungsannahmen, keine Herstellermaße. Der untere Rand schließt an die Schadstellenfüllung an; die Schicht bleibt nach dem Ausschalen erhalten. Schnitt und Blasen-Ausblendung ändern nur die Sichtbarkeit. Drei Wicklungen und verkürzte Blase bleiben erhalten.
+
+**Geprüft:** npm ci, npm test und npm run build im Repository erfolgreich; Modell-, Wickel-, Wasser-, Roboter- und Fräsprüfungen für alle fünf DN bestanden. Neue Regression prüft Füllreihenfolge, halbe Blasenhöhe, Lage außerhalb der Blase und innerhalb der Rohrwand, Rücksprünge, Schnitte und Verbleib nach dem Ausschalen. Lokale Edge-Sichtprüfung von Anstieg, vollständiger Füllung und ausgehärtetem Zustand ohne Browserfehler. Beide HTML-Ausgaben neu gebaut. Bedienung, Projektstand und README angepasst. Keine neuen Video-/PowerPoint-Exporte und keine Veröffentlichung.
+
+
 ## 20.09.2026 – Nutfräsen entfernt, Blase nur oberhalb des Schildes halbiert
 
 **Nutzerkorrektur:** Nutfräsen aus dem Ablauf entfernen. Auf Nachfrage ausdrücklich nur den Teil der ausgefahrenen Anschlussblase oberhalb des Schildes halbieren; drei Wicklungen beibehalten.

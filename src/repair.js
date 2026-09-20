@@ -67,6 +67,24 @@ export function brokenBranch(R,top){
  for(const j of [0,1])for(let i=0;i<N;i++){const a=j*stride+i,b=a+2*stride;idx.push(a,b,a+1,b,b+1,a+1);}
  const result=geometry(pos,idx,uv);result.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return result;
 }
+// Smooth mortar lining in the existing gap around the inflated bladder.
+// No groove or wall removal. The lower rim overlaps the filled defect by 1 mm.
+export function branchMortarGeometry(R,top,fill){
+ const pos=[],uv=[],idx=[],caps=[],stride=N+1,rows=24;
+ for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=N;i++){
+  const a=i/N*TAU,base=branchBottom(R,a)-1;
+  const y=THREE.MathUtils.lerp(base,top,clamp(fill)*j/rows);
+  const r=side?passage.radius:passage.mouldRadius;
+  pos.push(r*Math.cos(a),y,r*Math.sin(a));uv.push(a*2,(y-R)/60);
+ }
+ const count=(rows+1)*stride;
+ for(let side=0;side<2;side++)for(let j=0;j<rows;j++)for(let i=0;i<N;i++){
+  const a=side*count+j*stride+i,b=a+stride;idx.push(a,b,a+1,b,b+1,a+1);
+ }
+ for(const j of [0,rows])for(let i=0;i<N;i++){const a=j*stride+i,b=a+count;idx.push(a,b,a+1,b,b+1,a+1);}
+ for(const i of [0,N/2])for(let j=0;j<rows;j++){const a=j*stride+i,b=a+stride;caps.push(a,b,a+count,b,b+count,a+count);}
+ const result=geometry(pos,idx,uv);result.userData.sectionIndices=caps;return result;
+}
 export function projectingBranchGeometry(R,trim){
  const pos=[],uv=[],idx=[],stride=N+1;
  for(let side=0;side<2;side++)for(let j=0;j<2;j++)for(let i=0;i<=N;i++){
@@ -98,8 +116,8 @@ export function shieldWaterPath(R,start,edge,shield){
 }
 
 export class RepairScene {
- constructor(R,branchTop,hosePoints,inletX,pipeLength=1350){
-  this.R=R;this.pipeLength=pipeLength;this.branchTop=branchTop;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
+ constructor(R,branchTop,hosePoints,inletX,pipeLength=1350,branchFillTop=R){
+  this.branchFillTop=branchFillTop;this.branchFill=0;this.R=R;this.pipeLength=pipeLength;this.branchTop=branchTop;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
   this.texture=concreteTexture();
   this.pipeTextures=surfaceTextures('pipe');this.mortarTextures=surfaceTextures('mortar');
   this.ground=new GroundGrout(R,this.pipeTextures,this.mortarTextures);this.group.add(this.ground.group);
@@ -160,6 +178,10 @@ export class RepairScene {
   // The exposed section face must not clip against its own coplanar plane.
   this.sectionMaterial=new THREE.MeshStandardMaterial({color:'#65695f',...this.mortarTextures,bumpScale:.08,roughness:.95,side:THREE.DoubleSide});
   this.section=makeMesh(this.sectionGeometry,this.sectionMaterial);this.section.castShadow=this.section.receiveShadow=false;this.section.frustumCulled=false;this.group.add(this.section);
+  this.branchMortarMaterial=new THREE.MeshStandardMaterial({color:'#666764',...this.mortarTextures,bumpScale:.08,roughness:.9,side:THREE.DoubleSide});
+  this.branchMortar=makeMesh(branchMortarGeometry(R,branchFillTop,0),this.branchMortarMaterial);
+  this.branchMortarSection=makeMesh(this.branchMortar.geometry.clone(),this.sectionMaterial);
+  this.group.add(this.branchMortar,this.branchMortarSection);this.lastBranchFill=-1;
   this.lastFill=-1;
 
   // Material travels inside the original hose. Draw range advances a continuous
@@ -218,10 +240,10 @@ export class RepairScene {
  }
  setCut(cut){
   this.ground.setCut(cut,cutPlane);
-  this.cut=cut;this.section.visible=cut&&this.fill>.0001;
+  this.cut=cut;this.section.visible=cut&&this.fill>.0001;this.branchMortarSection.visible=cut&&this.branchFill>0;
   this.pipeCaps.visible=cut;
   this.pipe.visible=this.branch.visible=cut;this.pipeFull.visible=this.branchFull.visible=!cut;
-  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.projectionMaterial,this.rootMaterial])m.clippingPlanes=cut?[cutPlane]:null;
+  for(const m of [this.cavityMaterial,this.mortarMaterial,this.skinMaterial,this.branchMortarMaterial,this.projectionMaterial,this.rootMaterial])m.clippingPlanes=cut?[cutPlane]:null;
   // A display cut removes pipe geometry, not half of the water hitting the
   // intact shield. Keep both lateral paths visible; real surfaces still occlude.
   this.waterMaterial.clippingPlanes=this.runoffMaterial.clippingPlanes=null;
@@ -258,13 +280,24 @@ export class RepairScene {
   const caps=[];for(const i of [0,N/2])for(let j=0;j<RADIAL;j++){const a=j*stride+i,b=a+stride;if(Math.max(heights[a],heights[b])>0)caps.push(a,b,a+layer,b,b+layer,a+layer);}
   this.sectionGeometry.setIndex(caps);this.sectionGeometry.computeVertexNormals();
  }
+ updateBranchMortar(fill){
+  this.branchFill=clamp((fill-.62)/.38);
+  this.branchMortar.visible=this.branchFill>0;this.branchMortarSection.visible=this.cut&&this.branchMortar.visible;
+  if(this.branchFill===this.lastBranchFill)return;
+  this.lastBranchFill=this.branchFill;
+  this.branchMortar.geometry.dispose();this.branchMortarSection.geometry.dispose();
+  this.branchMortar.geometry=branchMortarGeometry(this.R,this.branchFillTop,this.branchFill);
+  this.branchMortarSection.geometry=this.branchMortar.geometry.clone();
+  this.branchMortarSection.geometry.setIndex(this.branchMortar.geometry.userData.sectionIndices);
+ }
  update({time,fill,hoseFront,injecting,sealed,cured,shield=null}){
-  this.ground.update(fill,cured);
+  this.ground.update(fill,cured);this.updateBranchMortar(fill);
   this.fill=fill;this.hoseFront=hoseFront;this.fillGeometry(clamp(fill/.62));this.mortar.visible=fill>.0001;
   this.innerSkin.visible=fill>=.62;
   this.section.visible=this.cut&&this.mortar.visible;
   this.mortarMaterial.color.set(cured?'#666764':'#444642');this.mortarMaterial.roughness=cured?.96:.68;
   this.skinMaterial.color.copy(this.mortarMaterial.color);
+  this.branchMortarMaterial.color.copy(this.mortarMaterial.color);this.branchMortarMaterial.roughness=cured?.95:.68;
   this.sectionMaterial.color.copy(this.mortarMaterial.color);this.sectionMaterial.roughness=this.mortarMaterial.roughness;
   this.feedCore.geometry.setDrawRange(0,Math.floor(hoseFront*240)*10*6);this.feedCore.visible=hoseFront>0;
   this.outlet.visible=injecting&&hoseFront>=1;
