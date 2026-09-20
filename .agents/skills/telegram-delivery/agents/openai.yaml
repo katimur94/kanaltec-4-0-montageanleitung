@@ -1,0 +1,6 @@
+interface:
+  display_name: "Telegram-Versand"
+  short_description: "Ergebnisse auf Wunsch über Telegram versenden"
+  default_prompt: "Nutze $telegram-delivery und schick mir das fertige Ergebnis über Telegram."
+policy:
+  allow_implicit_invocation: true

@@ -1,6 +1,6 @@
 # Werbung: DSS-Flex Verfahren
 
-**Modellstand-Hinweis 20.09.2026:** Vorhandene Exporte und Film-Sprechertexte beziehen sich auf den Stand vom 17.09.2026 mit Nutfräsen und längerer Anschlussblase. Die aktuelle Web-Animation hat neun Phasen und eine oberhalb des Schildes halbierte Blase. Medien wurden nicht neu exportiert; vor der nächsten Produktion Filmzeiten, Szenen und Sprechertext anpassen.
+**Produktion 20.09.2026:** Modellbasis `6683ef0`. Schnittfolge und Sprechertext verwenden die neun aktuellen Phasen ohne Nutfräsen, die oberhalb des Schildes verkürzte Blase, den Mörtelanstieg bis zur halben oberen Blasenhöhe, die kleine ovale Reparaturfläche und die Schlauchführung vom Messingwinkel hinunter zum Roboterarm. Der Abschluss zeigt das detaillierte Erdreich und den verfüllten Hohlraum.
 
 Produktname auf beiden Titelkarten: **DSS-Flex Verfahren**. Sprecher-Auftakt: „DSS-Flex Verfahren.“; Abschluss: „DiTom. Das DSS-Flex Verfahren.“ MP4-Dateipräfix: `DiTom-DSS-Flex-Verfahren-`. Firmenlogo und Kontaktadresse bleiben DiTom.
 
@@ -9,7 +9,7 @@ Gezeigt wird die DN-400-Variante. Das Filmstudio verwendet direkt `src/model.js`
 ## Reproduzieren
 
 1. `npm ci` für die vorhandenen Three.js-/esbuild-Abhängigkeiten.
-2. Python mit NumPy/Pillow; `edge-tts` und `imageio-ffmpeg` in `work/qa/video-runtime` installieren.
+2. Python 3.10+; `python -m pip install --target work/qa/video-runtime edge-tts imageio-ffmpeg numpy pillow`.
 3. `python work/film-audio.py --speech --compose` erzeugt die deutsche synthetische Stimme und eine deterministische eigene Instrumentalmusik. `work/film-script.json` enthält Text und Zeitfenster. Die Sprachsynthese benötigt Netzwerkzugriff.
 4. `node work/build-film.mjs` bündelt das lokale Studio unter `work/qa/video/studio`.
 5. `KANALTEC_QA_RUNTIME` auf ein Node-Paketverzeichnis mit Playwright setzen, `KANALTEC_FFMPEG` auf die ausführbare FFmpeg-Datei. Microsoft Edge muss installiert sein.
@@ -25,13 +25,15 @@ Ausgaben: `Videos/DSS-Flex-Verfahren-2026/`, einschließlich lokaler Galerie, Sp
 | 0–3 | Logo-Auftakt |
 | 3–8 | Einragender Anschluss, Wurzeln, Infiltration |
 | 8–14 | Einragung und Wurzeln zurückfräsen |
-| 14–20 | Runde Fräsfläche; weitere Ansicht zeigt Drehmodul hinter CutterCam und Hubarme |
-| 20–21 | Nahansicht der runden Fräsfläche |
-| 21–29 | Wand vorbereiten und Nut fräsen |
-| 29–32 | Fräser zurückziehen |
-| 32–41 | Schalung positionieren, anpressen und abdichten |
-| 41–49 | Anschlussblase abwickeln und aufblasen |
-| 49–60 | Ausbruch, umgebendes Erdreich und Anschlusswand bis über die Nut verpressen |
+| 14–20 | Ovale Fräsfläche; weitere Ansicht zeigt Drehmodul hinter CutterCam und Hubarme |
+| 20–21 | Nahansicht der ovalen Fräsfläche |
+| 21–25 | Fräser zurückziehen und zur Schalung wechseln |
+| 25–29 | Schalung positionieren |
+| 29–33 | Schild anpressen |
+| 33–37 | Dichtblase aufblasen |
+| 37–45 | Anschlussblase abwickeln und aufblasen |
+| 45–49 | Opferschlauch und 45°-Messingwinkel, Beginn der Injektion |
+| 49–60 | Ausbruch und Bodenhohlraum verfüllen, Mörtel bis zur halben Blasenhöhe oberhalb des Schildes |
 | 60–62 | Aushärten (schematische Dauer) |
 | 62–68 | Ausschalen und zurückfahren |
 | 68–70 | Freier, bündig sanierter Anschluss vom Hauptkanal aus |
@@ -40,4 +42,4 @@ Ausgaben: `Videos/DSS-Flex-Verfahren-2026/`, einschließlich lokaler Galerie, Sp
 
 Die Kameras werden für 16:9, 9:16 und 4:5 eigenständig gesetzt. Unter der Stimme wird die Musik abgesenkt. Die Modellmaße und der Vorgang bleiben eine schematische Darstellung, keine Fertigungsdaten oder reale Aushärtezeit.
 
-`src/ground-grout.js` zeigt die räumliche Ausdehnung des Mörtels außerhalb des Rohrs mit unregelmäßiger Kontur und sichtbaren Bodenkörnern. Körperhöhe, seitliche Reichweite und Bodenstruktur sind illustrative Darstellungsparameter, keine zugesicherte Eindringtiefe oder Berechnung eines realen Bodens. Schnittflächen ändern nur die Sichtbarkeit. Die beiden Sprecherpassagen bei 49,3 und 68,3 Sekunden beschreiben die erweiterte Verpressung; der Sprachcache erkennt Textänderungen und erzeugt nur betroffene Passagen neu.
+`src/ground-grout.js` zeigt die räumliche Ausdehnung des Mörtels außerhalb des Rohrs mit unregelmäßiger Kontur und sichtbaren Bodenkörnern. Körperhöhe, seitliche Reichweite und Bodenstruktur sind illustrative Darstellungsparameter, keine zugesicherte Eindringtiefe oder Berechnung eines realen Bodens. Schnittflächen ändern nur die Sichtbarkeit. Die Sprecherpassage ab 45,3 Sekunden beschreibt die aktuelle Zufuhr und Füllhöhe; der Sprachcache erkennt Textänderungen und erzeugt nur betroffene Passagen neu.

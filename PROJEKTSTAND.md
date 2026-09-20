@@ -2,7 +2,7 @@
 
 **Lokaler Abgleich 20.09.2026:** GitHub-Commit `07f4d35` ist in `work/github-pages` und im äußeren Arbeitsordner übernommen, einschließlich Videos und PowerPoint. Hier kann direkt mit `npm test` und `npm run build` weitergearbeitet werden. Lokale Sicherung und Prüfstand siehe neuesten Eintrag in `FORTSCHRITT.md`. Die Synchronisation ist die Grundlage der anschließend dokumentierten lokalen Änderungen.
 
-Stand: **20.09.2026**. Aktuelle lokale Modelländerung: ovale örtliche Reparaturfläche, asymmetrischer ausgewaschener Anschluss und feinere Infiltration. Nutfräsen bleibt entfernt, Anschlussblase oberhalb des Schildes halbiert und Mörtelanstieg bis zur halben Blasenhöhe erhalten. Dieser Stand ist noch nicht veröffentlicht.
+Stand: **20.09.2026**. Modellstand `6683ef0` ist auf GitHub und Pages veröffentlicht: kleine ovale Reparaturfläche, detailliertes Erdreich, asymmetrischer ausgewaschener Anschluss und feinere Infiltration, Messingwinkel und dickerer Opferschlauch direkt hinunter zum Roboterarm. Nutfräsen bleibt entfernt, Anschlussblase oberhalb des Schildes halbiert und Mörtelanstieg bis zur halben Blasenhöhe erhalten. Pages-Build für diesen Commit erfolgreich; Live-Animation im Browser geprüft.
 
 ## Auf einem anderen Computer beginnen
 
@@ -30,7 +30,9 @@ Nutfräsphase und Innenwandvertiefung entfernt. Nach dem Freifräsen folgt direk
 
 Die volle Blasenhöhe **oberhalb des angepressten Schildes bis zur starren Spitze** beträgt exakt 50 % des bisherigen Werts. Wellenfuß, Spitzengröße, Durchmesser und die drei Wicklungen samt Schichtdicke bleiben unverändert. `referenceTravel` hält den ursprünglichen Wickelpfad fest; `travel` bestimmt den verkürzten Ausfahrweg. Diese Kombination wird als schematische Verformung dargestellt, nicht als Simulation mit unveränderlicher Materiallänge. Die Länge des dargestellten Anschlussrohrs bleibt erhalten.
 
-Vorhandene MP4 und PowerPoint stammen vom 17.09.2026 und zeigen noch den früheren Ablauf. Vor einem neuen Filmexport müssen Filmzeiten und Sprechertext an die neun Phasen angepasst werden.
+**Video-Neuproduktion 20.09.2026:** Sechs MP4 in drei Formaten sind aus Modellstand `6683ef0` neu erstellt und vollständig geprüft. Schnittfolge und deutscher Sprechertext sind auf die neun Phasen und die aktuelle Geometrie umgestellt. Produktionsdetails und abgeschlossene Prüfungen: [WERBEVIDEOS.md](WERBEVIDEOS.md), [FORTSCHRITT.md](FORTSCHRITT.md). Die PowerPoint stammt weiterhin vom 17.09.2026 und enthält den früheren Ablauf; sie ist nicht Bestandteil dieses Videoauftrags.
+
+**Telegram auf anderen Computern:** Der persönliche Versandablauf ist jetzt zusätzlich ohne Geheimnisse unter [.agents/skills/telegram-delivery/SKILL.md](.agents/skills/telegram-delivery/SKILL.md) versioniert. Codex kann ihn im geklonten Projekt entdecken; `python .agents/skills/telegram-delivery/scripts/install.py` installiert ihn projektübergreifend für den jeweiligen Benutzer. Der Telegram-Zugang muss auf einem neuen Computer einmal sicher eingerichtet werden. Windows-DPAPI-Dateien nicht zwischen Rechnern kopieren. Details zu Installation, sicherer Konfiguration und Versandbestätigung stehen im Skill. Die Anleitung folgt der [offiziellen Skill-Dokumentation](https://learn.chatgpt.com/docs/build-skills).
 
 ## Vorherige Arbeiten (Stand 17.09.2026, teilweise durch obige Änderung ersetzt)
 

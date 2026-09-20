@@ -19,16 +19,17 @@ const shots=[
  {start:8,end:14,a:.12,b:.40,key:'Zurückfräsen',pos:[210,50,660],target:[-20,165,0]},
  {start:14,end:20,a:.43,b:.832857142857,key:'Drehmodul',pos:[-420,180,1350],target:[-230,60,0]},
  {start:20,end:21,a:.832857142857,b:.9,key:'Rundfräsen',pos:[-130,-75,680],target:[-10,180,0]},
- {start:21,end:29,a:1.12,b:1.88,key:'Anschlussnut',pos:[-130,125,480],target:[0,225,0]},
- {start:29,end:32,a:2,b:2.54,key:'Werkzeugrückzug',pos:[-190,40,820],target:[-100,100,0]},
- {start:32,end:36,a:3,b:3.999,key:'Positionieren',pos:[-370,280,1150],target:[-110,105,0]},
- {start:36,end:41,a:4,b:5.999,key:'Abdichten',pos:[310,80,840],target:[0,125,0]},
- {start:41,end:49,a:6,b:6.999,key:'Anschlussblase',pos:[-210,190,660],target:[0,225,0],shield:true},
- {start:49,end:60,a:7,b:7.999,key:'Verpressen',pos:[-240,360,1020],target:[0,300,0],shield:true,hideBladder:true},
- {start:60,end:62,a:8,b:8.99,key:'Aushärten',pos:[-220,370,1050],target:[0,300,0],shield:true,hideBladder:true},
- {start:62,end:68,a:9,b:9.999,key:'Ausschalen',pos:[190,90,850],target:[0,140,0]},
- {start:68,end:70,a:9.999,b:9.999,key:'Freier Anschluss',pos:[-15,-130,30],target:[0,220,0],inside:true},
- {start:70,end:73,a:9.999,b:9.999,key:'Verpressung im Erdreich',pos:[380,620,1030],target:[0,325,0],repairOnly:true}
+ {start:21,end:25,a:1,b:1.999,key:'Werkzeugwechsel',pos:[-190,40,820],target:[-100,100,0]},
+ {start:25,end:29,a:2,b:2.999,key:'Positionieren',pos:[-370,280,1150],target:[-110,105,0]},
+ {start:29,end:33,a:3,b:3.999,key:'Anpressen',pos:[310,80,840],target:[0,125,0]},
+ {start:33,end:37,a:4,b:4.999,key:'Abdichten',pos:[310,80,840],target:[0,125,0]},
+ {start:37,end:45,a:5,b:5.999,key:'Anschlussblase',pos:[-210,190,660],target:[0,225,0],shield:true},
+ {start:45,end:49,a:6,b:6.3,key:'Opferschlauch',pos:[-340,-70,840],target:[-180,60,0]},
+ {start:49,end:60,a:6.3,b:6.999,key:'Verpressen',pos:[-240,360,1020],target:[0,300,0],shield:true,hideBladder:true},
+ {start:60,end:62,a:7,b:7.99,key:'Aushärten',pos:[-220,370,1050],target:[0,300,0],shield:true,hideBladder:true},
+ {start:62,end:68,a:8,b:8.999,key:'Ausschalen',pos:[190,90,850],target:[0,140,0]},
+ {start:68,end:70,a:8.999,b:8.999,key:'Freier Anschluss',pos:[-15,-130,30],target:[0,220,0],inside:true},
+ {start:70,end:73,a:8.999,b:8.999,key:'Verpressung im Erdreich',pos:[380,620,1030],target:[0,325,0],repairOnly:true}
 ];
 function configure(w,h){width=w;height=h;canvas.width=w;canvas.height=h;host.style.width=w+'px';host.style.height=h+'px';viewer.renderer.setSize(w,h);viewer.camera.aspect=w/h;viewer.camera.updateProjectionMatrix();}
 function brand(t,outro){

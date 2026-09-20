@@ -1,8 +1,8 @@
 """Local soundtrack production. Install edge-tts/imageio-ffmpeg in ignored QA runtime."""
 import asyncio,json,sys,wave,subprocess
 from pathlib import Path
-import numpy as np
 sys.path.insert(0,str(Path('work/qa/video-runtime').resolve()))
+import numpy as np
 import edge_tts,imageio_ffmpeg
 OUT=Path('Videos/DSS-Flex-Verfahren-2026'); TMP=Path('work/qa/video')
 FF=imageio_ffmpeg.get_ffmpeg_exe(); SR=48000; DURATION=78

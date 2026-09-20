@@ -8,13 +8,15 @@ Aktueller Name: **DSS-Flex Verfahren**. Dieses Repository enthält die interakti
 
 **Stand 20.09.2026:** Neun Schritte: Rückfräsen von Einragung und Wurzeln, Fräsen rund um den Anschluss, danach direkter Wechsel zur Schalung und Sanierung einschließlich tiefer Verpressung im Erdreich. Nutfräsen und innere Ringnut sind entfernt. Die ausgefahrene Anschlussblase ist nur oberhalb des Schildes halb so lang; die drei Wicklungen bleiben erhalten. Der Injektionsmörtel steigt auch ohne Nut bis zur Hälfte dieser Blasenhöhe im Anschluss. Werkzeugmaße, Wickelübergang und Ausdehnung im Erdreich sind schematisch. Bedienung: [START-HIER.md](START-HIER.md).
 
-Die Videos und PowerPoint vom 17.09.2026 zeigen noch den vorherigen Ablauf mit Nutfräsen und längerer Blase; sie wurden bei dieser Modelländerung nicht neu exportiert.
+Die sechs Videos sind am 20.09.2026 mit dem aktuellen Modell und angepasstem Sprechertext neu erstellt und geprüft; Prüfstand und Dateien siehe [WERBEVIDEOS.md](WERBEVIDEOS.md). Die PowerPoint vom 17.09.2026 enthält weiterhin den früheren Ablauf.
 
 **Freie 3D-Fläche:** Kameraansichten, Schnitt & Sicht, Durchblick, automatisches Drehen und Drehen/Verschieben liegen oberhalb der Modellfläche. Beschriftungen sind beim Öffnen ausgeschaltet; **Beschriftung** oder **B** blendet sie ein und aus. Bauteilinformationen und Hinweise erscheinen unterhalb der Fläche. **3D-Vollbild** oder **F** zeigt ausschließlich die 3D-Fläche, **Esc** beendet es. **Umschalt + F** schaltet das Vollbild der gesamten Seite um. Drehen, Zoomen, Leertaste und Animations-Pfeiltasten funktionieren auch im 3D-Vollbild.
 
 [Präsentation öffnen](https://katimur94.github.io/kanaltec-4-0-montageanleitung/)
 
 **Weiterarbeit auf einem anderen Computer:** [Projektstand und Übergabe](PROJEKTSTAND.md) · [Fortschrittschronik](FORTSCHRITT.md) · [Hinweise für die Bearbeitung](AGENTS.md). Diese Dokumente halten die bisherigen Korrekturen, Quellen, offenen Punkte und Prüfschritte fest und werden bei weiteren Änderungen fortgeschrieben.
+
+**Telegram-Versand:** Der portable [Telegram-Skill](.agents/skills/telegram-delivery/SKILL.md) versteht auch „schick mir das über Telegram“. Er ist im Repository enthalten und kann mit seinem `scripts/install.py` im Benutzerprofil für alle Projekte installiert werden. Auf einem neuen Computer den privaten Telegram-Zugang einmal separat einrichten; der Skill und dieses Repository enthalten keine Zugangsdaten.
 
 Das Schalungssystem der DiTom GmbH Kanaltechnik als interaktives 3D-Modell mit fünf Baugrößen, Explosionsansicht und animiertem Sanierungsablauf. Enthalten sind die überarbeiteten Bauteile, die vollständig abwickelbare Anschlussblase mit drei Wicklungen, getrennte Bumper- und Dichtblasenphasen, einstellbare Geschwindigkeit, Pfeiltastensteuerung, frei wählbare Schnitte, Verschieben der Ansicht und Hell-/Dunkelmodus mit transparentem Logo.
 

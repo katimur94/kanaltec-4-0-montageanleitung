@@ -22,3 +22,7 @@ Vor Änderungen `PROJEKTSTAND.md`, `FORTSCHRITT.md` und für Roboterthemen `ROBO
 ## Ursprünglicher lokaler Entwicklungsordner
 
 Falls zusätzlich zum Repository ein äußerer Arbeitsordner mit `work/runtime` und `work/prepare-github.mjs` vorhanden ist: Änderungen dort nach dem bestehenden Build-/Übernahmepfad synchronisieren. Der portable Repository-Code muss weiterhin ohne diesen äußeren Ordner funktionieren. Neue Dokumente bei der Übernahme mitnehmen; keine privaten lokalen Arbeitsdateien pauschal kopieren.
+
+## Telegram-Versand auf jedem Arbeitscomputer
+
+Bei „schick mir das über Telegram/Telegramm“ den Skill `.agents/skills/telegram-delivery/SKILL.md` verwenden. Er enthält Versandwerkzeuge und kann mit seinem `scripts/install.py` auch projektübergreifend im Benutzerprofil installiert werden. Zuerst `send.py --check`; der neue Rechner braucht einen eigenen sicheren Zugang, falls noch keiner vorhanden ist. Keine Zugangsdaten ins Repository oder in den Chat übernehmen. Eine konkrete Versandbitte autorisiert die angefragten Ergebnisse, keine pauschalen späteren Sendungen.

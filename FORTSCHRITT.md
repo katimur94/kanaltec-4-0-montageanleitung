@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Veröffentlichung, neue Prozessfilme und portabler Telegram-Skill
+
+**Auftrag:** Aktuellen Stand pushen, GitHub Pages aktualisieren, die sechs bisherigen Videoformate neu produzieren und über Telegram zustellen. Telegram-Versand auch für die Weiterarbeit auf anderen Computern hinterlegen.
+
+**Modell:** Die sieben lokalen Modellkorrekturen bis `6683ef0` auf `main` gepusht. Pages-Build für genau diesen Commit erfolgreich. Live-Seite in Edge mit neun Phasen, aktuellem Erdreich und Schlauchführung an der Armaufnahme geprüft; keine Browserfehler. `npm ci`, `npm test` (alle fünf DN) und `npm run build` im portablen Repository erneut erfolgreich; HTML-Ausgaben synchron.
+
+**Videos:** Neu aus Modellbasis `6683ef0` gerendert: je 78 Sekunden in 1920 × 1080, 1080 × 1920 und 1080 × 1350, jeweils Sprecher/Musik und nur Musik. Schnittfolge ohne Nutfräsen, aktualisierte Blasenhöhe und Mörtelfüllung, eigener Blick auf Opferschlauch/Messingwinkel, kleine ovale Endfläche und detailliertes Erdreich. Deutscher synthetischer Sprechertext neu erzeugt. Alle sechs MP4 vollständig decodiert, H.264/AAC/30 fps, Audiopeaks −1,5 beziehungsweise −5,3 dB, keine Untertitel und Dateigrößen unter 49 MB geprüft. Kontaktbögen aller drei finalen Formate visuell kontrolliert; alle sechs Filme im Browser abgespielt und Zeitsprünge geprüft, keine Fehler. Dateien und Galerie: `Videos/DSS-Flex-Verfahren-2026/`. Die PowerPoint bleibt der separate ältere Stand vom 17.09.2026.
+
+**Skill:** `.agents/skills/telegram-delivery/` enthält sechs geheimnisfreie Quelldateien, natürliche deutsche Telegram-Auslöser, Versandbestätigung und Schutz vor unbeabsichtigter Wiederholung. Persönliche Installation auf diesem Computer aktualisiert. Installationsskript für weitere Computer, sichere DPAPI-Konfiguration unter Windows und optional OS-Schlüsselbund unter macOS/Linux ergänzt. Skill-Validierung, Python-Syntax, Konfigurationsschutz mit künstlichen Testdaten und Lesbarkeit des bestehenden Windows-Zugangs geprüft; andere Betriebssysteme hier nicht praktisch geprüft. Neue Computer benötigen einmalig ihren eigenen sicheren Zugang. Keine Tokens, Empfänger-IDs, privaten Konfigurationsdateien oder Versandprotokolle im Repository. Portables ZIP lokal: `work/qa/Telegram-Versand-Skill.zip`.
+
 ## 20.09.2026 – Dickerer Injektionsschlauch direkt hinunter zum Roboterarm
 
 **Nutzerkorrektur:** Injektionsöffnung etwas größer, Schlauch etwas dicker. Direkt hinter dem Messingwinkel nach unten und an der im Browserbild markierten vorderen Armaufnahme entlangführen.

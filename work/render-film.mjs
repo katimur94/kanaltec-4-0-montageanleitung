@@ -16,7 +16,7 @@ const qa=process.argv.includes('--qa'),fps=30,duration=78;
 try{
  for(const [name,w,h]of formats){
   await page.evaluate(([w,h])=>film.configure(w,h),[w,h]);
-  if(qa){for(const t of [1.5,5.5,11,17.5,24,27.5,34,38.5,45,55,58.8,61,65,69,71.5,75.5]){const data=await page.evaluate(t=>film.frame(t),t);await writeFile(`work/qa/video/${name}-${t}.jpg`,Buffer.from(data,'base64'));}console.log('Storyboard ready:',name);continue;}
+  if(qa){for(const t of [1.5,5.5,11,17.5,23,27.5,31,35,41,47,55,61,65,69,71.5,75.5]){const data=await page.evaluate(t=>film.frame(t),t);await writeFile(`work/qa/video/${name}-${t}.jpg`,Buffer.from(data,'base64'));}console.log('Storyboard ready:',name);continue;}
   const dest=path.resolve(`work/qa/video/${name}-silent.mp4`);
   const proc=spawn(process.env.KANALTEC_FFMPEG,['-y','-hide_banner','-loglevel','warning','-f','image2pipe','-vcodec','mjpeg','-framerate',String(fps),'-i','pipe:0','-an','-c:v','libx264','-preset','fast','-crf','22','-pix_fmt','yuv420p','-movflags','+faststart',dest],{windowsHide:true,stdio:['pipe','ignore','pipe']});
   let stderr='';proc.stderr.on('data',d=>stderr+=d);const completed=once(proc,'close');const started=Date.now();
