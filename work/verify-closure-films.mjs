@@ -14,9 +14,9 @@ try{
   const result=await video.evaluate(async v=>{
    const wait=event=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error(event+' timed out')),45000);v.addEventListener(event,()=>{clearTimeout(timer);resolve();},{once:true});});
    if(v.readyState<1)await wait('loadedmetadata');v.muted=true;
-   const seek=wait('seeked');v.currentTime=40;await seek;
+   const seek=wait('seeked');v.currentTime=52.5;await seek;
    await v.play();await new Promise(resolve=>setTimeout(resolve,700));v.pause();
-   return {file:v.getAttribute('src'),width:v.videoWidth,height:v.videoHeight,duration:v.duration,advanced:v.currentTime>40.1,error:v.error?.message||null};
+   return {file:v.getAttribute('src'),width:v.videoWidth,height:v.videoHeight,duration:v.duration,advanced:v.currentTime>52.6,error:v.error?.message||null};
   });results.push(result);
  }
  await page.screenshot({path:`work/qa/closure-video/gallery-${live?'live':'local'}.png`,fullPage:true});

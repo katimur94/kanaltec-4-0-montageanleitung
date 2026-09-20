@@ -25,10 +25,17 @@ for(const f of families)for(const kind of ['closure','pipe']){
  const marks=v.repair.innerSkin.children.filter(o=>o.userData.imprint).map(o=>o.userData.imprint);
  assert.equal(marks.find(p=>p.key==='inlet').x,0,'Inlet imprint stays under physical inlet');
  assert.equal(marks.find(p=>p.key==='sensor').x,ports.sensorX+v.workOffset,'Sensor imprint follows assembly positioning');
+ const outline=Array.from({length:160},(_,i)=>repairFootprint(f.id/2,i/160*Math.PI*2,true));
+ const xs=outline.map(p=>p[0]),arcs=outline.map(p=>p[1]);
+ const cx=(Math.max(...xs)+Math.min(...xs))/2,rx=(Math.max(...xs)-Math.min(...xs))/2,rz=Math.max(...arcs);
+ const inside=(x,arc)=>((x-cx)/rx)**2+(arc/rz)**2;
  for(let i=0;i<160;i++){
-  const a=i/160*Math.PI*2,[x,z]=breakoutContour(a);assert.ok(((x-42.5)/147.5)**2+(z/75)**2<1,'Casting surrounds the full defect');
+  const a=i/160*Math.PI*2,[x,z]=breakoutContour(a);assert.ok(inside(x,z)<1,'Casting surrounds the full defect');
   const [px,arc]=repairFootprint(f.id/2,a,true);assert.ok(Math.abs(px-v.workOffset)<250&&Math.abs(arc)<v.radius*1.13,'Casting remains inside positioned shield');
+  for(const mark of marks){const mx=mark.x+mark.r*Math.cos(a),mz=mark.z+mark.r*Math.sin(a);assert.ok(inside(mx,v.radius*Math.asin(mz/v.radius))<.95,'Full imprint remains inside the rounded casting');}
  }
+ const castSize=new THREE.Box3().setFromObject(v.repair.innerSkin).getSize(new THREE.Vector3());
+ assert.ok(castSize.x/castSize.z>1.1&&castSize.x/castSize.z<1.3,'Finished casting is round with only a slight oval, for every DN');
  const signature=()=>[...v.repair.mortarGeometry.attributes.position.array,v.upperLift,v.sealAir,v.shaftPart.node.rotation.x,v.repair.waterActivity];
  pose(6.61);const partial=signature();pose(8.999);
  assert.equal(v.repair.water.visible,false,'No renewed infiltration after cure/removal');

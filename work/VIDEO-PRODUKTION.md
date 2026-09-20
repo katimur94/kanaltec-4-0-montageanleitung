@@ -2,7 +2,7 @@
 
 ## Zusätzliche Verschlussfilme – 20.09.2026
 
-Modellbasis `426422f`: **Loch verschließen** und **Anschluss verschließen**, jeweils 60 Sekunden, 1920 × 1080, H.264 mit 30 Bildern/s, AAC Stereo und Faststart. Beide verwenden DN 400, geschlossene Schalung und Welle ohne Anschlussblase, großen Hohlraum mit Infiltration und den direkten Ablauf ohne Fräsen. Der Einfüllstutzen steht mittig unter der Schadstelle; der stillgelegte Anschluss wird nahezu vollständig gefüllt. Nur eigene Instrumentalmusik, keine Sprachaufnahme. Marken- und Titelkarten, keine Untertitel oder Website-Oberfläche.
+Modellbasis `426422f` mit anschließender Nutzerkorrektur zur kompakteren, leicht ovalen Verschlussfläche (260 × 230 mm in der Rohrabwicklung): **Loch verschließen** und **Anschluss verschließen**, jeweils 60 Sekunden, 1920 × 1080, H.264 mit 30 Bildern/s, AAC Stereo und Faststart. Beide verwenden DN 400, geschlossene Schalung und Welle ohne Anschlussblase, großen Hohlraum mit Infiltration und den direkten Ablauf ohne Fräsen. Der Einfüllstutzen steht mittig unter der Schadstelle; der stillgelegte Anschluss wird nahezu vollständig gefüllt. Nur eigene Instrumentalmusik, keine Sprachaufnahme. Marken- und Titelkarten, keine Untertitel oder Website-Oberfläche.
 
 Reproduktion mit den oben beschriebenen Node-/Python-Laufzeiten und Umgebungsvariablen:
 
@@ -10,7 +10,7 @@ Reproduktion mit den oben beschriebenen Node-/Python-Laufzeiten und Umgebungsvar
 2. `node work/render-closure-film.mjs --qa` für beide Kontaktbildserien; Kameras vor dem Filmrendern prüfen.
 3. `node work/render-closure-film.mjs` (optional nur `--pipe` oder `--closure`).
 4. `python work/closure-music.py` erzeugt die eigene 60-Sekunden-Musik, ohne Sprachdienst oder Sprachdateien.
-5. `python work/finish-closure-films.py` vertont beide Filme, decodiert sie vollständig, prüft Format, Audiopeak und Versandgröße, extrahiert Kontaktbögen und ergänzt die bestehende Videogalerie. Bei einer erneuten Gesamtproduktion diesen Schritt nach `finish-film.py` ausführen.
+5. `python work/finish-closure-films.py` vertont beide Filme, decodiert sie vollständig, prüft Format, Audiopeak und Versandgröße, extrahiert Kontaktbögen und ergänzt die bestehende Videogalerie. Videolinks tragen eine inhaltsabhängige Versionskennung, damit Browser nach Korrekturen die neue MP4 laden. Bei einer erneuten Gesamtproduktion diesen Schritt nach `finish-film.py` ausführen.
 6. `node work/verify-closure-films.mjs` prüft Abspielen und Zeitsprung; mit `--live` nach der Pages-Veröffentlichung wiederholen.
 
 Ausgaben: `Videos/DSS-Flex-Verfahren-2026/DiTom-DSS-Flex-{Loch|Anschluss}-verschliessen-Musik.mp4`. Zwischenstände, Kontaktbögen und Prüfberichte liegen ausschließlich in `work/qa/closure-video/`. Die realen Verfahrenszeiten werden für den Film verkürzt; Anschlussfüllquote, Schadensform und Bodenverpressung sind schematische Darstellungsparameter.

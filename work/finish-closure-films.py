@@ -1,5 +1,5 @@
 """Mux the instrumental score, fully decode exports, and update the public gallery."""
-import json,subprocess,sys,re,shutil,os
+import json,subprocess,sys,re,shutil,os,hashlib
 from pathlib import Path
 sys.path.insert(0,str(Path('work/qa/video-runtime').resolve()))
 from PIL import Image,ImageDraw
@@ -30,11 +30,13 @@ for kind,label in cases:
  sheet.save(TMP/f'{kind}-encoded-contact.jpg',quality=92)
  poster=f'{label}-verschliessen-Vorschau.jpg'
  subprocess.run([FF,'-v','error','-y','-ss','1.5','-i',str(dest),'-frames:v','1','-vf','scale=960:540',str(OUT/poster)],check=True)
- cards.append(f'<article><h2>{label} verschließen · Nur Musik</h2><video controls preload="metadata" poster="{poster}" src="{dest.name}"></video><p>1920 × 1080 · 60 Sekunden · {dest.stat().st_size/1048576:.1f} MB</p><a download href="{dest.name}">MP4 herunterladen</a></article>')
+ revision=hashlib.sha256(dest.read_bytes()).hexdigest()[:12]
+ url=f'{dest.name}?v={revision}'
+ cards.append(f'<article><h2>{label} verschließen · Nur Musik</h2><video controls preload="metadata" poster="{poster}?v={revision}" src="{url}"></video><p>1920 × 1080 · 60 Sekunden · {dest.stat().st_size/1048576:.1f} MB</p><a download href="{url}">MP4 herunterladen</a></article>')
 (TMP/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
 gallery=OUT/'Videos-ansehen.html';content=gallery.read_text(encoding='utf-8')
 content=re.sub(r'<!-- closure-films:start -->.*?<!-- closure-films:end -->','',content,flags=re.S)
-section='<!-- closure-films:start --><h2>Neu: Loch und stillgelegten Anschluss verschließen</h2><p>Geschlossene Schalung ohne Anschlussblase · Mittiger Einfüllstutzen · Ohne Einragung direkt verpressen · Nur Musik, kein Sprecher.</p><section>'+''.join(cards)+'</section><!-- closure-films:end -->'
+section='<!-- closure-films:start --><h2>Neu: Loch und stillgelegten Anschluss verschließen</h2><p>Geschlossene Schalung ohne Anschlussblase · Mittiger Einfüllstutzen · Kompakte, leicht ovale Endfläche · Ohne Einragung direkt verpressen · Nur Musik, kein Sprecher.</p><section>'+''.join(cards)+'</section><!-- closure-films:end -->'
 content=content.replace('<section>',section+'<section>',1)
 gallery.write_text(content,encoding='utf-8')
 print('Two closure films validated and added to the existing gallery.')

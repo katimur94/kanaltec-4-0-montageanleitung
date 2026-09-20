@@ -2,11 +2,11 @@
 
 ## Neu: Loch und Anschluss verschließen
 
-Zwei zusätzliche Filme auf Modellbasis `426422f`: **Loch verschließen** (19,4 MB) und **Anschluss verschließen** (17,1 MB). Je 60 Sekunden, 1920 × 1080, H.264 mit 30 Bildern/s, AAC Stereo und Faststart. Ausschließlich eigens erzeugte Instrumentalmusik, kein Sprecher.
+Zwei zusätzliche Filme auf Modellbasis `426422f` mit der nachträglichen Konturkorrektur vom 20.09.2026: **Loch verschließen** (19,4 MB) und **Anschluss verschließen** (17,1 MB). Je 60 Sekunden, 1920 × 1080, H.264 mit 30 Bildern/s, AAC Stereo und Faststart. Ausschließlich eigens erzeugte Instrumentalmusik, kein Sprecher.
 
-Beide zeigen die geschlossene Schalung ohne Anschlussblase, mittigen Einfüllstutzen, großen Hohlraum mit Infiltration und direkten Ablauf ohne Fräsen, weil nichts einragt. Beim stillgelegten Anschluss steigt die Füllung fast bis zur Oberkante. Logo-Karten, Nahansicht der Welle, Verpressung im Schnitt und abschließend geschlossene Reparaturfläche.
+Beide zeigen die geschlossene Schalung ohne Anschlussblase, mittigen Einfüllstutzen, großen Hohlraum mit Infiltration und direkten Ablauf ohne Fräsen, weil nichts einragt. Beim stillgelegten Anschluss steigt die Füllung fast bis zur Oberkante. Logo-Karten, Nahansicht der Welle, Verpressung im Schnitt und abschließend geschlossene Reparaturfläche. Nach Nutzerkorrektur ist diese Fläche jetzt kompakter und deutlich runder, nur leicht oval (260 × 230 mm in der Rohrabwicklung). Beide Filme dafür neu gerendert; Größen nun 19.421.993 und 17.081.024 Byte.
 
-**Geprüft:** Beide MP4 vollständig decodiert, 60 Sekunden und H.264/AAC/Full HD/30 Bilder pro Sekunde bestätigt, keine Untertitel, Audiopeak −5,5 dB ohne Clipping. Kontaktbögen der endgültigen MP4 visuell geprüft. Beide Filme in Edge abgespielt und auf Sekunde 40 gesprungen, ohne Browserfehler. Produktionsanleitung in [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md); Veröffentlichung und Telegram-Zustellung werden in [FORTSCHRITT.md](FORTSCHRITT.md) dokumentiert.
+**Geprüft:** Beide MP4 vollständig decodiert, 60 Sekunden und H.264/AAC/Full HD/30 Bilder pro Sekunde bestätigt, keine Untertitel, Audiopeak −5,5 dB ohne Clipping. Kontaktbögen der endgültigen MP4 visuell geprüft. Beide Filme in Edge abgespielt und auf Sekunde 52,5 zur korrigierten Endfläche gesprungen, ohne Browserfehler. Produktionsanleitung in [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md); Veröffentlichung und Telegram-Zustellung werden in [FORTSCHRITT.md](FORTSCHRITT.md) dokumentiert.
 
 ## Bisherige sechs Filme mit offenem Anschluss
 

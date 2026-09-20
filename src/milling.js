@@ -10,8 +10,9 @@ const left=(oldLeft+Math.min(...imprints.map(p=>p.x-p.r)))/2;
 const right=(oldRight+Math.max(...imprints.map(p=>p.x+p.r)))/2;
 export function repairFootprint(R,a,closed=false){
  // The closed mould is positioned by its inlet, 66 mm from the shield centre.
- // A local oval covers both the defect and the translated sensor impression.
- if(closed)return [42.5+147.5*Math.cos(a),75*Math.sin(a)];
+ // Compact, only slightly oval casting (260 x 230 mm in the developed wall).
+ // It encloses the defect and both translated imprints without moving ports.
+ if(closed)return [40+130*Math.cos(a),115*Math.sin(a)];
  const x=165,z=67,c=Math.cos(a),s=Math.sin(a);
  const d=1/Math.sqrt((c/x)**2+(s/z)**2);
  const edge=1+.003*Math.sin(11*a)+.002*Math.cos(17*a);

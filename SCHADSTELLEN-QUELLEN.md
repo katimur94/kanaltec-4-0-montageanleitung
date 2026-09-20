@@ -1,5 +1,11 @@
 # Schadstelle und Reparaturfläche – Bildabgleich 20.09.2026
 
+## Neue Nutzerkorrektur: Verschlüsse runder, nur leicht oval
+
+Für **Loch verschließen** und **Stillgelegten Anschluss verschließen** ersetzt eine kompakte Ellipse die zuvor zu lang gezogene Endfläche. In der Rohrabwicklung 260 × 230 mm statt 295 × 150 mm; das Seitenverhältnis liegt bei etwa 1,13 statt 1,97. Durch die Rohrkrümmung beträgt das Verhältnis in der Scheitelprojektion je nach DN ungefähr 1,15–1,25. Die Fläche folgt weiterhin der Rohrinnenwand. Darstellung nach direkter Nutzerkorrektur, keine Herstellerbemaßung.
+
+Die neue gemeinsame Kontur wird für Gussfläche, umgebende Rohrwand, Schnittkante und gegebenenfalls Außenfräsbahn verwendet. Der Schaden sowie beide vollständigen Abdrücke liegen innerhalb der Fläche, die innerhalb des angepressten Schildes bleibt. Einfüllstutzen und Sensor bleiben an ihrer tatsächlichen Lage; mittiger Zulauf und nahezu vollständige Anschlussfüllung gelten weiterhin. Die bisherigen Angaben zur schmalen Kontur im folgenden Abschnitt beschreiben die **offen gehaltene Anschlussvariante** und historische Schritte.
+
 ## Angesehene Praxisbilder
 
 - [KASSELWASSER: Reparatur](https://kasselwasser.de/abwasser/kanalnetz/kanaele-sanieren/reparatur), Originalbilder „Schadhafter Stutzen“ und „Stutzen nach Reparatur“ im Browser angesehen. Vorher: ungleichmäßiger Spalt, abgesplitterte helle Kanten und dunkle Ablagerungen am Anschluss. Nachher: örtliche, längliche Reparaturfläche bei weiterhin sichtbarem Altrohr. Das dort gezeigte Harzverfahren ist keine Maßvorlage für DSS-Flex; übernommen werden Schadenscharakter und örtliche Begrenzung, nicht Materialfarbe oder Verfahrensdetails.
