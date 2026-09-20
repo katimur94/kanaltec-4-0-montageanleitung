@@ -8,6 +8,7 @@ import {RepairScene} from './repair.js';
 import {Robot} from './robot.js';
 import {millingState,millingTarget,millingSpec} from './milling.js';
 import {breakoutContour,branchBottom} from './repair.js';
+import {injectionFitting} from './injection-fitting.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=THREE.MathUtils.clamp;
@@ -300,12 +301,14 @@ export class Viewer {
   for(const p of [this.sealPart,this.shieldPart]){const o=p.node.children[0].children[0];o.userData.restPositions=o.geometry.attributes.position.array.slice();}
   // These photo- and user-described details have no invented PDF BOM number.
   this.winding=new BladderMechanism(R,this.shaftPart.base.y);this.model.add(this.winding.group);
-  this.inlet=new THREE.Group();this.inlet.add(tube(6.5,4,20,palettes.metal,V(),'y'),tube(10,4,2,palettes.darkMetal,V(0,9,0),'y'),cyl(9,4,palettes.darkMetal,V(0,-3,0),'y',6));this.model.add(this.inlet);
+  this.inlet=injectionFitting();this.model.add(this.inlet);
   this.sensor=new THREE.Group();this.sensor.add(cyl(6,12,palettes.darkMetal,V(0,-6,0)),cyl(9,2,mat('#c3312e',.1,.5),V(0,1,0)),torus(10.5,1.5,palettes.gold,V(0,1,0)));this.model.add(this.sensor);
   this.robotAnchor=this.parts.find(p=>p.group==='z'&&p.key==='adapter');this.robot=new Robot(R+12,this.robotAnchor.base);this.model.add(this.robot.group);
   const robotY=this.robot.bodyY+this.robotAnchor.base.y;
-  this.hosePoints=[[-1500,robotY+40,112],[-1250,robotY+48,112],[-900,robotY+48,112],[-720,robotY+55,105],[-560,-5,60],[-285,45,35],[-145,R-72,24],[ports.inletX,R-42,0],[ports.inletX,R-19,0]];
-  this.feed=hose(this.hosePoints,4.5,new THREE.MeshStandardMaterial({color:'#90a5aa',roughness:.28,transparent:true,opacity:.26,depthWrite:false}));this.model.add(this.feed);
+  const end=this.inlet.userData.hoseEnd.clone().add(V(ports.inletX,R-10,0));
+  const approach=end.clone().addScaledVector(this.inlet.userData.hoseDirection,20);
+  this.hosePoints=[[-1950,robotY+28,96],[-1750,robotY+32,96],[-1350,robotY+48,100],[-950,robotY+48,100],[-735,robotY+40,84],[-676,robotY+36,76],[-550,robotY+48,76],[-320,R-94,68],[-145,R-73,26],approach.toArray(),end.toArray()];
+  this.feed=hose(this.hosePoints,4.5,new THREE.MeshStandardMaterial({color:'#adbac0',roughness:.43,transparent:true,opacity:.48,depthWrite:false}));this.feed.name='Opferschlauch · nach jeder Aushärtung wechseln';this.model.add(this.feed);
   this.feedLift=null;this.sensorFull=false;this.poseMechanism(0,0,0);
  }
  poseMechanism(extension,inflation,lift){
@@ -318,10 +321,10 @@ export class Viewer {
   this.inlet.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.inletX,this.radius-10+3*this.sealAir,0));
   this.sensor.position.copy(this.shieldPart.node.position).sub(this.shieldPart.base).add(V(ports.sensorX,this.radius+2+3*this.sealAir,0));
   this.feed.visible=proc;this.feed.position.set(0,0,0);
-  const offset=this.shieldPart.node.position.clone().sub(this.shieldPart.base);offset.y+=3*this.sealAir;const feedPose=offset.toArray().join(',');
-  if(this.feedLift!==feedPose){this.feedLift=feedPose;const points=this.hosePoints.map((p,i)=>V(...p).addScaledVector(offset,i<4?0:i===4?.45:1));this.feedCurve=new THREE.CatmullRomCurve3(points);this.feed.geometry.dispose();this.feed.geometry=new THREE.TubeGeometry(this.feedCurve,144,4.5,10,false);this.repair?.setFeedPoints(points);}
-  if(this.repair){this.repair.hoseGroup.visible=proc;this.repair.hoseGroup.position.set(0,0,0);}
   this.poseRobot(lift);
+  const offset=this.shieldPart.node.position.clone().sub(this.shieldPart.base);offset.y+=3*this.sealAir;const dx=this.robot.frontBase.position.x,feedPose=[...offset.toArray(),dx].join(',');
+  if(this.feedLift!==feedPose){this.feedLift=feedPose;const points=this.hosePoints.map((p,i)=>V(...p).addScaledVector(offset,i<7?0:i===7?.45:1).add(V(i>=2&&i<=6?dx:0,0,0)));this.feedCurve=new THREE.CatmullRomCurve3(points);this.feed.geometry.dispose();this.feed.geometry=new THREE.TubeGeometry(this.feedCurve,144,4.5,10,false);this.repair?.setFeedPoints([...points,...this.inlet.userData.flowPoints.slice(0,-1).reverse().map(p=>p.clone().add(this.inlet.position))]);}
+  if(this.repair){this.repair.hoseGroup.visible=proc;this.repair.hoseGroup.position.set(0,0,0);}
   if(!proc){this.sensorFull=false;this.sensor.children[1].material.emissive.set('#000000');}
  }
  poseRobot(lift=0){
@@ -472,7 +475,7 @@ export class Viewer {
  processAnchors(){if(this.time<PHASE.POSITION)return [{name:this.time<PHASE.CHANGE?'Fräsbahn · eine Fräserbreite':'Werkzeugwechsel außerhalb der Schadstelle',point:V(0,this.radius+70,0)}];const x=this.model.position.x,y=this.winding.group.position.y;return [
   {name:this.time<PHASE.MORTAR?(this.winding.fullyUnwound?'Blase fast bündig eingeschraubt':'Blase eingeschraubt · auf der Welle'):'Injektionsmörtel',side:'left',point:this.time<PHASE.MORTAR?V(x,this.shaftPart.base.y+y+bladderMount.seat,0):V(0,this.radius+55,75)},
   {name:'Starre runde Blasenspitze',point:V(x,this.winding.tip.position.y+y+7,0)},
-  {name:'Mörtelzufuhr von unten',side:'left',point:V(x+ports.inletX,this.inlet.position.y-13,0)},
+  {name:'45°-Messingwinkel · Opferschlauch',side:'left',point:V(x+ports.inletX,this.inlet.position.y-13,0)},
   {name:this.sensorFull?'Drucksensor · voll':'Drucksensor',point:V(x+ports.sensorX,this.sensor.position.y+2,0)},
   {name:'Dichtblase zwischen Schild & Träger',side:'left',point:V(x-185,this.radius-2+3*this.sealAir+y,0)}
  ];}

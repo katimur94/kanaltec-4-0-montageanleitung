@@ -8,6 +8,8 @@
 
 ## Umsetzung und Grenzen
 
+Ergänzung zum Erdreich: Auf Nutzerkorrektur wurde der kastenartige Bodenkörper durch eine an Höhe und Winkel veränderliche Außenkontur mit unebener Oberkante ersetzt. Zusätzliche Körnung, farbliche Schichtung, verschieden große Steine im Schnitt und dreidimensionale Klumpen an der Außenseite dienen der natürlicheren Darstellung. Der offene Hohlraum neben dem Anschluss bleibt erhalten. Auch diese Bodenform ist eine Darstellungsannahme.
+
 Letzte Nutzerkorrektur: Bei beibehaltener ovaler Form und Breite ist der Abstand zwischen dem äußeren Rand jedes Abdrucks und der jeweiligen Längsrundung halbiert. Dadurch beträgt die Gesamtlänge jetzt ungefähr 243 mm bei unverändert etwa 134 mm Breite. Die Abdrücke bleiben an derselben Stelle und in derselben Größe. Der nachfolgend dokumentierte 330-mm-Stand ist damit ersetzt.
 
 Nach erneuter Nutzerkorrektur zur weiterhin zu großen/runden Fläche wurde die Kontur auf eine schmale Ellipse von ungefähr 330 × 134 mm reduziert (Abwicklung der Rohrfläche; Darstellungsannahme). Diese Größe gilt für alle fünf DN. Der unmittelbare Hauptrohrausbruch wurde entsprechend verkleinert; der dahinterliegende ausgewaschene Bodenraum bleibt erhalten.

@@ -128,7 +128,7 @@ export class RepairScene {
   this.branchFillTop=branchFillTop;this.branchFill=0;this.R=R;this.pipeLength=pipeLength;this.branchTop=branchTop;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
   this.texture=concreteTexture();
   this.pipeTextures=surfaceTextures('pipe');this.mortarTextures=surfaceTextures('mortar');
-  this.ground=new GroundGrout(R,this.pipeTextures,this.mortarTextures);this.group.add(this.ground.group);
+  this.soilTextures=surfaceTextures('soil');this.ground=new GroundGrout(R,this.soilTextures,this.mortarTextures);this.group.add(this.ground.group);
   this.concrete=new THREE.MeshStandardMaterial({color:'#422b21',...this.pipeTextures,bumpScale:.12,roughness:1,metalness:0,envMapIntensity:.18,side:THREE.DoubleSide});
   this.concrete.vertexColors=true;this.concrete.color.set('#ffffff');this.cutConcrete=this.concrete.clone();this.cutConcrete.clippingPlanes=[cutPlane];
   const pg=damagedPipeGeometry(R,pipeLength,18),bg=brokenBranch(R,branchTop);
@@ -349,5 +349,5 @@ export class RepairScene {
   for(const d of this.waterTraces){const s=this.streams[d.stream];d.mesh.visible=s.runoffMesh.visible;if(d.mesh.visible)d.mesh.position.copy(s.path.runoff.getPointAt(((time*2+d.phase)%1+1)%1));}
   this.splash.children.forEach((o,i)=>{const u=((time*2+i*.143)%1+1)%1,p=this.streams[i].path.lip,bottom=-Math.sqrt(Math.max(1,this.R**2-p.z**2)),normal=V(0,-bottom,-p.z).normalize();o.visible=runoffStrength>.001&&this.waterActivity>.08;o.position.set(p.x,bottom,p.z);o.position.addScaledVector(normal,1.4);o.quaternion.setFromUnitVectors(V(0,0,1),normal);o.scale.setScalar(.35+u*.9);});
  }
- dispose(){this.texture.dispose();for(const pack of [this.pipeTextures,this.mortarTextures])for(const t of Object.values(pack))t.dispose();const materials=new Set();for(const root of [this.group,this.hoseGroup])root.traverse(o=>{if(o.isMesh)materials.add(o.material);});for(const m of materials)m.dispose();}
+ dispose(){this.texture.dispose();for(const pack of [this.pipeTextures,this.mortarTextures,this.soilTextures])for(const t of Object.values(pack))t.dispose();const materials=new Set();for(const root of [this.group,this.hoseGroup])root.traverse(o=>{if(o.isMesh)materials.add(o.material);});for(const m of materials)m.dispose();}
 }

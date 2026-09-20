@@ -76,7 +76,11 @@ for(const f of families){
  const checkInlet=()=>{
   const shieldLift=v.shieldPart.node.position.y-v.shieldPart.base.y;
   near(v.inlet.position.y+10,v.radius+shieldLift+3*v.sealAir,'Inlet flange contacts outer shield underside');
-  near(v.feed.position.y+v.feedCurve.getPoint(1).y,v.inlet.position.y-9,'Flexible hose stays joined to inlet');
+  const end=v.inlet.position.clone().add(v.inlet.userData.hoseEnd);
+  near(v.feedCurve.getPoint(1).distanceTo(end),0,'Opferschlauch stays joined to the brass elbow in all poses',.001);
+  near(v.feedCurve.getTangent(1).dot(v.inlet.userData.hoseDirection),-1,'Hose approaches along the 45-degree connector axis',.001);
+  near(v.inlet.userData.hoseDirection.dot(new THREE.Vector3(0,-1,0)),Math.SQRT1_2,'Brass outlet turns 45 degrees');
+  assert.ok(v.inlet.userData.flangeRadius<12&&v.inlet.userData.flangeRadius>11,'Inlet collar is only slightly smaller than the sensor ring');
   near(v.feedCurve.getPoint(0).y,v.hosePoints[0][1],'Rear supply stays at the crawler height');
  };
  for(const e of [0,.5,1]){v.explode=e;v.updateParts();v.resetPose();checkInlet();}
@@ -278,7 +282,10 @@ for(const f of families){
  pose(6.74);near(v.sealAir,0,'Dichtblase relaxed before bumper lowers');near(v.bumperAir,1,'Bumper holds until seal relaxed');
  pose(6.875);near(bumperPart.node.scale.y,vacuumHeight,'Bumper vacuum-flat before further travel');near(v.model.position.x,0,'Vacuum completed before departing');
  assert.ok(ports.inletX< -ports.opening&&ports.sensorX>ports.opening,'Three separate openings ordered as photograph');
- near(v.hosePoints.at(-1)[0],ports.inletX,'Hose ends at separate inlet');assert.ok(v.hosePoints.at(-1)[1]<v.radius-8,'Hose approaches shield from below');
+ near(v.hosePoints.at(-1)[0],ports.inletX+v.inlet.userData.hoseEnd.x,'Hose ends at the rearward elbow outlet');assert.ok(v.hosePoints.at(-1)[1]<v.radius-8,'Hose approaches shield from below');
+ assert.ok(v.hosePoints[0][0]<v.robotAnchor.base.x-1430,'Opferschlauch reaches behind the whole crawler');
+ near(v.hosePoints[5][0],v.robotAnchor.base.x+v.robot.cameraHead.position.x,'Hose passes beside CutterCam');
+ assert.ok(v.hosePoints[5][2]>60&&v.hosePoints[5][2]<95,'Hose stays beside the camera housing and clear of the lens');
  for(const t of [0,.92,1.92,2.92,3.92,4.92,5.92,6.92]){pose(t);assert.ok(v.model.position.toArray().every(Number.isFinite));assert.ok(v.mortar.scale.y>0);}
  assert.ok(v.model.position.x<0&&v.mortar.visible,'After removal repair remains at branch');
  // A shaft camera must keep the drive in frame through travel and bumper lift,

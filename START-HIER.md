@@ -1,5 +1,7 @@
 # DSS-Flex Verfahren präsentieren
 
+**Messingwinkel und Opferschlauch:** Unter **So funktioniert’s → Wicklung** und **Schnitt & Sicht → Schalung im Schnitt** ist der 45°-Messingwinkel unter der Injektionsöffnung sichtbar. **Roboter** zeigt den Schlauch seitlich an der CutterCam vorbei bis hinter den Fahrwagen. Der Opferschlauch wird laut Nutzerangabe nach jeder Verpressung/Aushärtung gewechselt; der Messingwinkel wird gereinigt und wiederverwendet. Die Beschreibung steht auch in den Phasen **Mörtel injizieren** und **Ausschalen & kontrollieren**. **Schadstelle** zeigt die unregelmäßige, detailliertere Bodenform.
+
 **Überarbeitete Schadstelle (20.09.2026):** Unter **Kanalblick** ist die längliche ovale Reparaturfläche mit unveränderten Abdrücken und angrenzendem Altrohr sichtbar. **Schadstelle → Rohr im Schnitt** zeigt vor der Injektion einen ausgewaschenen Hohlraum neben dem Anschluss, danach dessen Verfüllung. Die Wasserfäden und Tropfen sind feiner und unregelmäßiger; zur Kontrolle der Wasserführung die Schalung vollständig anzeigen. Referenzen: [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md).
 
 **PowerPoint:** `Praesentationen/DSS-Flex-Verfahren.pptx` öffnen und **F5** drücken. Zehn Folien mit Übergängen, Texteinblendungen und acht eingebetteten Videos. Die Clips starten automatisch, zur nächsten Folie geht es mit der rechten Pfeiltaste. Details siehe [POWERPOINT.md](POWERPOINT.md).

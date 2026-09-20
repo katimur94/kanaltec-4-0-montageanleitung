@@ -101,6 +101,10 @@ for(const family of families){
  pose(PHASE.MORTAR+.75);assert.deepEqual(Array.from(v.repair.branchMortar.geometry.attributes.position.array),intermediate,'Backward seek restores intermediate lining');
  pose(0);assert.ok(!v.repair.branchMortar.visible&&!v.repair.branchMortarSection.visible,'Rewind removes the lining');
  pose(0);assert.ok(!v.repair.ground.grout.visible,'No ground grout before injection');
+ const soil=v.repair.ground.soil.geometry.attributes.position,top=[];
+ for(let i=0;i<=128;i++)top.push(soil.getY((73+72)*129+i));
+ assert.ok(Math.max(...top)-Math.min(...top)>35,'Soil top is uneven instead of a flat box lid');
+ assert.ok(v.repair.ground.clods.count>300,'Soil exterior has actual granular relief');
  v.repair.ground.group.updateMatrixWorld(true);
  const voidRay=new THREE.Raycaster(new THREE.Vector3(80,R+60,50),new THREE.Vector3(0,0,-1),.001,50.1);
  assert.equal(voidRay.intersectObject(v.repair.ground.soilSection).length,0,'Cut soil leaves an actual washed-out void beside the branch');

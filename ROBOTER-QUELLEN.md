@@ -1,5 +1,9 @@
 # MicroGator: Quellen und Modellzuordnung
 
+## 20.09.2026 – Opferschlauch und Messingwinkel nach Nutzerbeschreibung
+
+Direkte Nutzerangabe: Die Injektionsrundung ist nur wenig kleiner als der Druckschalter; unter der Schalung sitzt ein 45°-Messingwinkel. Ein Ende an der Injektionsöffnung, das andere am Opferschlauch; Schlauchführung neben CutterCam bis hinter den Roboter. Schlauch nach Verpressung/Aushärtung wechseln, Messingwinkel reinigen und wiederverwenden. Entsprechend modelliert, ohne neue Stücklistenpositionen oder behauptete Herstellermaße. Die Fräser-, Gelenk- und Kamerageometrie bleibt erhalten.
+
 ## 20.09.2026 – Örtliche ovale Reparaturkontur
 
 Auf die aktuelle Nutzerkorrektur zur ovalen Schalungsfläche ist auch die äußere Fräsbahn an dieselbe längliche, seitlich begrenzte Kontur angepasst. Der frühere kreisförmige Bereich reichte bei kleinen DN zu weit um den Rohrumfang. Werkzeug, Gelenke, Abtragtiefe und Werkzeugwechsel bleiben erhalten. Keine neue Herstellerbemaßung; siehe [SCHADSTELLEN-QUELLEN.md](SCHADSTELLEN-QUELLEN.md).

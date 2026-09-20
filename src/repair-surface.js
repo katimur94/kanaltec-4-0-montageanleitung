@@ -8,9 +8,9 @@ export function surfaceTextures(kind){
  const size=384,rgb=new Uint8Array(size*size*4),height=new Uint8Array(size*size*4),rough=new Uint8Array(size*size*4);
  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
   const i=(y*size+x)*4,a=noise(x/size*5,y/size*5,5),b=noise(x/size*29,y/size*29,29),g=hash(x,y),pore=g>.994? .52:1;
-  const mottling=kind==='pipe'?.50+.25*a+.20*b:.73+.12*a+.11*b;
+  const mottling=kind==='soil'?.38+.30*a+.23*b+.09*g:kind==='pipe'?.50+.25*a+.20*b:.73+.12*a+.11*b;
   const c=Math.round(255*mottling*pore),h=Math.round(80+50*b+48*g-(g>.994?60:0)),r=Math.round(kind==='pipe'?115+85*a:190+52*b);
-  rgb.set([c,c,c,255],i);height.set([h,h,h,255],i);rough.set([r,r,r,255],i);
+  rgb.set(kind==='soil'?[c,Math.round(c*.88),Math.round(c*.70),255]:[c,c,c,255],i);height.set([h,h,h,255],i);rough.set([r,r,r,255],i);
  }
  const tex=data=>{const t=new THREE.DataTexture(data,size,size,THREE.RGBAFormat);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipmapLinearFilter;t.generateMipmaps=true;t.needsUpdate=true;return t;};
  return {map:tex(rgb),bumpMap:tex(height),roughnessMap:tex(rough)};

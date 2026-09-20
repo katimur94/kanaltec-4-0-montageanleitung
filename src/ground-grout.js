@@ -2,6 +2,12 @@ import * as THREE from 'three';
 import {passage} from './bladder.js';
 const TAU=Math.PI*2,segments=128,rows=72;
 const clamp=x=>THREE.MathUtils.clamp(x,0,1);
+export function soilEnvelope(a,h){
+ return 182+139*Math.pow(Math.max(0,Math.sin(Math.PI*h)),.64)+18*Math.sin(3*a+h*8)+9*Math.sin(11*a-h*19)+5*Math.cos(23*a+h*37);
+}
+export function soilHeight(R,a,h,side=1){
+ return R+20+250*h+(side?.95:.4)*(h*(22*Math.sin(a*3+.7)+13*Math.cos(a*5)) + Math.sin(Math.PI*h)*5*Math.sin(a*9+h*23));
+}
 // A local bedding washout: widest below the socket, pinching out upwards.
 // Dimensions are visual assumptions informed by damage photographs.
 export function soilCavityRadius(a,h){
@@ -19,11 +25,12 @@ export function groundGeometry(R,fill=1,soil=false,section=false){
  const positions=[],uv=[],indices=[],colors=[],stride=segments+1,layer=(rows+1)*stride;
  const progress=clamp(fill),inner=passage.radius+passage.wall+.15;
  for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=segments;i++){
-  const a=i/segments*TAU,h=j/rows*(soil?1:progress),y=R+(soil?20:8)+h*(soil?250:218);
-  const envelope=soil?306*(1+.022*Math.sin(a*5)+.014*Math.cos(a*9)):groundGroutProfile(a,h);
+  const a=i/segments*TAU,h=j/rows*(soil?1:progress),y=soil?soilHeight(R,a,h,side):R+8+h*218;
+  const envelope=soil?soilEnvelope(a,h):groundGroutProfile(a,h);
   const r=side?THREE.MathUtils.lerp(inner,envelope,soil?1:progress):(soil?soilCavityRadius(a,h):inner);
   const x=r*Math.cos(a),z=r*Math.sin(a);positions.push(x,y,z);uv.push(a*3,y/85);
-  const shade=soil&&!side&&!section?.46+.15*h+.08*Math.sin(a*7+h*19):1;colors.push(shade,shade,shade);
+  const strata=.84+.12*Math.sin(h*41+.9*Math.sin(a*3))+.06*Math.cos(h*103+a*9);
+  const shade=soil?(!side&&!section?.46+.15*h+.08*Math.sin(a*7+h*19):strata):1;colors.push(shade,shade*(soil?.94:1),shade*(soil?.84:1));
  }
  if(section){
   for(const i of [0,segments/2])for(let j=0;j<rows;j++){
@@ -62,19 +69,30 @@ export class GroundGrout{
   // Visible grains remain embedded in the filled ground, rather than turning
   // the entire section into a smooth solid sleeve.
   const stoneMaterial=new THREE.MeshStandardMaterial({color:'#514432',roughness:1});
-  this.stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),stoneMaterial,132);
+  this.stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),stoneMaterial,360);
   let seed=271826;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296),dummy=new THREE.Object3D();
-  for(let i=0;i<132;i++){
-   dummy.position.set((i%2?1:-1)*(61+random()*225),R+29+random()*230,.85);
-   const boundary=soilCavityRadius(dummy.position.x<0?Math.PI:0,(dummy.position.y-R-20)/250)+8;
-   if(Math.abs(dummy.position.x)<boundary)dummy.position.x=Math.sign(dummy.position.x)*(boundary+random()*20);
-   dummy.scale.set(2+random()*6,1.4+random()*3.8,.6);dummy.rotation.set(0,0,random()*TAU);dummy.updateMatrix();this.stones.setMatrixAt(i,dummy.matrix);
+  for(let i=0;i<360;i++){
+   const a=i%2?0:Math.PI,h=.04+random()*.92,t=random(),inner=soilCavityRadius(a,h)+9,outer=soilEnvelope(a,h)-12;
+   dummy.position.set(Math.cos(a)*THREE.MathUtils.lerp(inner,outer,t),THREE.MathUtils.lerp(soilHeight(R,a,h,0),soilHeight(R,a,h,1),t),.85);
+   const size=i%9===0?5+random()*7:1+random()*3;
+   dummy.scale.set(size,size*(.35+random()*.6),.5+random());dummy.rotation.set(0,0,random()*TAU);dummy.updateMatrix();this.stones.setMatrixAt(i,dummy.matrix);
+   this.stones.setColorAt(i,new THREE.Color().setHSL(.08+random()*.06,.13+random()*.25,.25+random()*.34));
   }
   this.group.add(this.stones);
+  // Clods and embedded gravel also break up the outside, not only the cut face.
+  this.clodMaterial=new THREE.MeshStandardMaterial({color:'#66503a',roughness:1});
+  this.clods=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),this.clodMaterial,420);
+  for(let i=0;i<420;i++){
+   const a=random()*TAU,h=.02+random()*.96,r=soilEnvelope(a,h)-1;
+   dummy.position.set(r*Math.cos(a),soilHeight(R,a,h),r*Math.sin(a));
+   const size=1.8+random()*5.5;dummy.scale.set(size,2+random()*7,size*.8);dummy.rotation.set(random()*3,random()*3,random()*3);dummy.updateMatrix();this.clods.setMatrixAt(i,dummy.matrix);
+   this.clods.setColorAt(i,new THREE.Color().setHSL(.08+random()*.05,.2+random()*.2,.3+random()*.25));
+  }
+  this.group.add(this.clods);
   this.cut=false;this.lastFill=-1;this.update(0,false);
  }
  setCut(cut,plane){
-  this.cut=cut;this.soilMaterial.clippingPlanes=this.groutMaterial.clippingPlanes=cut?[plane]:null;
+  this.cut=cut;this.soilMaterial.clippingPlanes=this.groutMaterial.clippingPlanes=this.clodMaterial.clippingPlanes=cut?[plane]:null;
   this.soilSection.visible=this.stones.visible=cut;this.groutSection.visible=cut&&this.lastFill>0;
  }
  update(fill,cured){

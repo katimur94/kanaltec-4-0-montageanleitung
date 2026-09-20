@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Unregelmäßiges Erdreich, Messingwinkel und Opferschlauch
+
+**Nutzerkorrektur:** Erdreich detaillierter und ohne Kastenform. Injektionsrundung nur etwas kleiner als der Druckschalter. Unter dem Schild ein 45°-Messingwinkel mit einem Ende an der Injektionsöffnung und dem anderen am Opferschlauch. Schlauch neben CutterCam bis hinter den Roboter; nach jeder Verpressung/Aushärtung wechseln, Messingwinkel reinigen und wiederverwenden.
+
+**Umsetzung:** Bodenaußenform über Höhe und Umfang unregelmäßig, geneigte/uneinheitliche Oberkante, farbliche Schichtung und eigene Bodentextur. 360 verschieden große Steine im Schnitt und 420 räumliche Erdklumpen/Körner außen; der ausgewaschene Leerraum bleibt erhalten. Neuer Messingwinkel mit 45°-Abgang, Sechskantverschraubungen und Anschlussringen. Rundung am Schild Radius 11,4 gegenüber 12 mm am Druckschalter; reine Darstellungsmaße. Durchgängiger Opferschlauch seitlich neben CutterCam bis hinter den vollständigen Fahrwagen. Das vordere Schlauchende folgt dem Winkel beim Anpressen, Entspannen und in Explosionsansichten; die hintere Leitung bleibt auf Fahrwagenhöhe. Der sichtbare Mörtelweg führt auch durch den Winkel. Hinweise zum Wechsel beziehungsweise zur Wiederverwendung in den Prozessbeschreibungen und START-HIER ergänzt. Akzeptierte Reparaturfläche, Abdrücke, Blasenmechanik und Mörtelanstieg unverändert.
+
+**Prüfung:** `npm ci`, `npm test`, `npm run build` im portablen Repository bestanden. Alle fünf DN geprüft, zusätzlich Anschluss an den Winkel in allen getesteten Posen, 45°-Richtung, Größe der Rundung, Schlauch neben CutterCam und hinter dem Fahrwagen, unebene Bodenoberkante und tatsächliches Außenrelief. In Edge Erdreich im Schnitt und vollständig, Messingwinkel, Schlauchführung am Roboter, laufende Injektion bei DN 300, ausgehärtete Verfüllung bei DN 700 und Rücksprung visuell geprüft; keine Browserfehler. Beide HTML-Ausgaben neu gebaut, Quellen und äußerer Ordner synchronisiert. Keine Veröffentlichung oder neue Video-/PowerPoint-Exporte.
+
 ## 20.09.2026 – Freie Mörtelenden hinter den Abdrücken halbiert
 
 Die ovale Form ist vom Nutzer akzeptiert; nur die Strecke vom Abdruck zur jeweiligen äußeren Rundung war noch zu lang. Beide freien Längsabstände sind jetzt exakt halbiert, gemessen ab dem äußeren Rand des jeweiligen Abdrucks. Daraus ergeben sich rund 42 mm am Sensor und 46 mm am Zulauf, insgesamt etwa 243 × 134 mm Fläche in der Rohrabwicklung. Nur die Längskoordinaten der Kontur werden verkürzt; Breite, Abdruckpositionen und Abdruckgeometrien bleiben identisch. Der unmittelbare Bruchrand ist passend in Längsrichtung verkleinert, damit er vollständig unter der Reparatur liegt. Blasenmechanik und Mörtelanstieg bleiben erhalten.
