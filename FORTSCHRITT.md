@@ -1,5 +1,9 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Verschlussfilme auf Pages live bestätigt
+
+Video-Commit `a8ef4f4bf69962e97d1ca2d08a8e419dc9c0ca18` normal auf GitHub gepusht; Pages-Build `built`, kein Fehler. Während des noch laufenden Builds lieferte ein erster Live-Aufruf erwartungsgemäß die frühere Galerie ohne neue Filme; nach Buildabschluss erneut geprüft. Beide neuen MP4 direkt auf der Live-Seite in Edge geladen, auf Sekunde 40 gesprungen und abgespielt: 1920 × 1080, je 60 Sekunden, Wiedergabe fortgeschritten, keine Medien- oder Browserfehler. Die sechs bisherigen Filme wurden nach der Galerie-Erweiterung ebenfalls lokal geladen, abgespielt und per Zeitsprung ohne Fehler geprüft. Beide neuen Filme bereits mit bestätigter Telegram-Zustellung; Einzelheiten im folgenden Eintrag. Modell und eigenständige HTMLs gegenüber `426422f` unverändert. Dieser Nachtrag dokumentiert die abgeschlossene Veröffentlichung.
+
 ## 20.09.2026 – Verschlussvarianten veröffentlicht und zwei Musikfilme erstellt
 
 **Auftrag:** Aktuellen Stand pushen und Pages aktualisieren; Videos zu „Loch verschließen“ und „Anschluss verschließen“, ohne Sprecher, nur Musik, über Telegram senden.
