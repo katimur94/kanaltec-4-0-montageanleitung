@@ -204,6 +204,7 @@ export class Viewer {
  build(id){
   this.repairOptions??={kind:'open',infiltration:true,cavity:'large'};
   this.closedMould=this.repairOptions.kind!=='open';
+  this.workOffset=this.closedMould?-ports.inletX:0;
   this.sections??={pipe:true,shield:false,holder:false};
   this.clear();this.id=id;this.family=families.find(f=>f.id===id);this.radius=id/2-12;const R=this.radius,top=Math.sqrt((R-28)**2-53**2)-3,bottom=-125-this.family.spacer.reduce((a,b)=>a+b,0),sideH=top-22;
   this.bottom=bottom;this.top=top;this.floor.position.y=bottom-13;
@@ -368,7 +369,8 @@ export class Viewer {
   const pressedShieldY=this.winding.shieldTop+8;
   const deployedTipY=this.radius+1.5+this.winding.travel+7+8;
   this.branchFillTop=THREE.MathUtils.lerp(pressedShieldY,deployedTipY,.5);
-  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX,4600,this.branchFillTop,this.repairOptions);
+  this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX+this.workOffset,4600,this.branchFillTop,this.repairOptions);
+  this.branchFillTop=this.repair.branchFillTop;
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
   this.damage=this.repair.cavity;
@@ -386,12 +388,12 @@ export class Viewer {
   if(this.repair)this.repair.setCut(!!this.sections.pipe);
   for(const p of this.parts){const frontHolder=drive&&p.base.z>0&&((p.group==='h'&&['sides','rail','pins','blocks','blockbolts','sidebolts','railbolts'].includes(p.key))||(p.group==='s'&&['mounts','straps','bolts','mountbolts'].includes(p.key)));p.node.visible=(this.group==='all'||p.group===this.group)&&!frontHolder;p.node.position.copy(p.base);if(this.explode>0){const d=p.delta.clone();if(this.group==='all'){d.multiplyScalar(.6);d.add(groupDelta[p.group]);}p.node.position.addScaledVector(d,this.explode);}}
  }
- setProcess(t){this.time=t;}
+ setProcess(t){this.time=this.closedMould&&this.repairOptions.milling===false?Math.max(PHASE.POSITION,t):t;}
  processPose(){
   if(this.time<PHASE.POSITION){this.preparationPose();return;}
   const t=this.time,stage=Math.min(PHASE.REMOVE,Math.floor(t)),f=t-stage,R=this.radius+12;
   const approach=stage===PHASE.POSITION?1-smooth(f):stage===PHASE.REMOVE?smooth((f-.88)/.12):0;
-  this.model.position.x=-430*approach;
+  this.model.position.x=this.workOffset-430*approach;
   const press=stage<PHASE.BUMPER?0:stage===PHASE.BUMPER?smooth(f):stage===PHASE.REMOVE?1-smooth((f-.75)/.12):1;
   const bumperScale=THREE.MathUtils.lerp(.28,1+8/98,press),lift=98*(bumperScale-1);
   const seal=stage<PHASE.SEAL?0:stage===PHASE.SEAL?smooth(f):stage===PHASE.REMOVE?1-smooth((f-.64)/.1):1;
@@ -415,24 +417,24 @@ export class Viewer {
  }
  preparationPose(){
   const t=this.time,R=this.radius+12,state=millingState(t);
-  if(this.repairOptions.kind==='pipe'){state.trim=1;state.trimming=false;state.outer=clamp((t-.12)/.78,0,1);state.angle=state.outer*Math.PI*2;}
+  const millingKind=this.repairOptions.kind==='pipe'?'pipe':this.closedMould;
   this.poseSeal(0);this.bumperAir=0;this.upperLift=0;this.sensorFull=false;
   this.model.position.set(0,0,0);this.poseMechanism(0,0,0);
   this.repair.setMilling(state.outer,0,state.trim);
   const change=state.exchange,returning=change?smooth((t-PHASE.CHANGE-.25)/.25):0,withMould=change&&t>=PHASE.CHANGE+.55;
   if(withMould){
-   this.model.position.x=-430;const lift=-70.56;this.upperLift=lift;
+   this.model.position.x=this.workOffset-430;const lift=-70.56;this.upperLift=lift;
    for(const p of this.parts){if(p.group!=='u')p.node.position.y+=lift;if(p.key==='bumper'){p.node.scale.y=.28;p.node.position.y-=35.28;}}
    this.poseMechanism(0,0,lift);this.robot.cutter.group.visible=false;
   }else{
    for(const p of this.parts)p.node.visible=false;
    this.winding.group.visible=this.inlet.visible=this.sensor.visible=this.feed.visible=this.repair.hoseGroup.visible=false;
-   const target=millingTarget(R,state,breakoutContour,branchBottom,passage.radius);
+   const target=millingTarget(R,state,breakoutContour,branchBottom,passage.radius,millingKind);
    // Entry, withdrawal and a between-pass move are deterministic when seeking.
    let retract=t<.12?1-smooth(t/.12):0;
-   if(this.repairOptions.kind!=='pipe'&&t>=.4&&t<.43){
-    const from=millingTarget(R,{trimming:true,trim:1,angle:Math.PI*6},breakoutContour,branchBottom,passage.radius);
-    target.point.copy(from.point).lerp(millingTarget(R,{branch:false,angle:0},breakoutContour,branchBottom,passage.radius).point,smooth((t-.4)/.03));
+   if(t>=.4&&t<.43){
+    const from=millingTarget(R,{trimming:true,trim:1,angle:Math.PI*6},breakoutContour,branchBottom,passage.radius,millingKind);
+    target.point.copy(from.point).lerp(millingTarget(R,{branch:false,angle:0},breakoutContour,branchBottom,passage.radius,millingKind).point,smooth((t-.4)/.03));
    }
    if(change){target.point.y-=160*smooth((t-PHASE.CHANGE)/.25);retract=0;}
    target.point.y-=retract*40;
@@ -451,7 +453,7 @@ export class Viewer {
    this.robot.cutter.group.quaternion.identity();
    this.robot.cutter.disk.rotation.y=t*180;
   }
-  this.repair.update({time:t,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false,shield:withMould?{x:-430,lift:-70.56,seal:0,press:0}:null});
+  this.repair.update({time:t,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false,shield:withMould?{x:this.workOffset-430,lift:-70.56,seal:0,press:0}:null});
  }
  bounds(){this.model.updateMatrixWorld(true);const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);if(this.robot?.group.visible)b.expandByObject(this.robot.group);return b;}
  shaftFocus(){this.model.updateMatrixWorld(true);return this.shaftPart.node.getWorldPosition(V()).add(V(13,2,0));}
@@ -476,7 +478,7 @@ export class Viewer {
   this.model.position.set(0,0,0);this.explode=this.targetExplode;this.updateParts();this.poseRobot();let b=this.bounds();if(this.mode==='process')b=new THREE.Box3(V(this.sections.hideRobot?-570:-2250,this.bottom,-300),V(450,this.branchTop+20,300));if(view==='drive')b=new THREE.Box3(V(-220,this.top-70,-85),V(220,this.radius+this.winding.travel+40,110));
   if(view==='robot'&&this.robot){if(this.mode==='process')this.processPose();b=new THREE.Box3().setFromObject(this.robot.group);b.max.x=-270+this.model.position.x;b.min.x=Math.max(b.min.x,-1740+this.model.position.x);}
   if(view==='tool'&&this.robot){if(this.mode==='process')this.processPose();const origin=this.robot.group.getWorldPosition(V());b=new THREE.Box3(origin.clone().add(V(-420,-145,-90)),origin.clone().add(V(10,125,90)));}
-  if(view==='damage')b=new THREE.Box3(V(-335,this.radius-100,-180),V(335,this.radius+295,180));
+  if(view==='damage')b=new THREE.Box3(V(-335,this.radius-100,-180),V(335,this.repairOptions.kind==='closure'?this.branchTop+25:this.radius+295,180));
   if(view==='milling')b=new THREE.Box3(V(-245,this.radius-220,-145),V(210,this.radius+180,130));
   if(view==='winding')b=new THREE.Box3(V(-125,this.top-65,-75),V(145,this.radius+80,75));
   if(view==='hinge'){b=new THREE.Box3();for(const p of this.parts)if(p.group==='z'&&['hinge1','hinge2','hinge3','adapter','adapterbolts','hingebolts','topbolts','washers'].includes(p.key))b.expandByObject(p.node);}

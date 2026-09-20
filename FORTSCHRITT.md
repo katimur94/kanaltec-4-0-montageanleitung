@@ -1,5 +1,17 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Mittiger Einfüllstutzen, direktes Verpressen und nahezu volle Anschlussfüllung
+
+**Nutzerkorrektur:** Einfüllstutzen mittig auf dem zu schließenden Anschluss/Loch positionieren. Wenn nichts einragt, ohne Fräsen direkt verpressen. Stillgelegten Anschluss fast komplett füllen.
+
+**Umgesetzt:** Arbeitsposition der gesamten geschlossenen Schalung um den vorhandenen Stutzenversatz verschoben: Einfüllstutzen liegt im festen Schadstellenkoordinatensystem bei X/Z = 0. Keine Verlagerung des Stutzens innerhalb der Mechanik. Zulauf, Schlauchfüllung, Wasserabfangbahn und Sensor-/Zulaufabdrücke folgen ihrer jeweiligen tatsächlichen Lage. Eigene örtliche ovale Reparaturkontur für geschlossene Anwendungen (295 × 150 mm in der Abwicklung, reine Darstellungsmaße), damit der Schaden und der verschobene Sensorabdruck vollständig innerhalb der Schalung liegen. Die ursprüngliche offene Variante behält Kontur, Blase und Ablauf.
+
+**Ablaufwahl:** Geschlossene Anwendungen starten standardmäßig mit **Keine Einragung · ohne Fräsen**: sieben Schritte, bereits montierte Schalung, keine Einragung/Wurzeln und kein gefräster Wandabtrag. **Einragung vorhanden · erst fräsen** ergänzt die zwei Vorbereitungsschritte; beim Rohrloch einragende Bruchstücke statt eines Anschlussrohrs. Zeitachse, Phasenliste, Abspielen, Wiederholen und Pfeiltasten werden über eine explizite Zuordnung auf die unveränderten physischen Sanierungsphasen abgebildet. Direkte Vor-/Rücksprünge und Wechsel der Vorbereitung bleiben möglich.
+
+**Anschlussfüllung:** Massiver Mörtelkörper steigt nach der Schadstellenfüllung fast bis zum oberen Anschlussende. Im Modell 95 % der Strecke vom Verschlussfuß zur dargestellten Anschlussoberkante; schematische Umsetzung von „fast komplett“, keine Herstellerquote oder praktische Bemessung. Ersetzt die vorangegangene 70-mm-Darstellung. Schadstellenkamera zeigt die gesamte Höhe. Verfüllung bleibt nach Ausschalen erhalten; Rohrloch erzeugt weiterhin keinen fiktiven Anschluss.
+
+**Prüfung:** `npm ci`, vollständiges `npm test` und `npm run build` im portablen Repository bestanden. Bestehende Tests über alle fünf DN weiterhin erfolgreich. Erweiterte Verschlussprüfung: mittiger realer Stutzen, erhaltene Funktionsöffnungen, passende Abdrücke, vollständige Einfassung des Schadens innerhalb der positionierten Schalung, nahezu volle Anschlussfüllung, kein Fräser/Abtrag/Einragung im direkten Ablauf, sieben Phasen mit korrekter Zeitzuordnung, trockene/nasse Fälle, Schnitte und Rücksprünge. Edge-Sichtprüfung: Anfahrt, Anpressen, Füllanstieg, fast volle Füllung, Ausschalen, Rücksprung, beide Vorbereitungsarten, Rohrloch mit Bruchstücken, geschlossene Endfläche sowie DN 300 und DN 700. Umschalten von sieben auf neun Schritte und zurück, trockener Rücksprung und Wiederherstellung der ursprünglichen Blase geprüft; keine Browserfehler. Beide eigenständigen HTML-Dateien inhaltsgleich und mit dem äußeren Arbeitsordner synchronisiert. Bedienung und Projektstand aktualisiert; lokaler Commit, kein Push/Pages und keine neuen Medienexporte.
+
 ## 20.09.2026 – Zusätzliche geschlossene Schalung ohne Anschlussblase
 
 **Nutzerauftrag:** Stillgelegte Anschlüsse und Löcher im Hauptrohr mit einer geschlossenen Schalung verschließen, mit oder ohne Infiltration und auch bei großem Hohlraum. Übrige Mechanik erhalten, Welle ohne Anschlussblase.

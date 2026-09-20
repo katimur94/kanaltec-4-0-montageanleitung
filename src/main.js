@@ -1,10 +1,10 @@
 import {Viewer} from './model.js';
 import {families,groupInfo,bom,stages as originalStages,sources,videos,PHASE} from './data.js';
-import {repairCases,stagesForRepair} from './closure.js';
+import {repairCases,stagesForRepair,processTimeFor} from './closure.js';
 import assets from './assets.json';
 const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)];
 const stages=[...originalStages];
-const lastStage=stages.length-1, endTime=stages.length-.001;
+let lastStage=stages.length-1, endTime=stages.length-.001;
 $('timeline').max=Math.round(endTime*1000);
 const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:false,ref:'drawings',lastStage:-1};
 const safe=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -15,7 +15,12 @@ $('resetView').insertAdjacentHTML('beforebegin','<button data-view="robot" id="r
 $('resetView').insertAdjacentHTML('beforebegin','<button data-view="tool" id="toolView" title="CutterCam, Hubschwingen und vordere Werkzeugachse im Detail">Werkzeugarm</button><button data-view="shaft" id="shaftView" title="Nahansicht auf die Blasenwelle; folgt der Welle während der Animation">Wellenkamera</button>');
 $('viewSettingsPanel').querySelector('p').insertAdjacentHTML('beforebegin','<label><input id="hideRobot" type="checkbox"> IBAK-Roboter ausblenden</label>');
 $('groupButtons').innerHTML=Object.entries(groupInfo).map(([key,g],i)=>`<button class="groupbutton" data-group="${key}" style="--gcolor:${g.color}"><span class="groupicon">0${i+1}</span><span><strong>${g.short}</strong><small>${key==='s'?'Schild, Blase & Träger':key==='h'?'Tragstruktur & Antrieb':key==='z'?'Verbindung zum Roboter':'Abstützung & Distanzstücke'}</small></span><span class="chevron">›</span></button>`).join('');
-$('stageButtons').innerHTML=stages.map((s,i)=>`<button class="groupbutton" data-stage="${i}"><span class="stage-no">${String(i+1).padStart(2,'0')}</span><strong>${s.title}</strong></button>`).join('');
+function renderStages(){
+ $('stageButtons').innerHTML=stages.map((s,i)=>`<button class="groupbutton" data-stage="${i}"><span class="stage-no">${String(i+1).padStart(2,'0')}</span><strong>${s.title}</strong></button>`).join('');
+ $$('button[data-stage]').forEach(b=>b.onclick=()=>{state.playing=false;state.time=+b.dataset.stage+.92;updateStage();updatePlayButtons();});
+ $('stageNav').querySelector('.sectionlabel span').textContent=stages.length;
+}
+renderStages();
 $('labelsLayer').innerHTML=Object.entries(groupInfo).map(([g,d],i)=>`<div id="label-${g}" class="modellabel" style="--gcolor:${d.color}"><i></i><span>0${i+1}</span>${d.short}</div>`).join('')+[0,1,2,3,4].map(i=>`<div id="process-label-${i}" class="modellabel" hidden style="--gcolor:#399c94"></div>`).join('');
 $('sourceLinks').innerHTML=sources.map(s=>`<a class="source-card" href="${s.url}" target="_blank" rel="noopener noreferrer"><strong>${s.title} ↗</strong><span>${s.note}</span></a>`).join('');
 videos[1].title='Historische Videoreferenz · Stutzensanierung';videos[2].title='Historische Videoreferenz · Verfahrensdarstellung';
@@ -67,6 +72,7 @@ function setMode(mode){
 function updateInfo(){
  const closed=!!viewer?.closedMould;
  $('closureOptions').hidden=!closed;
+ $('millingView').hidden=closed&&viewer.repairOptions.milling===false;
  $('repairCaseNote').textContent=closed?'Geschlossenes Schild · Welle ohne Anschlussblase. Mörtelzulauf und Drucksensor bleiben erhalten.':'Schalung mit mittlerer Öffnung und Anschlussblase für den freien Durchgang.';
  $('driveView').textContent=closed?'Wellenantrieb':'Blasenantrieb';$('windingView').hidden=closed||state.mode!=='process';
  $('hideBladder').disabled=closed;$('mechanismReadout').querySelector('.eyebrow').textContent=closed?'WELLE OHNE BLASE':'BLASENANTRIEB';
@@ -82,7 +88,7 @@ function updateInfo(){
 }
 function setExplosion(v,fit=false){viewer?.setExplode(v);$('explosion').value=Math.round(v*100);$('explosionValue').textContent=Math.round(v*100)+' %';if(fit)viewer?.fit();}
 function updateStage(force=false){
- const idx=Math.min(lastStage,Math.floor(state.time)),s=stages[idx];viewer?.setProcess(state.time);$('timeline').value=Math.round(state.time*1000);$('stageCount').textContent=(idx+1)+' / '+stages.length;
+ const idx=Math.min(lastStage,Math.floor(state.time)),s=stages[idx];viewer?.setProcess(processTimeFor(stages,state.time));$('timeline').value=Math.round(state.time*1000);$('stageCount').textContent=(idx+1)+' / '+stages.length;
  if(force||idx!==state.lastStage){state.lastStage=idx;$('detailIndex').textContent=String(idx+1).padStart(2,'0');$('detailTitle').textContent=s.title;$('detailText').textContent=s.text;$('detailCaption').textContent=s.caption;$$('button[data-stage]').forEach(b=>{b.classList.toggle('selected',+b.dataset.stage===idx);b.setAttribute('aria-current',+b.dataset.stage===idx?'step':'false');});$('prevStage').disabled=idx===0;$('nextStage').disabled=idx===lastStage;}
 }
 function updatePlayButtons(){$('processPlay').textContent=state.playing?'Ⅱ':'▶';$('processPlay').setAttribute('aria-label',state.playing?'Ablauf pausieren':'Ablauf abspielen');$('explodePlay').textContent=state.explodePlaying?'Ⅱ':'▶';$('explodePlay').setAttribute('aria-label',state.explodePlaying?'Explosionsanimation pausieren':'Explosionsanimation starten');}
@@ -104,13 +110,16 @@ $$('button[data-stage]').forEach(b=>b.onclick=()=>{state.playing=false;state.tim
 $$('[data-view]').forEach(b=>b.onclick=()=>{if(['robot','tool'].includes(b.dataset.view)){$('hideRobot').checked=false;updateSections();if(state.group!=='all')setGroup('all');}if(b.dataset.view==='shaft'&&!['all','h'].includes(state.group))setGroup('all');stopRotation();viewer?.fit(b.dataset.view);$$('[data-view]').forEach(x=>x.classList.toggle('active',x===b));});
 $('family').onchange=()=>{const view=viewer?.currentView;state.id=+$('family').value;state.playing=false;state.explodePlaying=false;viewer?.build(state.id);if(viewer){viewer.setMode(state.mode);viewer.setGroup(state.group);viewer.setExplode(state.mode==='explode'?+$('explosion').value/100:0);viewer.fit(view);}updateInfo();selectPart(null);updatePlayButtons();if(!$('bomPanel').hidden)renderBom();};
 function changeRepair(){
- const kind=$('repairCase').value;
- if(viewer)viewer.repairOptions={kind,cavity:$('cavitySize').value,infiltration:kind==='open'||$('infiltration').checked};
- stages.splice(0,stages.length,...stagesForRepair(kind));
- $$('button[data-stage]').forEach(b=>b.querySelector('strong').textContent=stages[+b.dataset.stage].title);
+ const kind=$('repairCase').value,milling=kind==='open'||$('preparation').value==='milling',previous=processTimeFor(stages,state.time);
+ if(viewer)viewer.repairOptions={kind,milling,cavity:$('cavitySize').value,infiltration:kind==='open'||$('infiltration').checked};
+ stages.splice(0,stages.length,...stagesForRepair(kind,milling));
+ lastStage=stages.length-1;endTime=stages.length-.001;$('timeline').max=Math.round(endTime*1000);
+ const index=stages.findIndex((s,i)=>(s.phase??i)===Math.floor(previous));
+ state.time=index<0?0:index+previous-Math.floor(previous);state.playUntil=endTime;
+ $('processControl').querySelector('.rangeends span').textContent=milling?'Fräsen':'Positionieren';renderStages();
  state.lastStage=-1;$('family').onchange();
 }
-$('repairCase').onchange=changeRepair;$('cavitySize').onchange=changeRepair;$('infiltration').onchange=changeRepair;
+$('repairCase').onchange=changeRepair;$('cavitySize').onchange=changeRepair;$('infiltration').onchange=changeRepair;$('preparation').onchange=changeRepair;
 $('drawing').onclick=openDrawing;$('fidelity').onclick=()=>{state.ref='research';setMode('sources');};
 $('ghost').onclick=()=>{const on=$('ghost').getAttribute('aria-pressed')!=='true';$('ghost').setAttribute('aria-pressed',String(on));viewer?.setGhost(on);};
 $('labels').onclick=()=>{state.labels=!state.labels;$('labels').setAttribute('aria-pressed',String(state.labels));};
@@ -164,10 +173,11 @@ if(viewer)viewer.onFrame=dt=>{
  // Public, read-only DOM evidence for offline QA; no network services are used.
  $('viewport').dataset.modelParts=viewer.parts.length;$('viewport').dataset.group=state.group;$('viewport').dataset.mode=state.mode;$('viewport').dataset.explosion=viewer.explode.toFixed(3);$('viewport').dataset.stage=Math.min(lastStage,Math.floor(state.time));$('viewport').dataset.view=viewer.currentView;
  if(state.mode==='process'){
-  $('mechanismReadout').hidden=state.time<PHASE.POSITION;
+  $('mechanismReadout').hidden=viewer.time<PHASE.POSITION;
+  $('viewport').dataset.processPhase=Math.floor(viewer.time);$('viewport').dataset.branchFill=viewer.repair.branchFill.toFixed(4);
   $('viewport').dataset.millingOuter=viewer.repair.millingProgress?.outer??0;
   const full=String(viewer.sensorFull);if($('sensorStatus').dataset.full!==full){$('sensorStatus').dataset.full=full;$('sensorText').textContent=viewer.sensorFull?'Leuchtet · Gegendruck meldet voll':'Aus · keine Vollmeldung';}
-  const n=Math.floor(state.time),f=state.time-n,drive=n<PHASE.POSITION?'Vorbereitung · Schalung noch nicht im Einsatz':n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';
+  const n=Math.floor(viewer.time),f=viewer.time-n,drive=n<PHASE.POSITION?'Vorbereitung · Schalung noch nicht im Einsatz':n<PHASE.BLADDER?'Blase auf der Welle aufgewickelt':n===PHASE.BLADDER&&f<.68?'Welle dreht · Blase vollständig abwickeln':n===PHASE.BLADDER&&f<.8?'Vollständig abgewickelt · flache Seite parallel zum Anschluss':n===PHASE.BLADDER?'Ohne Restwicklung · Blase jetzt aufblasen':n<PHASE.REMOVE?'Blase hält den Anschlussquerschnitt frei':f<.14?'Blase entspannen':f<.64?'Welle dreht zurück · Blase wickelt auf':'Blase wieder auf der Welle';
   const driveText=viewer.closedMould?'Welle ohne Anschlussblase · keine Wickelbewegung':drive;
   if($('driveStatus').textContent!==driveText)$('driveStatus').textContent=driveText;
   const windingDetail=viewer.winding.fullyUnwound?'Keine Restwicklung · Wellenfläche ausgerichtet · Luftweg frei':`Restwicklung ${viewer.winding.remainingTurns.toFixed(2).replace('.',',')} Umdr. · ca. 3 mm je Wandlage · noch keine Luft`;

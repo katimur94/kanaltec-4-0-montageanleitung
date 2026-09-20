@@ -8,7 +8,10 @@ export const millingSpec={width:60,depth:16,motorLength:205,spindleX:62,outerRad
 const oldLeft=-165*.998,oldRight=165*1.002;
 const left=(oldLeft+Math.min(...imprints.map(p=>p.x-p.r)))/2;
 const right=(oldRight+Math.max(...imprints.map(p=>p.x+p.r)))/2;
-export function repairFootprint(R,a){
+export function repairFootprint(R,a,closed=false){
+ // The closed mould is positioned by its inlet, 66 mm from the shield centre.
+ // A local oval covers both the defect and the translated sensor impression.
+ if(closed)return [42.5+147.5*Math.cos(a),75*Math.sin(a)];
  const x=165,z=67,c=Math.cos(a),s=Math.sin(a);
  const d=1/Math.sqrt((c/x)**2+(s/z)**2);
  const edge=1+.003*Math.sin(11*a)+.002*Math.cos(17*a);
@@ -23,12 +26,13 @@ export function millingState(t){
   exchange:t>=1&&t<2,angle:Math.PI*2*(t<.4?trim*3:outer)};
 }
 
-export function millingTarget(R,state,contour,bottom,branchRadius){
+export function millingTarget(R,state,contour,bottom,branchRadius,closed=false){
  const a=state.angle,w=millingSpec.width,d=millingSpec.depth;
  if(state.trimming){
   const u=state.trim||0,r=branchRadius+6-w/2;
+  if(closed==='pipe'){const [x,arc]=contour(a),inset=1-16/Math.hypot(x,arc);return {point:new THREE.Vector3(x*inset,R-36+u*60,R*Math.sin(arc*inset/R)),normal:new THREE.Vector3(0,1,0)};}
   return {point:new THREE.Vector3(r*Math.cos(a),R-36+u*60,r*Math.sin(a)),normal:new THREE.Vector3(0,1,0)};
  }
- const [x,arc]=repairFootprint(R,a),inset=1-w/2/Math.hypot(x,arc),p=arc*inset,normal=new THREE.Vector3(0,Math.cos(p/R),Math.sin(p/R));
+ const [x,arc]=repairFootprint(R,a,closed),inset=1-w/2/Math.hypot(x,arc),p=arc*inset,normal=new THREE.Vector3(0,Math.cos(p/R),Math.sin(p/R));
  return {point:new THREE.Vector3(x*inset,(R+d/2)*normal.y,(R+d/2)*normal.z),normal};
 }

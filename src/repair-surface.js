@@ -26,9 +26,10 @@ export function mouldY(R,z){return Math.sqrt(Math.max(0,R*R-z*z));}
 
 // The exposed inner skin is a separate, finely tessellated curved casting.
 // Exact circular cutouts accept the negative impressions instead of decals.
-export function mouldSurface(R,contour,material,closed=false){
+export function mouldSurface(R,contour,material,closed=false,offsetX=0){
+ const marks=imprints.map(mark=>({...mark,x:mark.x+offsetX}));
  const outer=[];for(let i=0;i<160;i++){const [x,arc]=contour(i/160*TAU);outer.push(new THREE.Vector2(x,R*Math.sin(arc/R)));}
- const holes=[...(closed?[]:[{x:0,z:0,r:passage.radius}]),...imprints].map(p=>Array.from({length:80},(_,i)=>new THREE.Vector2(p.x+p.r*Math.cos(-i/80*TAU),p.z+p.r*Math.sin(-i/80*TAU))));
+ const holes=[...(closed?[]:[{x:0,z:0,r:passage.radius}]),...marks].map(p=>Array.from({length:80},(_,i)=>new THREE.Vector2(p.x+p.r*Math.cos(-i/80*TAU),p.z+p.r*Math.sin(-i/80*TAU))));
  const triangles=THREE.ShapeUtils.triangulateShape(outer,holes),points=[...outer,...holes.flat()],positions=[],uv=[];
  function vert(p,depth=0){positions.push(p.x,mouldY(R,p.y)+depth,p.y);uv.push(p.x/80,p.y/80);}
  function refine(a,b,c,level=0){
@@ -38,7 +39,7 @@ export function mouldSurface(R,contour,material,closed=false){
  for(const t of triangles)refine(...t.map(i=>points[i]));
  const mesh=(pos,uvs)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));g.setAttribute('color',new THREE.Float32BufferAttribute(new Float32Array(pos.length).fill(1),3));g.computeVertexNormals();return new THREE.Mesh(g,material);};
  const group=new THREE.Group();group.add(mesh(positions,uv));
- for(const mark of imprints){
+ for(const mark of marks){
   const p=[],u=[];
   const at=(r,a,d)=>[mark.x+r*Math.cos(a),mouldY(R,mark.z+r*Math.sin(a))+d,mark.z+r*Math.sin(a)];
   const put=v=>{p.push(...v);u.push(v[0]/80,v[2]/80);};

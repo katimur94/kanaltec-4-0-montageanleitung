@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {passage} from './bladder.js';
+import {passage,ports} from './bladder.js';
 import {surfaceTextures,mouldSurface} from './repair-surface.js';
 import {millingSpec,repairFootprint} from './milling.js';
 import {GroundGrout,soilCavityRadius} from './ground-grout.js';
@@ -29,13 +29,13 @@ function concreteTexture(){
  for(let i=0;i<size*size;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const noise=seed/4294967296;const x=i%size,y=Math.floor(i/size);const c=180+noise*40+15*Math.sin(x*.075)*Math.cos(y*.09);data.set([c,c,c,255],i*4);}
  const t=new THREE.DataTexture(data,size,size);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;t.needsUpdate=true;return t;
 }
-export function damagedPipeGeometry(R,length,thickness,progress=0,fill=0){
+export function damagedPipeGeometry(R,length,thickness,progress=0,fill=0,closed=false){
  const nr=43,positions=[],uv=[],indices=[],colors=[],stride=N+1,layerSize=(nr+1)*stride;
  for(let layer=0;layer<2;layer++)for(let j=0;j<=nr;j++)for(let i=0;i<=N;i++){
   const a=i/N*TAU,[hx,ha]=breakoutContour(a),dx=Math.cos(a),da=Math.sin(a);
   const edge=Math.min(length/2/Math.max(1e-9,Math.abs(dx)),Math.PI*R/Math.max(1e-9,Math.abs(da)));
   const w=millingSpec.width,cut=i/N<=progress&&progress>0;
-  const [outerX,outerArc]=repairFootprint(R,a),t=Math.max(0,(j-3)/(nr-3));
+  const [outerX,outerArc]=repairFootprint(R,a,closed),t=Math.max(0,(j-3)/(nr-3));
   const x=j<2?hx:THREE.MathUtils.lerp(outerX,dx*edge,t),arc=j<2?ha:THREE.MathUtils.lerp(outerArc,da*edge,t);
   const floor=!layer&&j<=2,depth=layer?thickness:floor&&cut?(fill>.99?.08:millingSpec.depth*(1-fill)):0;
   positions.push(...surfacePoint(R,x,arc,depth).toArray());uv.push(x/120,arc/120);
@@ -45,6 +45,7 @@ export function damagedPipeGeometry(R,length,thickness,progress=0,fill=0){
   // The finished casting supplies this face. Keeping the coarse pipe triangles
   // underneath it causes their curved chords to show through the fine skin.
   if(!l&&j<3&&fill>.99&&progress>0&&i/N<=progress)continue;
+  if(!l&&j<3&&closed&&fill>=.625)continue; // Casting replaces the displayed face even without milling.
   const a=l*layerSize+j*stride+i,b=a+stride;
   if(l)indices.push(a,a+1,b,b,a+1,b+1);else indices.push(a,b,a+1,b,b+1,a+1);
  }
@@ -99,6 +100,17 @@ export function projectingBranchGeometry(R,trim){
  return geometry(pos,idx,uv);
 }
 function makeMesh(g,m){const o=new THREE.Mesh(g,m);o.castShadow=o.receiveShadow=true;return o;}
+function projectingPipeGeometry(R,trim){
+ const positions=[],indices=[];
+ for(const a of [.3,1.8,3.2,4.8]){
+  const edge=t=>{const [x,arc]=breakoutContour(t);return surfacePoint(R,x,arc);};
+  const left=edge(a-.18),right=edge(a+.18),back=edge(a).add(V(0,12,0)),tip=edge(a).multiplyScalar(1);
+  tip.x*=.76;tip.z*=.76;tip.y=THREE.MathUtils.lerp(R-32,R+12,trim);
+  const k=positions.length/3;positions.push(...left.toArray(),...right.toArray(),...back.toArray(),...tip.toArray());
+  indices.push(k,k+1,k+2,k,k+3,k+1,k+1,k+3,k+2,k+2,k+3,k);
+ }
+ return geometry(positions,indices);
+}
 function tube(curve,r,m,segments=96){return makeMesh(new THREE.TubeGeometry(curve,segments,r,10,false),m);}
 function waterCurve(points){const c=new THREE.CurvePath();for(let i=1;i<points.length;i++)if(points[i].distanceToSquared(points[i-1])>1e-8)c.add(new THREE.LineCurve3(points[i-1],points[i]));return c;}
 function rivuletGeometry(curve,segments,radius){
@@ -127,14 +139,14 @@ export function shieldWaterPath(R,start,edge,shield){
 export class RepairScene {
  constructor(R,branchTop,hosePoints,inletX,pipeLength=1350,branchFillTop=R,options={}){
   this.options=options;this.closed=!!options.kind&&options.kind!=='open';this.hasBranch=options.kind!=='pipe';
-  if(this.closed)branchFillTop=R+70; // Illustrative closure depth, not a design specification.
+  if(this.closed)branchFillTop=THREE.MathUtils.lerp(R+12,branchTop,.95); // Almost full, illustrative proportion.
   this.branchFillTop=branchFillTop;this.branchFill=0;this.R=R;this.pipeLength=pipeLength;this.branchTop=branchTop;this.group=new THREE.Group();this.hoseGroup=new THREE.Group();this.inletX=inletX;
   this.texture=concreteTexture();
   this.pipeTextures=surfaceTextures('pipe');this.mortarTextures=surfaceTextures('mortar');
   this.soilTextures=surfaceTextures('soil');this.ground=new GroundGrout(R,this.soilTextures,this.mortarTextures,options);this.group.add(this.ground.group);
   this.concrete=new THREE.MeshStandardMaterial({color:'#422b21',...this.pipeTextures,bumpScale:.12,roughness:1,metalness:0,envMapIntensity:.18,side:THREE.DoubleSide});
   this.concrete.vertexColors=true;this.concrete.color.set('#ffffff');this.cutConcrete=this.concrete.clone();this.cutConcrete.clippingPlanes=[cutPlane];
-  const pg=damagedPipeGeometry(R,pipeLength,18),bg=brokenBranch(R,branchTop);
+  const pg=damagedPipeGeometry(R,pipeLength,18,0,0,this.closed),bg=brokenBranch(R,branchTop);
   this.pipe=makeMesh(pg,this.cutConcrete);this.pipeFull=makeMesh(pg,this.concrete);
   this.branch=makeMesh(bg,this.cutConcrete);this.branchFull=makeMesh(bg,this.concrete);
   this.group.add(this.pipe,this.pipeFull,this.branch,this.branchFull);
@@ -183,7 +195,7 @@ export class RepairScene {
 
   this.mortarMaterial=new THREE.MeshStandardMaterial({color:'#444743',roughness:.75,side:THREE.DoubleSide});
   this.skinMaterial=new THREE.MeshStandardMaterial({color:'#555652',...this.mortarTextures,bumpScale:.16,roughness:.95,envMapIntensity:.35,vertexColors:true,side:THREE.DoubleSide});
-  this.innerSkin=mouldSurface(R,a=>repairFootprint(R,a),this.skinMaterial,this.closed);this.group.add(this.innerSkin);
+  this.innerSkin=mouldSurface(R,a=>repairFootprint(R,a,this.closed),this.skinMaterial,this.closed,this.closed?-ports.inletX:0);this.group.add(this.innerSkin);
   this.mortarGeometry=new THREE.BufferGeometry();
   this.mortarGeometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*3),3));
   this.mortarGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(2*(RADIAL+1)*(N+1)*2),2));
@@ -238,19 +250,20 @@ export class RepairScene {
   this.setMilling(0,0,0);this.setCut(true);this.update({time:0,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false});
  }
  setMilling(outer,fill=0,trim=1){
+  if(this.closed&&this.options.milling===false){outer=0;trim=1;}
   // Reserve the terminal cache key for an actually complete fill. Rounding
   // .99 to 1 used to freeze a short sleeve, leaving a visible unfilled rim.
   const o=Math.floor(outer*N)/N,f=Math.floor(clamp(fill)*40)/40,key=[o,f,trim].join(',');
   if(key===this.millingKey)return;this.millingKey=key;this.millingProgress={outer:o,fill:f,trim};
-  this.projection.geometry.dispose();this.projection.geometry=projectingBranchGeometry(this.R,trim);this.projection.visible=this.hasBranch&&trim<1;
+  this.projection.geometry.dispose();this.projection.geometry=this.hasBranch?projectingBranchGeometry(this.R,trim):projectingPipeGeometry(this.R,trim);this.projection.visible=trim<1;
   this.roots.visible=this.hasBranch&&trim<1;
   for(const root of this.rootStrands){const start=root.userData.rootStart||0,remain=clamp(1-trim*1.25);root.visible=remain>start;root.geometry.setDrawRange(0,Math.floor(root.geometry.index.count*(start?1:remain)/60)*60);}
-  for(const [a,c,g] of [[this.pipe,this.pipeFull,damagedPipeGeometry(this.R,this.pipeLength,18,o,f)],[this.branch,this.branchFull,brokenBranch(this.R,this.branchTop)]]){a.geometry.dispose();a.geometry=c.geometry=g;}
+  for(const [a,c,g] of [[this.pipe,this.pipeFull,damagedPipeGeometry(this.R,this.pipeLength,18,o,f,this.closed)],[this.branch,this.branchFull,brokenBranch(this.R,this.branchTop)]]){a.geometry.dispose();a.geometry=c.geometry=g;}
   const pos=[],idx=[],uv=[],R=this.R;
   const rect=(x0,x1,y0,y1)=>{const k=pos.length/3;pos.push(x0,y0,0,x1,y0,0,x1,y1,0,x0,y1,0);uv.push(x0/120,y0/120,x1/120,y0/120,x1/120,y1/120,x0/120,y1/120);idx.push(k,k+1,k+2,k,k+2,k+3);};
   rect(-this.pipeLength/2,this.pipeLength/2,-R-18,-R);
   for(const a of [0,Math.PI]){
-   const sign=Math.cos(a),edge=breakoutContour(a)[0],end=repairFootprint(R,a)[0];
+   const sign=Math.cos(a),edge=breakoutContour(a)[0],end=repairFootprint(R,a,this.closed)[0];
    const depth=o>0&&a/TAU<=o?millingSpec.depth*(1-f):0;
    rect(Math.min(edge,end),Math.max(edge,end),R+depth,R+18);
    rect(Math.min(end,sign*this.pipeLength/2),Math.max(end,sign*this.pipeLength/2),R,R+18);
