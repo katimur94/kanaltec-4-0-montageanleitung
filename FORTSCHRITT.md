@@ -1,5 +1,11 @@
 # Fortschrittschronik
 
+## 20.09.2026 – Private Drive-Sicherung für Telegram
+
+Auf ausdrücklichen Nutzerauftrag Telegram-Zugangsdaten im verbundenen persönlichen Google Drive hinterlegt. Vor dem Übertragen anhand einer leeren Platzhalterdatei geprüft: nicht geteilt, ausschließlich Eigentümerberechtigung. Nach dem Upload dieselben privaten Berechtigungen erneut bestätigt. Die abgerufene Konfiguration stimmt per SHA-256 mit dem ursprünglichen lokalen Export überein; temporärer Klartext-Export entfernt. Die bestehende verschlüsselte lokale Konfiguration unverändert und weiterhin lesbar.
+
+Telegram-Skill im Benutzerprofil und Repository ergänzt: Fehlt auf einem anderen Computer die lokale Konfiguration, zuerst die private Drive-Sicherung nutzen, statt neue Schlüssel anzufordern. Keine Schlüssel, Empfänger-IDs oder privaten Datei-IDs versioniert. Der Connector-Download-Link lieferte HTTP 403; die Sicherung wurde über den begrenzten Rohdatenabruf intern anhand der Prüfsumme geprüft. Schlüsselwerte nicht in Shell-Argumente übernehmen. Für die lokale Wiederherstellung ist ein sicher materialisierter Download beziehungsweise ein authentifizierter Drive-Browserdownload nötig; vollständige automatische Installation auf einem anderen Rechner hier nicht geprüft. Skill-Validierung und Prüfung der bestehenden lokalen Konfiguration erfolgreich.
+
 ## 20.09.2026 – Veröffentlichung, neue Prozessfilme und portabler Telegram-Skill
 
 **Auftrag:** Aktuellen Stand pushen, GitHub Pages aktualisieren, die sechs bisherigen Videoformate neu produzieren und über Telegram zustellen. Telegram-Versand auch für die Weiterarbeit auf anderen Computern hinterlegen.

@@ -16,7 +16,7 @@ Die sechs Videos sind am 20.09.2026 mit dem aktuellen Modell und angepasstem Spr
 
 **Weiterarbeit auf einem anderen Computer:** [Projektstand und Übergabe](PROJEKTSTAND.md) · [Fortschrittschronik](FORTSCHRITT.md) · [Hinweise für die Bearbeitung](AGENTS.md). Diese Dokumente halten die bisherigen Korrekturen, Quellen, offenen Punkte und Prüfschritte fest und werden bei weiteren Änderungen fortgeschrieben.
 
-**Telegram-Versand:** Der portable [Telegram-Skill](.agents/skills/telegram-delivery/SKILL.md) versteht auch „schick mir das über Telegram“. Er ist im Repository enthalten und kann mit seinem `scripts/install.py` im Benutzerprofil für alle Projekte installiert werden. Auf einem neuen Computer den privaten Telegram-Zugang einmal separat einrichten; der Skill und dieses Repository enthalten keine Zugangsdaten.
+**Telegram-Versand:** Der portable [Telegram-Skill](.agents/skills/telegram-delivery/SKILL.md) versteht auch „schick mir das über Telegram“. Er ist im Repository enthalten und kann mit seinem `scripts/install.py` im Benutzerprofil für alle Projekte installiert werden. Auf einem neuen Computer nutzt er bei fehlender lokaler Konfiguration zuerst die vom Nutzer autorisierte private Google-Drive-Sicherung. Das entsprechende Drive-Konto muss verbunden sein; Schlüssel bleiben außerhalb von Skill und Repository.
 
 Das Schalungssystem der DiTom GmbH Kanaltechnik als interaktives 3D-Modell mit fünf Baugrößen, Explosionsansicht und animiertem Sanierungsablauf. Enthalten sind die überarbeiteten Bauteile, die vollständig abwickelbare Anschlussblase mit drei Wicklungen, getrennte Bumper- und Dichtblasenphasen, einstellbare Geschwindigkeit, Pfeiltastensteuerung, frei wählbare Schnitte, Verschieben der Ansicht und Hell-/Dunkelmodus mit transparentem Logo.
 
