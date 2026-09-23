@@ -11,6 +11,18 @@ import {breakoutContour,branchBottom} from './repair.js';
 import {injectionFitting,injectionSpec} from './injection-fitting.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
+// Waterline of the dry-weather flow; parts below it look wet (darker, glossy).
+const wetLine={value:-1e9};
+function wetPatch(material){
+ if(!material||material.userData.wetPatched)return;material.userData.wetPatched=true;
+ const before=material.onBeforeCompile;
+ material.onBeforeCompile=(sh,r)=>{before?.call(material,sh,r);sh.uniforms.uWetLine=wetLine;
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying float vWetY;').replace('#include <begin_vertex>','#include <begin_vertex>\nvWetY=(modelMatrix*vec4(transformed,1.)).y;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uWetLine;varying float vWetY;')
+   .replace('#include <color_fragment>','#include <color_fragment>\nfloat wetAmount=smoothstep(uWetLine+3.,uWetLine-.5,vWetY);diffuseColor.rgb*=mix(1.,.58,wetAmount);')
+   .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(roughnessFactor,.14,wetAmount);');};
+ const key=material.customProgramCacheKey.bind(material);material.customProgramCacheKey=()=>'wet|'+key();material.needsUpdate=true;
+}
 const clamp=THREE.MathUtils.clamp;
 const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const mat=(color,metalness=.7,roughness=.32)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
@@ -202,7 +214,7 @@ export class Viewer {
   const node=new THREE.Group();node.position.copy(position);node.add(object);this.model.add(node);const p={group:g,pos:row.pos,key:row.key,index:i,name:row.name,qty:row.qty,kind:row.kind,note:row.note,node,base:position.clone(),delta:explode,originalRotation:node.quaternion.clone()};node.userData.part=p;this.parts.push(p);return p;
  }
  build(id){
-  this.repairOptions??={kind:'open',infiltration:true,cavity:'large'};
+  this.repairOptions??={kind:'open',infiltration:true,cavity:'large',sewerWater:33};
   this.closedMould=this.repairOptions.kind!=='open';
   this.workOffset=this.closedMould?-ports.inletX:0;
   this.sections??={pipe:true,shield:false,holder:false};
@@ -372,6 +384,8 @@ export class Viewer {
   this.repair=new RepairScene(R,this.branchTop,this.hosePoints,ports.inletX+this.workOffset,4600,this.branchFillTop,this.repairOptions);
   this.branchFillTop=this.repair.branchFillTop;
   this.context.add(this.repair.group);this.model.add(this.repair.hoseGroup);
+  wetLine.value=this.repair.flowWater?this.repair.flowWater.y:-1e9;
+  if(this.repair.flowWater)for(const p of this.parts)if(p.group==='u')p.node.traverse(o=>{if(o.isMesh)for(const m of [o.material].flat())wetPatch(m);});
   for(const key of ['pipe','pipeFull','branch','branchFull','mortar','flow'])this[key]=this.repair[key];
   this.damage=this.repair.cavity;
   this.context.visible=false;
@@ -412,8 +426,22 @@ export class Viewer {
   this.sensor.children[1].material.emissive.set(this.sensorFull?'#e92916':'#000000');this.sensor.children[1].material.emissiveIntensity=this.sensorFull?1.5:0;
   this.repair.setMilling(1,fill);
   this.robot.cutter.group.visible=false;
-  this.repair.update({time:t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE,shield:{x:this.model.position.x,lift,seal,press}});
+  this.repair.setCutter(null);this.waterObstacles();
+  this.repair.update({time:t,clock:this.ambientClock??t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE,shield:{x:this.model.position.x,lift,seal,press}});
 
+ }
+ // Lower-unit parts in the dry-weather flow as world boxes: the plate lies just
+ // under the surface (water runs over it), block, wheel holder and roller
+ // stand in the flow (bow wave and wake). Hidden parts cause no waves.
+ waterObstacles(){
+  const flow=this.repair?.flowWater;if(!flow)return;
+  this.model.updateMatrixWorld(true);const list=[],b=new THREE.Box3();
+  for(const [key,type] of [['plate',1],['spacer50',2],['spacer100',2],['wheelspacer',2],['wheel',2]])for(const p of this.parts){
+   if(p.group!=='u'||p.key!==key||!p.node.visible)continue;
+   b.setFromObject(p.node);if(b.isEmpty()||b.min.y>flow.y+1)continue;
+   list.push({box:[b.min.x,b.max.x,b.min.z,b.max.z],top:Math.min(b.max.y,flow.y+50),type:type===1&&b.max.y>flow.y-.5?2:type});
+  }
+  this.repair.setWaterObstacles(this.model.visible===false?[]:list.slice(0,6));
  }
  preparationPose(){
   const t=this.time,R=this.radius+12,state=millingState(t);
@@ -452,8 +480,16 @@ export class Viewer {
    this.robot.cutter.group.position.copy(local);
    this.robot.cutter.group.quaternion.identity();
    this.robot.cutter.disk.rotation.y=t*180;
+   // Roots below the crown of the rotating head and behind its leading edge
+   // are milled; chips leave the head while it is in contact.
+   const head=target.point.clone().add(V(travel,0,0)),contact=t<.12?head.x>-70:t<.4||(t>=.43&&t<.9);
+   // The head then sweeps around the connection, taking the roots beside it.
+   const front=t<.12?head.x+32:t<.2?THREE.MathUtils.lerp(head.x+32,220,(t-.12)/.08):1e6;
+   this.repair.setCutter({point:head,cutY:state.trimming?head.y+1:-1e6,frontX:front,rate:contact?(state.trimming?1:.55):0,roots:state.trimming});
   }
-  this.repair.update({time:t,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false,shield:withMould?{x:this.workOffset-430,lift:-70.56,seal:0,press:0}:null});
+  if(change)this.repair.setCutter(null);
+  this.waterObstacles();
+  this.repair.update({time:t,clock:this.ambientClock??t,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false,shield:withMould?{x:this.workOffset-430,lift:-70.56,seal:0,press:0}:null});
  }
  bounds(){this.model.updateMatrixWorld(true);const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);if(this.robot?.group.visible)b.expandByObject(this.robot.group);return b;}
  shaftFocus(){this.model.updateMatrixWorld(true);return this.shaftPart.node.getWorldPosition(V()).add(V(13,2,0));}
@@ -504,5 +540,5 @@ export class Viewer {
  fitExplosion(){const e=this.explode,t=this.targetExplode;this.targetExplode=1;this.fit();this.targetExplode=t;this.explode=e;this.updateParts();}
  screenshot(){this.renderer.render(this.scene,this.camera);return this.renderer.domElement.toDataURL('image/png');}
  resetPose(){if(this.robot)this.robot.cutter.group.visible=false;this.model.position.set(0,0,0);for(const p of this.parts){p.node.scale.set(1,1,1);p.node.quaternion.copy(p.originalRotation);}this.poseSeal(0);this.poseMechanism(0,0,0);}
- animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=this.mode!=='process'&&this.explode<.03;if(this.mode==='process')this.processPose();else this.resetPose();this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
+ animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.ambientClock=now/1000;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=this.mode!=='process'&&this.explode<.03;if(this.mode==='process')this.processPose();else this.resetPose();this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
 }

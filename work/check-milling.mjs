@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {Viewer} from '../src/model.js';
 import {families,PHASE,stages} from '../src/data.js';
-import {millingSpec,millingState,millingTarget,repairFootprint} from '../src/milling.js';
+import {millingSpec,millingState,millingTarget,repairFootprint,footprintScale} from '../src/milling.js';
 import {damagedPipeGeometry,brokenBranch,breakoutContour,branchBottom} from '../src/repair.js';
 import {passage} from '../src/bladder.js';
 import {imprints} from '../src/repair-surface.js';
@@ -64,15 +64,16 @@ for(const family of families){
   const a=i/160*Math.PI*2,[expectedX,expectedArc]=repairFootprint(R,a),x=pa.getX(2*161+i),arc=Math.atan2(pa.getZ(2*161+i),pa.getY(2*161+i))*R;
   near(x,expectedX);near(arc,expectedArc);
   assert.ok(Math.abs(x)<230&&Math.abs(arc)<(R-12)*.84,'Finished patch stays within the oval shield with lateral sealing margin');
-  const [hx,ha]=breakoutContour(a);assert.ok(((hx-2)/120)**2+(ha/105)**2<.98,'Rounded casting encloses the whole broken edge');
+  const [hx,ha]=breakoutContour(a);assert.ok(footprintScale(hx,ha)<.99,'Oval casting encloses the whole broken edge');
   for(const mark of [...imprints,{x:0,z:0,r:passage.radius}]){
    const mx=mark.x+mark.r*Math.cos(a),mz=mark.z+mark.r*Math.sin(a),ma=R*Math.asin(mz/R);
-   assert.ok(((mx-2)/120)**2+(ma/105)**2<.9,'Full imprint and open connection fit within the rounded casting');
+   assert.ok(footprintScale(mx,ma)<.95,'Full imprint and open connection fit within the oval casting');
   }
  }
+ // User correction 23.09.2026: somewhat more oval with an irregular edge.
  const castBounds=new THREE.Box3().setFromObject(v.repair.innerSkin),castSize=castBounds.getSize(new THREE.Vector3());
- assert.ok(castSize.x/castSize.z>1.1&&castSize.x/castSize.z<1.3,'Casting with bladder stays round and only slightly oval for every DN');
- assert.ok(castSize.x<=241&&castSize.z<=211,'Rounded casting remains a local repair');
+ assert.ok(castSize.x/castSize.z>1.3&&castSize.x/castSize.z<1.7,'Casting with bladder is moderately oval for every DN');
+ assert.ok(castSize.x<=300&&castSize.z<=215,'Oval casting remains a local repair');
  v.repair.innerSkin.updateMatrixWorld(true);
  const castRay=(x,z)=>new THREE.Raycaster(new THREE.Vector3(x,R+2,z),new THREE.Vector3(0,-1,0),.001,100).intersectObject(v.repair.innerSkin,true);
  assert.equal(castRay(0,0).length,0,'Bladder keeps the finished connection open');

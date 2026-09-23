@@ -76,13 +76,14 @@ export class GroundGrout{
   // Visible grains remain embedded in the filled ground, rather than turning
   // the entire section into a smooth solid sleeve.
   const stoneMaterial=new THREE.MeshStandardMaterial({color:'#514432',roughness:1});
-  this.stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),stoneMaterial,360);
+  this.stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,1),stoneMaterial,360);
   let seed=271826;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296),dummy=new THREE.Object3D();
   for(let i=0;i<360;i++){
    const a=i%2?0:Math.PI,h=.04+random()*.92,t=random(),inner=soilCavityRadius(a,h,options)+9,outer=soilEnvelope(a,h)-12;
    dummy.position.set(Math.cos(a)*THREE.MathUtils.lerp(inner,outer,t),THREE.MathUtils.lerp(soilHeight(R,a,h,0),soilHeight(R,a,h,1),t),.85);
    const size=i%9===0?5+random()*7:1+random()*3;
-   dummy.scale.set(size,size*(.35+random()*.6),.5+random());dummy.rotation.set(0,0,random()*TAU);dummy.updateMatrix();this.stones.setMatrixAt(i,dummy.matrix);
+   // Rounded pebbles, slightly tilted, instead of flat hexagon outlines.
+   dummy.scale.set(size,size*(.35+random()*.6),.5+random());dummy.rotation.set((random()-.5)*.7,(random()-.5)*.7,random()*TAU);dummy.updateMatrix();this.stones.setMatrixAt(i,dummy.matrix);
    this.stones.setColorAt(i,new THREE.Color().setHSL(.08+random()*.06,.13+random()*.25,.25+random()*.34));
   }
   this.group.add(this.stones);

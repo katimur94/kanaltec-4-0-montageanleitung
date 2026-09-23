@@ -1,5 +1,16 @@
 # Werbung: DSS-Flex Verfahren
 
+## Realistische Neufassung – 23.09.2026 (lokal, nicht veröffentlicht)
+
+Gleiche Schnittfolge und Tonspuren (78 Sekunden), aber filmische Darstellung: YouTube in 3840 × 2160, Reels/Shorts 1080 × 1920 und Facebook-Feed 1080 × 1350, jeweils supersampelt. `work/film-studio.js` ergänzt Kamera-Scheinwerfer am CutterCam-Kopf, Kanal-Inspektionslicht, gedämpfte Umgebungsreflexion, Tiefendunst, GTAO-Umgebungsverdeckung, Bloom, Farbgrading, Vignette, Filmkorn, Bewegungsunschärfe (Unterbilder) beim Fräsen, Wasser mit Lichtbrechung, Sohlwasser und Staub im Lampenlicht. Neuer Auftakt als Kanalkamera-Fahrt auf den Wurzelzopf, danach Nahaufnahme von Wurzeln und Infiltration.
+
+1. `npm ci`; Playwright in `work/qa/runtime` (`npm install playwright` dort) oder `KANALTEC_QA_RUNTIME` setzen; Edge und FFmpeg im Pfad (oder `KANALTEC_FFMPEG`).
+2. `node work/build-film.mjs`
+3. `node work/render-film.mjs --qa --scale=.25 --ss=2` für Kontrollbilder, danach `node work/render-film.mjs` (optional `--formats=YouTube`).
+4. Tonspuren der freigegebenen Fassungen nach `work/qa/audio/sprecher.m4a` und `musik.m4a` kopieren (Stream-Copy aus den bisherigen MP4).
+5. `python work/finish-real-films.py <Ausgabeordner>` vertont, decodiert vollständig, prüft Format/Dauer/Pegel und erzeugt Kontaktbögen.
+
+
 ## Zusätzliche Verschlussfilme – 20.09.2026
 
 Modellbasis `426422f` mit anschließender Nutzerkorrektur zur kompakteren, leicht ovalen Verschlussfläche (260 × 230 mm in der Rohrabwicklung): **Loch verschließen** und **Anschluss verschließen**, jeweils 60 Sekunden, 1920 × 1080, H.264 mit 30 Bildern/s, AAC Stereo und Faststart. Beide verwenden DN 400, geschlossene Schalung und Welle ohne Anschlussblase, großen Hohlraum mit Infiltration und den direkten Ablauf ohne Fräsen. Der Einfüllstutzen steht mittig unter der Schadstelle; der stillgelegte Anschluss wird nahezu vollständig gefüllt. Nur eigene Instrumentalmusik, keine Sprachaufnahme. Marken- und Titelkarten, keine Untertitel oder Website-Oberfläche.

@@ -9,9 +9,16 @@ export function repairFootprint(R,a,closed=false){
  // Compact, only slightly oval casting (260 x 230 mm in the developed wall).
  // It encloses the defect and both translated imprints without moving ports.
  if(closed)return [40+130*Math.cos(a),115*Math.sin(a)];
- // Open connection: similarly rounded, with room for the bore and imprints.
- return [2+120*Math.cos(a),105*Math.sin(a)];
+ // Open connection (user correction 23.09.2026): somewhat more oval, about
+ // 265 x 185 mm in the developed wall, with an irregular pressed-out edge
+ // instead of a perfect ellipse. Encloses bore, breakout and both imprints.
+ const m=footprintEdge(a);
+ return [2+132*m*Math.cos(a),92*m*Math.sin(a)];
 }
+// Irregular edge factor of the open casting (±10 % at most).
+export function footprintEdge(a){return 1+.045*Math.sin(3*a+.9)+.03*Math.sin(5*a+2.1)+.018*Math.sin(8*a+.4);}
+// Inside test in the developed wall for the open casting (scale < 1 is inside).
+export function footprintScale(x,arc){const a=Math.atan2(arc/92,(x-2)/132);return Math.hypot((x-2)/132,arc/92)/footprintEdge(a);}
 const clamp=x=>THREE.MathUtils.clamp(x,0,1);
 export function millingState(t){
  const trim=clamp((t-.12)/.28),outer=clamp((t-.43)/.47);

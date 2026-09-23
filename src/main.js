@@ -111,7 +111,7 @@ $$('[data-view]').forEach(b=>b.onclick=()=>{if(['robot','tool'].includes(b.datas
 $('family').onchange=()=>{const view=viewer?.currentView;state.id=+$('family').value;state.playing=false;state.explodePlaying=false;viewer?.build(state.id);if(viewer){viewer.setMode(state.mode);viewer.setGroup(state.group);viewer.setExplode(state.mode==='explode'?+$('explosion').value/100:0);viewer.fit(view);}updateInfo();selectPart(null);updatePlayButtons();if(!$('bomPanel').hidden)renderBom();};
 function changeRepair(){
  const kind=$('repairCase').value,milling=kind==='open'||$('preparation').value==='milling',previous=processTimeFor(stages,state.time);
- if(viewer)viewer.repairOptions={kind,milling,cavity:$('cavitySize').value,infiltration:kind==='open'||$('infiltration').checked};
+ if(viewer)viewer.repairOptions={kind,milling,cavity:$('cavitySize').value,infiltration:kind==='open'||$('infiltration').checked,sewerWater:33};
  stages.splice(0,stages.length,...stagesForRepair(kind,milling));
  lastStage=stages.length-1;endTime=stages.length-.001;$('timeline').max=Math.round(endTime*1000);
  const index=stages.findIndex((s,i)=>(s.phase??i)===Math.floor(previous));

@@ -1,4 +1,8 @@
-# Aktuelle Werbung: DSS-Flex Verfahren – 20.09.2026
+# Aktuelle Werbung: DSS-Flex Verfahren – 23.09.2026
+
+## Neu: Realistische Fassung und Anhänger-Rundgang (23.09.2026)
+
+Die sechs Verfahrensfilme (YouTube, Reels/Shorts, Facebook-Feed, je mit Sprecher und nur mit Musik) sind mit der Realismus-Überarbeitung neu produziert: verzweigte Wurzeln aus dem Hohlraum um den Anschluss, abfallendes und abtreibendes Fräsgut, Restwasser über und neben der Bumper-Platte, leicht ovale verschmierte Endfläche, hellere Ausleuchtung, Sprecher sagt „Ditom“. In der Galerie liegen Web-Fassungen (16–26 MB); die 4K- und Hochbitraten-Originale bleiben lokal in der Produktion. Neu ist der **Rundgang durch den DSS-Flex Sanierungsanhänger** (1920 × 1080, 78 s, nur Musik), gerendert aus `DSS-Flex-Sanierungsanhaenger.html?film` mit `node work/render-anhaenger-film.mjs`. Produktion und Prüfung: [FORTSCHRITT.md](FORTSCHRITT.md), `work/VIDEO-PRODUKTION.md`, `work/publish-web-films.py`.
 
 ## Neu: Loch und Anschluss verschließen
 

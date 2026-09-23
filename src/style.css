@@ -99,3 +99,9 @@ html[data-theme=dark]{color-scheme:dark}
 
 .download-links{display:flex;gap:18px;flex-wrap:wrap}.download-links a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .repair-config select{width:100%;max-width:100%;font-size:12px}.repair-config .water-option{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px}.repair-config .water-option input{width:auto}.repair-config #closureOptions>label:first-child{display:block;font-size:12px;margin-bottom:5px}
+
+.trailer-link{display:inline-flex;align-items:center;gap:8px;border:1px solid #1d6fae;border-radius:6px;padding:7px 11px;font-size:11px;font-weight:600;color:#1d6fae;text-decoration:none;white-space:nowrap;transition:background .18s,color .18s}
+.trailer-link:hover{background:#1d6fae;color:#fff}
+[data-theme=dark] .trailer-link{border-color:#5aa6e6;background:#1c3346;color:#d7ebfb}
+[data-theme=dark] .trailer-link:hover{background:#2c5f88;color:#fff}
+@media(max-width:760px){.trailer-link{padding:6px 7px}.trailer-label{display:none}}

@@ -1,0 +1,148 @@
+<title>DSS-Flex Sanierungsanhänger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>/*CSS*/</style>
+<div class="page">
+ <header class="top">
+  <img class="logo" src="/*LOGO*/" alt="DiTom Kanaltechnik" width="150" height="52">
+  <div class="titles">
+   <p class="eyebrow">Mobile Sanierung · Konzept 3 · Stand 23.09.2026</p>
+   <h1>DSS-Flex Sanierungsanhänger</h1>
+  </div>
+  <nav class="toplinks" aria-label="Weitere Seiten"><a href="index.html">← DSS-Flex Präsentation</a><a href="Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html#trailer">▶ Rundgang-Film</a></nav>
+ </header>
+
+ <main class="app">
+  <section class="stage" id="stage" aria-label="Interaktives 3D-Modell des Anhängers">
+   <canvas aria-label="3D-Ansicht: ziehen zum Drehen, Mausrad zum Zoomen"></canvas>
+   <div class="overlay" aria-hidden="false"></div>
+   <div class="kit" id="kit" hidden></div>
+
+   <div class="dock">
+    <div class="seg" role="toolbar" aria-label="Ansicht" id="views">
+     <button type="button" data-view="cut" aria-pressed="true">Schnitt</button>
+     <button type="button" data-view="exterior" aria-pressed="false">Fahrstellung</button>
+     <button type="button" data-view="work" aria-pressed="false">Arbeitsstellung</button>
+     <button type="button" data-view="plan" aria-pressed="false">Grundriss</button>
+     <button type="button" data-view="kit" aria-pressed="false">Schalung</button>
+     <button type="button" data-view="walk" aria-pressed="false" class="walkbtn">Begehen</button>
+    </div>
+    <button type="button" class="iconbtn" id="reset" title="Ansicht zurücksetzen" aria-label="Ansicht zurücksetzen">↺</button>
+   </div>
+
+   <div class="scene-title" id="sceneTitle">
+    <span class="rule"></span>
+    <p class="eyebrow" id="viewLabel">01 · Offener Schnitt</p>
+    <h2 id="viewHeading">Jedes Teil an seinem Platz.</h2>
+    <p id="viewSub">Dach und rechte Wand ausgeblendet. Teile anklicken – Schubladen und Türen lassen sich öffnen.</p>
+   </div>
+
+   <div class="scale"><b class="num">5,13 × 2,18 × 2,85 m</b><br>Aufbau außen · innen 5,05 × 2,10 × 2,05 m<br>zul. Gesamtmasse 3.500 kg</div>
+   <div class="ops" id="ops" role="toolbar" aria-label="Bedienen"></div>
+
+   <div class="bottom" id="bottom">
+    <div class="legend" id="legend" hidden></div>
+    <div class="options" id="options">
+     <label><input type="checkbox" data-opt="roof">Dach</label>
+     <label><input type="checkbox" data-opt="wall">Seitenwand</label>
+     <label><input type="checkbox" data-opt="numbers" checked>Nummern</label>
+     <label><input type="checkbox" data-opt="routes">Leitungen</label>
+     <label><input type="checkbox" data-opt="dims">Maße</label>
+    </div>
+    <p class="gesture">Ziehen: drehen · Rechte Maustaste: verschieben · Rad: zoomen · Schubladen, Türen und Klappen anklicken</p>
+   </div>
+
+   <div class="kittools" id="kitTools" hidden>
+    <label>Baugröße <select id="kitSize"><option value="300">DN 300</option><option value="400" selected>DN 350–400</option><option value="500">DN 450–500</option><option value="600">DN 550–600</option><option value="700">DN 650–700</option></select></label>
+    <label>Explosion <input id="kitExplode" type="range" min="0" max="100" value="35"></label>
+    <span id="kitPart">Teil anklicken für Bezeichnung</span>
+   </div>
+
+   <div class="walkui" id="walkUI" hidden>
+    <div class="walkhead"><span class="eyebrow">Ich-Perspektive · 1,62 m Augenhöhe</span><strong id="walkWhere">Vor der Seitentür · Klapptritt unten</strong></div>
+    <div class="cross" aria-hidden="true"></div>
+    <div class="stick" id="stick" role="group" aria-label="Joystick zum Gehen; alternativ WASD oder Pfeiltasten"><span></span></div>
+    <div class="walkbtns"><button type="button" id="walkReset">Zur Seitentür</button><button type="button" id="walkTurn">Umdrehen ↻</button><button type="button" id="walkExit">Übersicht ×</button></div>
+    <p class="walkhelp">WASD / Pfeile: gehen · Ziehen: umsehen · Q / E: drehen · Klick: öffnen · Esc: Übersicht</p>
+   </div>
+   <div class="err" id="err" hidden></div>
+  </section>
+
+  <aside class="side">
+   <div class="sidehead">
+    <p class="eyebrow">Ausstattung & Arbeitsablauf</p>
+    <h2>Logisch verteilt, wie im Einsatz.</h2>
+    <p>Nur DSS-Flex-Komponenten, Formen und Halterungen nach den Fotos der bestehenden Anlage. Alles Bewegliche lässt sich im Modell öffnen.</p>
+   </div>
+   <nav class="tabs" role="tablist" aria-label="Informationen">
+    <button type="button" role="tab" data-tab="parts" aria-selected="true">Bauteile</button>
+    <button type="button" role="tab" data-tab="load" aria-selected="false">Beladung</button>
+    <button type="button" role="tab" data-tab="supply" aria-selected="false">Versorgung</button>
+    <button type="button" role="tab" data-tab="process" aria-selected="false">Ablauf</button>
+    <button type="button" role="tab" data-tab="photos" aria-selected="false">Fotos</button>
+    <button type="button" role="tab" data-tab="sources" aria-selected="false">Quellen</button>
+   </nav>
+
+   <div class="panel" id="parts" role="tabpanel">
+    <div class="zones" id="zones"></div>
+    <article class="card" id="card"></article>
+    <p class="listtitle">Alle Bauteile · klicken zum Auswählen</p>
+    <div id="list"></div>
+   </div>
+
+   <div class="panel" id="load" role="tabpanel" hidden>
+    <h3>Beladung & Stützlast</h3>
+    <p class="copy">Schwerpunktrechnung aus den Einbaupositionen im Modell. Wasser, Säcke und Waschwasser ändern sich im 3D-Modell mit.</p>
+    <div class="presets" role="group" aria-label="Beladungszustand">
+     <button type="button" data-preset="anfahrt" aria-pressed="true">Anfahrt</button>
+     <button type="button" data-preset="voll" aria-pressed="false">Voll getankt</button>
+     <button type="button" data-preset="rueck" aria-pressed="false">Rückfahrt</button>
+    </div>
+    <label class="slider"><span>Wasser in 2 × 300 l</span><output id="waterOut" class="num"></output><input id="water" type="range" min="0" max="600" step="10" value="300"></label>
+    <label class="slider"><span>Mörtelsäcke à 25 kg</span><output id="bagsOut" class="num"></output><input id="bags" type="range" min="0" max="10" step="1" value="10"></label>
+    <label class="slider"><span>Waschwasser im Absetzbehälter</span><output id="washOut" class="num"></output><input id="wash" type="range" min="0" max="80" step="5" value="0"></label>
+    <div class="totals" id="totals"></div>
+    <div id="checks"></div>
+    <ul class="notes" id="notes"></ul>
+    <h4 class="sub">Massen nach Gruppen</h4>
+    <table class="masses" id="masses"></table>
+   </div>
+
+   <div class="panel" id="supply" role="tabpanel" hidden>
+    <h3>Leitungswege</h3>
+    <p class="copy">Im Modell unter „Leitungen“ farbig eingeblendet. Alle Wege laufen unter der Decke oder an der Wand, der Gang bleibt frei.</p>
+    <div id="routeList"></div>
+    <h3 class="gap">Strombedarf je Arbeitsphase</h3>
+    <p class="copy">Planungswerte. Nicht alle Verbraucher laufen gleichzeitig; das Aggregat wird auf die größte Phase ausgelegt.</p>
+    <div id="power"></div>
+   </div>
+
+   <div class="panel" id="process" role="tabpanel" hidden>
+    <h3>Arbeitsablauf am Anhänger</h3>
+    <p class="copy">Vom Abstellen bis zur Fahrstellung: welche Station bei welchem Schritt gebraucht wird. „Im Modell zeigen“ stellt Türen, Markise und Pumpe passend ein.</p>
+    <ol class="steps" id="steps"></ol>
+   </div>
+
+   <div class="panel" id="photos" role="tabpanel" hidden>
+    <h3>Bestehende Anlage</h3>
+    <p class="copy">Fotos der alten Anlage. Halterungen, Trommel, Haspel, Blasenhalter und Pumpenstation im Modell folgen diesen Vorbildern.</p>
+    <div class="gallery" id="gallery"></div>
+   </div>
+
+   <div class="panel" id="sources" role="tabpanel" hidden>
+    <h3>Quellen & Annahmen</h3>
+    <p class="copy">Massen ohne Quelle sind Schätzungen für die Planung. Konzeptstudie, keine Fertigungs- oder Zulassungsunterlage; Aufbau, Gewichte und Befestigung mit dem Fahrzeugbauer abstimmen.</p>
+    <ul class="srclist" id="srclist"></ul>
+   </div>
+  </aside>
+ </main>
+
+ <dialog class="lightbox" id="lightbox" aria-label="Foto vergrößert">
+  <form method="dialog"><button class="close" aria-label="Schließen">×</button></form>
+  <img id="lbImg" alt="">
+  <p id="lbCap"></p>
+  <div class="lbnav"><button type="button" id="lbPrev" aria-label="Vorheriges Foto">‹</button><button type="button" id="lbNext" aria-label="Nächstes Foto">›</button></div>
+ </dialog>
+</div>
+<script>/*JS*/</script>

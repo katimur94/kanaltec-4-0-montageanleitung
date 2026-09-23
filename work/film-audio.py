@@ -4,7 +4,10 @@ from pathlib import Path
 sys.path.insert(0,str(Path('work/qa/video-runtime').resolve()))
 import numpy as np
 import edge_tts,imageio_ffmpeg
-OUT=Path('Videos/DSS-Flex-Verfahren-2026'); TMP=Path('work/qa/video')
+# Speech text is written phonetically where needed ("Ditom", not "DiTom",
+# which the synthetic voice would read as two words).
+import os
+OUT=Path(os.environ.get('KANALTEC_AUDIO_OUT','Videos/DSS-Flex-Verfahren-2026')); TMP=Path('work/qa/video')
 FF=imageio_ffmpeg.get_ffmpeg_exe(); SR=48000; DURATION=78
 OUT.mkdir(parents=True,exist_ok=True);TMP.mkdir(parents=True,exist_ok=True)
 rows=json.loads(Path('work/film-script.json').read_text(encoding='utf-8'))
