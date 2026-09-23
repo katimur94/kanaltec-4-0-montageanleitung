@@ -8,6 +8,8 @@
 
 **Prüfung:** `npm test` und `npm run build` bestanden, Anhänger-Seite neu gebaut; alle sieben MP4 vollständig decodiert (1080p/Hochformat, 30 fps, H.264/AAC, Spitzenpegel unter 0 dB). In Edge: Button öffnet die Anhänger-Seite, Rück-Link führt zur Animation, Galerie zeigt den Rundgang – keine Skriptfehler. Keine Zugangsdaten, Telegram-IDs oder Benutzerpfade in den veröffentlichten Dateien (Suchmuster geprüft); Fotos ohne GPS-Daten.
 
+**Veröffentlichung:** Commit `0469f3d` per Fast-Forward auf `main` gepusht (kein Force-Push). Pages-Build für `0469f3d` erfolgreich (`built`). Live in Edge geprüft: Startseite mit Button **Sanierungsanhänger**, Klick öffnet `DSS-Flex-Sanierungsanhaenger.html`, 3D-Modell bereit, Arbeitsstellung mit Markise, Rampen und Mischpumpe gerendert; Videogalerie lädt alle neun Filme mit korrekter Dauer und Auflösung, der Rundgang spielt ab Sekunde 40 ohne Fehler. Rundgang-Film vorher per Telegram an den Nutzer gesendet (Versand bestätigt).
+
 ## 23.09.2026 – Sanierungsanhänger Konzept 3: alles bedienbar, kein Schacht, Rundgang-Film
 
 **Anlass:** Rückmeldung zu Konzept 2: Schacht weg (nur den Anhänger erklären), wirkt noch zu unecht und spielzeughaft, Schubladen sollen sich öffnen lassen und Zubehör wie auf den Fotos zeigen, durch die Seitentür muss man hinein können, DiTom-Logo fehlt, die Mischpumpe hat Rollen und soll rausgestellt werden können, Luftanschlüsse und Steckdosen an der Wand, ein aufklappbares Dach für Regen. Danach Rundgang-Video nur mit Musik.
