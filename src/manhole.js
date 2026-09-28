@@ -24,9 +24,10 @@ export function manholeSpec(dn){
  const invert=-Rp,G=invert+(Rm>=600?3000:2500),top=G-230;
  // Eccentric cone/cover: its vertical side and the climbing irons are on the
  // back wall (−z), so the opening centre is offset towards −z.
- const zc=-(Rm-ro),pz1=zc-ro-130;
+ const zc=-(Rm-ro),near=zc-ro-150,zT=near-1250;
  // Tail lift of the truck parked with its rear at the shaft (floor height 1.1 m).
- const platform={x0:-1250,x1:1250,z0:pz1-1300,z1:pz1,y:G+1100};
+ // Truck parked beside the shaft; tail lift behind its rear (+x).
+ const platform={x0:-1300,x1:600,z0:zT-1250,z1:zT+1250,y:G+1100,zT};
  return {dn,Rp,t,Rm,wall,ro,zc,platform,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
 }
 // Inner radius and centre of the shaft at height y (vertical side stays at z = −Rm).
@@ -42,7 +43,8 @@ export function inLadder(spec,p,margin=0){const L=spec.ladder;return p.y>L.from-
 
 const rot=(p,a)=>{const c=Math.cos(a),s=Math.sin(a);return V(p.x*c-p.y*s,p.x*s+p.y*c,p.z);};
 // Estimated masses (kg) for the static equilibrium; no weighed values exist.
-export function insertionMasses(dn){return{robot:34,mould:10+dn*.022};}
+// Robot 54 kg (IBAK: MicroGator "allein die 54 kg"); mould mass estimated.
+export function insertionMasses(dn){return{robot:54,mould:10+dn*.022};}
 const DEG=Math.PI/180;
 // Quasi-static solver: the unit hangs from the crane hook at the lifting eye
 // on top of the robot. For a hook position it finds robot tilt and hinge
@@ -58,7 +60,7 @@ function makeSolver(geo){
   const bins=Array.from({length:48},()=>({}));for(const p of pts){const b=bins[Math.min(47,Math.floor((p.x-lo)/(hi-lo+1e-6)*48))];for(const [k,f] of[['y0',q=>-q.y],['y1',q=>q.y],['z0',q=>-q.z],['z1',q=>q.z],['d0',q=>-q.y-Math.abs(q.z)],['d1',q=>q.y-Math.abs(q.z)]])if(!b[k]||f(p)>f(b[k]))b[k]=p;}
   for(const b of bins)out.push(...Object.values(b));return out;};
  const pack=(pts,o)=>{const a=new Float64Array(pts.length*3);pts.forEach((p,i)=>{a[i*3]=p.x-o.x;a[i*3+1]=p.y-o.y;a[i*3+2]=p.z;});return a;};
- const R=pack(thin(geo.robotPts,520),eye),F=pack(thin(geo.formPts,520),pin);
+ const R=pack(thin(geo.robotPtsStraight||geo.robotPts,1400),eye),F=pack(thin(geo.formPts,900),pin);
  const pe=pin.clone().sub(eye),cr=geo.comR.clone().sub(eye),cf=geo.comF.clone().sub(pin);
  const viol=(x,y,z)=>{
   if(y>=spec.G-1){
@@ -74,7 +76,7 @@ function makeSolver(geo){
   if(y>L.from-40&&y<spec.coneTop-150&&Math.abs(x)<L.half+25)v=Math.max(v,-spec.Rm+L.depth+17-z);
   return v;
  };
- const K=150,kh=90;
+ const K=3000,kh=90;
  const energy=(H,tr,h)=>{
   const c=Math.cos(tr),s=Math.sin(tr),tf=tr+h,cf2=Math.cos(tf),sf=Math.sin(tf);
   const Wx=H.x+c*pe.x-s*pe.y,Wy=H.y+s*pe.x+c*pe.y;
@@ -101,7 +103,7 @@ function makeSolver(geo){
  };
  // Resting on the tail lift, straight and centred.
  const all=[...geo.formPts,...geo.robotPts],minX=all.reduce((m,p)=>Math.min(m,p.x),Infinity),maxX=all.reduce((m,p)=>Math.max(m,p.x),-Infinity);
- const W0=V(pin.x-(minX+maxX)/2,P.y-geo.yb+pin.y+1,(P.z0+P.z1)/2);
+ const W0=V(pin.x-(minX+maxX)/2+(P.x0+P.x1)/2,P.y-geo.yb+pin.y+1,(P.z0+P.z1)/2);
  // Final in-channel pose: rear just clear of the round shaft wall.
  const rearGap=geo.robotPts.reduce((m,p)=>Math.min(m,p.x-pin.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z))),Infinity);
  const final=V(Math.max(-80,22-rearGap),pin.y,0);
@@ -126,9 +128,9 @@ function insertionPose(time,geo){
  // while the robot keeps its hanging tilt, then the robot is laid down.
  const fp=geo.formPts,rp=geo.robotPts;
  const contact=(theta,wx)=>{let y=-Infinity;for(const p of fp){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);y=Math.max(y,floorAt(spec,wx+q.x,p.z)-q.y);}return y;};
- const hangX=-80,restY=pin.y-(S.rest??=contact(0,0)),lie=(theta,wx)=>contact(theta,wx)+restY*smooth(1+theta/(Math.PI/2)*2);
+ const hangX=30,restY=pin.y-(S.rest??=contact(0,0)),lie=(theta,wx)=>contact(theta,wx)+restY*smooth(1+theta/(Math.PI/2)*2);
  const rearGap=theta=>{let m=Infinity;for(const p of rp){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);m=Math.min(m,q.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z)));}return m;};
- const th2=S.free.thetaR,W3=S.W3??=V(hangX,lie(th2,hangX),0),eye3=W3.clone().add(rot(toEye,th2));
+ const th2=Math.max(S.free.thetaR,-Math.PI/2),W3=S.W3??=V(hangX,lie(th2,hangX),0),eye3=W3.clone().add(rot(toEye,th2));
  // Hook path of the crane operator for lifting and lowering.
  const hookAt=(st,g)=>{
   if(st===1){const a=smooth(g/.75),b=smooth((g-.6)/.4);return V(lerp(eye0.x,xTop,b),lerp(eye0.y,lift,a),lerp(eye0.z,spec.z0,b));}
@@ -138,9 +140,9 @@ function insertionPose(time,geo){
  // previous one), lightly damped and cached, so any seek order gives the same result.
  const table=st=>{
   S.tables??={};if(S.tables[st])return S.tables[st];
-  const n=48,raw=[];let seed=st===1?null:(()=>{const e=table(1).at(-1);return{thetaR:e[0],h:e[1],u:e[4],w:e[5]};})();
+  const n=48,raw=[];let seed=st===1?{thetaR:0,h:0,u:0,w:0}:(()=>{const e=table(1).at(-1);return{thetaR:e[0],h:e[1],u:e[4],w:e[5]};})();
   for(let i=0;i<=n;i++){const H0=hookAt(st,i/n),q=S.solve(H0,seed||undefined);raw.push([q.thetaR,q.h,q.eye.x-H0.x,q.eye.y-H0.y,q.u,q.w]);seed=q;}
-  const damp=st===1?.3:.8,sm=[raw[0].slice()];for(let i=1;i<=n;i++){const p=sm[i-1],r=raw[i];sm.push(p.map((v,k)=>v+(r[k]-v)*damp));}
+  const damp=st===1?.3:1,sm=[raw[0].slice()];for(let i=1;i<=n;i++){const p=sm[i-1],r=raw[i];sm.push(p.map((v,k)=>v+(r[k]-v)*damp));}
   return S.tables[st]=sm.map((v,i)=>{const w=smooth((i/n-.8)/.2);return v.map((x,k)=>lerp(x,raw[i][k],w));});
  };
  let H,pose,rope=1,drive=0;
@@ -155,8 +157,9 @@ function insertionPose(time,geo){
  else if(stage===3){const tf=th2*(1-smooth(f)),W=V(hangX,lie(tf,hangX),0);pose={thetaR:th2,h:tf-th2,W};H=W.clone().add(rot(toEye,th2));}
  else if(stage===4){const tr=th2*(1-smooth(f)),W=V(Math.max(hangX,22-rearGap(tr)),pin.y,0);pose={thetaR:tr,h:-tr,W};H=W.clone().add(rot(toEye,tr));}
  else{drive=1400*smooth((f-.15)/.85);rope=1-smooth(f/.2);H=eyeF.clone().add(V(drive,0,0));pose={thetaR:0,h:0,W:S.final.clone().add(V(drive,0,0))};}
- // Cable bomb: folded up (latched) while lifting; back in line in the pipe.
- const up=-Math.PI/2,plug=stage===0?lerp(0,up,smooth(f/.4)):stage<5?up:lerp(-Math.PI/2,0,smooth((f-.45)/.3));
+ // Cable bomb: straight while lifting and lowering (clear of the chain), folded
+ // up only to lay the robot down in the shaft, back in line in the pipe.
+ const up=-Math.PI/2,plug=stage<4?0:stage===4?lerp(0,up,smooth(f/.45)):lerp(-Math.PI/2,0,smooth((f-.45)/.3));
  return{stage,f,thetaF:pose.thetaR+pose.h,thetaR:pose.thetaR,W:pose.W,drive,rope,plug,hinge:pose.h,hook:H};
 }
 export function frameMatrix(theta,W,pin){return new THREE.Matrix4().makeTranslation(W.x,W.y,W.z).multiply(new THREE.Matrix4().makeRotationZ(theta)).multiply(new THREE.Matrix4().makeTranslation(-pin.x,-pin.y,-pin.z));}
@@ -233,87 +236,78 @@ function emblemTexture(){
 }
 function claimTexture(){return canvasTexture(2048,160,(g,w,h)=>{g.clearRect(0,0,w,h);g.fillStyle='#d7dde2';g.font='600 78px Arial, sans-serif';g.textBaseline='middle';const txt='Stutzen- und Rohrsanierung · DSS-Flex';const k=Math.min(1,(w-20)/g.measureText(txt).width);g.setTransform(k,0,0,1,10,0);g.fillText(txt,0,h/2);});}
 
-// Box truck parked with its open rear and tail lift at the shaft, red column
-// crane inside at the rear door (after the site photos). Proportions of a
-// 7.5 t service truck; not a specific vehicle.
+// Box truck parked beside the shaft, seen from the side; the tail lift at the
+// rear (+x) is at loading height and the red column crane stands inside the
+// box at the rear door, its boom coming out of the truck (site photos).
+// Proportions of a 7.5 t service truck; not a specific vehicle.
 function buildTruck(spec){
- const G=spec.G,P=spec.platform,zR=P.z0,W=1250,H=2350,Lb=4800,floor=P.y,grp=new THREE.Group();grp.name='LKW mit Kran im Koffer (Darstellung)';
- const white=new THREE.MeshStandardMaterial({color:'#eef0f1',metalness:.15,roughness:.45}),inner=new THREE.MeshStandardMaterial({color:'#c9cdd0',roughness:.7,side:THREE.DoubleSide});
+ const G=spec.G,P=spec.platform,xr=P.x0,zT=P.zT,Wd=1250,H=2350,Lb=4800,floor=P.y,grp=new THREE.Group();grp.name='LKW mit Kran im Koffer (Darstellung)';
+ const white=new THREE.MeshStandardMaterial({color:'#eef0f1',metalness:.15,roughness:.45}),inner=new THREE.MeshStandardMaterial({color:'#8f9497',roughness:.8,side:THREE.DoubleSide});
  const black=new THREE.MeshStandardMaterial({color:'#15181b',roughness:.7}),tyre=new THREE.MeshStandardMaterial({color:'#1a1b1d',roughness:.92}),rim=new THREE.MeshStandardMaterial({color:'#b9c0c6',metalness:.85,roughness:.3});
  const glass=new THREE.MeshStandardMaterial({color:'#0c1720',metalness:.6,roughness:.08}),red=new THREE.MeshStandardMaterial({color:'#c8231e',metalness:.3,roughness:.4}),blue=new THREE.MeshStandardMaterial({color:'#1565b8',metalness:.3,roughness:.4});
  const crane=new THREE.MeshStandardMaterial({color:'#d1211b',metalness:.35,roughness:.35}),steel=new THREE.MeshStandardMaterial({color:'#9aa3aa',metalness:.85,roughness:.28}),alu=new THREE.MeshStandardMaterial({color:'#b7bcbf',metalness:.7,roughness:.38});
- const amber=new THREE.MeshStandardMaterial({color:'#ffb21e',emissive:'#ff9a00',emissiveIntensity:.9,roughness:.3}),lamp=new THREE.MeshStandardMaterial({color:'#ffffff',emissive:'#f2f6ff',emissiveIntensity:1.4});
+ const amber=new THREE.MeshStandardMaterial({color:'#ffb21e',emissive:'#ff9a00',emissiveIntensity:.9,roughness:.3});
  const add=(g,m,p)=>{const o=mesh(g,m);if(p)o.position.copy(p);grp.add(o);return o;};
- const zc=zR-Lb/2;
- // Box: walls, roof, front and floor; the rear is open with doors folded to the sides.
- add(new THREE.BoxGeometry(40,H,Lb),white,V(-W,floor+H/2,zc));add(new THREE.BoxGeometry(40,H,Lb),white,V(W,floor+H/2,zc));
- add(new THREE.BoxGeometry(2*W+40,50,Lb),white,V(0,floor+H,zc));add(new THREE.BoxGeometry(2*W+40,H,40),white,V(0,floor+H/2,zR-Lb));
- add(new THREE.BoxGeometry(2*W,60,Lb),new THREE.MeshStandardMaterial({color:'#8e9396',metalness:.5,roughness:.5}),V(0,floor-30,zc));
- for(const s of[-1,1])add(new THREE.PlaneGeometry(Lb,H-20),inner,V(s*(W-22),floor+H/2,zc)).rotation.y=Math.PI/2;
- add(new THREE.PlaneGeometry(2*W-40,Lb),inner,V(0,floor+H-26,zc)).rotation.x=Math.PI/2;
- for(const s of[-1,1]){add(new THREE.BoxGeometry(70,H,70),alu,V(s*(W-15),floor+H/2,zR));const door=add(new THREE.BoxGeometry(30,H-60,W-20),white,V(s*(W+38),floor+H/2,zR-(W-20)/2-40));door.name='Hecktür (geöffnet)';}
- add(new THREE.BoxGeometry(2*W+40,120,70),alu,V(0,floor+H-40,zR));
- add(new THREE.BoxGeometry(1400,40,40),lamp,V(0,floor+H-60,zR-1800));
- // Livery on the kerb side (+x) and on the folded rear door.
- const side=W+22;
- const logoPlane=add(new THREE.PlaneGeometry(3000,3000*733/2145),new THREE.MeshStandardMaterial({transparent:true,roughness:.35,metalness:.1,color:'#ffffff'}),V(side,floor+1600,zR-3000));logoPlane.rotation.y=Math.PI/2;logoPlane.name='DiTom-Logo';logoPlane.visible=false;logoPlane.castShadow=false;
- const logoRear=add(new THREE.PlaneGeometry(1500,1500*733/2145),logoPlane.material,V(0,floor+H+310,zR+40));logoRear.visible=false;logoRear.castShadow=false;
- add(new THREE.BoxGeometry(2*W+40,560,24),white,V(0,floor+H+290,zR+14));
- add(new THREE.BoxGeometry(6,90,Lb-200),red,V(side,floor+300,zc-100));add(new THREE.BoxGeometry(6,36,Lb-200),blue,V(side,floor+400,zc-100));
+ const xc=xr-Lb/2,near=zT+Wd;
+ // Closed box body; only the rear (+x) is open with the doors folded to the sides.
+ add(new THREE.BoxGeometry(Lb,H,40),white,V(xc,floor+H/2,zT+Wd));add(new THREE.BoxGeometry(Lb,H,40),white,V(xc,floor+H/2,zT-Wd));
+ add(new THREE.BoxGeometry(Lb,50,2*Wd+40),white,V(xc,floor+H,zT));add(new THREE.BoxGeometry(40,H,2*Wd+40),white,V(xr-Lb,floor+H/2,zT));
+ add(new THREE.BoxGeometry(Lb,60,2*Wd),new THREE.MeshStandardMaterial({color:'#8e9396',metalness:.5,roughness:.5}),V(xc,floor-30,zT));
+ add(new THREE.BoxGeometry(20,H-60,2*Wd-60),inner,V(xr-1400,floor+H/2,zT));
+ for(const s of[-1,1]){add(new THREE.BoxGeometry(70,H,70),alu,V(xr,floor+H/2,zT+s*(Wd-15)));const door=add(new THREE.BoxGeometry(Wd-20,H-60,30),white,V(xr-(Wd-20)/2-40,floor+H/2,zT+s*(Wd+38)));door.name='Hecktür (geöffnet)';}
+ add(new THREE.BoxGeometry(70,120,2*Wd+40),alu,V(xr,floor+H-40,zT));
+ // Livery on the kerb side facing the street and the shaft (+z).
+ const logoPlane=add(new THREE.PlaneGeometry(3100,3100*733/2145),new THREE.MeshStandardMaterial({transparent:true,roughness:.35,metalness:.1,color:'#ffffff'}),V(xc-300,floor+1560,near+22));logoPlane.name='DiTom-Logo';logoPlane.visible=false;logoPlane.castShadow=false;
+ add(new THREE.BoxGeometry(Lb-200,90,6),red,V(xc-100,floor+300,near+22));add(new THREE.BoxGeometry(Lb-200,36,6),blue,V(xc-100,floor+400,near+22));
  const emblem=emblemTexture(),claim=claimTexture();
- if(emblem){const e=add(new THREE.PlaneGeometry(1000,1000),new THREE.MeshStandardMaterial({map:emblem,transparent:true,roughness:.4}),V(W+56,floor+1350,zR-640));e.rotation.y=Math.PI/2;e.name='DSS-Flex-Emblem';e.castShadow=false;}
- if(claim){const c=add(new THREE.PlaneGeometry(3000,234),new THREE.MeshStandardMaterial({map:claim,transparent:true,roughness:.5,color:'#26303a'}),V(side+1,floor+900,zR-3000));c.rotation.y=Math.PI/2;c.castShadow=false;}
- if(typeof document!=='undefined'){const img=document.querySelector('.brand-logo');if(img?.src)new THREE.TextureLoader().load(img.src,t=>{t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;logoPlane.material.map=t;logoPlane.material.needsUpdate=true;logoPlane.visible=logoRear.visible=true;});}
- // Chassis, wheels, cab.
- for(const s of[-1,1])add(new THREE.BoxGeometry(90,260,7400),black,V(s*430,floor-230,zR-3300));
- for(const [z,dual] of[[zR-1500,true],[zR-5700,false]])for(const s of[-1,1]){
-  const w=dual?560:300,x=s*(W-w/2-30);
-  for(const [r,m,ww] of[[480,tyre,w],[270,rim,w+8],[90,steel,w+30]]){const o=mesh(new THREE.CylinderGeometry(r,r,ww,r>300?40:24),m);o.rotation.z=Math.PI/2;o.position.set(x,G+480,z);grp.add(o);}
-  add(new THREE.BoxGeometry(w+40,40,dual?1150:720),black,V(x,floor-140,z));
+ if(emblem){const e=add(new THREE.PlaneGeometry(1000,1000),new THREE.MeshStandardMaterial({map:emblem,transparent:true,roughness:.4}),V(xr-640,floor+1350,near+60));e.name='DSS-Flex-Emblem';e.castShadow=false;}
+ if(claim){const c=add(new THREE.PlaneGeometry(3100,242),new THREE.MeshStandardMaterial({map:claim,transparent:true,roughness:.5,color:'#26303a'}),V(xc-300,floor+880,near+23));c.castShadow=false;}
+ if(typeof document!=='undefined'){const img=document.querySelector('.brand-logo');if(img?.src)new THREE.TextureLoader().load(img.src,t=>{t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;logoPlane.material.map=t;logoPlane.material.needsUpdate=true;logoPlane.visible=true;});}
+ // Chassis, wheels, cab (front at −x).
+ for(const s of[-1,1])add(new THREE.BoxGeometry(7400,260,90),black,V(xr-3300,floor-230,zT+s*430));
+ for(const [x,dual] of[[xr-1500,true],[xr-5700,false]])for(const s of[-1,1]){
+  const w=dual?560:300,z=zT+s*(Wd-w/2-30);
+  for(const [r,m,ww] of[[480,tyre,w],[270,rim,w+8],[90,steel,w+30]]){const o=mesh(new THREE.CylinderGeometry(r,r,ww,r>300?40:24),m);o.rotation.x=Math.PI/2;o.position.set(x,G+480,z);grp.add(o);}
+  add(new THREE.BoxGeometry(dual?1150:720,40,w+40),black,V(x,floor-140,z));
  }
- add(new RoundedBoxGeometry(2480,2450,1850,4,120),white,V(0,G+2250,zR-Lb-1000)).name='Fahrerhaus';
- add(new THREE.PlaneGeometry(700,650),glass,V(1242,G+2950,zR-Lb-1250)).rotation.y=Math.PI/2;
- add(new THREE.BoxGeometry(1500,110,260),amber,V(0,G+3530,zR-Lb-1000));
- for(const s of[-1,1]){add(new THREE.BoxGeometry(260,180,40),new THREE.MeshStandardMaterial({color:'#b3120d',emissive:'#6a0000',emissiveIntensity:.6}),V(s*(W-260),floor-200,zR+20));}
- add(new THREE.BoxGeometry(520,110,10),new THREE.MeshStandardMaterial({color:'#f2f2ee',roughness:.5}),V(-500,floor-230,zR+30));
- // Tail lift at floor height, with arms and warning edge.
- const lift=add(new THREE.BoxGeometry(2*W,60,P.z1-P.z0),alu,V(0,P.y-30,(P.z0+P.z1)/2));lift.name='Ladebordwand';
- for(let i=0;i<10;i++)add(new THREE.BoxGeometry(250,62,40),i%2?red:white,V(-W+125+i*250,P.y-30,P.z1-20));
- for(const s of[-1,1])add(new THREE.BoxGeometry(90,90,900),black,V(s*700,P.y-300,zR+200)).rotation.x=.35;
- // Interior after the photos: mixing pump, cable drum, shelves, hoses, cones.
- const pump=add(new THREE.BoxGeometry(760,1150,800),new THREE.MeshStandardMaterial({color:'#dfe2e3',metalness:.3,roughness:.5}),V(-W+470,floor+575,zR-650));pump.name='Mischpumpe';
- add(new THREE.PlaneGeometry(460,180),black,V(-W+470,floor+830,zR-248));
- const drum=new THREE.Group();drum.name='Kabeltrommel Roboter';const dc=V(-250,floor+470,zR-1500);
- {const reel=mesh(new THREE.CylinderGeometry(300,300,420,32),new THREE.MeshStandardMaterial({color:'#1b1e20',roughness:.6}));reel.rotation.z=Math.PI/2;drum.add(reel);
-  for(const s of[-1,1]){const fl=mesh(new THREE.CylinderGeometry(440,440,24,40),blue);fl.rotation.z=Math.PI/2;fl.position.x=s*222;drum.add(fl);const leg=mesh(new THREE.BoxGeometry(50,470,380),steel);leg.position.set(s*250,-235,0);drum.add(leg);}}
- drum.position.copy(dc);grp.add(drum);
- for(let k=0;k<4;k++){const sh=add(new THREE.BoxGeometry(420,25,900),alu,V(W-240,floor+450+k*480,zR-2600));sh.name='Regal';add(new THREE.BoxGeometry(300,200,360),new THREE.MeshStandardMaterial({color:['#2e7d32','#e0e0e0','#1565c0','#9e9e9e'][k],roughness:.7}),V(W-250,floor+560+k*480,zR-2450-k*80));}
- for(let k=0;k<3;k++){const coil=mesh(new THREE.TorusGeometry(260-k*30,18,10,40),blue);coil.rotation.y=Math.PI/2;coil.position.set(W-60,floor+1500-k*60,zR-1200+k*40);grp.add(coil);}
- {const coil=mesh(new THREE.TorusGeometry(230,14,10,40),new THREE.MeshStandardMaterial({color:'#e8c21a',roughness:.5}));coil.rotation.x=Math.PI/2;coil.position.set(-450,floor+30,zR-500);grp.add(coil);}
- const coneMat=new THREE.MeshStandardMaterial({color:'#e2502b',roughness:.6});for(let k=0;k<4;k++){const c=mesh(new THREE.ConeGeometry(150,700,24),coneMat);c.position.set(200,floor+350+k*60,zR-1100);grp.add(c);}
- // Column crane at the rear door: base, square column, slewing head,
- // telescopic boom through the door opening, lift cylinder, winch.
- const base=V(450,floor,zR-420);
+ add(new RoundedBoxGeometry(1850,2450,2480,4,120),white,V(xr-Lb-1000,G+2250,zT)).name='Fahrerhaus';
+ add(new THREE.PlaneGeometry(700,650),glass,V(xr-Lb-1250,G+2950,near+2));
+ add(new THREE.PlaneGeometry(2150,1000),glass,V(xr-Lb-1927,G+2850,zT)).rotation.y=-Math.PI/2;
+ add(new THREE.BoxGeometry(260,110,1500),amber,V(xr-Lb-1000,G+3530,zT));
+ add(new THREE.BoxGeometry(1500,30,4),red,V(xr-Lb-1000,G+1750,near+2));
+ for(const s of[-1,1])add(new THREE.BoxGeometry(40,180,260),new THREE.MeshStandardMaterial({color:'#b3120d',emissive:'#6a0000',emissiveIntensity:.6}),V(xr+20,floor-200,zT+s*(Wd-260)));
+ // Tail lift at floor height behind the rear, with warning edge and arms.
+ add(new THREE.BoxGeometry(P.x1-P.x0,60,2*Wd),alu,V((P.x0+P.x1)/2,P.y-30,zT)).name='Ladebordwand';
+ for(let i=0;i<10;i++)add(new THREE.BoxGeometry(40,62,250),i%2?red:white,V(P.x1-20,P.y-30,zT-Wd+125+i*250));
+ for(const s of[-1,1])add(new THREE.BoxGeometry(900,90,90),black,V(xr+200,P.y-300,zT+s*700)).rotation.z=-.35;
+ // Column crane just inside the rear door, boom out of the truck.
+ const base=V(xr-450,floor,near-420);
  add(new THREE.BoxGeometry(420,30,420),crane,base.clone().add(V(0,15,0)));
  add(new THREE.BoxGeometry(170,1280,170),crane,base.clone().add(V(0,670,0)));
  const head=add(new THREE.BoxGeometry(240,180,240),crane,base.clone().add(V(0,1380,0)));
  const pivot=base.clone().add(V(0,1420,0));
  const mk=m=>{const o=mesh(new THREE.BoxGeometry(1,1,1),m);grp.add(o);return o;};
- const boomA=mk(crane),boomB=mk(crane),cyl=mk(black),rod=mk(steel),sheave=mesh(new THREE.CylinderGeometry(70,70,50,20),black),winch=mesh(new THREE.CylinderGeometry(80,80,200,18),black);grp.add(sheave,winch);
- const up=V(0,1,0),tipY=floor+1820;
+ const boomA=mk(crane),boomB=mk(crane),cyl=mk(black),rod=mk(steel),sheave=mesh(new THREE.CylinderGeometry(70,70,50,20),black);grp.add(sheave);
+ const up=V(0,1,0),minTip=floor+1900,maxTip=floor+4400;
+ // The boom luffs up so the hoist always stays well above the load.
  const pose=target=>{
-  const flat=V(target.x-pivot.x,0,target.z-pivot.z),d=clamp(flat.length(),900,2900),dir=flat.lengthSq()>1?flat.normalize():V(0,0,1);
-  const T=V(pivot.x+dir.x*d,tipY,pivot.z+dir.z*d);
+  const flat=V(target.x-pivot.x,0,target.z-pivot.z),d=clamp(flat.length(),700,2900),dir=flat.lengthSq()>1?flat.normalize():V(1,0,0);
+  const T=V(pivot.x+dir.x*d,clamp(target.y+950,minTip,maxTip),pivot.z+dir.z*d);
   const mid=pivot.clone().lerp(T,Math.min(.62,1100/T.distanceTo(pivot)));
   beam(boomA,pivot,mid,150,160);beam(boomB,mid.clone().lerp(pivot,.08),T,110,120);
   const c0=base.clone().add(V(0,420,0)).addScaledVector(dir,110),c1=pivot.clone().lerp(mid,.8).addScaledVector(up,-90);
   beam(cyl,c0,c0.clone().lerp(c1,.58),110,110);beam(rod,c0.clone().lerp(c1,.52),c1,55,55);
   head.rotation.y=-Math.atan2(dir.z,dir.x);sheave.position.copy(T);sheave.rotation.set(0,-Math.atan2(dir.z,dir.x),Math.PI/2);
-  winch.position.copy(base).add(V(0,1150,0)).addScaledVector(dir,-130);winch.rotation.set(0,-Math.atan2(dir.z,dir.x)+Math.PI/2,Math.PI/2);
   return T.clone().add(V(0,-70,0));
  };
- return{group:grp,pose,drumTop:dc.clone().add(V(0,300,0)),rest:V(0,tipY-600,(P.z0+P.z1)/2),crane:{pivot}};
+ // Robot cable drum at the rear inside the box (seen through the door only from the rear).
+ const drum=new THREE.Group();drum.name='Kabeltrommel Roboter';const dc=V(xr-500,floor+470,zT-500);
+ {const reel=mesh(new THREE.CylinderGeometry(300,300,420,32),new THREE.MeshStandardMaterial({color:'#1b1e20',roughness:.6}));reel.rotation.x=Math.PI/2;drum.add(reel);
+  for(const s of[-1,1]){const fl=mesh(new THREE.CylinderGeometry(440,440,24,40),blue);fl.rotation.x=Math.PI/2;fl.position.z=s*222;drum.add(fl);}}
+ drum.position.copy(dc);grp.add(drum);
+ return{group:grp,pose,drumTop:dc.clone().add(V(0,300,0)),rest:V((P.x0+P.x1)/2,P.y+900,zT),crane:{pivot}};
 }
+
 export class ManholeScene{
  constructor(dn,cutPlane){
   const spec=this.spec=manholeSpec(dn),{Rp,t,Rm,wall,G}=spec;this.cutPlane=cutPlane;
@@ -395,7 +389,7 @@ export class ManholeScene{
    const markMat=new THREE.MeshStandardMaterial({color:'#e9e8e1',roughness:.8});
    for(let x=-4200;x<6200;x+=3000){const m=add(new THREE.BoxGeometry(1500,3,120),markMat);m.position.set(x,G+2,1300);}
    const coneMat=new THREE.MeshStandardMaterial({color:'#e2502b',roughness:.6}),white=new THREE.MeshStandardMaterial({color:'#f1f1ea',roughness:.5});
-   for(const [x,z] of[[-2300,-900],[1700,-1150],[1500,900],[-1200,1200]]){const c=new THREE.Group();c.add(mesh(new THREE.BoxGeometry(380,30,380),new THREE.MeshStandardMaterial({color:'#222',roughness:.9})));const k=mesh(new THREE.ConeGeometry(150,700,32),coneMat);k.position.y=365;c.add(k);for(const y of[250,420]){const b=mesh(new THREE.CylinderGeometry(150*(1-(y-15)/700)-1,150*(1-(y+55)/700)-1,70,32,1,true),white);b.position.y=y+35;b.scale.setScalar(1.02);c.add(b);}c.position.set(x,G,z);this.group.add(c);}
+   for(const [x,z] of[[-2600,600],[1700,-1150],[1500,900],[-1200,1200]]){const c=new THREE.Group();c.add(mesh(new THREE.BoxGeometry(380,30,380),new THREE.MeshStandardMaterial({color:'#222',roughness:.9})));const k=mesh(new THREE.ConeGeometry(150,700,32),coneMat);k.position.y=365;c.add(k);for(const y of[250,420]){const b=mesh(new THREE.CylinderGeometry(150*(1-(y-15)/700)-1,150*(1-(y+55)/700)-1,70,32,1,true),white);b.position.y=y+35;b.scale.setScalar(1.02);c.add(b);}c.position.set(x,G,z);this.group.add(c);}
   }
   this.truck=buildTruck(spec);this.group.add(this.truck.group);
   // Electric chain hoist under the boom tip (photo): orange housing, grey
@@ -412,6 +406,14 @@ export class ManholeScene{
   this.chain=new THREE.InstancedMesh(new THREE.TorusGeometry(9,3,6,12),this.chainMat,400);this.chain.name='Lastkette';this.chain.frustumCulled=false;this.group.add(this.chain);
   this.rope=this.chain;
   this.hook=new THREE.Group();{const hk=mesh(new THREE.TorusGeometry(30,9,8,20,Math.PI*1.45),orange);hk.rotation.z=Math.PI*.8;this.hook.add(hk);const blk=mesh(new THREE.BoxGeometry(56,70,40),orange);blk.position.y=55;this.hook.add(blk);}this.group.add(this.hook);
+  // Lifting yoke (photo): black square tube from the hook, silver cross bar and
+  // two side straps with round pin heads that sit in the robot's side slots.
+  this.yoke=new THREE.Group();this.yoke.name='Hebebügel';{const silver=new THREE.MeshStandardMaterial({color:'#c3c8cb',metalness:.85,roughness:.25}),blk=new THREE.MeshStandardMaterial({color:'#1a1d20',metalness:.3,roughness:.5}),w=78;
+   for(const sgn of[-1,1]){const leg=mesh(new THREE.BoxGeometry(34,300,7),silver);leg.position.set(0,150,sgn*w);this.yoke.add(leg);const pinH=mesh(new THREE.CylinderGeometry(13,13,16,20),silver);pinH.rotation.x=Math.PI/2;pinH.position.set(0,0,sgn*(w-9));this.yoke.add(pinH);}
+   const bar=mesh(new THREE.BoxGeometry(40,26,2*w+8),silver);bar.position.y=300;this.yoke.add(bar);
+   const tubeY=mesh(new THREE.BoxGeometry(46,300,46),blk);tubeY.position.y=450;this.yoke.add(tubeY);
+   const eyeR=mesh(new THREE.TorusGeometry(20,6,8,16),silver);eyeR.position.y=615;this.yoke.add(eyeR);}
+  this.group.add(this.yoke);this.yokeTop=640;
   this.cableMat=new THREE.MeshStandardMaterial({color:'#15191c',roughness:.5});this.cable=mesh(new THREE.BufferGeometry(),this.cableMat);this.cable.name='Roboterkabel';this.cable.castShadow=false;this.group.add(this.cable);
   // Cable roller on the rim towards the truck.
   this.roller=V(-120,G+70,spec.zc-spec.ro+40);
@@ -468,6 +470,8 @@ export class ManholeScene{
   const s=this.spec;
   if(this.flowNormal)this.flowNormal.offset.set(-clock*280/420,.05*Math.sin(clock*.7));
   // Crane tip follows the hook while loaded; returns over the tail lift after release.
+  // The yoke hangs plumb from its pins; the hook sits on top of it.
+  this.yoke.position.copy(hook);hook=hook.clone().add(V(0,this.yokeTop,0));
   const want=rope>.999?hook.clone():hook.clone().lerp(this.truck.rest,1-rope);
   const tip=this.truck.pose(want);
   const hookPos=rope>.999?hook.clone():hook.clone().lerp(tip.clone().add(V(0,-600,0)),1-rope);
@@ -476,7 +480,7 @@ export class ManholeScene{
   const n=Math.min(this.chain.count,Math.floor(len/15));
   for(let i=0;i<this.chain.count;i++){if(i<n){q.setFromUnitVectors(V(0,1,0),dir);if(i%2)q.multiply(new THREE.Quaternion().setFromAxisAngle(V(0,1,0),Math.PI/2));m.compose(top.clone().addScaledVector(dir,(i+.5)*len/n),q,V(1,1.45,1));}else m.makeScale(0,0,0);this.chain.setMatrixAt(i,m);}
   this.chain.instanceMatrix.needsUpdate=true;
-  this.hook.position.copy(hookPos).add(V(0,20,0));
+  this.hook.position.copy(hookPos).add(V(0,20,0));if(rope<.999)this.yoke.position.copy(hookPos).add(V(0,-this.yokeTop,0));
   const pend=tip.clone().add(V(160,-1500,60));this.pendant.position.copy(pend);
   this.pendantCable.geometry.dispose();this.pendantCable.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([tip.clone().add(V(60,-200,40)),tip.clone().add(V(150,-800,70)),pend.clone().add(V(0,85,0))]),16,4,6,false);
   // Cable: straight out of the cable bomb, up the shaft clear of wall and

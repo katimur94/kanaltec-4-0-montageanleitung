@@ -69,9 +69,9 @@ export class Robot{
   }
   g.add(box(434,26,95,m.black,V(-749,y+47,0),4));
   for(const x of [-950,-825,-675,-545]){const p=plate(29,100,5,m.dark,[[-7,-38,2.6],[7,38,2.6]]);p.rotation.x=-Math.PI/2;p.position.set(x,y+63,0);g.add(p);for(const z of [-38,38])g.add(bolt(3,m.steel,m.gasket,V(x,y+66,z),'y'));}
-  // Triangular lifting bracket on top (photos): two plates with a shackle bore.
-  for(const side of[-1,1]){const pl=plate(150,120,8,m.polished,[[0,34,11]],1);pl.position.set(-872,y+92,side*14);g.add(pl);}
-  g.add(cyl(13,40,m.steel,V(-872,y+126,0),'z'),box(170,10,48,m.polished,V(-872,y+36,0)));
+  // Lifting slots on both chassis sides between the wheels (photos): a raised
+  // plate with a slot open to the top; the lifting yoke's round pin heads go in here.
+  for(const side of[-1,1]){g.add(box(118,78,9,m.polished,V(-757,y-2,side*67)));g.add(box(30,46,4,m.black,V(-757,y+13,side*72),.3));g.add(cyl(15,5,m.gasket,V(-757,y-5,side*73),'z'));}
   // 150 mm front body envelope and discrete rotary seals.
   const rotor=new THREE.Group();rotor.name='Drehmodul · rotierender Frontflansch';this.frontBase.add(rotor);
   for(const[x,l,r,ma]of [[-462,62,74,m.steel],[-420,21,75,m.polished],[-397,23,70,m.dark],[-376,17,68,m.steel]])(x>=-397?rotor:g).add(cyl(r,l,ma,V(x,y,0)));
@@ -93,10 +93,11 @@ export class Robot{
   bake(p);this.plugTip=V(-262,0,0);this.plugDefault=0;
   this.tailCable=tube([V(-1322,y,0),V(-1380,y-8,-5),V(-1430,this.wheelY-this.wheelRadius+20,-5)],7,m.black);this.tailCable.name='Roboterkabel';this.carrier.add(this.tailCable);
   // Lifting eye on top of the chassis (the crane hook attaches here).
-  this.liftEye=V(-872,y+126,0);
+  // Pivot of the lifting yoke: axis through the two side slots.
+  this.liftEye=V(-757,y-5,0);this.slotHalfWidth=76;
  }
  // With the bomb folded the supply lines end at the chassis rear.
- setPlug(angle){this.lineStartX=angle===undefined||Math.abs(angle)<.3?undefined:-1010;this.plug.rotation.z=angle??this.plugDefault;this.tailCable.visible=angle===undefined||Math.abs(angle-this.plugDefault)<1e-6;}
+ setPlug(angle){this.lineStartX=angle===undefined?undefined:-1010;this.plug.rotation.z=angle??this.plugDefault;this.tailCable.visible=angle===undefined;}
  buildExtension(){
   const m=this.m,y=this.bodyY,wy=this.wheelY,drop=y-wy,e=new THREE.Group();e.name=this.config.label;this.extension=e;this.chassis.add(e);
   for(const side of [-1,1])for(const x of [-940,-575]){

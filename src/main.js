@@ -120,9 +120,12 @@ $$('button[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));$$('bu
 $$('button[data-stage]').forEach(b=>b.onclick=()=>{state.playing=false;state.time=+b.dataset.stage+.92;updateStage();updatePlayButtons();});
 $$('[data-view]').forEach(b=>b.onclick=()=>{if(state.mode==='insert')setAutoCam(false);if(['robot','tool'].includes(b.dataset.view)){$('hideRobot').checked=false;updateSections();if(state.group!=='all')setGroup('all');}if(b.dataset.view==='shaft'&&!['all','h'].includes(state.group))setGroup('all');stopRotation();viewer?.fit(b.dataset.view);$$('[data-view]').forEach(x=>x.classList.toggle('active',x===b));});
 $('family').onchange=()=>{const view=viewer?.currentView;state.id=+$('family').value;state.playing=false;state.explodePlaying=false;viewer?.build(state.id);if(viewer){viewer.setMode(state.mode);viewer.setGroup(state.group);viewer.setExplode(state.mode==='explode'?+$('explosion').value/100:0);viewer.fit(view);}updateInfo();selectPart(null);updatePlayButtons();if(!$('bomPanel').hidden)renderBom();};
+function showInfiltration(){const v=+$('infiltrationLevel').value;$('infiltrationValue').textContent=v===0?'kein Wasser':v<25?'tropfend':v<50?'rinnend':v<70?'stark':'Wasserfall';}
+showInfiltration();
 function changeRepair(){
  const kind=$('repairCase').value,milling=kind==='open'||$('preparation').value==='milling',previous=processTimeFor(stages,state.time);
- if(viewer)viewer.repairOptions={kind,milling,cavity:$('cavitySize').value,infiltration:kind==='open'||$('infiltration').checked,sewerWater:33};
+ const wet=kind==='open'||$('infiltration').checked;$('infiltrationLevel').disabled=!wet;
+  if(viewer)viewer.repairOptions={kind,milling,cavity:$('cavitySize').value,infiltration:wet,infiltrationLevel:+$('infiltrationLevel').value/100,sewerWater:33};
  stages.splice(0,stages.length,...stagesForRepair(kind,milling));
  lastStage=stages.length-1;endTime=stages.length-.001;$('timeline').max=Math.round(endTime*1000);
  const index=stages.findIndex((s,i)=>(s.phase??i)===Math.floor(previous));
@@ -130,7 +133,7 @@ function changeRepair(){
  $('processControl').querySelector('.rangeends span').textContent=milling?'Fräsen':'Positionieren';renderStages();
  state.lastStage=-1;$('family').onchange();
 }
-$('repairCase').onchange=changeRepair;$('cavitySize').onchange=changeRepair;$('infiltration').onchange=changeRepair;$('preparation').onchange=changeRepair;
+$('repairCase').onchange=changeRepair;$('cavitySize').onchange=changeRepair;$('infiltration').onchange=changeRepair;$('preparation').onchange=changeRepair;$('infiltrationLevel').onchange=changeRepair;$('infiltrationLevel').oninput=showInfiltration;
 $('drawing').onclick=openDrawing;$('fidelity').onclick=()=>{state.ref='research';setMode('sources');};
 $('ghost').onclick=()=>{const on=$('ghost').getAttribute('aria-pressed')!=='true';$('ghost').setAttribute('aria-pressed',String(on));viewer?.setGhost(on);};
 $('labels').onclick=()=>{state.labels=!state.labels;$('labels').setAttribute('aria-pressed',String(state.labels));};

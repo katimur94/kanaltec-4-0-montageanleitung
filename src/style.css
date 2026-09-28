@@ -108,3 +108,4 @@ html[data-theme=dark]{color-scheme:dark}
 .repair-config .level-label{display:block;font-size:12px;margin:10px 0 4px}
 .hinge-readout{display:flex;align-items:center;gap:8px;margin:8px 0 0;font-size:12px;opacity:.9}.hinge-readout i{width:10px;height:10px;border-radius:50%;background:#5f6d77;flex:none}.hinge-readout[data-open="true"] i{background:#e0a21b;box-shadow:0 0 8px #e0a21b}.hinge-readout[data-open="locked"] i{background:#399c94}
 .insert-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.insert-row .hinge-readout{margin:8px 0 0}#autoCam[aria-pressed="false"]{opacity:.7}
+.repair-config input[type=range]{width:100%}.repair-config .level-label output{float:right;font-weight:600}.repair-config .level-ends{display:flex;justify-content:space-between;font-size:11px;opacity:.7}

@@ -282,12 +282,14 @@ export class RepairScene {
   // The chosen level scales thickness and drip rate (display parameters).
   const level=levelSpec(options.infiltrationLevel);
   for(let i=0;i<7;i++){
-   const a=[.055,.102,.21,.44,.58,.627,.83][i]*TAU,[x,arc]=breakoutContour(a),edge=surfacePoint(R,x,arc,2);
+   // Water enters over one flank of the breakout only (+z side); the level
+   // enables the paths from the middle outwards.
+   const enabled=i<level.streams,a=Math.PI/2+[0,-1,1,-2,2,-3,3][i]*.2,[x,arc]=breakoutContour(a),edge=surfacePoint(R,x,arc,2);
    const start=this.point(a,1,.2+(i%3)*.06),side=arc<0?-1:1,length=46+38*(i%3)+14*Math.sin(i*2.3);
-   this.damp.add(makeMesh(strip(x,arc,side,length,2.6+1.2*(i%2),3,-.12,i),this.dampMaterial));
+   if(enabled){this.damp.add(makeMesh(strip(x,arc,side,length,2.6+1.2*(i%2),3,-.12,i),this.dampMaterial));
    this.damp.add(makeMesh(strip(x,arc,side,length*1.35,7+2*(i%3),5,-.08,i+.5),this.haloMaterial));
-   this.sinter.add(makeMesh(strip(x,arc,side,10+6*(i%3),4.2,1.2,-.2,i+1.7),this.sinterMaterial));
-   for(let j=0;j<3;j++){
+   this.sinter.add(makeMesh(strip(x,arc,side,10+6*(i%3),4.2,1.2,-.2,i+1.7),this.sinterMaterial));}
+   if(enabled)for(let j=0;j<3;j++){
     const [sx,sa]=breakoutContour(a+(j-1)*.035),p=surfacePoint(R,sx,sa,-.3),o=makeMesh(stalactite,this.sinterMaterial);
     const size=1.1+.9*((i+j)%3)/2,len=3+7*(((i*5+j*3)%7)/6);o.position.copy(p);o.quaternion.setFromUnitVectors(V(0,1,0),p.clone().normalize());o.scale.set(size,len,size);this.sinter.add(o);
    }
@@ -295,7 +297,7 @@ export class RepairScene {
    const stream=tube(path.incoming,radius,this.waterMaterial,64),runoff=tube(path.incoming,radius,this.runoffMaterial,96);
    // Real seepage drips at different rates; strong paths become a broken thread.
    const interval=[.95,.2,1.45,.55,.13,1.15,.38][i]*level.interval;
-   this.water.add(stream,runoff);this.streams.push({mesh:stream,runoffMesh:runoff,start,edge,radius,path,curve:path.incoming,angle:a,interval});
+   this.water.add(stream,runoff);this.streams.push({mesh:stream,runoffMesh:runoff,start,edge,radius,path,curve:path.incoming,angle:a,interval,enabled});
    for(let j=0;j<8;j++){const d=makeMesh(dropletGeo,this.dropMaterial);this.water.add(d);this.drops.push({mesh:d,stream:i,index:j,phase:(j*.217+i*.137+j*j*.031)%1});}
    for(let j=0;j<3;j++){const d=makeMesh(dropletGeo,this.runoffMaterial);d.scale.setScalar(1.65);this.water.add(d);this.waterTraces.push({mesh:d,stream:i,phase:j/3});}
    const pendant=makeMesh(dropletGeo,this.dropMaterial);this.water.add(pendant);this.pendants.push(pendant);
@@ -509,7 +511,7 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
    const tangent=this.feedCurve.getTangentAt(u),radial=V(0,0,1).cross(tangent).normalize().applyAxisAngle(tangent,i*2.4);
    o.position.copy(this.feedCurve.getPointAt(u)).addScaledVector(radial,2.7);
   }
-  this.waterActivity=this.options.infiltration===false?0:1-smooth(fill/.86);this.water.visible=this.waterActivity>.001;
+  this.waterActivity=this.options.infiltration===false||this.extras.spec.I<=0?0:1-smooth(fill/.86);this.water.visible=this.waterActivity>.001;
   this.damp.visible=this.options.infiltration!==false&&fill<.62;
   // Sinter and stalactites sit on the old edge; round milling removes them.
   this.sinter.visible=this.damp.visible&&!(this.millingProgress?.outer>0);
@@ -522,7 +524,7 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
    for(const s of this.streams){s.path=shieldWaterPath(this.R,s.start,s.edge,shield,s.radius);s.curve=s.path.incoming;s.mesh.geometry.dispose();s.mesh.geometry=rivuletGeometry(s.curve,64,s.radius);if(s.path.runoff){s.runoffMesh.geometry.dispose();s.runoffMesh.geometry=rivuletGeometry(s.path.runoff,96,s.radius);}}
   }
   for(let i=0;i<this.streams.length;i++){
-   const s=this.streams[i],a=this.waterActivity; s.mesh.visible=a> .035+i*.025;
+   const s=this.streams[i],a=this.waterActivity; s.mesh.visible=s.enabled&&a> .035+i*.025;
    s.runoffMesh.visible=s.mesh.visible&&s.path.caught&&runoffStrength>.001;
   }
   // Drops form at the lip, detach at each stream's own rate and fall freely.
@@ -532,28 +534,28 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
   const fallOf=s=>{const p=s.path.lip,drop=Math.max(1,p.y-floorAt(p.z));return{p,drop,T:Math.sqrt(2*drop/G)};};
   for(const d of this.drops){
    const s=this.streams[d.stream],{p,drop,T}=fallOf(s),cycle=8*s.interval,age=wrap(clock-d.index*s.interval,cycle);
-   d.mesh.visible=dripping&&age<T;if(!d.mesh.visible)continue;
+   d.mesh.visible=dripping&&s.enabled&&age<T;if(!d.mesh.visible)continue;
    const streak=Math.min(drop*.3,G*age*this.streakTime),r=Math.max(.38,s.radius*.72),y=p.y-.5*G*age*age;
    d.mesh.position.set(p.x+.3*Math.sin(d.index*2.1+d.stream),y+streak*.5,p.z+.3*Math.cos(d.index*1.7+d.stream));d.mesh.scale.set(r,r+streak*.5,r);
   }
   this.pendants.forEach((o,i)=>{
    const s=this.streams[i],grow=wrap(clock,s.interval)/s.interval,r=Math.max(.38,s.radius*.72)*(.5+.8*grow);
-   o.visible=dripping;o.position.copy(s.path.lip).add(V(0,-r*(.6+.5*grow),0));o.scale.set(r,r*(1.05+.55*grow),r);
+   o.visible=dripping&&s.enabled;o.position.copy(s.path.lip).add(V(0,-r*(.6+.5*grow),0));o.scale.set(r,r*(1.05+.55*grow),r);
   });
   for(const d of this.splashDrops){
    const s=this.streams[d.stream],{p,drop,T}=fallOf(s),tau=wrap(clock-T,s.interval);
    const a=d.index/6*TAU+d.stream*.9,speed=(160+190*((d.index*7+d.stream)%5)/4)*(.7+.35*s.radius),vy=260+230*((d.index*3+d.stream)%4)/3;
    const x=p.x+Math.cos(a)*speed*tau,z=p.z+Math.sin(a)*speed*tau,y=floorAt(z)+vy*tau-.5*G*tau*tau;
-   d.mesh.visible=dripping&&drop>25&&tau<.16&&y>floorAt(z);
+   d.mesh.visible=dripping&&s.enabled&&drop>25&&tau<.16&&y>floorAt(z);
    if(d.mesh.visible){const r=.3+.22*s.radius;d.mesh.position.set(x,y,z);d.mesh.scale.set(r,r*1.5,r);}
   }
   this.extras.update({clock,activity:this.waterActivity,runoff:runoffStrength,shield,floorAt,poseChanged,streams:this.streams,fallOf,dripping,infiltration:this.options.infiltration!==false});
-  if(this.flowWater)this.flowWater.uniforms.uPlume.value.set(this.streams[4].path.lip.x,this.plumeStrength*this.waterActivity*runoffStrength*(dripping?1:0),0,0);
+  if(this.flowWater)this.flowWater.uniforms.uPlume.value.set(this.streams[0].path.lip.x,this.plumeStrength*this.waterActivity*runoffStrength*(dripping?1:0),0,0);
   for(const d of this.waterTraces){const s=this.streams[d.stream];d.mesh.visible=s.runoffMesh.visible;if(d.mesh.visible)d.mesh.position.copy(s.path.runoff.getPointAt(wrap(clock*.9+d.phase,1)));}
   this.splash.children.forEach((o,i)=>{
    const s=this.streams[i],{p,drop,T}=fallOf(s),life=Math.min(.7,s.interval*.97),u=wrap(clock-T,s.interval)/life,floor=floorAt(p.z);
    const normal=this.flowWater?V(0,1,0):V(0,-floor,-p.z).normalize();
-   o.visible=dripping&&drop>25&&u<1;o.position.set(p.x,floor,p.z).addScaledVector(normal,this.flowWater?.3:1.2);o.quaternion.setFromUnitVectors(V(0,0,1),normal);
+   o.visible=dripping&&s.enabled&&drop>25&&u<1;o.position.set(p.x,floor,p.z).addScaledVector(normal,this.flowWater?.3:1.2);o.quaternion.setFromUnitVectors(V(0,0,1),normal);
    o.scale.setScalar(2.5+34*Math.sqrt(Math.min(1,u)));this.rippleMaterials[i].opacity=.5*(1-Math.min(1,u))*this.waterActivity;
   });
  }

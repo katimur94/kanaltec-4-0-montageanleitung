@@ -4,20 +4,18 @@ import * as THREE from 'three';
 // illustrative, deterministic depiction driven by the real-seconds clock, not a
 // flow simulation. Rates and jet speeds are display parameters.
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),TAU=Math.PI*2,G=9810;
-const wrap=(x,m)=>((x%m)+m)%m;
+const wrap=(x,m)=>((x%m)+m)%m,lerp=THREE.MathUtils.lerp;
 function surfacePoint(R,x,arc,depth=0){return V(x,(R+depth)*Math.cos(arc/R),(R+depth)*Math.sin(arc/R));}
 
-// drip: slow single drops. flow: default, drops plus threads, wall films and
-// washed-in fines. pressure: groundwater under head, additional crack jets.
-export const infiltrationLevels={
- drip:{label:'Tropfend',radius:.8,interval:1.8,films:0,jets:0,grains:0,plume:.3,thread:false},
- flow:{label:'Rinnend',radius:1,interval:1,films:4,jets:0,grains:3,plume:.7,thread:true},
- pressure:{label:'Drückendes Grundwasser',radius:1.25,interval:.6,films:6,jets:3,grains:4,plume:1,thread:true},
- // After the site photo: thick sheets pouring down the wall, a falling curtain
- // from the crown, turbulent streaks and foam.
- burst:{label:'Starker Wassereinbruch',radius:2.6,interval:.12,films:6,filmWidth:7,jets:2,grains:6,plume:1.8,thread:true,curtain:true,streak:1}
-};
-export function levelSpec(level){return infiltrationLevels[level]||infiltrationLevels.flow;}
+// Infiltration intensity 0…1 (slider): 0 dry, low values single drops, then
+// threads and wall films, from about 0.55 a waterfall pouring over one flank of
+// the breakout (after the site photo). Water enters from one side only.
+// Former named levels map onto the scale.
+export const infiltrationPresets={drip:.2,flow:.45,pressure:.7,burst:.9};
+export function levelSpec(level){
+ const I=typeof level==='number'?Math.min(1,Math.max(0,level)):infiltrationPresets[level]??.85,lerp=THREE.MathUtils.lerp,k=(a,b)=>Math.min(1,Math.max(0,(I-a)/(b-a)));
+ return{I,radius:lerp(.55,2.6,Math.pow(I,1.3)),interval:lerp(2.6,.1,Math.pow(I,.6)),streams:I<=0?0:Math.max(1,Math.ceil(I*7)),films:I<.3?0:Math.round(lerp(2,6,k(.3,1))),filmWidth:lerp(1,6,k(.3,1)),jets:0,grains:I<.25?0:Math.round(lerp(2,6,k(.25,1))),plume:1.8*I,thread:I>.35,waterfall:k(.55,1),streak:k(.6,1)};
+}
 
 // Water sheet on the pipe wall: travelling pulses along the run, bright glints.
 function filmMaterial(uniforms){
@@ -40,7 +38,7 @@ function filmMaterial(uniforms){
 
 export class InfiltrationExtras{
  constructor(R,{contour,level,cutPlane,cracks=[]}){
-  this.R=R;this.spec=levelSpec(level);this.level=level in infiltrationLevels?level:'flow';this.cutPlane=cutPlane;
+  this.R=R;this.spec=levelSpec(level);this.level=this.spec.I;this.cutPlane=cutPlane;
   this.group=new THREE.Group();this.group.name='Infiltration · Wandläufe, Strahlen, Bodenkörner';
   this.uniforms={uTime:{value:0},uActivity:{value:1},uStrong:{value:this.spec.streak||0}};
   this.filmMaterial=filmMaterial(this.uniforms);
@@ -48,7 +46,7 @@ export class InfiltrationExtras{
   this.films=new THREE.Group();this.wet=new THREE.Group();this.group.add(this.wet,this.films);
   // Films start at the lateral flanks of the breakout, where the wall is
   // already inclined and the water clings instead of dropping.
-  const starts=[1.36,1.78,4.52,4.93,1.18,5.12].slice(0,this.spec.films);
+  const starts=[1.45,1.2,1.75,1.02,1.98,1.6].slice(0,this.spec.films);
   this.filmRuns=[];
   starts.forEach((a,i)=>{
    const [x0,arc0]=contour(a),side=arc0<0?-1:1,end=side*R*Math.acos(-.84),drift=(i%2?1:-1)*(8+5*i);
@@ -88,22 +86,44 @@ export class InfiltrationExtras{
   // Continuous threads under strong streams; they break into drops lower down.
   this.threadGeometry=new THREE.CylinderGeometry(.55,1,1,10,6,true);this.threadGeometry.translate(0,-.5,0);
   this.threads=[];
-  // Falling curtain out of the crown breakout (strong inflow only).
-  if(this.spec.curtain){
-   this.curtainMat=new THREE.MeshPhysicalMaterial({color:'#bdbcad',transparent:true,roughness:.05,clearcoat:1,envMapIntensity:1.3,depthWrite:false,side:THREE.DoubleSide});
-   this.curtainMat.onBeforeCompile=sh=>{sh.uniforms.uTime=this.uniforms.uTime;sh.uniforms.uActivity=this.uniforms.uActivity;
-    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec2 vCur;').replace('#include <begin_vertex>','#include <begin_vertex>\nvCur=uv;');
-    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime,uActivity;varying vec2 vCur;').replace('#include <color_fragment>','#include <color_fragment>\n float fall=fract((1.-vCur.y)*5.-uTime*4.2+sin(vCur.x*6.283*4.)*.15),lane=.5+.5*sin(vCur.x*6.283*7.+uTime*3.);\n diffuseColor.a=uActivity*(.35+.35*smoothstep(.5,1.,fall)+.2*lane)*smoothstep(0.,.08,vCur.y);diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.93,.93,.9),.5*smoothstep(.75,1.,fall)+.2*(1.-vCur.y));');};
-   this.curtainMat.customProgramCacheKey=()=>'kanaltec-curtain';
-   const g=new THREE.CylinderGeometry(34,46,1,24,24,true);g.translate(0,-.5,0);
-   this.curtain=new THREE.Mesh(g,this.curtainMat);this.curtain.name='Wasservorhang aus dem Scheitel';this.curtain.castShadow=this.curtain.receiveShadow=false;this.group.add(this.curtain);
-   this.foam=new THREE.Mesh(new THREE.CircleGeometry(1,32),new THREE.MeshStandardMaterial({color:'#e8e8e2',transparent:true,opacity:.7,roughness:.6,depthWrite:false}));this.foam.rotation.x=-Math.PI/2;this.foam.name='Schaum';this.group.add(this.foam);
+  // Waterfall over one flank of the breakout: it clings to the wall first,
+  // tears off and falls; it ends on the shield or runs on down the wall.
+  if(this.spec.waterfall>0){
+   this.fallMat=new THREE.MeshPhysicalMaterial({color:'#b9b8a8',transparent:true,roughness:.04,clearcoat:1,clearcoatRoughness:.03,envMapIntensity:1.4,depthWrite:false,side:THREE.DoubleSide});
+   this.fallMat.onBeforeCompile=sh=>{sh.uniforms.uTime=this.uniforms.uTime;sh.uniforms.uActivity=this.uniforms.uActivity;
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec2 vFall;').replace('#include <begin_vertex>','#include <begin_vertex>\nvFall=uv;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime,uActivity;varying vec2 vFall;').replace('#include <color_fragment>',`#include <color_fragment>
+ float along=vFall.y,x=vFall.x,edge=1.-x*x;
+ float s1=fract(along*3.1-uTime*3.6+sin(x*9.+along*2.)*.12),s2=fract(along*5.3-uTime*5.1+x*2.3),lane=.5+.5*sin(x*21.+sin(along*4.-uTime*7.)*1.6);
+ float streak=smoothstep(.55,1.,s1)+.6*smoothstep(.7,1.,s2);
+ diffuseColor.a=uActivity*clamp(.32+.35*streak+.25*lane*edge,0.,.95)*smoothstep(0.,.35,edge+.1);
+ diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.92,.92,.88),clamp(.55*streak+.2*lane,0.,.85));`);};
+   this.fallMat.customProgramCacheKey=()=>'kanaltec-waterfall';
+   this.fall=new THREE.Mesh(new THREE.BufferGeometry(),this.fallMat);this.fall.name='Wasserfall am Anschluss';this.fall.castShadow=this.fall.receiveShadow=false;this.fall.renderOrder=3;this.group.add(this.fall);
+   this.foam=new THREE.Mesh(new THREE.CircleGeometry(1,32),new THREE.MeshStandardMaterial({color:'#e9e9e3',transparent:true,opacity:.7,roughness:.6,depthWrite:false,side:THREE.DoubleSide}));this.foam.name='Schaum';this.group.add(this.foam);
   }
   this.matrix=new THREE.Matrix4();this.q=new THREE.Quaternion();
  }
  addThreads(streams){
   if(!this.spec.thread)return;
-  streams.forEach((s,i)=>{if(s.interval>=.3)return;const o=new THREE.Mesh(this.threadGeometry,this.jetMaterial);o.castShadow=o.receiveShadow=false;this.group.add(o);this.threads.push({o,stream:i});});
+  streams.forEach((s,i)=>{if(s.interval>=.3||!s.enabled)return;const o=new THREE.Mesh(this.threadGeometry,this.jetMaterial);o.castShadow=o.receiveShadow=false;this.group.add(o);this.threads.push({o,stream:i});});
+ }
+ // Rebuilt when the shield pose changes: surface part, tear-off, free fall.
+ traceFall(shield,floorAt){
+  const R=this.R,wf=this.spec.waterfall,width=lerp(70,190,wf),pts=[];
+  const arc0=46,arc1=arc0+R*(.22+.12*wf);
+  for(let i=0;i<=10;i++){const arc=lerp(arc0,arc1,i/10);pts.push(surfacePoint(R,0,arc,-3-3*wf*i/10));}
+  const p1=pts.at(-1),t=V(0,-Math.sin(arc1/R),Math.cos(arc1/R)),v=t.multiplyScalar(lerp(500,1300,wf)),p=V();let hit=null;
+  for(let i=1;i<=240;i++){const tau=i*.003;p.copy(p1).addScaledVector(v,tau);p.y-=.5*G*tau*tau;
+   if(shield&&Math.abs(p.x-shield.x)<=250){const outer=R-10+3*(shield.seal||0)+2,dy=p.y-shield.lift;if(Math.abs(Math.atan2(p.z,dy))<=1.13&&Math.hypot(dy,p.z)<=outer){hit={point:p.clone(),normal:V(0,dy,p.z).normalize()};pts.push(p.clone());break;}}
+   if(Math.hypot(p.y,p.z)>=R-2||p.y<=floorAt(p.z)){const q=p.clone();if(p.y<=floorAt(p.z))q.y=floorAt(p.z);else q.setLength(R-2.5).setX(p.x);hit={point:q,normal:q.y<=floorAt(q.z)+.5?V(0,1,0):V(0,-q.y,-q.z).normalize()};pts.push(q);break;}
+   if(i%6===0)pts.push(p.clone());}
+  const pos=[],uv=[],idx=[],cols=8;let len=0;
+  for(let j=0;j<pts.length;j++){if(j)len+=pts[j].distanceTo(pts[j-1]);const u=j/(pts.length-1),w=width*(.75+.45*u);
+   for(let c=0;c<=cols;c++){const x=(c/cols-.5)*2;pos.push(pts[j].x+x*w/2+4*Math.sin(u*9+x*3),pts[j].y,pts[j].z);uv.push(x,len/400);}
+   if(j<pts.length-1)for(let c=0;c<cols;c++){const a=j*(cols+1)+c,b=a+cols+1;idx.push(a,b,a+1,b,b+1,a+1);}}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();
+  this.fall.geometry.dispose();this.fall.geometry=g;this.fallHit=hit;this.fallPoints=pts;
  }
  setCut(cut){for(const m of[this.filmMaterial,this.wetMaterial])m.clippingPlanes=cut?[this.cutPlane]:null;}
  // shield: {x,lift,seal,press} or null. The jet stops where it meets the outer
@@ -153,7 +173,7 @@ export class InfiltrationExtras{
   // Grains and threads below the drip lips.
   let k=0;
   if(this.grainCount&&dripping)streams.forEach((s,i)=>{
-   const {p,T}=fallOf(s);
+   if(!s.enabled)return;const {p,T}=fallOf(s);
    for(let j=0;j<this.grainCount&&k<this.grains.count;j++,k++){
     const cycle=1.1+.37*j,age=wrap(clock-j*.29-i*.17,cycle);
     if(age>=T){this.matrix.makeScale(0,0,0);this.grains.setMatrixAt(k,this.matrix);continue;}
@@ -163,11 +183,11 @@ export class InfiltrationExtras{
   });
   for(;k<this.grains.count;k++){this.matrix.makeScale(0,0,0);this.grains.setMatrixAt(k,this.matrix);}
   this.grains.instanceMatrix.needsUpdate=true;this.grains.visible=dripping&&this.grainCount>0;
-  if(this.curtain){
-   const R=this.R,top=R-6,covered=shield&&Math.abs(shield.x)<250,bottom=covered?shield.lift+R-10+3*(shield.seal||0)+3:floorAt(0);
-   this.curtain.visible=this.foam.visible=flowing>.03;
-   this.curtain.position.set(4*Math.sin(clock*7),top,0);this.curtain.scale.set(1+.08*Math.sin(clock*9),Math.max(1,top-bottom),1+.06*Math.cos(clock*11));
-   this.foam.position.set(0,bottom+.8,0);this.foam.scale.setScalar(70+18*Math.sin(clock*8));this.foam.material.opacity=.6*flowing;
+  if(this.fall){
+   if(poseChanged||!this.fallPoints)this.traceFall(shield,floorAt);
+   this.fall.visible=flowing>.03;this.fallMat.opacity=1;
+   const h=this.fallHit;this.foam.visible=this.fall.visible&&!!h;
+   if(h){this.foam.position.copy(h.point).addScaledVector(h.normal,1.2);this.foam.quaternion.setFromUnitVectors(V(0,0,1),h.normal);this.foam.scale.setScalar(lerp(40,120,this.spec.waterfall)*(1+.12*Math.sin(clock*8)));this.foam.material.opacity=.65*flowing;}
   }
   for(const t of this.threads){
    const s=streams[t.stream],{p,drop}=fallOf(s),len=Math.min(drop*.42,95)*(.85+.15*Math.sin(clock*13+t.stream)),r=Math.max(.35,s.radius*.62);
