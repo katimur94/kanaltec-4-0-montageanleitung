@@ -9,7 +9,7 @@ import {Robot} from './robot.js';
 import {millingState,millingTarget,millingSpec} from './milling.js';
 import {breakoutContour,branchBottom} from './repair.js';
 import {injectionFitting,injectionSpec} from './injection-fitting.js';
-import {ManholeScene,insertionKinematics,frameMatrix} from './manhole.js';
+import {ManholeScene,insertionKinematics,frameMatrix,insertionMasses} from './manhole.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 // Waterline of the dry-weather flow; parts below it look wet (darker, glossy).
@@ -217,7 +217,7 @@ export class Viewer {
   const node=new THREE.Group();node.position.copy(position);node.add(object);this.model.add(node);const p={group:g,pos:row.pos,key:row.key,index:i,name:row.name,qty:row.qty,kind:row.kind,note:row.note,node,base:position.clone(),delta:explode,originalRotation:node.quaternion.clone()};node.userData.part=p;this.parts.push(p);return p;
  }
  build(id){
-  this.repairOptions??={kind:'open',infiltration:true,infiltrationLevel:'flow',cavity:'large',sewerWater:33};
+  this.repairOptions??={kind:'open',infiltration:true,infiltrationLevel:'burst',cavity:'large',sewerWater:33};
   this.closedMould=this.repairOptions.kind!=='open';
   this.workOffset=this.closedMould?-ports.inletX:0;
   this.sections??={pipe:true,shield:false,holder:false};
@@ -518,6 +518,10 @@ export class Viewer {
   const form=[],robot=[],p=V();
   for(const c of this.model.children){const side=this.insertSide(c);if(!c.visible||c===this.feed||c===this.repair?.hoseGroup)continue;
    c.traverseVisible(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position,step=Math.max(1,Math.floor(a.count/3000)),flexible=this.robot.lines.some(l=>l.o===o)||o===this.robot.tailCable||(()=>{for(let n=o;n;n=n.parent)if(n===this.robot.plug)return true;return false;})();for(let i=0;i<a.count;i+=step){p.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);if(side==='robot'&&flexible)(this._tail||(this._tail=[])).push(p.clone());else(side==='robot'?robot:form).push(p.clone());}});}
+  // The cable bomb is folded up in the shaft: count it as rigid in that position.
+  this.robot.setPlug(-Math.PI/2);this.model.updateMatrixWorld(true);
+  this.robot.plug.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position,step=Math.max(1,Math.floor(a.count/800));for(let i=0;i<a.count;i+=step)robot.push(p.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld).clone());});
+  this.robot.setPlug();this.model.updateMatrixWorld(true);
   // Thin the samples evenly; contact and wall checks run every frame.
   const thin=list=>{const step=Math.max(1,Math.ceil(list.length/16000));return list.filter((q,i)=>i%step===0);};
   const minOf=(list,f)=>list.reduce((m,q)=>Math.min(m,f(q)),Infinity);
@@ -527,7 +531,9 @@ export class Viewer {
   this._tail=null;
   const yb=Math.min(minOf(form,q=>q.y),minOf(robot,q=>q.y));form.splice(0,form.length,...thin(form));robot.splice(0,robot.length,...thin(robot));
   const H=Math.max(-minOf(form,q=>-q.y),-minOf(robot,q=>-q.y))-yb,halfWidth=Math.max(-minOf(form,q=>-Math.abs(q.z)),-minOf(robot,q=>-Math.abs(q.z)));
-  this.insertGeo={spec:this.manhole.spec,pin:V(-365.5,28+lift,0),formPts:form,robotPts:robot,yb,H,halfWidth,hook:V(minX+260,top+4,0),cable:V(minX+6,rear.reduce((s,q)=>s+q.y,0)/rear.length,0),tailX:minX-2};
+  const box=pts=>{const b=new THREE.Box3();for(const q of pts)b.expandByPoint(q);return b.getCenter(V());};
+  const eye=this.robot.group.localToWorld(this.robot.liftEye.clone());
+  this.insertGeo={spec:this.manhole.spec,pin:V(-365.5,28+lift,0),formPts:form,robotPts:robot,yb,H,halfWidth,eye,comR:box(robot),comF:box(form),masses:insertionMasses(this.id)};
   return this.insertGeo;
  }
  setInsert(t){this.insertTime=t;}
@@ -535,7 +541,7 @@ export class Viewer {
   this.ensureManhole();if(!this.manhole)return;
   const geo=this.insertionGeometry();this.releaseInsert();this.updateParts();const lift=this.travelPose();this.model.position.set(0,0,0);
   const k=this.insertState=insertionKinematics(this.insertTime||0,geo);
-  this.robot.pose(lift,k.drive);this.robot.setPlug(k.plug);
+  this.robot.setPlug(k.plug);this.robot.pose(lift,k.drive);
   const Mf=frameMatrix(k.thetaF,k.W,geo.pin),Mr=frameMatrix(k.thetaR,k.W,geo.pin);
   for(const c of this.model.children){
    c.updateMatrix();const side=this.insertSide(c);
@@ -553,7 +559,7 @@ export class Viewer {
   this.insertActive=true;
   this.model.updateMatrixWorld(true);
   const plug=this.robot.plug,plugTip=plug.localToWorld(this.robot.plugTip.clone()),plugDir=V(-1,0,0).transformDirection(plug.matrixWorld);
-  this.manhole.update({hook:geo.hook.clone().applyMatrix4(Mr),rope:k.rope,plugTip,plugDir,clock:this.ambientClock??0});
+  this.manhole.update({hook:k.hook.clone(),rope:k.rope,plugTip,plugDir,clock:this.ambientClock??0});
   this.robotCentre=V(-900,0,0).applyMatrix4(Mr);this.mouldCentre=V(0,0,0).applyMatrix4(Mf);
  }
  // Automatic camera: one framed shot per insertion step, blended at step ends
@@ -561,7 +567,7 @@ export class Viewer {
  insertShot(stage,f){
   const s=this.manhole.spec,r=this.robotCentre,m=this.mouldCentre,unit=r.clone().lerp(m,.4);
   const shots=[
-   {t:V(-700,s.G+700,-1200),d:V(.32,.2,1),dist:10500},
+   {t:V(200,s.platform.y-200,(s.platform.z0+s.platform.z1)/2-600),d:V(.42,.24,1),dist:7800},
    {t:unit.clone().lerp(V(0,s.G,s.zc),.35),d:V(.36,.2,1),dist:5600},
    {t:unit.clone().add(V(150,0,0)),d:V(.3,.08,1),dist:3600},
    {t:V(260,s.Rp*.4,0),d:V(.22,.14,1),dist:2500+s.Rp*2},

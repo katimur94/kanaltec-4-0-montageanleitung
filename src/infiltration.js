@@ -12,7 +12,10 @@ function surfacePoint(R,x,arc,depth=0){return V(x,(R+depth)*Math.cos(arc/R),(R+d
 export const infiltrationLevels={
  drip:{label:'Tropfend',radius:.8,interval:1.8,films:0,jets:0,grains:0,plume:.3,thread:false},
  flow:{label:'Rinnend',radius:1,interval:1,films:4,jets:0,grains:3,plume:.7,thread:true},
- pressure:{label:'Drückendes Grundwasser',radius:1.25,interval:.6,films:6,jets:3,grains:4,plume:1,thread:true}
+ pressure:{label:'Drückendes Grundwasser',radius:1.25,interval:.6,films:6,jets:3,grains:4,plume:1,thread:true},
+ // After the site photo: thick sheets pouring down the wall, a falling curtain
+ // from the crown, turbulent streaks and foam.
+ burst:{label:'Starker Wassereinbruch',radius:2.6,interval:.12,films:6,filmWidth:7,jets:2,grains:6,plume:1.8,thread:true,curtain:true,streak:1}
 };
 export function levelSpec(level){return infiltrationLevels[level]||infiltrationLevels.flow;}
 
@@ -22,11 +25,13 @@ function filmMaterial(uniforms){
  m.onBeforeCompile=sh=>{
   Object.assign(sh.uniforms,uniforms);
   sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute vec2 aRun;varying vec2 vRun;').replace('#include <begin_vertex>','#include <begin_vertex>\nvRun=aRun;');
-  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime,uActivity;varying vec2 vRun;')
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime,uActivity,uStrong;varying vec2 vRun;')
    .replace('#include <color_fragment>',`#include <color_fragment>
- float across=1.-vRun.x*vRun.x,s1=fract(vRun.y/34.-uTime*5.2),s2=fract(vRun.y/21.+.37-uTime*7.1);
+ float across=1.-vRun.x*vRun.x,sp=1.+uStrong*2.2,s1=fract(vRun.y/34.-uTime*5.2*sp),s2=fract(vRun.y/21.+.37-uTime*7.1*sp);
+ float lanes=uStrong*(.5+.5*sin(vRun.x*23.+sin(vRun.y*.05-uTime*9.)*2.)),foamy=uStrong*smoothstep(.55,1.,fract(vRun.y/57.-uTime*11.+vRun.x*1.7));
  float pulse=smoothstep(0.,.12,s1)*(1.-smoothstep(.3,1.,s1)),bead=smoothstep(0.,.08,s2)*(1.-smoothstep(.18,.5,s2));
- diffuseColor.a=uActivity*(.2+.3*pulse*across+.2*bead*across*across)*smoothstep(1.,.55,abs(vRun.x));`)
+ diffuseColor.a=uActivity*(.2+.3*pulse*across+.2*bead*across*across+.35*lanes*across+.3*foamy)*smoothstep(1.,.55,abs(vRun.x));
+ diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.86,.87,.83),clamp(foamy*.8+lanes*.25,0.,.9));`)
    .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=vec3(.22,.22,.2)*uActivity*(pulse*across*across+.8*bead*across);');
  };
  m.customProgramCacheKey=()=>'kanaltec-wall-film';
@@ -37,7 +42,7 @@ export class InfiltrationExtras{
  constructor(R,{contour,level,cutPlane,cracks=[]}){
   this.R=R;this.spec=levelSpec(level);this.level=level in infiltrationLevels?level:'flow';this.cutPlane=cutPlane;
   this.group=new THREE.Group();this.group.name='Infiltration · Wandläufe, Strahlen, Bodenkörner';
-  this.uniforms={uTime:{value:0},uActivity:{value:1}};
+  this.uniforms={uTime:{value:0},uActivity:{value:1},uStrong:{value:this.spec.streak||0}};
   this.filmMaterial=filmMaterial(this.uniforms);
   this.wetMaterial=new THREE.MeshPhysicalMaterial({color:'#170e08',transparent:true,opacity:.5,roughness:.1,clearcoat:1,clearcoatRoughness:.06,envMapIntensity:1.4,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2});
   this.films=new THREE.Group();this.wet=new THREE.Group();this.group.add(this.wet,this.films);
@@ -58,7 +63,7 @@ export class InfiltrationExtras{
     }
     const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('aRun',new THREE.Float32BufferAttribute(run,2));g.setAttribute('uv',new THREE.Float32BufferAttribute(run.map((v,k)=>k%2?v/100:v),2));g.setIndex(idx);g.computeVertexNormals();return g;
    };
-   const film=new THREE.Mesh(ribbon(3.2+1.4*(i%3),-.45),this.filmMaterial),wet=new THREE.Mesh(ribbon(7+2.5*(i%2),-.2),this.wetMaterial);
+   const fw=this.spec.filmWidth||1,film=new THREE.Mesh(ribbon((3.2+1.4*(i%3))*fw,-.45-(fw>1?2.2:0)),this.filmMaterial),wet=new THREE.Mesh(ribbon((7+2.5*(i%2))*Math.max(1,fw*.9),-.2),this.wetMaterial);
    for(const o of[film,wet]){o.castShadow=o.receiveShadow=false;o.renderOrder=2;}
    this.films.add(film);this.wet.add(wet);this.filmRuns.push({film,wet,side});
   });
@@ -83,6 +88,17 @@ export class InfiltrationExtras{
   // Continuous threads under strong streams; they break into drops lower down.
   this.threadGeometry=new THREE.CylinderGeometry(.55,1,1,10,6,true);this.threadGeometry.translate(0,-.5,0);
   this.threads=[];
+  // Falling curtain out of the crown breakout (strong inflow only).
+  if(this.spec.curtain){
+   this.curtainMat=new THREE.MeshPhysicalMaterial({color:'#bdbcad',transparent:true,roughness:.05,clearcoat:1,envMapIntensity:1.3,depthWrite:false,side:THREE.DoubleSide});
+   this.curtainMat.onBeforeCompile=sh=>{sh.uniforms.uTime=this.uniforms.uTime;sh.uniforms.uActivity=this.uniforms.uActivity;
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec2 vCur;').replace('#include <begin_vertex>','#include <begin_vertex>\nvCur=uv;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime,uActivity;varying vec2 vCur;').replace('#include <color_fragment>','#include <color_fragment>\n float fall=fract((1.-vCur.y)*5.-uTime*4.2+sin(vCur.x*6.283*4.)*.15),lane=.5+.5*sin(vCur.x*6.283*7.+uTime*3.);\n diffuseColor.a=uActivity*(.35+.35*smoothstep(.5,1.,fall)+.2*lane)*smoothstep(0.,.08,vCur.y);diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.93,.93,.9),.5*smoothstep(.75,1.,fall)+.2*(1.-vCur.y));');};
+   this.curtainMat.customProgramCacheKey=()=>'kanaltec-curtain';
+   const g=new THREE.CylinderGeometry(34,46,1,24,24,true);g.translate(0,-.5,0);
+   this.curtain=new THREE.Mesh(g,this.curtainMat);this.curtain.name='Wasservorhang aus dem Scheitel';this.curtain.castShadow=this.curtain.receiveShadow=false;this.group.add(this.curtain);
+   this.foam=new THREE.Mesh(new THREE.CircleGeometry(1,32),new THREE.MeshStandardMaterial({color:'#e8e8e2',transparent:true,opacity:.7,roughness:.6,depthWrite:false}));this.foam.rotation.x=-Math.PI/2;this.foam.name='Schaum';this.group.add(this.foam);
+  }
   this.matrix=new THREE.Matrix4();this.q=new THREE.Quaternion();
  }
  addThreads(streams){
@@ -147,6 +163,12 @@ export class InfiltrationExtras{
   });
   for(;k<this.grains.count;k++){this.matrix.makeScale(0,0,0);this.grains.setMatrixAt(k,this.matrix);}
   this.grains.instanceMatrix.needsUpdate=true;this.grains.visible=dripping&&this.grainCount>0;
+  if(this.curtain){
+   const R=this.R,top=R-6,covered=shield&&Math.abs(shield.x)<250,bottom=covered?shield.lift+R-10+3*(shield.seal||0)+3:floorAt(0);
+   this.curtain.visible=this.foam.visible=flowing>.03;
+   this.curtain.position.set(4*Math.sin(clock*7),top,0);this.curtain.scale.set(1+.08*Math.sin(clock*9),Math.max(1,top-bottom),1+.06*Math.cos(clock*11));
+   this.foam.position.set(0,bottom+.8,0);this.foam.scale.setScalar(70+18*Math.sin(clock*8));this.foam.material.opacity=.6*flowing;
+  }
   for(const t of this.threads){
    const s=streams[t.stream],{p,drop}=fallOf(s),len=Math.min(drop*.42,95)*(.85+.15*Math.sin(clock*13+t.stream)),r=Math.max(.35,s.radius*.62);
    t.o.visible=dripping;t.o.position.copy(p).add(V(.25*Math.sin(clock*17+t.stream),0,.25*Math.cos(clock*11)));t.o.scale.set(r,len,r);

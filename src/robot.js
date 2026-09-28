@@ -69,30 +69,34 @@ export class Robot{
   }
   g.add(box(434,26,95,m.black,V(-749,y+47,0),4));
   for(const x of [-950,-825,-675,-545]){const p=plate(29,100,5,m.dark,[[-7,-38,2.6],[7,38,2.6]]);p.rotation.x=-Math.PI/2;p.position.set(x,y+63,0);g.add(p);for(const z of [-38,38])g.add(bolt(3,m.steel,m.gasket,V(x,y+66,z),'y'));}
-  const hook=plate(37,61,8,m.dark,[[0,10,9]],1);hook.position.set(-870,y+76,0);hook.rotation.z=-.32;g.add(hook,cyl(9,21,m.steel,V(-872,y+55,0),'z'));
+  // Triangular lifting bracket on top (photos): two plates with a shackle bore.
+  for(const side of[-1,1]){const pl=plate(150,120,8,m.polished,[[0,34,11]],1);pl.position.set(-872,y+92,side*14);g.add(pl);}
+  g.add(cyl(13,40,m.steel,V(-872,y+126,0),'z'),box(170,10,48,m.polished,V(-872,y+36,0)));
   // 150 mm front body envelope and discrete rotary seals.
   const rotor=new THREE.Group();rotor.name='Drehmodul · rotierender Frontflansch';this.frontBase.add(rotor);
   for(const[x,l,r,ma]of [[-462,62,74,m.steel],[-420,21,75,m.polished],[-397,23,70,m.dark],[-376,17,68,m.steel]])(x>=-397?rotor:g).add(cyl(r,l,ma,V(x,y,0)));
   for(const x of [-487,-445,-431,-410,-389])(x===-389?rotor:g).add(ring(x===-389?69:74.7,.65,m.gasket,V(x,y,0)));
   for(let i=0;i<12;i++){const a=i*TAU/12;rotor.add(bolt(3,m.polished,m.gasket,V(-366,y+58*Math.cos(a),58*Math.sin(a)),'x'));}bake(rotor);
   for(const side of [-1,1])g.add(box(96,90,17,m.steel,V(-1050,y,side*47),3));
-  g.add(box(82,24,111,m.polished,V(-1050,y+44,0)),box(82,24,111,m.polished,V(-1050,y-44,0)),cyl(18,109,m.dark,V(-1060,y,0),'z'));
+  // Rear folding joint: silver clevis block with slot, transverse bolt.
+  g.add(box(82,24,111,m.polished,V(-1050,y+44,0)),box(82,24,111,m.polished,V(-1050,y-44,0)),cyl(18,109,m.dark,V(-1060,y,0),'z'),box(60,64,70,m.polished,V(-1002,y,0)));
   for(const side of [-1,1])g.add(bolt(13,m.steel,m.gasket,V(-1060,y,side*58)),ring(19,1,m.dark,V(-1060,y,side*56),'z'));
-  for(const[x,l,r,ma]of [[-1124,65,46,m.polished],[-1199,97,43,m.steel],[-1260,30,24,m.dark],[-1284,33,16,m.gasket]])g.add(cyl(r,l,ma,V(x,y,0)));
-  for(const x of [-1100,-1147,-1160,-1238])g.add(ring(44,.8,m.gasket,V(x,y,0)));for(let i=0;i<6;i++){const a=i*TAU/6;g.add(bolt(3,m.steel,m.gasket,V(-1248,y+33*Math.cos(a),33*Math.sin(a)),'x'));}
  }
- // Rear cable plug on its own folding joint: in the pipe it points down to the
- // trailing cable; for manhole work it folds up so the cable leaves upwards.
+ // Rear cable "bomb": the round housing behind the rear folding joint
+ // (transverse bolt at x = -1060). The cable leaves it straight; for manhole
+ // work the whole bomb folds up, in the pipe it stays in line.
  buildPlug(){
-  const m=this.m,y=this.bodyY,p=new THREE.Group();p.name='Kabelstecker · hinten klappbar';p.position.set(-1300,y,0);this.plug=p;this.carrier.add(p);
-  p.add(cyl(10,30,m.steel,V(),'z'),cyl(11.5,6,m.dark,V(0,0,17),'z'),cyl(11.5,6,m.dark,V(0,0,-17),'z'),cyl(14,10,m.steel,V(-12,0,0)),cyl(15,40,m.black,V(-36,0,0)));
-  for(const x of [-22,-30,-38,-46])p.add(ring(15.3,1.4,m.dark,V(x,0,0)));
-  const relief=mesh(new THREE.CylinderGeometry(7,11,26,20),m.black);relief.rotation.z=Math.PI/2;relief.position.x=-69;p.add(relief);
-  bake(p);this.plugTip=V(-82,0,0);this.plugDefault=.52;p.rotation.z=this.plugDefault;
-  const tip=this.plugTip.clone().applyAxisAngle(V(0,0,1),this.plugDefault).add(p.position);
-  this.tailCable=tube([tip,tip.clone().add(V(-40,-14,-2)),V(-1430,this.wheelY-this.wheelRadius+20,-5)],7,m.black);this.tailCable.name='Roboterkabel';this.carrier.add(this.tailCable);
+  const m=this.m,y=this.bodyY,p=new THREE.Group();p.name='Kabelbombe · hinten klappbar';p.position.set(-1060,y,0);this.plug=p;this.carrier.add(p);
+  for(const[x,l,r,ma]of [[-64,65,46,m.polished],[-139,97,43,m.steel],[-200,30,24,m.dark],[-224,33,16,m.gasket]])p.add(cyl(r,l,ma,V(x,0,0)));
+  for(const x of [-40,-87,-100,-178])p.add(ring(44,.8,m.gasket,V(x,0,0)));for(let i=0;i<6;i++){const a=i*TAU/6;p.add(bolt(3,m.steel,m.gasket,V(-188,33*Math.cos(a),33*Math.sin(a)),'x'));}
+  for(const x of [-230,-238,-246,-254])p.add(ring(12,1.5,m.black,V(x,0,0)));
+  bake(p);this.plugTip=V(-262,0,0);this.plugDefault=0;
+  this.tailCable=tube([V(-1322,y,0),V(-1380,y-8,-5),V(-1430,this.wheelY-this.wheelRadius+20,-5)],7,m.black);this.tailCable.name='Roboterkabel';this.carrier.add(this.tailCable);
+  // Lifting eye on top of the chassis (the crane hook attaches here).
+  this.liftEye=V(-872,y+126,0);
  }
- setPlug(angle){this.plug.rotation.z=angle??this.plugDefault;this.tailCable.visible=angle===undefined||Math.abs(angle-this.plugDefault)<1e-6;}
+ // With the bomb folded the supply lines end at the chassis rear.
+ setPlug(angle){this.lineStartX=angle===undefined||Math.abs(angle)<.3?undefined:-1010;this.plug.rotation.z=angle??this.plugDefault;this.tailCable.visible=angle===undefined||Math.abs(angle-this.plugDefault)<1e-6;}
  buildExtension(){
   const m=this.m,y=this.bodyY,wy=this.wheelY,drop=y-wy,e=new THREE.Group();e.name=this.config.label;this.extension=e;this.chassis.add(e);
   for(const side of [-1,1])for(const x of [-940,-575]){
@@ -167,13 +171,13 @@ export class Robot{
   const dy=lift-this.pivot.y,dx=291+reach-Math.sqrt(Math.max(0,this.armLength**2-dy**2));
   this.carrier.position.x=this.frontBase.position.x=dx;this.frontRotation.rotation.x=roll;
   for(const w of this.wheels)w.rotation.z=-(travel+dx)/this.wheelRadius;
-  const poseKey=[lift,roll,reach].join(',');if(this.lastPose===poseKey)return;this.lastPose=poseKey;this.lastLift=lift;this.receiver.position.set(reach,lift,0);
+  const lx=this.lineStartX??-1235,poseKey=[lift,roll,reach,lx].join(',');if(this.lastPose===poseKey)return;this.lastPose=poseKey;this.lastLift=lift;this.receiver.position.set(reach,lift,0);
   const a=this.pivot.clone().add(V(dx,0,0)),e=V(-43+reach,lift,0),lowerA=a.clone().add(V(0,-this.axisSpacing,0)),lowerE=e.clone().add(V(0,-this.axisSpacing,0));this.armPoints=[a,e,lowerA,lowerE];
   for(const{o,side,lower}of this.links){const from=lower?lowerA:a,to=lower?lowerE:e;o.position.copy(from);o.position.z+=side*(lower?38:49);o.quaternion.setFromUnitVectors(V(1,0,0),to.clone().sub(from).normalize());}
   for(const{body,shaft,capA,capB,side}of this.actuators){const from=lowerA.clone().add(V(10,4,side*21)),to=e.clone().add(V(-17,-17,side*21)),axis=to.clone().sub(from).normalize(),distance=from.distanceTo(to),q=new THREE.Quaternion().setFromUnitVectors(V(0,1,0),axis);body.position.copy(from).addScaledVector(axis,62.5);body.quaternion.copy(q);shaft.scale.y=distance-113;shaft.position.copy(from).addScaledVector(axis,113+(distance-113)/2);shaft.quaternion.copy(q);capA.position.copy(from);capA.quaternion.copy(q);capB.position.copy(from).addScaledVector(axis,123);capB.quaternion.copy(q);}
   this.cameraDrum.rotation.z=Math.atan2(this.pipeRadius-65+lift-(this.anchor.y+this.bodyY+36),630);
   const rotate=p=>p.sub(this.rotationAxis).applyAxisAngle(V(1,0,0),roll).add(this.rotationAxis);
-  for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(-1235+dx,this.bodyY+20,side*30),V(-1080+dx,this.bodyY+45,side*39),V(-970+dx,this.bodyY+68,side*38),V(-535+dx,this.bodyY+68,side*43),rotate(V(-350+dx,this.bodyY+46,side*64)),rotate(a.clone().lerp(e,.62).add(V(0,24,side*65))),rotate(V(-20+reach,lift+18,side*33))]),96,2.7,10,false);}
+  for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(lx+dx,this.bodyY+20,side*30),V(Math.max(lx+150,-1080)+dx,this.bodyY+45,side*39),V(-970+dx,this.bodyY+68,side*38),V(-535+dx,this.bodyY+68,side*43),rotate(V(-350+dx,this.bodyY+46,side*64)),rotate(a.clone().lerp(e,.62).add(V(0,24,side*65))),rotate(V(-20+reach,lift+18,side*33))]),96,2.7,10,false);}
  }
  dispose(){const materials=new Set(),textures=new Set();this.group.traverse(o=>{if(o.isMesh){materials.add(o.material);if(o.material.bumpMap)textures.add(o.material.bumpMap);}});textures.forEach(t=>t.dispose());materials.forEach(m=>m.dispose());}
 }

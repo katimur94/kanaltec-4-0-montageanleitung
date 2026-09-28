@@ -12,21 +12,22 @@ const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),smooth=x=>{x=clamp(x);return 
 const lerp=THREE.MathUtils.lerp;
 
 export const insertionStages=[
- {title:'Am Schacht bereitstellen',text:'Der LKW steht mit abgestütztem Ladekran am geöffneten Schacht. Roboter und angekuppelte Schalung liegen in Richtung des Zielrohrs davor, Bumper vakuumiert, Schalung in Fahrstellung. Die Schalung ragt frei über die Öffnung: Die Klappvorrichtung sperrt das Abknicken nach unten, weil der bewegliche Schenkel (Pos. 9) am Grundkörper der Klappvorrichtung anliegt. Der Kabelstecker am Heck ist nach oben geklappt.',caption:'Wie auf dem Baustellenfoto: Einheit liegt gerade, Schalung vorn über der Schachtöffnung.'},
- {title:'Anheben und einführen',text:'Der Kranhaken hängt am Roboterheck. Der Kran hebt das Heck an, die Einheit kippt mit der Schalung voraus in die Schachtöffnung. Schild und CutterCam zeigen dabei zur Seite des Zielrohrs. Diese Ausrichtung entscheidet: Nur in diese Richtung kann die Klappvorrichtung später nachgeben.',caption:'Klappvorrichtung gesperrt · Einheit bleibt starr'},
- {title:'Senkrecht absenken',text:'Die Einheit hängt senkrecht am Kranseil, die Schalung voraus. Das Gewicht wirkt in Längsrichtung, die zwei Federn halten die Klappvorrichtung geschlossen. Neben den Steigbügeln durch die Öffnung, darunter zur Schachtmitte über das Gerinne.',caption:'Kabel läuft aus dem hochgeklappten Stecker nach oben zur Kabeltrommel'},
- {title:'Aufsetzen und einklappen',text:'Das Rad DN 70 an der Einbauhilfe (Pos. 4/6) setzt im Gerinne auf und rollt in das Rohr. Die Klappvorrichtung öffnet um den Gelenkbolzen gegen die zwei Federn: Die Schalung legt sich in die Rohrachse, während der Roboter noch senkrecht im Schacht hängt.',caption:'Klappwinkel wächst bis 90° · Federn gespannt'},
- {title:'Roboter nachführen',text:'Der Kran lässt weiter ab, die Einheit wird in das Rohr geschoben. Der Roboter neigt sich mit dem Heck zur gegenüberliegenden Schachtwand, bis seine Räder im Gerinne stehen. Die Federn ziehen die Klappvorrichtung dabei wieder in die gestreckte Lage.',caption:'Klappwinkel geht auf 0° zurück · Heck frei vor der Schachtwand'},
- {title:'Haken lösen und einfahren',text:'Der Haken wird ausgehängt und der Kabelstecker klappt nach hinten. Der Roboter fährt die Schalung durch das Abwasser im Gerinne bis in das Rohr; das Kabel läuft von der Trommel über die Schachtkante nach. Im Rohr beginnt der Ablauf unter „So funktioniert’s“.',caption:'Übergang zur Anfahrt der Schadstelle'}
+ {title:'Auf der Ladebordwand anschlagen',text:'Der LKW steht mit dem Heck am geöffneten Schacht, Ladebordwand auf Ladehöhe. Roboter und angekuppelte Schalung liegen darauf in Richtung des Zielrohrs, Bumper vakuumiert. Der Kranhaken wird an der Hebeöse oben mittig auf dem Roboter angeschlagen, die Kabelbombe hinten ist hochgeklappt; das Kabel läuft zur Trommel im Koffer.',caption:'Wie auf den Baustellenfotos: roter Säulenkran im Koffer, Einheit auf der Ladebordwand.'},
+ {title:'Anheben und über den Schacht schwenken',text:'Der Kran hebt an. Die Einheit pendelt sich so ein, dass ihr gemeinsamer Schwerpunkt senkrecht unter dem Haken liegt. Das Gewicht der vorn liegenden Schalung will sie nach unten klappen – genau diese Richtung sperrt die Klappvorrichtung, weil der bewegliche Schenkel (Pos. 9) anliegt. Deshalb hängt die Einheit starr und schräg nach vorn geneigt. Schild und CutterCam zeigen zur Seite des Zielrohrs.',caption:'Gleichgewicht am Haken · Klappvorrichtung gesperrt'},
+ {title:'Durch die Öffnung absenken',text:'Der Kran lässt ab. Wo Rahmen, Konus oder Schachtwand im Weg sind, liegt die Einheit an und wird steiler gedrückt; sobald Platz ist, pendelt sie wieder in ihre Gleichgewichtslage. Die Steigbügel bleiben frei.',caption:'Lage = geringste Energie bei Kontakt mit Wand und Sohle'},
+ {title:'Aufsetzen und einklappen',text:'Das Rad DN 70 an der Einbauhilfe (Pos. 4/6) setzt im Gerinne auf und rutscht in das Rohr. Gerinne und Rohrsohle drücken die Schalung nach oben: Nur jetzt öffnet die Klappvorrichtung um den Gelenkbolzen, gegen die zwei Federn.',caption:'Klappwinkel entsteht durch den Kontakt, nicht von selbst'},
+ {title:'Roboter ablegen',text:'Der Kran lässt weiter ab, bis der Roboter mit allen Rädern im Gerinne steht und die Schalung im Rohr liegt. Die Federn ziehen die Klappvorrichtung dabei wieder in die gestreckte Lage.',caption:'Klappwinkel geht auf 0° zurück'},
+ {title:'Aushängen und einfahren',text:'Der Haken wird ausgehängt. Der Roboter fährt die Schalung durch das Abwasser in das Rohr; sobald Platz ist, klappt die Kabelbombe nach hinten in Fahrstellung. Das Kabel läuft von der Trommel über die Ladebordwand und die Schachtkante nach. Im Rohr beginnt der Ablauf unter „So funktioniert’s“.',caption:'Übergang zur Anfahrt der Schadstelle'}
 ];
-
 export function manholeSpec(dn){
  const Rp=dn/2,t=18+dn*.04,Rm=dn>=700?750:dn>=500?600:500,wall=Rm>=750?150:Rm>=600?135:120,ro=Rm>=750?500:Rm>=600?400:312.5;
  const invert=-Rp,G=invert+(Rm>=600?3000:2500),top=G-230;
  // Eccentric cone/cover: its vertical side and the climbing irons are on the
  // back wall (−z), so the opening centre is offset towards −z.
- const zc=-(Rm-ro);
- return {dn,Rp,t,Rm,wall,ro,zc,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
+ const zc=-(Rm-ro),pz1=zc-ro-130;
+ // Tail lift of the truck parked with its rear at the shaft (floor height 1.1 m).
+ const platform={x0:-1250,x1:1250,z0:pz1-1300,z1:pz1,y:G+1100};
+ return {dn,Rp,t,Rm,wall,ro,zc,platform,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
 }
 // Inner radius and centre of the shaft at height y (vertical side stays at z = −Rm).
 export function shaftProfile(spec,y){
@@ -40,49 +41,123 @@ export function floorAt(spec,x,z){return Math.abs(z)<spec.Rp?-Math.sqrt(spec.Rp*
 export function inLadder(spec,p,margin=0){const L=spec.ladder;return p.y>L.from-40&&p.y<spec.coneTop-150&&Math.abs(p.x)<L.half+25+margin&&p.z<-spec.Rm+L.depth+15+margin;}
 
 const rot=(p,a)=>{const c=Math.cos(a),s=Math.sin(a);return V(p.x*c-p.y*s,p.x*s+p.y*c,p.z);};
-// geo: {pin, formPts, robotPts, yb, H, halfWidth, spec}. Returns the two rigid frames
-// (mould side, robot side) as rotation about z and world pin position. The
-// hinge may only open with the shield nose up relative to the robot.
-export function insertionKinematics(time,geo){
- // Under a cover slab the unit passes centred in the opening, clear of the irons.
- const spec=geo.spec.cone?geo.spec:{...geo.spec,z0:Math.max(geo.spec.zc,-geo.spec.Rm+geo.spec.ladder.depth+45+geo.halfWidth)};
- const {pin,formPts,robotPts,yb,H}=geo,T=clamp(time,0,insertionStages.length-.001),stage=Math.floor(T),f=T-stage;
- const E=V(spec.cone?-H/2-30:Math.min(-H/2-30,30-Math.sqrt(spec.ro**2-(spec.z0-spec.zc)**2)),spec.G+2,0),c0=344+E.x-.5*spec.ro,c1=-600;
- const contact=(pts,theta,wx=0)=>{let y=-Infinity;for(const p of pts){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);y=Math.max(y,floorAt(spec,wx+q.x,p.z)-q.y);}return y;};
- const tip=phi=>{const theta=-phi,c=lerp(c0,c1,smooth((phi/(Math.PI/2)-.56)/.44)),q=rot(V(c-pin.x,yb-pin.y,0),theta),W=E.clone().sub(q);W.z=spec.z0;return{theta,W};};
- const hangX=-80,down=-Math.PI/2,rest=pin.y-contact(formPts,0),lie=(theta,wx)=>contact(formPts,theta,wx)+rest*smooth(1+theta/(Math.PI/2)*2);
- const W3=()=>V(hangX,lie(down,hangX),0);
- // Clearance of the robot to the round shaft wall behind it (circle at each z).
- const rearGap=theta=>{let m=Infinity;for(const p of robotPts){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);m=Math.min(m,q.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z)));}return m;};
- const xEnd=Math.max(hangX,22-rearGap(0)),robotMinX=robotPts.reduce((m,p)=>Math.min(m,p.x),Infinity);
- let thetaF=0,thetaR=0,W,drive=0,rope=1;
- if(stage===0){({W}=tip(0));}
- else if(stage===1){const r=tip(smooth(f)*Math.PI/2);thetaF=thetaR=r.theta;W=r.W;}
- else if(stage===2){
-  const start=tip(Math.PI/2).W,end=W3();thetaF=thetaR=down;
-  if(spec.cone){const k=smooth(f),side=smooth((f-.35)/.5);W=V(lerp(start.x,end.x,side),lerp(start.y,end.y,k),lerp(spec.z0,0,side));}
-  else{
-   // Under a cover slab: straight down until the rear clears the slab, then
-   // across over the channel, then set down (no swinging into the slab edge).
-   const clear=spec.coneBottom-60-(pin.x-robotMinX),move=Math.min(start.y,Math.max(clear,end.y+spec.Rp+60));
-   const a=smooth(f/.45),side=smooth((f-.45)/.3),b=smooth((f-.75)/.25);
-   W=V(lerp(start.x,end.x,side),f<.75?lerp(start.y,move,a):lerp(move,end.y,b),lerp(spec.z0,0,side));
+// Estimated masses (kg) for the static equilibrium; no weighed values exist.
+export function insertionMasses(dn){return{robot:34,mould:10+dn*.022};}
+const DEG=Math.PI/180;
+// Quasi-static solver: the unit hangs from the crane hook at the lifting eye
+// on top of the robot. For a hook position it finds robot tilt and hinge
+// opening with the least potential energy (gravity + hinge springs), while
+// tail lift, street, frame, cone, shaft wall, climbing irons, channel and pipe
+// act as contacts (penalty). The hinge can only open nose-up (0…90°).
+function makeSolver(geo){
+ const {spec,pin,eye,masses}=geo,P=spec.platform,L=spec.ladder;
+ // Even sample plus the silhouette (extreme points in 48 slices along the
+ // unit), so thin parts such as the guide wheel still make contact.
+ const thin=(pts,n)=>{const step=Math.max(1,Math.ceil(pts.length/n)),out=pts.filter((p,i)=>i%step===0);
+  let lo=Infinity,hi=-Infinity;for(const p of pts){lo=Math.min(lo,p.x);hi=Math.max(hi,p.x);}
+  const bins=Array.from({length:48},()=>({}));for(const p of pts){const b=bins[Math.min(47,Math.floor((p.x-lo)/(hi-lo+1e-6)*48))];for(const [k,f] of[['y0',q=>-q.y],['y1',q=>q.y],['z0',q=>-q.z],['z1',q=>q.z],['d0',q=>-q.y-Math.abs(q.z)],['d1',q=>q.y-Math.abs(q.z)]])if(!b[k]||f(p)>f(b[k]))b[k]=p;}
+  for(const b of bins)out.push(...Object.values(b));return out;};
+ const pack=(pts,o)=>{const a=new Float64Array(pts.length*3);pts.forEach((p,i)=>{a[i*3]=p.x-o.x;a[i*3+1]=p.y-o.y;a[i*3+2]=p.z;});return a;};
+ const R=pack(thin(geo.robotPts,520),eye),F=pack(thin(geo.formPts,520),pin);
+ const pe=pin.clone().sub(eye),cr=geo.comR.clone().sub(eye),cf=geo.comF.clone().sub(pin);
+ const viol=(x,y,z)=>{
+  if(y>=spec.G-1){
+   let v=0;
+   if(x>P.x0&&x<P.x1&&z>P.z0&&z<P.z1&&y<P.y&&y>P.y-250)v=P.y-y;
+   if(y<spec.G+1&&Math.hypot(x,z-spec.zc)>spec.ro)v=Math.max(v,spec.G+1-y);
+   return v;
   }
- }else if(stage===3){
-  thetaR=down;thetaF=down*(1-smooth(f));const w=W3();
-  W=V(hangX,lie(thetaF,hangX),0);if(f<=0)W.y=w.y;
- }else if(stage===4){
-  // The robot tilts down behind the mould. The unit is only pushed as far into
-  // the pipe as its rear needs to stay inside the shaft, which keeps the
-  // robot head below the wall above the pipe opening.
-  thetaF=0;thetaR=down*(1-smooth(f));const need=22-rearGap(thetaR);
-  W=V(Math.max(hangX,need),pin.y,0);
- }else{
-  thetaF=thetaR=0;drive=1400*smooth(f);rope=1-smooth(f/.25);W=V(xEnd+drive,pin.y,0);
+  const wall=Math.sqrt(Math.max(0,spec.Rm*spec.Rm-z*z));
+  if(y<spec.Rp&&Math.abs(x)>wall-2)return Math.max(0,Math.hypot(y,z)-(spec.Rp-1));
+  const {cz,r}=shaftProfile(spec,y);let v=Math.max(0,Math.hypot(x,z-cz)-(r-5));
+  if(y<spec.Rp+60)v=Math.max(v,floorAt(spec,x,z)+1-y);
+  if(y>L.from-40&&y<spec.coneTop-150&&Math.abs(x)<L.half+25)v=Math.max(v,-spec.Rm+L.depth+17-z);
+  return v;
+ };
+ const K=150,kh=90;
+ const energy=(H,tr,h)=>{
+  const c=Math.cos(tr),s=Math.sin(tr),tf=tr+h,cf2=Math.cos(tf),sf=Math.sin(tf);
+  const Wx=H.x+c*pe.x-s*pe.y,Wy=H.y+s*pe.x+c*pe.y;
+  let pen=0;
+  for(let i=0;i<R.length;i+=3){const v=viol(H.x+c*R[i]-s*R[i+1],H.y+s*R[i]+c*R[i+1],H.z+R[i+2]);pen+=v*v;}
+  for(let i=0;i<F.length;i+=3){const v=viol(Wx+cf2*F[i]-sf*F[i+1],Wy+sf*F[i]+cf2*F[i+1],H.z+F[i+2]);pen+=v*v;}
+  const yr=H.y+s*cr.x+c*cr.y,yf=Wy+sf*cf.x+cf2*cf.y;
+  return masses.robot*yr+masses.mould*yf+kh*h*h+K*pen;
+ };
+ const pinAt=(H,tr)=>V(H.x+Math.cos(tr)*pe.x-Math.sin(tr)*pe.y,H.y+Math.sin(tr)*pe.x+Math.cos(tr)*pe.y,H.z);
+ // seed: start of a local descent (the hanging configuration); without it a
+ // coarse global search, used only for the pick-up from the tail lift.
+ // u: slack of the chain (eye above the hook) when the unit is supported;
+ // w: pendulum swing along the pipe axis, raising the load by w²/2L.
+ const tipY=spec.platform.y+1750,mTot=masses.robot+masses.mould;
+ const solve=(H,seed)=>{
+  const Lc=Math.max(300,tipY-H.y),E3=(tr,h,u,w)=>energy(V(H.x+w,H.y+u+w*w/(2*Lc),H.z),tr,h)+0*mTot;
+  let best={tr:0,h:0,u:0,w:0,E:Infinity};
+  if(seed)best={tr:seed.thetaR,h:seed.h,u:seed.u||0,w:seed.w||0,E:E3(seed.thetaR,seed.h,seed.u||0,seed.w||0)};
+  else for(let a=-110;a<=30;a+=6)for(let b=0;b<=90;b+=10){const E=E3(a*DEG,b*DEG,0,0);if(E<best.E)best={tr:a*DEG,h:b*DEG,u:0,w:0,E};}
+  for(const d of seed?[8,4,2,1,.5,.25,.1]:[4,2,1,.5,.25,.1]){const step=d*DEG,du=d*6;for(let it=0;it<6;it++){let moved=false;for(const [dt,dh,dd,dw] of[[step,0,0,0],[-step,0,0,0],[0,step,0,0],[0,-step,0,0],[step,-step,0,0],[-step,step,0,0],[0,0,du,0],[0,0,-du,0],[0,0,0,du],[0,0,0,-du]]){const tr=best.tr+dt,h=clamp(best.h+dh,0,Math.PI/2),u=Math.max(0,best.u+dd),w=clamp(best.w+dw,-400,400),E=E3(tr,h,u,w);if(E<best.E-1e-7){best={tr,h,u,w,E};moved=true;}}if(!moved)break;}}
+  const eyeAt=V(H.x+best.w,H.y+best.u+best.w*best.w/(2*Lc),H.z);
+  return{thetaR:best.tr,h:best.h,u:best.u,w:best.w,eye:eyeAt,W:pinAt(eyeAt,best.tr)};
+ };
+ // Resting on the tail lift, straight and centred.
+ const all=[...geo.formPts,...geo.robotPts],minX=all.reduce((m,p)=>Math.min(m,p.x),Infinity),maxX=all.reduce((m,p)=>Math.max(m,p.x),-Infinity);
+ const W0=V(pin.x-(minX+maxX)/2,P.y-geo.yb+pin.y+1,(P.z0+P.z1)/2);
+ // Final in-channel pose: rear just clear of the round shaft wall.
+ const rearGap=geo.robotPts.reduce((m,p)=>Math.min(m,p.x-pin.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z))),Infinity);
+ const final=V(Math.max(-80,22-rearGap),pin.y,0);
+ // Free hanging pose far above everything: how far the nose reaches below the eye.
+ const ref=V(0,spec.G+9000,0),free=solve(ref),freeLow=(()=>{let m=Infinity;const c=Math.cos(free.thetaR),s=Math.sin(free.thetaR);for(let i=0;i<R.length;i+=3)m=Math.min(m,s*R[i]+c*R[i+1]);const tf=free.thetaR+free.h,c2=Math.cos(tf),s2=Math.sin(tf),W=pinAt(V(),free.thetaR);for(let i=0;i<F.length;i+=3)m=Math.min(m,W.y+s2*F[i]+c2*F[i+1]);return -m;})();
+ // Horizontal centre of the freely hanging unit relative to the eye, so the
+ // operator can pass it centred through frame and cone.
+ const freeMid=(()=>{let lo=Infinity,hi=-Infinity;const c=Math.cos(free.thetaR),s=Math.sin(free.thetaR);for(let i=0;i<R.length;i+=3){const x=c*R[i]-s*R[i+1];lo=Math.min(lo,x);hi=Math.max(hi,x);}const tf=free.thetaR+free.h,c2=Math.cos(tf),s2=Math.sin(tf),W=pinAt(V(),free.thetaR);for(let i=0;i<F.length;i+=3){const x=W.x+c2*F[i]-s2*F[i+1];lo=Math.min(lo,x);hi=Math.max(hi,x);}return(lo+hi)/2;})();
+ return{solve,W0,final,free,freeLow,freeMid,energy,pinAt};
+}
+export function insertionKinematics(time,geo){
+ if(geo.memo&&geo.memo.time===time)return geo.memo.k;
+ const k=insertionPose(time,geo);geo.memo={time,k};return k;
+}
+function insertionPose(time,geo){
+ const {spec,pin,eye}=geo,N=insertionStages.length,T=clamp(time,0,N-.001),stage=Math.floor(T),f=T-stage;
+ const S=geo.solver||(geo.solver=makeSolver(geo)),P=spec.platform;
+ const toEye=eye.clone().sub(pin),eye0=S.W0.clone().add(toEye),eyeF=S.final.clone().add(toEye);
+ const rest=V(eye0.x,eye0.y+900,eye0.z),lift=Math.max(P.y+S.freeLow+250,eye0.y+250),xs=-.32*spec.Rm,xTop=-S.freeMid;
+ const yA=-spec.Rp+140+S.freeLow,yB=Math.max(eyeF.y+320,Math.min(yA-200,eyeF.y+700)),xm=lerp(xs,eyeF.x,.45);
+ // Landing geometry (as validated before): the mould folds in on the channel
+ // while the robot keeps its hanging tilt, then the robot is laid down.
+ const fp=geo.formPts,rp=geo.robotPts;
+ const contact=(theta,wx)=>{let y=-Infinity;for(const p of fp){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);y=Math.max(y,floorAt(spec,wx+q.x,p.z)-q.y);}return y;};
+ const hangX=-80,restY=pin.y-(S.rest??=contact(0,0)),lie=(theta,wx)=>contact(theta,wx)+restY*smooth(1+theta/(Math.PI/2)*2);
+ const rearGap=theta=>{let m=Infinity;for(const p of rp){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);m=Math.min(m,q.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z)));}return m;};
+ const th2=S.free.thetaR,W3=S.W3??=V(hangX,lie(th2,hangX),0),eye3=W3.clone().add(rot(toEye,th2));
+ // Hook path of the crane operator for lifting and lowering.
+ const hookAt=(st,g)=>{
+  if(st===1){const a=smooth(g/.75),b=smooth((g-.6)/.4);return V(lerp(eye0.x,xTop,b),lerp(eye0.y,lift,a),lerp(eye0.z,spec.z0,b));}
+  const y=lerp(lift,eye3.y+12,smooth(g)),side=Math.max(smooth((spec.coneBottom-350-y)/450),smooth((g-.8)/.2));return V(lerp(xTop,eye3.x,side),y,lerp(spec.z0,0,side));
+ };
+ // Stages 1–2 are solved as one continuous sequence (each pose starts from the
+ // previous one), lightly damped and cached, so any seek order gives the same result.
+ const table=st=>{
+  S.tables??={};if(S.tables[st])return S.tables[st];
+  const n=48,raw=[];let seed=st===1?null:(()=>{const e=table(1).at(-1);return{thetaR:e[0],h:e[1],u:e[4],w:e[5]};})();
+  for(let i=0;i<=n;i++){const H0=hookAt(st,i/n),q=S.solve(H0,seed||undefined);raw.push([q.thetaR,q.h,q.eye.x-H0.x,q.eye.y-H0.y,q.u,q.w]);seed=q;}
+  const damp=st===1?.3:.8,sm=[raw[0].slice()];for(let i=1;i<=n;i++){const p=sm[i-1],r=raw[i];sm.push(p.map((v,k)=>v+(r[k]-v)*damp));}
+  return S.tables[st]=sm.map((v,i)=>{const w=smooth((i/n-.8)/.2);return v.map((x,k)=>lerp(x,raw[i][k],w));});
+ };
+ let H,pose,rope=1,drive=0;
+ if(stage===0){H=rest.clone().lerp(eye0,smooth(f/.7));pose={thetaR:0,h:0,W:S.W0.clone()};}
+ else if(stage<3){
+  const tb=table(stage),x=f*48,i=Math.min(47,Math.floor(x)),u=x-i,a0=tb[i],a1=tb[i+1];H=hookAt(stage,f);
+  const tr=lerp(a0[0],a1[0],u);H=H.clone().add(V(lerp(a0[2],a1[2],u),lerp(a0[3],a1[3],u),0));
+  // Arrive exactly in the landing configuration at the end of lowering.
+  const b=stage===2?smooth((f-.85)/.15):0,trB=lerp(tr,th2,b);if(b>0)H.lerp(eye3,b);
+  pose={thetaR:trB,h:clamp(lerp(lerp(a0[1],a1[1],u),0,b),0,Math.PI/2),W:S.pinAt(H,trB)};
  }
- // Cable plug: points world-up while the unit is lifted, folds back in the pipe.
- const up=-thetaR-Math.PI/2,plug=stage<5?clamp(up,-1.45,.52):lerp(-1.45,.52,smooth((f-.15)/.45));
- return{stage,f,thetaF,thetaR,W,drive,rope,plug,hinge:thetaF-thetaR};
+ else if(stage===3){const tf=th2*(1-smooth(f)),W=V(hangX,lie(tf,hangX),0);pose={thetaR:th2,h:tf-th2,W};H=W.clone().add(rot(toEye,th2));}
+ else if(stage===4){const tr=th2*(1-smooth(f)),W=V(Math.max(hangX,22-rearGap(tr)),pin.y,0);pose={thetaR:tr,h:-tr,W};H=W.clone().add(rot(toEye,tr));}
+ else{drive=1400*smooth((f-.15)/.85);rope=1-smooth(f/.2);H=eyeF.clone().add(V(drive,0,0));pose={thetaR:0,h:0,W:S.final.clone().add(V(drive,0,0))};}
+ // Cable bomb: folded up (latched) while lifting; back in line in the pipe.
+ const up=-Math.PI/2,plug=stage===0?lerp(0,up,smooth(f/.4)):stage<5?up:lerp(-Math.PI/2,0,smooth((f-.45)/.3));
+ return{stage,f,thetaF:pose.thetaR+pose.h,thetaR:pose.thetaR,W:pose.W,drive,rope,plug,hinge:pose.h,hook:H};
 }
 export function frameMatrix(theta,W,pin){return new THREE.Matrix4().makeTranslation(W.x,W.y,W.z).multiply(new THREE.Matrix4().makeRotationZ(theta)).multiply(new THREE.Matrix4().makeTranslation(-pin.x,-pin.y,-pin.z));}
 
@@ -158,74 +233,87 @@ function emblemTexture(){
 }
 function claimTexture(){return canvasTexture(2048,160,(g,w,h)=>{g.clearRect(0,0,w,h);g.fillStyle='#d7dde2';g.font='600 78px Arial, sans-serif';g.textBaseline='middle';const txt='Stutzen- und Rohrsanierung · DSS-Flex';const k=Math.min(1,(w-20)/g.measureText(txt).width);g.setTransform(k,0,0,1,10,0);g.fillText(txt,0,h/2);});}
 
-// Truck with box body and rear loader crane. Proportions of a municipal
-// service truck; not a specific vehicle.
+// Box truck parked with its open rear and tail lift at the shaft, red column
+// crane inside at the rear door (after the site photos). Proportions of a
+// 7.5 t service truck; not a specific vehicle.
 function buildTruck(spec){
- const G=spec.G,zT=-3150,half=1250,grp=new THREE.Group();grp.name='LKW mit Ladekran (Darstellung)';
- const paint=new THREE.MeshStandardMaterial({color:'#1b2127',metalness:.35,roughness:.42}),white=new THREE.MeshStandardMaterial({color:'#e8ebee',metalness:.2,roughness:.38});
+ const G=spec.G,P=spec.platform,zR=P.z0,W=1250,H=2350,Lb=4800,floor=P.y,grp=new THREE.Group();grp.name='LKW mit Kran im Koffer (Darstellung)';
+ const white=new THREE.MeshStandardMaterial({color:'#eef0f1',metalness:.15,roughness:.45}),inner=new THREE.MeshStandardMaterial({color:'#c9cdd0',roughness:.7,side:THREE.DoubleSide});
  const black=new THREE.MeshStandardMaterial({color:'#15181b',roughness:.7}),tyre=new THREE.MeshStandardMaterial({color:'#1a1b1d',roughness:.92}),rim=new THREE.MeshStandardMaterial({color:'#b9c0c6',metalness:.85,roughness:.3});
  const glass=new THREE.MeshStandardMaterial({color:'#0c1720',metalness:.6,roughness:.08}),red=new THREE.MeshStandardMaterial({color:'#c8231e',metalness:.3,roughness:.4}),blue=new THREE.MeshStandardMaterial({color:'#1565b8',metalness:.3,roughness:.4});
- const crane=new THREE.MeshStandardMaterial({color:'#c62b22',metalness:.4,roughness:.38}),steel=new THREE.MeshStandardMaterial({color:'#9aa3aa',metalness:.85,roughness:.28}),amber=new THREE.MeshStandardMaterial({color:'#ffb21e',emissive:'#ff9a00',emissiveIntensity:.9,roughness:.3});
- const lamp=new THREE.MeshStandardMaterial({color:'#f4f6f8',emissive:'#dfe8f0',emissiveIntensity:.4,roughness:.2});
+ const crane=new THREE.MeshStandardMaterial({color:'#d1211b',metalness:.35,roughness:.35}),steel=new THREE.MeshStandardMaterial({color:'#9aa3aa',metalness:.85,roughness:.28}),alu=new THREE.MeshStandardMaterial({color:'#b7bcbf',metalness:.7,roughness:.38});
+ const amber=new THREE.MeshStandardMaterial({color:'#ffb21e',emissive:'#ff9a00',emissiveIntensity:.9,roughness:.3}),lamp=new THREE.MeshStandardMaterial({color:'#ffffff',emissive:'#f2f6ff',emissiveIntensity:1.4});
  const add=(g,m,p)=>{const o=mesh(g,m);if(p)o.position.copy(p);grp.add(o);return o;};
- // Chassis, axles and wheels.
- for(const s of[-1,1])add(new THREE.BoxGeometry(7700,260,90),black,V(1500,G+950,zT+s*420));
- for(const [x,dual] of[[900,true],[2250,true],[4550,false]])for(const s of[-1,1]){
-  const w=dual?560:300,z=zT+s*(half-w/2-20);
-  for(const [r,m,ww] of[[480,tyre,w],[270,rim,w+8],[90,steel,w+30]]){const o=mesh(new THREE.CylinderGeometry(r,r,ww,r>300?40:24),m);o.rotation.x=Math.PI/2;o.position.set(x,G+480,z);grp.add(o);}
-  add(new THREE.BoxGeometry(dual?1150:720,40,w+40),black,V(x,G+1000,z));
- }
- // Cab.
- add(new RoundedBoxGeometry(1900,2450,2480,4,120),white,V(4450,G+2250,zT)).name='Fahrerhaus';
- add(new THREE.PlaneGeometry(2150,1000),glass,V(5402,G+2850,zT)).rotation.y=Math.PI/2;
- add(new THREE.PlaneGeometry(760,700),glass,V(4980,G+2900,zT+1241));
- add(new THREE.BoxGeometry(40,1200,1500),black,V(5405,G+1650,zT));
- for(const s of[-1,1]){add(new THREE.BoxGeometry(30,160,380),lamp,V(5412,G+1350,zT+s*930));add(new THREE.BoxGeometry(260,420,40),black,V(5250,G+3050,zT+s*1400));}
- add(new THREE.BoxGeometry(240,360,2560),black,V(5420,G+880,zT));
- add(new THREE.BoxGeometry(260,110,1500),amber,V(4450,G+3530,zT));
- add(new THREE.BoxGeometry(1500,30,4),red,V(4450,G+1750,zT+1242));
- // Box body with the DiTom livery on the kerb side facing the shaft.
- add(new RoundedBoxGeometry(4800,2600,2500,3,40),paint,V(1000,G+2450,zT)).name='Kofferaufbau DiTom';
- add(new THREE.BoxGeometry(4800,90,6),red,V(1000,G+1420,zT+half+2));add(new THREE.BoxGeometry(4800,36,6),blue,V(1000,G+1520,zT+half+2));
- const logoPlane=add(new THREE.PlaneGeometry(2900,2900*733/2145),new THREE.MeshStandardMaterial({transparent:true,roughness:.35,metalness:.1,color:'#ffffff'}),V(600,G+2980,zT+half+4));logoPlane.name='DiTom-Logo';logoPlane.visible=false;logoPlane.castShadow=false;
+ const zc=zR-Lb/2;
+ // Box: walls, roof, front and floor; the rear is open with doors folded to the sides.
+ add(new THREE.BoxGeometry(40,H,Lb),white,V(-W,floor+H/2,zc));add(new THREE.BoxGeometry(40,H,Lb),white,V(W,floor+H/2,zc));
+ add(new THREE.BoxGeometry(2*W+40,50,Lb),white,V(0,floor+H,zc));add(new THREE.BoxGeometry(2*W+40,H,40),white,V(0,floor+H/2,zR-Lb));
+ add(new THREE.BoxGeometry(2*W,60,Lb),new THREE.MeshStandardMaterial({color:'#8e9396',metalness:.5,roughness:.5}),V(0,floor-30,zc));
+ for(const s of[-1,1])add(new THREE.PlaneGeometry(Lb,H-20),inner,V(s*(W-22),floor+H/2,zc)).rotation.y=Math.PI/2;
+ add(new THREE.PlaneGeometry(2*W-40,Lb),inner,V(0,floor+H-26,zc)).rotation.x=Math.PI/2;
+ for(const s of[-1,1]){add(new THREE.BoxGeometry(70,H,70),alu,V(s*(W-15),floor+H/2,zR));const door=add(new THREE.BoxGeometry(30,H-60,W-20),white,V(s*(W+38),floor+H/2,zR-(W-20)/2-40));door.name='Hecktür (geöffnet)';}
+ add(new THREE.BoxGeometry(2*W+40,120,70),alu,V(0,floor+H-40,zR));
+ add(new THREE.BoxGeometry(1400,40,40),lamp,V(0,floor+H-60,zR-1800));
+ // Livery on the kerb side (+x) and on the folded rear door.
+ const side=W+22;
+ const logoPlane=add(new THREE.PlaneGeometry(3000,3000*733/2145),new THREE.MeshStandardMaterial({transparent:true,roughness:.35,metalness:.1,color:'#ffffff'}),V(side,floor+1600,zR-3000));logoPlane.rotation.y=Math.PI/2;logoPlane.name='DiTom-Logo';logoPlane.visible=false;logoPlane.castShadow=false;
+ const logoRear=add(new THREE.PlaneGeometry(1500,1500*733/2145),logoPlane.material,V(0,floor+H+310,zR+40));logoRear.visible=false;logoRear.castShadow=false;
+ add(new THREE.BoxGeometry(2*W+40,560,24),white,V(0,floor+H+290,zR+14));
+ add(new THREE.BoxGeometry(6,90,Lb-200),red,V(side,floor+300,zc-100));add(new THREE.BoxGeometry(6,36,Lb-200),blue,V(side,floor+400,zc-100));
  const emblem=emblemTexture(),claim=claimTexture();
- if(emblem){const e=add(new THREE.PlaneGeometry(1150,1150),new THREE.MeshStandardMaterial({map:emblem,transparent:true,roughness:.4}),V(2720,G+2560,zT+half+4));e.name='DSS-Flex-Emblem';e.castShadow=false;}
- if(claim){const c=add(new THREE.PlaneGeometry(2900,226),new THREE.MeshStandardMaterial({map:claim,transparent:true,roughness:.5}),V(600,G+2130,zT+half+4));c.castShadow=false;}
- if(typeof document!=='undefined'){const img=document.querySelector('.brand-logo');if(img?.src)new THREE.TextureLoader().load(img.src,t=>{t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;logoPlane.material.map=t;logoPlane.material.needsUpdate=true;logoPlane.visible=true;});}
- // Rear crane platform, outriggers with pads, rear doors and chevrons.
- add(new THREE.BoxGeometry(900,140,2500),paint,V(-1850,G+1150,zT));
- for(const s of[-1,1]){const zz=s>0?-1480:zT-half-380;add(new THREE.BoxGeometry(180,160,Math.abs(zz-zT)),crane,V(-1850,G+1080,(zz+zT)/2));add(new THREE.CylinderGeometry(60,60,1040,16),steel,V(-1850,G+560,zz));add(new THREE.CylinderGeometry(240,260,40,24),black,V(-1850,G+20,zz));}
- add(new THREE.BoxGeometry(6,2400,2300),black,V(-1408,G+2450,zT));
- for(let i=0;i<8;i++)add(new THREE.BoxGeometry(8,180,280),i%2?red:white,V(-2305,G+820,zT-1050+i*300));
- // Loader crane: column, slewing head, main and knuckle booms, cylinders.
- const base=V(-1850,G+1220,-2250);
- add(new THREE.CylinderGeometry(210,240,900,24),crane,base.clone().add(V(0,450,0)));
- const head=add(new THREE.CylinderGeometry(270,270,260,24),crane,base.clone().add(V(0,1030,0)));
- const P=base.clone().add(V(0,1130,0));
- const mk=m=>{const o=mesh(new THREE.BoxGeometry(1,1,1),m);grp.add(o);return o;};
- const boom1=mk(crane),boom2=mk(crane),boom3=mk(steel),cyl1=mk(black),rod1=mk(steel),cyl2=mk(black),hookBlock=mk(new THREE.MeshStandardMaterial({color:'#e7b416',roughness:.4}));
- const winch=mesh(new THREE.CylinderGeometry(110,110,300,20),black);grp.add(winch);
- const L1=2600,L2=2900,up=V(0,1,0);
- const pose=target=>{
-  const flat=V(target.x-P.x,0,target.z-P.z),d=Math.max(1,flat.length()),dir=flat.clone().divideScalar(d),h=target.y-P.y,dist=clamp(Math.hypot(d,h),Math.abs(L1-L2)+10,L1+L2-10);
-  const a=Math.atan2(h,d),al=Math.acos(clamp((L1*L1+dist*dist-L2*L2)/(2*L1*dist),-1,1)),t1=a+al;
-  const K=P.clone().addScaledVector(dir,L1*Math.cos(t1)).addScaledVector(up,L1*Math.sin(t1));
-  const T=P.clone().addScaledVector(dir,dist*Math.cos(a)).addScaledVector(up,dist*Math.sin(a));
-  beam(boom1,P,K,300,260);const mid=K.clone().lerp(T,.55);beam(boom2,K,mid,260,230);beam(boom3,mid,T,190,170);
-  const c0=base.clone().add(V(0,420,0)).addScaledVector(dir,260),c1=P.clone().lerp(K,.48).addScaledVector(up,-150);beam(cyl1,c0,c0.clone().lerp(c1,.55),170,170);beam(rod1,c0.clone().lerp(c1,.5),c1,90,90);
-  beam(cyl2,P.clone().lerp(K,.75).addScaledVector(up,190),K.clone().lerp(T,.25).addScaledVector(up,190),130,130);
-  head.rotation.y=-Math.atan2(dir.z,dir.x);winch.position.copy(K).addScaledVector(up,160);winch.rotation.set(Math.PI/2,0,-Math.atan2(dir.z,dir.x));
-  hookBlock.position.copy(T).add(V(0,-130,0));hookBlock.scale.set(160,200,120);hookBlock.quaternion.identity();
-  return T.clone().add(V(0,-230,0));
- };
- // Cable drum next to the truck, fed over a roller at the shaft rim.
- const drum=new THREE.Group();drum.name='Kabeltrommel';const dc=V(-2750,G+560,-1350);
- const reel=mesh(new THREE.CylinderGeometry(330,330,380,32),new THREE.MeshStandardMaterial({color:'#1b1e20',roughness:.6}));reel.rotation.x=Math.PI/2;drum.add(reel);
- for(const s of[-1,1]){const f=mesh(new THREE.CylinderGeometry(480,480,24,40),new THREE.MeshStandardMaterial({color:'#0b5ea8',metalness:.3,roughness:.4}));f.rotation.x=Math.PI/2;f.position.z=s*205;drum.add(f);const leg=mesh(new THREE.BoxGeometry(60,560,60),steel);leg.position.set(0,-280,s*260);drum.add(leg);}
+ if(emblem){const e=add(new THREE.PlaneGeometry(1000,1000),new THREE.MeshStandardMaterial({map:emblem,transparent:true,roughness:.4}),V(W+56,floor+1350,zR-640));e.rotation.y=Math.PI/2;e.name='DSS-Flex-Emblem';e.castShadow=false;}
+ if(claim){const c=add(new THREE.PlaneGeometry(3000,234),new THREE.MeshStandardMaterial({map:claim,transparent:true,roughness:.5,color:'#26303a'}),V(side+1,floor+900,zR-3000));c.rotation.y=Math.PI/2;c.castShadow=false;}
+ if(typeof document!=='undefined'){const img=document.querySelector('.brand-logo');if(img?.src)new THREE.TextureLoader().load(img.src,t=>{t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;logoPlane.material.map=t;logoPlane.material.needsUpdate=true;logoPlane.visible=logoRear.visible=true;});}
+ // Chassis, wheels, cab.
+ for(const s of[-1,1])add(new THREE.BoxGeometry(90,260,7400),black,V(s*430,floor-230,zR-3300));
+ for(const [z,dual] of[[zR-1500,true],[zR-5700,false]])for(const s of[-1,1]){
+  const w=dual?560:300,x=s*(W-w/2-30);
+  for(const [r,m,ww] of[[480,tyre,w],[270,rim,w+8],[90,steel,w+30]]){const o=mesh(new THREE.CylinderGeometry(r,r,ww,r>300?40:24),m);o.rotation.z=Math.PI/2;o.position.set(x,G+480,z);grp.add(o);}
+  add(new THREE.BoxGeometry(w+40,40,dual?1150:720),black,V(x,floor-140,z));
+ }
+ add(new RoundedBoxGeometry(2480,2450,1850,4,120),white,V(0,G+2250,zR-Lb-1000)).name='Fahrerhaus';
+ add(new THREE.PlaneGeometry(700,650),glass,V(1242,G+2950,zR-Lb-1250)).rotation.y=Math.PI/2;
+ add(new THREE.BoxGeometry(1500,110,260),amber,V(0,G+3530,zR-Lb-1000));
+ for(const s of[-1,1]){add(new THREE.BoxGeometry(260,180,40),new THREE.MeshStandardMaterial({color:'#b3120d',emissive:'#6a0000',emissiveIntensity:.6}),V(s*(W-260),floor-200,zR+20));}
+ add(new THREE.BoxGeometry(520,110,10),new THREE.MeshStandardMaterial({color:'#f2f2ee',roughness:.5}),V(-500,floor-230,zR+30));
+ // Tail lift at floor height, with arms and warning edge.
+ const lift=add(new THREE.BoxGeometry(2*W,60,P.z1-P.z0),alu,V(0,P.y-30,(P.z0+P.z1)/2));lift.name='Ladebordwand';
+ for(let i=0;i<10;i++)add(new THREE.BoxGeometry(250,62,40),i%2?red:white,V(-W+125+i*250,P.y-30,P.z1-20));
+ for(const s of[-1,1])add(new THREE.BoxGeometry(90,90,900),black,V(s*700,P.y-300,zR+200)).rotation.x=.35;
+ // Interior after the photos: mixing pump, cable drum, shelves, hoses, cones.
+ const pump=add(new THREE.BoxGeometry(760,1150,800),new THREE.MeshStandardMaterial({color:'#dfe2e3',metalness:.3,roughness:.5}),V(-W+470,floor+575,zR-650));pump.name='Mischpumpe';
+ add(new THREE.PlaneGeometry(460,180),black,V(-W+470,floor+830,zR-248));
+ const drum=new THREE.Group();drum.name='Kabeltrommel Roboter';const dc=V(-250,floor+470,zR-1500);
+ {const reel=mesh(new THREE.CylinderGeometry(300,300,420,32),new THREE.MeshStandardMaterial({color:'#1b1e20',roughness:.6}));reel.rotation.z=Math.PI/2;drum.add(reel);
+  for(const s of[-1,1]){const fl=mesh(new THREE.CylinderGeometry(440,440,24,40),blue);fl.rotation.z=Math.PI/2;fl.position.x=s*222;drum.add(fl);const leg=mesh(new THREE.BoxGeometry(50,470,380),steel);leg.position.set(s*250,-235,0);drum.add(leg);}}
  drum.position.copy(dc);grp.add(drum);
- return{group:grp,pose,drumTop:dc.clone().add(V(0,330,0)),crane:{P,reach:L1+L2}};
+ for(let k=0;k<4;k++){const sh=add(new THREE.BoxGeometry(420,25,900),alu,V(W-240,floor+450+k*480,zR-2600));sh.name='Regal';add(new THREE.BoxGeometry(300,200,360),new THREE.MeshStandardMaterial({color:['#2e7d32','#e0e0e0','#1565c0','#9e9e9e'][k],roughness:.7}),V(W-250,floor+560+k*480,zR-2450-k*80));}
+ for(let k=0;k<3;k++){const coil=mesh(new THREE.TorusGeometry(260-k*30,18,10,40),blue);coil.rotation.y=Math.PI/2;coil.position.set(W-60,floor+1500-k*60,zR-1200+k*40);grp.add(coil);}
+ {const coil=mesh(new THREE.TorusGeometry(230,14,10,40),new THREE.MeshStandardMaterial({color:'#e8c21a',roughness:.5}));coil.rotation.x=Math.PI/2;coil.position.set(-450,floor+30,zR-500);grp.add(coil);}
+ const coneMat=new THREE.MeshStandardMaterial({color:'#e2502b',roughness:.6});for(let k=0;k<4;k++){const c=mesh(new THREE.ConeGeometry(150,700,24),coneMat);c.position.set(200,floor+350+k*60,zR-1100);grp.add(c);}
+ // Column crane at the rear door: base, square column, slewing head,
+ // telescopic boom through the door opening, lift cylinder, winch.
+ const base=V(450,floor,zR-420);
+ add(new THREE.BoxGeometry(420,30,420),crane,base.clone().add(V(0,15,0)));
+ add(new THREE.BoxGeometry(170,1280,170),crane,base.clone().add(V(0,670,0)));
+ const head=add(new THREE.BoxGeometry(240,180,240),crane,base.clone().add(V(0,1380,0)));
+ const pivot=base.clone().add(V(0,1420,0));
+ const mk=m=>{const o=mesh(new THREE.BoxGeometry(1,1,1),m);grp.add(o);return o;};
+ const boomA=mk(crane),boomB=mk(crane),cyl=mk(black),rod=mk(steel),sheave=mesh(new THREE.CylinderGeometry(70,70,50,20),black),winch=mesh(new THREE.CylinderGeometry(80,80,200,18),black);grp.add(sheave,winch);
+ const up=V(0,1,0),tipY=floor+1820;
+ const pose=target=>{
+  const flat=V(target.x-pivot.x,0,target.z-pivot.z),d=clamp(flat.length(),900,2900),dir=flat.lengthSq()>1?flat.normalize():V(0,0,1);
+  const T=V(pivot.x+dir.x*d,tipY,pivot.z+dir.z*d);
+  const mid=pivot.clone().lerp(T,Math.min(.62,1100/T.distanceTo(pivot)));
+  beam(boomA,pivot,mid,150,160);beam(boomB,mid.clone().lerp(pivot,.08),T,110,120);
+  const c0=base.clone().add(V(0,420,0)).addScaledVector(dir,110),c1=pivot.clone().lerp(mid,.8).addScaledVector(up,-90);
+  beam(cyl,c0,c0.clone().lerp(c1,.58),110,110);beam(rod,c0.clone().lerp(c1,.52),c1,55,55);
+  head.rotation.y=-Math.atan2(dir.z,dir.x);sheave.position.copy(T);sheave.rotation.set(0,-Math.atan2(dir.z,dir.x),Math.PI/2);
+  winch.position.copy(base).add(V(0,1150,0)).addScaledVector(dir,-130);winch.rotation.set(0,-Math.atan2(dir.z,dir.x)+Math.PI/2,Math.PI/2);
+  return T.clone().add(V(0,-70,0));
+ };
+ return{group:grp,pose,drumTop:dc.clone().add(V(0,300,0)),rest:V(0,tipY-600,(P.z0+P.z1)/2),crane:{pivot}};
 }
-
 export class ManholeScene{
  constructor(dn,cutPlane){
   const spec=this.spec=manholeSpec(dn),{Rp,t,Rm,wall,G}=spec;this.cutPlane=cutPlane;
@@ -292,7 +380,7 @@ export class ManholeScene{
   }
   // Street with the frame opening, frame, opened cover, kerb and markings.
   {
-   const s=new THREE.Shape([V(-4600,-5400),V(6400,-5400),V(6400,2400),V(-4600,2400)].map(p=>new THREE.Vector2(p.x,p.y)));const h=new THREE.Path();h.absarc(0,spec.zc,spec.ro+wall,0,TAU,true);s.holes.push(h);
+   const s=new THREE.Shape([V(-4600,-9800),V(6400,-9800),V(6400,2400),V(-4600,2400)].map(p=>new THREE.Vector2(p.x,p.y)));const h=new THREE.Path();h.absarc(0,spec.zc,spec.ro+wall,0,TAU,true);s.holes.push(h);
    const g=new THREE.ShapeGeometry(s,48);g.rotateX(Math.PI/2);g.translate(0,G,0);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,uv.getX(i)/4000,uv.getY(i)/4000);
    add(g,this.asphaltMat,'Straße');
    const patch=new THREE.RingGeometry(spec.ro+wall,spec.ro+wall+260,72);patch.rotateX(-Math.PI/2);const po=add(patch,new THREE.MeshStandardMaterial({color:'#44474a',roughness:.95}));po.position.set(0,G+1.2,spec.zc);
@@ -303,21 +391,31 @@ export class ManholeScene{
    const cover=new THREE.Group();cover.name='Schachtdeckel (abgelegt)';
    cover.add(mesh(new THREE.CylinderGeometry(spec.ro-8,spec.ro-8,28,72),this.iron));
    for(let i=-5;i<=5;i++){const rib=mesh(new THREE.BoxGeometry(6,4,Math.sqrt(Math.max(0,(spec.ro-30)**2-(i*45)**2))*2),this.iron);rib.position.set(i*45,16,0);cover.add(rib);}
-   cover.position.set(950,G+14,-700);cover.rotation.y=.3;this.group.add(cover);
-   const kerb=add(new THREE.BoxGeometry(11000,300,160),new THREE.MeshStandardMaterial({color:'#9c9c98',roughness:.9}),'Bordstein');kerb.position.set(900,G+20,-5250);
+   cover.position.set(1700,G+14,420);cover.rotation.y=.3;this.group.add(cover);
    const markMat=new THREE.MeshStandardMaterial({color:'#e9e8e1',roughness:.8});
    for(let x=-4200;x<6200;x+=3000){const m=add(new THREE.BoxGeometry(1500,3,120),markMat);m.position.set(x,G+2,1300);}
    const coneMat=new THREE.MeshStandardMaterial({color:'#e2502b',roughness:.6}),white=new THREE.MeshStandardMaterial({color:'#f1f1ea',roughness:.5});
    for(const [x,z] of[[-2300,-900],[1700,-1150],[1500,900],[-1200,1200]]){const c=new THREE.Group();c.add(mesh(new THREE.BoxGeometry(380,30,380),new THREE.MeshStandardMaterial({color:'#222',roughness:.9})));const k=mesh(new THREE.ConeGeometry(150,700,32),coneMat);k.position.y=365;c.add(k);for(const y of[250,420]){const b=mesh(new THREE.CylinderGeometry(150*(1-(y-15)/700)-1,150*(1-(y+55)/700)-1,70,32,1,true),white);b.position.y=y+35;b.scale.setScalar(1.02);c.add(b);}c.position.set(x,G,z);this.group.add(c);}
   }
   this.truck=buildTruck(spec);this.group.add(this.truck.group);
-  this.ropeMat=new THREE.MeshStandardMaterial({color:'#9aa0a4',metalness:.8,roughness:.4});this.rope=mesh(new THREE.BufferGeometry(),this.ropeMat);this.rope.name='Kranseil';this.group.add(this.rope);
-  this.hook=new THREE.Group();this.hook.add(mesh(new THREE.TorusGeometry(26,7,8,20,Math.PI*1.5),new THREE.MeshStandardMaterial({color:'#e7b416',roughness:.4})));this.group.add(this.hook);
+  // Electric chain hoist under the boom tip (photo): orange housing, grey
+  // motor, chain bag, pendant control; load chain down to an orange hook.
+  const orange=new THREE.MeshStandardMaterial({color:'#e8641c',roughness:.45,metalness:.2}),grey=new THREE.MeshStandardMaterial({color:'#c9c4b6',roughness:.5}),bag=new THREE.MeshStandardMaterial({color:'#6f7478',roughness:.95});
+  this.hoist=new THREE.Group();this.hoist.name='Elektrokettenzug';
+  const hb=mesh(new THREE.BoxGeometry(170,200,150),orange);hb.position.y=-120;this.hoist.add(hb);
+  const motor=mesh(new THREE.CylinderGeometry(58,58,190,20),grey);motor.rotation.z=Math.PI/2;motor.position.set(-150,-90,0);this.hoist.add(motor);
+  const sack=mesh(new THREE.CylinderGeometry(70,55,220,16),bag);sack.position.set(90,-300,0);this.hoist.add(sack);
+  const susp=mesh(new THREE.TorusGeometry(22,6,8,16),orange);susp.position.y=-10;this.hoist.add(susp);this.group.add(this.hoist);
+  this.pendant=mesh(new THREE.BoxGeometry(60,170,50),new THREE.MeshStandardMaterial({color:'#f2b705',roughness:.5}));this.pendant.name='Handtaster';this.group.add(this.pendant);
+  this.pendantCable=mesh(new THREE.BufferGeometry(),new THREE.MeshStandardMaterial({color:'#222',roughness:.6}));this.group.add(this.pendantCable);
+  this.chainMat=new THREE.MeshStandardMaterial({color:'#8d9296',metalness:.85,roughness:.35});
+  this.chain=new THREE.InstancedMesh(new THREE.TorusGeometry(9,3,6,12),this.chainMat,400);this.chain.name='Lastkette';this.chain.frustumCulled=false;this.group.add(this.chain);
+  this.rope=this.chain;
+  this.hook=new THREE.Group();{const hk=mesh(new THREE.TorusGeometry(30,9,8,20,Math.PI*1.45),orange);hk.rotation.z=Math.PI*.8;this.hook.add(hk);const blk=mesh(new THREE.BoxGeometry(56,70,40),orange);blk.position.y=55;this.hook.add(blk);}this.group.add(this.hook);
   this.cableMat=new THREE.MeshStandardMaterial({color:'#15191c',roughness:.5});this.cable=mesh(new THREE.BufferGeometry(),this.cableMat);this.cable.name='Roboterkabel';this.cable.castShadow=false;this.group.add(this.cable);
-  // Cable roller at the rim on the drum side.
-  const toDrum=V(this.truck.drumTop.x,0,this.truck.drumTop.z-spec.zc).normalize();
-  this.roller=V(toDrum.x*(spec.ro-30),G+70,spec.zc+toDrum.z*(spec.ro-30));
-  {const r=mesh(new THREE.CylinderGeometry(55,55,140,20),new THREE.MeshStandardMaterial({color:'#e7b416',roughness:.4}));r.rotation.set(Math.PI/2,0,Math.atan2(toDrum.z,toDrum.x));r.position.copy(this.roller);r.name='Kabelumlenkrolle';this.group.add(r);}
+  // Cable roller on the rim towards the truck.
+  this.roller=V(-120,G+70,spec.zc-spec.ro+40);
+  {const r=mesh(new THREE.CylinderGeometry(55,55,160,20),new THREE.MeshStandardMaterial({color:'#e7b416',roughness:.4}));r.rotation.z=Math.PI/2;r.position.copy(this.roller);r.name='Kabelumlenkrolle';this.group.add(r);}
   // Section faces in the z = 0 plane (visible with "Rohr aufschneiden").
   this.caps=new THREE.Group();this.group.add(this.caps);
   const capMesh=(pts,m)=>{const o=mesh(capShape(pts),m);o.castShadow=false;this.caps.add(o);return o;};
@@ -369,21 +467,28 @@ export class ManholeScene{
  update({hook,rope,plugTip,plugDir,clock=0}){
   const s=this.spec;
   if(this.flowNormal)this.flowNormal.offset.set(-clock*280/420,.05*Math.sin(clock*.7));
-  // Crane tip follows the hook while loaded; retracts over the truck after release.
-  const want=V(hook.x,s.G+3000,hook.z);
-  if(rope<1)want.lerp(V(-900,s.G+3300,-1500),1-rope);
-  this.craneTarget.copy(want);
-  const tip=this.truck.pose(this.craneTarget);
-  const hookPos=rope>0.001?hook.clone().lerp(tip.clone().add(V(0,-700,0)),1-rope):tip.clone().add(V(0,-700,0));
-  this.rope.geometry.dispose();this.rope.geometry=new THREE.TubeGeometry(new THREE.LineCurve3(tip,hookPos.clone().add(V(0,40,0))),4,6,6,false);
-  this.hook.position.copy(hookPos).add(V(0,10,0));
-  // Cable: out of the plug, up the shaft away from the wall and the irons,
-  // over the rim roller to the drum. Every sample is kept inside the shaft.
-  const pts=[plugTip.clone(),plugTip.clone().addScaledVector(plugDir,140)];
-  if(pts[1].x>s.Rm-60&&pts[1].y<s.Rp)pts.push(V(Math.min(pts[1].x-300,s.Rm+200),-s.Rp+40,0),V(s.Rm-260,-s.Rp+60,0));
-  const last=pts.at(-1);
-  if(last.y<s.G-500)pts.push(V(last.x,Math.max(last.y+350,Math.min(s.coneBottom-150,last.y+900)),last.z*.6),V(this.roller.x*.4,s.G-420,s.zc+(this.roller.z-s.zc)*.4));
-  pts.push(this.roller.clone().add(V(0,40,0)),this.roller.clone().lerp(this.truck.drumTop,.35).setY(s.G+18),this.truck.drumTop.clone());
+  // Crane tip follows the hook while loaded; returns over the tail lift after release.
+  const want=rope>.999?hook.clone():hook.clone().lerp(this.truck.rest,1-rope);
+  const tip=this.truck.pose(want);
+  const hookPos=rope>.999?hook.clone():hook.clone().lerp(tip.clone().add(V(0,-600,0)),1-rope);
+  this.hoist.position.copy(tip);
+  const top=tip.clone().add(V(0,-220,0)),bottom=hookPos.clone().add(V(0,100,0)),d=bottom.clone().sub(top),len=d.length(),m=new THREE.Matrix4(),q=new THREE.Quaternion(),dir=d.clone().normalize();
+  const n=Math.min(this.chain.count,Math.floor(len/15));
+  for(let i=0;i<this.chain.count;i++){if(i<n){q.setFromUnitVectors(V(0,1,0),dir);if(i%2)q.multiply(new THREE.Quaternion().setFromAxisAngle(V(0,1,0),Math.PI/2));m.compose(top.clone().addScaledVector(dir,(i+.5)*len/n),q,V(1,1.45,1));}else m.makeScale(0,0,0);this.chain.setMatrixAt(i,m);}
+  this.chain.instanceMatrix.needsUpdate=true;
+  this.hook.position.copy(hookPos).add(V(0,20,0));
+  const pend=tip.clone().add(V(160,-1500,60));this.pendant.position.copy(pend);
+  this.pendantCable.geometry.dispose();this.pendantCable.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([tip.clone().add(V(60,-200,40)),tip.clone().add(V(150,-800,70)),pend.clone().add(V(0,85,0))]),16,4,6,false);
+  // Cable: straight out of the cable bomb, up the shaft clear of wall and
+  // irons, over the rim roller, up to the tail lift and to the drum inside.
+  const P=s.platform,edge=V(-120,P.y+22,P.z1-10),pts=[plugTip.clone(),plugTip.clone().addScaledVector(plugDir,140)];
+  if(plugTip.y>s.G+150)pts.push(edge.clone().setZ(P.z1-400),this.truck.drumTop.clone());
+  else{
+   if(pts[1].x>s.Rm-60&&pts[1].y<s.Rp)pts.push(V(Math.min(pts[1].x-300,s.Rm+200),-s.Rp+40,0),V(s.Rm-260,-s.Rp+60,0));
+   const last=pts.at(-1);
+   if(last.y<s.G-500)pts.push(V(last.x,Math.max(last.y+350,Math.min(s.coneBottom-150,last.y+900)),last.z*.6),V(this.roller.x*.5,s.G-420,s.zc+(this.roller.z-s.zc)*.4));
+   pts.push(this.roller.clone().add(V(0,45,0)),this.roller.clone().lerp(edge,.5).add(V(0,-80,0)),edge,this.truck.drumTop.clone());
+  }
   const samples=new THREE.CatmullRomCurve3(pts,false,'centripetal').getSpacedPoints(260).map(p=>this.clampCable(p));
   this.cable.geometry.dispose();this.cable.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samples,false,'centripetal'),320,7,8,false);
   this.cablePoints=samples;

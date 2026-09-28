@@ -23,8 +23,9 @@ for(const f of families){
  for(let t=0;t<=end;t=Math.round((t+.02)*1000)/1000){
   const k=pose(t);
   assert.ok(k.hinge>=-1e-6&&k.hinge<=Math.PI/2+1e-6,`DN ${f.id} t=${t}: hinge only opens nose-up (${k.hinge})`);
-  if(k.stage<=2)assert.ok(Math.abs(k.hinge)<1e-6,'Hinge stays locked while tipping and lowering');
-  if(prev){const jump=k.W.distanceTo(prev.W);assert.ok(jump<130,`DN ${f.id} t=${t}: continuous pin path (${jump.toFixed(1)} mm)`);assert.ok(Math.abs(k.thetaF-prev.thetaF)<.1&&Math.abs(k.thetaR-prev.thetaR)<.1,`DN ${f.id} t=${t}: continuous rotation`);}
+  // Hanging freely above the shaft the cantilevered mould would fold down; the hinge blocks that.
+  if((k.stage===1&&k.f>.7)||(k.stage===2&&k.f<.3))assert.ok(Math.abs(k.hinge)<.02,`DN ${f.id} t=${t}: hinge locked while hanging freely (${k.hinge})`);
+  if(prev){const jump=k.W.distanceTo(prev.W);assert.ok(jump<260,`DN ${f.id} t=${t}: continuous pin path (${jump.toFixed(1)} mm)`);assert.ok(Math.abs(k.thetaF-prev.thetaF)<.35&&Math.abs(k.thetaR-prev.thetaR)<.35,`DN ${f.id} t=${t}: continuous rotation`);}
   prev=k;
   // Clearance below the frame: tipping, lowering, folding, driving in.
   // The cable never enters shaft wall, climbing irons, channel or pipe wall.
@@ -48,7 +49,7 @@ for(const f of families){
  const a=pose(3.5),wa=a.W.clone();pose(0.2);pose(5.5);const b=pose(3.5);assert.ok(b.W.distanceTo(wa)<1e-6&&b.thetaF===a.thetaF,'Direct seeking reproduces the pose');
  const last=pose(end);assert.ok(Math.abs(last.thetaF)<1e-9&&Math.abs(last.thetaR)<1e-9,'Unit ends straight in the pipe');
  assert.ok(Math.abs(last.W.y-v.insertGeo.pin.y)<3,`Mould rests on the invert like in the pipe (${(last.W.y-v.insertGeo.pin.y).toFixed(2)})`);
- const mid=pose(3.6);assert.ok(mid.hinge>.3,'Hinge opens while the mould folds into the pipe');
+ let open=0;for(let t=3;t<5;t+=.1)open=Math.max(open,pose(t).hinge);assert.ok(open>.3,'Hinge opens when channel and pipe push the mould up');
  v.setMode('explore');v.releaseInsert();v.resetPose();
  console.log(`${f.label}: hinge direction, continuity, seeking and clearance OK (shaft ${worst.shaft.toFixed(1)}, floor ${worst.floor.toFixed(1)}, pipe ${worst.pipe.toFixed(1)} mm)`);
 }

@@ -159,12 +159,12 @@ function rivuletGeometry(curve,segments,radius){
 
 // The shield is 500 mm long, has rounded developed corners (38 mm), and is
 // curved through +/-1.13 rad. Use its physical outline even in a cutaway view.
-export function shieldWaterPath(R,start,edge,shield){
+export function shieldWaterPath(R,start,edge,shield,radius=0){
  const r=R-12,outer=R-10+3*(shield?.seal||0),dx=Math.abs(edge.x-(shield?.x||0)),corner=38;
  const arc=r*1.13-(dx>250-corner?corner-Math.sqrt(Math.max(0,corner**2-(dx-250+corner)**2)):0);
  const angle=arc/r,covered=!!shield&&dx<=250&&Math.abs(edge.z)<outer*Math.sin(angle);
  if(!covered){const end=edge.clone().add(V(0,-32,0));return{caught:false,incoming:waterCurve([start,V(edge.x,edge.y+10,edge.z),edge,end]),runoff:null,lip:end};}
- const side=edge.z<0?-1:1,wet=outer+2.3,impactAngle=Math.asin(edge.z/wet),impact=V(edge.x,shield.lift+wet*Math.cos(impactAngle),edge.z);
+ const side=edge.z<0?-1:1,wet=outer+Math.max(2.3,radius+.6),impactAngle=Math.asin(edge.z/wet),impact=V(edge.x,shield.lift+wet*Math.cos(impactAngle),edge.z);
  const incoming=new THREE.CubicBezierCurve3(start,V((start.x+edge.x)/2,start.y,edge.z),V(edge.x,Math.max(edge.y+10,impact.y+18),edge.z),impact),points=[impact];
  for(let i=1;i<=48;i++){const a=THREE.MathUtils.lerp(impactAngle,side*angle,i/48);points.push(V(edge.x,shield.lift+wet*Math.cos(a),wet*Math.sin(a)));}
  const lip=points.at(-1).clone().add(V(0,-3,side*3));points.push(lip);
@@ -305,7 +305,14 @@ export class RepairScene {
   this.splash=new THREE.Group();this.water.add(this.splash);this.rippleMaterials=[];
   for(let i=0;i<7;i++){const m=this.runoffMaterial.clone();this.rippleMaterials.push(m);const o=makeMesh(new THREE.RingGeometry(.86,1,48,1),m);this.splash.add(o);}
   // Wall films, crack jets under groundwater pressure and washed-in fines.
-  this.extras=new InfiltrationExtras(R,{contour:breakoutContour,level:options.infiltrationLevel,cutPlane});this.extras.addThreads(this.streams);this.group.add(this.extras.group);
+  this.extras=new InfiltrationExtras(R,{contour:breakoutContour,level:options.infiltrationLevel,cutPlane});
+  // Strong inflow: turbulent streaks and foam travel along every water tube.
+  if(level.streak)for(const m of[this.waterMaterial,this.runoffMaterial]){
+   m.onBeforeCompile=sh=>{sh.uniforms.uTime=this.extras.uniforms.uTime;
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec2 vFlowUv;').replace('#include <begin_vertex>','#include <begin_vertex>\nvFlowUv=uv;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime;varying vec2 vFlowUv;').replace('#include <color_fragment>','#include <color_fragment>\n float st=fract(vFlowUv.x*9.-uTime*3.1+sin(vFlowUv.y*6.283*3.)*.08),ln=.5+.5*sin(vFlowUv.y*6.283*5.+vFlowUv.x*40.-uTime*6.);\n diffuseColor.a=min(1.,diffuseColor.a*(1.25+.9*smoothstep(.6,1.,st)+.5*ln));diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.88,.89,.85),.45*smoothstep(.7,1.,st)+.15*ln);');};
+   m.customProgramCacheKey=()=>'kanaltec-strong-water';
+  }this.extras.addThreads(this.streams);this.group.add(this.extras.group);
   this.plumeStrength=level.plume;
   this.water.traverse(o=>{if(o.isMesh)o.castShadow=o.receiveShadow=false;});
   this.sinter.traverse(o=>{if(o.isMesh)o.castShadow=false;});
@@ -512,7 +519,7 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
   const poseChanged=poseKey!==this.waterPoseKey;
   if(poseChanged){
    this.waterPoseKey=poseKey;
-   for(const s of this.streams){s.path=shieldWaterPath(this.R,s.start,s.edge,shield);s.curve=s.path.incoming;s.mesh.geometry.dispose();s.mesh.geometry=rivuletGeometry(s.curve,64,s.radius);if(s.path.runoff){s.runoffMesh.geometry.dispose();s.runoffMesh.geometry=rivuletGeometry(s.path.runoff,96,s.radius);}}
+   for(const s of this.streams){s.path=shieldWaterPath(this.R,s.start,s.edge,shield,s.radius);s.curve=s.path.incoming;s.mesh.geometry.dispose();s.mesh.geometry=rivuletGeometry(s.curve,64,s.radius);if(s.path.runoff){s.runoffMesh.geometry.dispose();s.runoffMesh.geometry=rivuletGeometry(s.path.runoff,96,s.radius);}}
   }
   for(let i=0;i<this.streams.length;i++){
    const s=this.streams[i],a=this.waterActivity; s.mesh.visible=a> .035+i*.025;
