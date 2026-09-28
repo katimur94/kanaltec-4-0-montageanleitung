@@ -156,7 +156,7 @@ function emblemTexture(){
   const txt='VERFAHREN · KANALSANIERUNG';for(let i=0;i<txt.length;i++){const a=-Math.PI*.92+i*(Math.PI*.84/(txt.length-1));g.save();g.translate(c+395*Math.cos(a),c+395*Math.sin(a));g.rotate(a+Math.PI/2);g.fillText(txt[i],0,0);g.restore();}
  });
 }
-function claimTexture(){return canvasTexture(2048,160,(g,w,h)=>{g.clearRect(0,0,w,h);g.fillStyle='#d7dde2';g.font='600 92px Arial, sans-serif';g.textBaseline='middle';g.fillText('Stutzen- und Rohrsanierung · DSS-Flex Verfahren',10,h/2);});}
+function claimTexture(){return canvasTexture(2048,160,(g,w,h)=>{g.clearRect(0,0,w,h);g.fillStyle='#d7dde2';g.font='600 78px Arial, sans-serif';g.textBaseline='middle';const txt='Stutzen- und Rohrsanierung · DSS-Flex';const k=Math.min(1,(w-20)/g.measureText(txt).width);g.setTransform(k,0,0,1,10,0);g.fillText(txt,0,h/2);});}
 
 // Truck with box body and rear loader crane. Proportions of a municipal
 // service truck; not a specific vehicle.
@@ -304,7 +304,7 @@ export class ManholeScene{
    cover.add(mesh(new THREE.CylinderGeometry(spec.ro-8,spec.ro-8,28,72),this.iron));
    for(let i=-5;i<=5;i++){const rib=mesh(new THREE.BoxGeometry(6,4,Math.sqrt(Math.max(0,(spec.ro-30)**2-(i*45)**2))*2),this.iron);rib.position.set(i*45,16,0);cover.add(rib);}
    cover.position.set(950,G+14,-700);cover.rotation.y=.3;this.group.add(cover);
-   const kerb=add(new THREE.BoxGeometry(11000,300,160),new THREE.MeshStandardMaterial({color:'#9c9c98',roughness:.9}),'Bordstein');kerb.position.set(900,G+20,2320);
+   const kerb=add(new THREE.BoxGeometry(11000,300,160),new THREE.MeshStandardMaterial({color:'#9c9c98',roughness:.9}),'Bordstein');kerb.position.set(900,G+20,-5250);
    const markMat=new THREE.MeshStandardMaterial({color:'#e9e8e1',roughness:.8});
    for(let x=-4200;x<6200;x+=3000){const m=add(new THREE.BoxGeometry(1500,3,120),markMat);m.position.set(x,G+2,1300);}
    const coneMat=new THREE.MeshStandardMaterial({color:'#e2502b',roughness:.6}),white=new THREE.MeshStandardMaterial({color:'#f1f1ea',roughness:.5});
