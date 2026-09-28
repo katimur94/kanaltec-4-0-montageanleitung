@@ -1,5 +1,21 @@
 # Fortschrittschronik
 
+## 28.09.2026 – Einbau über den Schacht, realistischere Infiltration
+
+**Auftrag:** Infiltration realer und etwas mehr darstellen; überlegen und zeigen, wie Roboter samt Schalung in den Schacht gebracht werden, wobei die Klappvorrichtung eine Rolle spielt. Zuerst selbst prüfen, noch keine Veröffentlichung.
+
+**Klappvorrichtung ausgewertet:** Nach PDF S. 10 und Modell dreht die Schalung um den Gelenkbolzen (Pos. 18) an der oberen L-Ecke. Der bewegliche Schenkel (Pos. 9) liegt am Grundkörper der Klappvorrichtung an, deshalb kann die Schalung relativ zum Roboter nur mit der Nase nach oben aufklappen; die zwei Federn ziehen zurück. Das passt zum Baustellenfoto (Schalung ragt gerade über die Schachtöffnung) und zum Einbau: Einheit mit der Schalung voraus absenken, Oberseite zum Zielrohr; unten klappt die Schalung ins Rohr, der Roboter folgt geneigt.
+
+**Umsetzung:** Neuer Reiter **03 Einbau im Schacht** (`src/manhole.js`, Anbindung in `src/model.js`, `src/main.js`, Vorlage/CSS) mit eigener Zeitachse in sechs Schritten: bereitstellen, ankippen, senkrecht absenken, aufsetzen und einklappen (Rad DN 70 der Einbauhilfe rollt ins Rohr), Roboter nachführen (Heck an der Schachtwand), Seil lösen und einfahren. Schacht DN 1000 mit exzentrischem Konus (DN 300–500) bzw. DN 1200 mit Abdeckplatte 800 (DN 600/700), Gerinne und Berme, wandbündige Rohre, Straße, Rahmen, abgelegter Deckel, Leitkegel, Dreibein mit Winde und Seil, Roboterkabel über die Schachtkante. Anzeige des Klappwinkels (gesperrt / geöffnet mit gespannten Federn / gestreckt); Federn dehnen sich zwischen ihren Augen. Ansicht **Schachtsohle**. Die bestehenden neun Sanierungsphasen, Tests und Filme bleiben unverändert; „So funktioniert’s“ ist jetzt Reiter 04. Das starre Kabelende am Roboterheck wird im Schacht ausgeblendet und durch das flexible Kabel ersetzt.
+
+Infiltration (`src/infiltration.js`, `src/repair.js`): Auswahl **Wassereintritt** mit Tropfend, Rinnend (Voreinstellung) und Drückendes Grundwasser. Neu sind glänzende Wandläufe mit wandernden Wasserwellen von den Bruchflanken bis zur Sohle, durchgehende Wasserfäden unter starken Tropfstellen, ausgeschwemmte Bodenkörner, eine braune Trübungsfahne im Abwasser stromabwärts und bei drückendem Grundwasser drei Strahlen aus Rissen, die an der Schildaußenseite oder Sohle aufprallen und spritzen. Alles endet beim Anpressen beziehungsweise mit der Verfüllung wie bisher.
+
+**Grenzen:** Einbauablauf ist eine Rekonstruktion nach Foto und PDF, keine Herstelleranleitung. Schachtmaße, Dreibein, Seil- und Kabelführung sowie Wasserstärken, Strahlgeschwindigkeiten und Trübung sind Darstellungsannahmen. Der Klappwinkel folgt der Kinematik, keiner Federkraftberechnung.
+
+**Prüfung:** Neue Prüfungen `work/check-insertion.mjs` (Klapprichtung nur Nase hoch, gesperrt beim Ankippen/Absenken, stetige Bahn, direkte Sprünge, Endlage wie im Rohr, Freigang in Schacht, Gerinne und Rohr für alle fünf DN mit wenigen Millimetern Darstellungstoleranz) und `work/check-infiltration.mjs` (drei Stufen × fünf DN: Strahlen nie durch das Schild, Abdichten beim Anpressen, nichts nach Verfüllung/Ausschalen, Rücksprung). `npm test` und `npm run build` bestanden. Im Chromium (Software-Rendering) Schachtablauf in allen Stufen und Wasserstufe „Rinnend“ angesehen, keine Konsolenfehler. Private Vorschau ohne eingebettete PDF bereitgestellt.
+
+**Veröffentlichung:** Noch nicht. Auf Wunsch des Nutzers erst nach eigener Prüfung committen/pushen und Pages aktualisieren.
+
 ## 23.09.2026 – Button zum Sanierungsanhänger, Videogalerie erneuert
 
 **Auftrag:** Alles pushen, Pages aktualisieren und in der Präsentation einen Button zur Anhänger-Ansicht ergänzen.

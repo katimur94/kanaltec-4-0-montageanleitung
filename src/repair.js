@@ -6,6 +6,7 @@ import {GroundGrout,soilCavityRadius} from './ground-grout.js';
 import {injectionSpec} from './injection-fitting.js';
 import {RootSystem} from './roots.js';
 import {MillingDebris} from './debris.js';
+import {InfiltrationExtras,levelSpec} from './infiltration.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=x=>THREE.MathUtils.clamp(x,0,1);
@@ -259,7 +260,7 @@ export class RepairScene {
   this.streakTime=.012;
   this.water=new THREE.Group();this.group.add(this.water);this.streams=[];this.drops=[];this.waterTraces=[];this.pendants=[];this.splashDrops=[];
   // Clear, glossy water: visible through highlights and reflections, not paint.
-  this.waterMaterial=new THREE.MeshPhysicalMaterial({color:'#9fb0af',transparent:true,opacity:.4,roughness:.22,metalness:0,ior:1.33,specularIntensity:.55,envMapIntensity:.7,side:THREE.DoubleSide,depthWrite:false});
+  this.waterMaterial=new THREE.MeshPhysicalMaterial({color:'#a8aa9b',transparent:true,opacity:.4,roughness:.22,metalness:0,ior:1.33,specularIntensity:.55,envMapIntensity:.7,side:THREE.DoubleSide,depthWrite:false});
   this.runoffMaterial=this.waterMaterial.clone();this.dropMaterial=this.waterMaterial.clone();this.dropMaterial.roughness=.05;
   // Wet streaks are darker and glossy; a faint halo marks older seepage.
   this.dampMaterial=new THREE.MeshPhysicalMaterial({color:'#140d08',transparent:true,opacity:.62,roughness:.12,clearcoat:1,clearcoatRoughness:.08,envMapIntensity:1.5,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2});
@@ -278,6 +279,8 @@ export class RepairScene {
    return geometry(pos,idx,uv);
   };
   // Several paths visibly enter at the fractured edge and fall into the sewer.
+  // The chosen level scales thickness and drip rate (display parameters).
+  const level=levelSpec(options.infiltrationLevel);
   for(let i=0;i<7;i++){
    const a=[.055,.102,.21,.44,.58,.627,.83][i]*TAU,[x,arc]=breakoutContour(a),edge=surfacePoint(R,x,arc,2);
    const start=this.point(a,1,.2+(i%3)*.06),side=arc<0?-1:1,length=46+38*(i%3)+14*Math.sin(i*2.3);
@@ -288,10 +291,10 @@ export class RepairScene {
     const [sx,sa]=breakoutContour(a+(j-1)*.035),p=surfacePoint(R,sx,sa,-.3),o=makeMesh(stalactite,this.sinterMaterial);
     const size=1.1+.9*((i+j)%3)/2,len=3+7*(((i*5+j*3)%7)/6);o.position.copy(p);o.quaternion.setFromUnitVectors(V(0,1,0),p.clone().normalize());o.scale.set(size,len,size);this.sinter.add(o);
    }
-   const path=shieldWaterPath(R,start,edge,null),radius=[.42,.85,.3,.58,.98,.36,.52][i]*1.45;
+   const path=shieldWaterPath(R,start,edge,null),radius=[.42,.85,.3,.58,.98,.36,.52][i]*1.45*level.radius;
    const stream=tube(path.incoming,radius,this.waterMaterial,64),runoff=tube(path.incoming,radius,this.runoffMaterial,96);
    // Real seepage drips at different rates; strong paths become a broken thread.
-   const interval=[.95,.2,1.45,.55,.13,1.15,.38][i];
+   const interval=[.95,.2,1.45,.55,.13,1.15,.38][i]*level.interval;
    this.water.add(stream,runoff);this.streams.push({mesh:stream,runoffMesh:runoff,start,edge,radius,path,curve:path.incoming,angle:a,interval});
    for(let j=0;j<8;j++){const d=makeMesh(dropletGeo,this.dropMaterial);this.water.add(d);this.drops.push({mesh:d,stream:i,index:j,phase:(j*.217+i*.137+j*j*.031)%1});}
    for(let j=0;j<3;j++){const d=makeMesh(dropletGeo,this.runoffMaterial);d.scale.setScalar(1.65);this.water.add(d);this.waterTraces.push({mesh:d,stream:i,phase:j/3});}
@@ -301,6 +304,9 @@ export class RepairScene {
   // Expanding rings where drops hit the invert or the sewage surface.
   this.splash=new THREE.Group();this.water.add(this.splash);this.rippleMaterials=[];
   for(let i=0;i<7;i++){const m=this.runoffMaterial.clone();this.rippleMaterials.push(m);const o=makeMesh(new THREE.RingGeometry(.86,1,48,1),m);this.splash.add(o);}
+  // Wall films, crack jets under groundwater pressure and washed-in fines.
+  this.extras=new InfiltrationExtras(R,{contour:breakoutContour,level:options.infiltrationLevel,cutPlane});this.extras.addThreads(this.streams);this.group.add(this.extras.group);
+  this.plumeStrength=level.plume;
   this.water.traverse(o=>{if(o.isMesh)o.castShadow=o.receiveShadow=false;});
   this.sinter.traverse(o=>{if(o.isMesh)o.castShadow=false;});
   this.flowWater=options.sewerWater?this.sewerWater(options.sewerWater):null;if(this.flowWater)this.debris.waterY=this.flowWater.y;
@@ -347,6 +353,7 @@ export class RepairScene {
   // like fresh cuts in front of the camera.
   this.rootSystem.setClipping(null);this.debris.setClipping(null);
   for(const m of this.rippleMaterials)m.clippingPlanes=cut?[cutPlane]:null;
+  this.extras?.setCut(cut);
   if(this.flowWater){this.flowWater.uniforms.uCut.value=cut?1:0;this.flowWater.section.visible=cut;}
   this.cracks.traverse(o=>{if(o.isMesh)o.material.clippingPlanes=cut?[cutPlane]:null;});
  }
@@ -364,8 +371,8 @@ export class RepairScene {
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);
   const normal=flowNormalTexture();normal.repeat.set(L/420,2*half/260);
   const material=new THREE.MeshPhysicalMaterial({color:'#2a271c',roughness:.1,metalness:0,clearcoat:.8,clearcoatRoughness:.03,normalMap:normal,normalScale:new THREE.Vector2(.45,.45),transparent:true,opacity:.94,envMapIntensity:1.2,side:THREE.DoubleSide});
-  const uniforms={uTime:{value:0},uFlow:{value:280},uR:{value:R},uCut:{value:0},uObsBox:{value:Array.from({length:6},()=>new THREE.Vector4())},uObsInfo:{value:Array.from({length:6},()=>new THREE.Vector4())}};
-  const common=`uniform float uTime,uFlow,uR,uCut;uniform vec4 uObsBox[6];uniform vec4 uObsInfo[6];varying vec3 vWater;
+  const uniforms={uTime:{value:0},uFlow:{value:280},uR:{value:R},uCut:{value:0},uObsBox:{value:Array.from({length:6},()=>new THREE.Vector4())},uObsInfo:{value:Array.from({length:6},()=>new THREE.Vector4())},uPlume:{value:new THREE.Vector4()}};
+  const common=`uniform float uTime,uFlow,uR,uCut;uniform vec4 uPlume;uniform vec4 uObsBox[6];uniform vec4 uObsInfo[6];varying vec3 vWater;
 float wHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float wNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(wHash(i),wHash(i+vec2(1.,0.)),f.x),mix(wHash(i+vec2(0.,1.)),wHash(i+vec2(1.,1.)),f.x),f.y);}
 float zMask(float z,vec4 b,float soft){float d=max(0.,max(b.z-z,z-b.w));return exp(-d*d/soft);}
@@ -408,6 +415,10 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
  diffuseColor.a*=mix(.14,1.,smoothstep(1.,22.,wdepth));
  vec2 ff=flowField(vWater.xz);float nn=wNoise(vec2((vWater.x-uFlow*uTime)*.09,vWater.z*.13))*.65+wNoise(vec2((vWater.x-uFlow*uTime)*.31,vWater.z*.37))*.35;
  float foam=clamp(smoothstep(.38,.9,ff.y*(.45+nn))+.22*smoothstep(3.,.5,wdepth)*nn,0.,1.);
+ // Washed-in soil fines: a brown cloud drifting downstream (+x) from the impact.
+ float px=vWater.x-uPlume.x,spread=18.+px*.22,cloud=uPlume.y*smoothstep(-30.,10.,px)*exp(-max(px,0.)/700.)*exp(-vWater.z*vWater.z/(spread*spread));
+ cloud*=.55+.9*wNoise(vec2((vWater.x-uFlow*uTime)*.035,vWater.z*.06));
+ diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.36,.27,.16),clamp(cloud,0.,.75));
  diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.74,.71,.62),foam*.85);diffuseColor.a=max(diffuseColor.a,foam*.9);`)
     .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(roughnessFactor,.55,clamp(smoothstep(.38,.9,flowField(vWater.xz).y),0.,1.));');
   };
@@ -498,7 +509,8 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
   this.waterMaterial.opacity=.4*this.waterActivity;
   const runoffStrength=1-smooth(((shield?.press||0)-.9)/.1);this.runoffMaterial.opacity=.55*this.waterActivity*runoffStrength;this.dropMaterial.opacity=.42*this.waterActivity*runoffStrength;
   const poseKey=shield?[shield.x,shield.lift,shield.seal].join(','):'no-shield';
-  if(poseKey!==this.waterPoseKey){
+  const poseChanged=poseKey!==this.waterPoseKey;
+  if(poseChanged){
    this.waterPoseKey=poseKey;
    for(const s of this.streams){s.path=shieldWaterPath(this.R,s.start,s.edge,shield);s.curve=s.path.incoming;s.mesh.geometry.dispose();s.mesh.geometry=rivuletGeometry(s.curve,64,s.radius);if(s.path.runoff){s.runoffMesh.geometry.dispose();s.runoffMesh.geometry=rivuletGeometry(s.path.runoff,96,s.radius);}}
   }
@@ -528,6 +540,8 @@ vec2 flowField(vec2 p){float h=0.,f=0.;
    d.mesh.visible=dripping&&drop>25&&tau<.16&&y>floorAt(z);
    if(d.mesh.visible){const r=.3+.22*s.radius;d.mesh.position.set(x,y,z);d.mesh.scale.set(r,r*1.5,r);}
   }
+  this.extras.update({clock,activity:this.waterActivity,runoff:runoffStrength,shield,floorAt,poseChanged,streams:this.streams,fallOf,dripping,infiltration:this.options.infiltration!==false});
+  if(this.flowWater)this.flowWater.uniforms.uPlume.value.set(this.streams[4].path.lip.x,this.plumeStrength*this.waterActivity*runoffStrength*(dripping?1:0),0,0);
   for(const d of this.waterTraces){const s=this.streams[d.stream];d.mesh.visible=s.runoffMesh.visible;if(d.mesh.visible)d.mesh.position.copy(s.path.runoff.getPointAt(wrap(clock*.9+d.phase,1)));}
   this.splash.children.forEach((o,i)=>{
    const s=this.streams[i],{p,drop,T}=fallOf(s),life=Math.min(.7,s.interval*.97),u=wrap(clock-T,s.interval)/life,floor=floorAt(p.z);

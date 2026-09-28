@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node work/build.mjs",
-    "test": "node work/check-model.mjs && node work/check-robot.mjs && node work/check-milling.mjs && node work/check-closure.mjs",
+    "test": "node work/check-model.mjs && node work/check-robot.mjs && node work/check-milling.mjs && node work/check-closure.mjs && node work/check-insertion.mjs && node work/check-infiltration.mjs",
     "test:print": "node work/check-print-geometry.mjs"
   },
   "dependencies": {

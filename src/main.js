@@ -2,11 +2,12 @@ import {Viewer} from './model.js';
 import {families,groupInfo,bom,stages as originalStages,sources,videos,PHASE} from './data.js';
 import {repairCases,stagesForRepair,processTimeFor} from './closure.js';
 import assets from './assets.json';
+import {insertionStages} from './manhole.js';
 const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)];
 const stages=[...originalStages];
 let lastStage=stages.length-1, endTime=stages.length-.001;
 $('timeline').max=Math.round(endTime*1000);
-const state={id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:false,ref:'drawings',lastStage:-1};
+const state={insertTime:0,insertPlaying:false,insertLast:-1,id:400,mode:'explore',group:'all',playing:false,explodePlaying:false,explodeDirection:1,time:0,speed:1,labels:false,ref:'drawings',lastStage:-1};
 const safe=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const opts=families.map(f=>`<option value="${f.id}"${f.id===400?' selected':''}>${f.label}</option>`).join('');$('family').innerHTML=opts;$('refFamily').innerHTML=opts;
 $('repairCase').innerHTML=repairCases.map(c=>`<option value="${c.id}">${c.label}</option>`).join('');
@@ -21,6 +22,9 @@ function renderStages(){
  $('stageNav').querySelector('.sectionlabel span').textContent=stages.length;
 }
 renderStages();
+$('insertButtons').innerHTML=insertionStages.map((s,i)=>`<button class="groupbutton" data-insert="${i}"><span class="stage-no">${String(i+1).padStart(2,'0')}</span><strong>${s.title}</strong></button>`).join('');
+$$('button[data-insert]').forEach(b=>b.onclick=()=>{state.insertPlaying=false;state.insertTime=+b.dataset.insert+.92;updateInsert();updatePlayButtons();});
+const insertEnd=insertionStages.length-.001;
 $('labelsLayer').innerHTML=Object.entries(groupInfo).map(([g,d],i)=>`<div id="label-${g}" class="modellabel" style="--gcolor:${d.color}"><i></i><span>0${i+1}</span>${d.short}</div>`).join('')+[0,1,2,3,4].map(i=>`<div id="process-label-${i}" class="modellabel" hidden style="--gcolor:#399c94"></div>`).join('');
 $('sourceLinks').innerHTML=sources.map(s=>`<a class="source-card" href="${s.url}" target="_blank" rel="noopener noreferrer"><strong>${s.title} ↗</strong><span>${s.note}</span></a>`).join('');
 videos[1].title='Historische Videoreferenz · Stutzensanierung';videos[2].title='Historische Videoreferenz · Verfahrensdarstellung';
@@ -58,14 +62,14 @@ function selectPart(p){
 function setGroup(g){state.group=g;selectPart(null);if(viewer){viewer.setGroup(g);viewer.targetExplode=state.mode==='explode'?+$('explosion').value/100:0;viewer.fit();}$$('button[data-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.group===g);b.setAttribute('aria-pressed',String(b.dataset.group===g));});updateInfo();if(!$('bomPanel').hidden)renderBom();}
 function setMode(mode){
  const keepShaftCamera=viewer?.currentView==='shaft';
- state.mode=mode;state.playing=false;state.explodePlaying=false;
+ state.mode=mode;state.playing=false;state.explodePlaying=false;state.insertPlaying=false;const ins=mode==='insert';
  $$('button[data-mode]').forEach(b=>{b.classList.toggle('active',b.dataset.mode===mode);b.setAttribute('aria-pressed',String(b.dataset.mode===mode));});
  const src=mode==='sources',proc=mode==='process';$('workspace').hidden=src;$('sourcesPanel').hidden=!src;
- $('assemblyNav').hidden=proc;$('stageNav').hidden=!proc;$('explosionControl').hidden=mode!=='explode';$('processControl').hidden=!proc;$('schematic').hidden=!proc;$('showBom').hidden=proc;$('ghost').hidden=false;
- $('playbackSettings').hidden=!(proc||mode==='explode');$('phaseKeys').hidden=!proc;
+ $('assemblyNav').hidden=proc||ins;$('insertNav').hidden=!ins;$('insertControl').hidden=!ins;$('bottomView').hidden=!ins;$('stageNav').hidden=!proc;$('explosionControl').hidden=mode!=='explode';$('processControl').hidden=!proc;$('schematic').hidden=!proc;$('showBom').hidden=proc||ins;$('ghost').hidden=false;
+ $('playbackSettings').hidden=!(proc||ins||mode==='explode');$('phaseKeys').hidden=!proc;
  $('channelView').hidden=!proc;$('damageView').hidden=!proc;$('driveView').hidden=!proc;$('windingView').hidden=!proc;$('mechanismReadout').hidden=!proc;
  $('bomPanel').hidden=true;selectPart(null);
- if(viewer&&!src){viewer.resize();viewer.setMode(mode);if(proc){state.group='all';viewer.setGroup('all');viewer.controls.autoRotate=false;$('rotate').setAttribute('aria-pressed','false');$('ghost').setAttribute('aria-pressed','false');state.lastStage=-1;updateStage();}else{viewer.setGroup(state.group);if(mode==='explode'){$('explosion').value=75;setExplosion(.75,true);}else{viewer.setExplode(0);viewer.explode=0;viewer.fit();}}}
+ if(viewer&&!src){viewer.resize();viewer.setMode(mode);if(ins){state.group='all';viewer.group='all';viewer.controls.autoRotate=false;$('rotate').setAttribute('aria-pressed','false');state.insertLast=-1;updateInsert();viewer.fit();}else if(proc){state.group='all';viewer.setGroup('all');viewer.controls.autoRotate=false;$('rotate').setAttribute('aria-pressed','false');$('ghost').setAttribute('aria-pressed','false');state.lastStage=-1;updateStage();}else{viewer.setGroup(state.group);if(mode==='explode'){$('explosion').value=75;setExplosion(.75,true);}else{viewer.setExplode(0);viewer.explode=0;viewer.fit();}}}
  if(!src&&keepShaftCamera)viewer?.fit('shaft');
  if(src){$('refFamily').value=state.id;$('refGroup').value=state.group;showRef(state.ref);}updateInfo();updatePlayButtons();
 }
@@ -80,7 +84,9 @@ function updateInfo(){
  $('hingeView').hidden=state.mode==='process'||state.group!=='z';
  const f=family();$('variantBadge').textContent=f.label;$('familyNote').textContent=f.spacer.length?f.spacer.map(n=>n+' mm').join(' + ')+' Distanzstücke im Unterteil':'Kompakte Ausführung ohne Höhendistanzstück';
  $$('button[data-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.group===state.group);b.setAttribute('aria-pressed',String(b.dataset.group===state.group));});
- if(state.mode==='process'){$('viewEyebrow').textContent='SANIERUNG IM SCHNITTMODELL';$('viewTitle').innerHTML='So funktioniert<span>’s.</span>';updateStage(true);return;}
+  $('hingeView').hidden=$('hingeView').hidden||state.mode==='insert';
+  if(state.mode==='insert'){$('viewEyebrow').textContent='EINBAU ÜBER DEN SCHACHT';$('viewTitle').innerHTML='Rein in den <span>Schacht.</span>';updateInsert(true);return;}
+  if(state.mode==='process'){$('viewEyebrow').textContent='SANIERUNG IM SCHNITTMODELL';$('viewTitle').innerHTML='So funktioniert<span>’s.</span>';updateStage(true);return;}
  $('viewEyebrow').textContent=state.mode==='explode'?'BAUGRUPPEN & EINZELTEILE':state.group==='all'?'INTERAKTIVE GESAMTANSICHT':'BAUGRUPPE IM DETAIL';
  $('viewTitle').innerHTML=state.group==='all'?(state.mode==='explode'?'Das System <span>entdecken.</span>':'DSS-Flex <span>Verfahren</span>'):safe(groupInfo[state.group].short);
  if(state.group==='all'){$('detailIndex').textContent='01—04';$('detailTitle').textContent=state.mode==='explode'?'Den Aufbau sichtbar machen.':'Vier Baugruppen. Ein System.';$('detailText').textContent=state.mode==='explode'?'Mit dem Regler öffnest du den Aufbau. Wähle links eine Baugruppe, um die Einzelteile mit ihren Positionsnummern aus der PDF zu untersuchen.':'Der IBAK-Roboter fährt das Schalungssystem über die Klappvorrichtung zum Anschluss. Seine Werkzeugaufnahme trägt die Schalung anstelle des Fräskopfs. Wähle „Roboter“ für eine Nahansicht oder untersuche links die vier Schalungsbaugruppen.';$('detailCaption').textContent='Fünf Größenvarianten nach der Montageanleitung · DiTom GmbH Kanaltechnik';}
@@ -91,8 +97,12 @@ function updateStage(force=false){
  const idx=Math.min(lastStage,Math.floor(state.time)),s=stages[idx];viewer?.setProcess(processTimeFor(stages,state.time));$('timeline').value=Math.round(state.time*1000);$('stageCount').textContent=(idx+1)+' / '+stages.length;
  if(force||idx!==state.lastStage){state.lastStage=idx;$('detailIndex').textContent=String(idx+1).padStart(2,'0');$('detailTitle').textContent=s.title;$('detailText').textContent=s.text;$('detailCaption').textContent=s.caption;$$('button[data-stage]').forEach(b=>{b.classList.toggle('selected',+b.dataset.stage===idx);b.setAttribute('aria-current',+b.dataset.stage===idx?'step':'false');});$('prevStage').disabled=idx===0;$('nextStage').disabled=idx===lastStage;}
 }
-function updatePlayButtons(){$('processPlay').textContent=state.playing?'Ⅱ':'▶';$('processPlay').setAttribute('aria-label',state.playing?'Ablauf pausieren':'Ablauf abspielen');$('explodePlay').textContent=state.explodePlaying?'Ⅱ':'▶';$('explodePlay').setAttribute('aria-label',state.explodePlaying?'Explosionsanimation pausieren':'Explosionsanimation starten');}
-function togglePlay(){if(state.mode==='explode'){state.explodePlaying=!state.explodePlaying;if(state.explodePlaying)viewer?.fitExplosion();if(viewer?.targetExplode>=.99)state.explodeDirection=-1;else if(viewer?.targetExplode<=.01)state.explodeDirection=1;}else{if(state.mode!=='process')setMode('process');if(state.time>=endTime-.02)state.time=0;state.playUntil=endTime;state.playing=!state.playing;}updatePlayButtons();}
+function updateInsert(force=false){
+ const idx=Math.min(insertionStages.length-1,Math.floor(state.insertTime)),s=insertionStages[idx];viewer?.setInsert(state.insertTime);$('insertTimeline').value=Math.round(state.insertTime*1000);$('insertCount').textContent=(idx+1)+' / '+insertionStages.length;
+ if(force||idx!==state.insertLast){state.insertLast=idx;$('detailIndex').textContent=String(idx+1).padStart(2,'0');$('detailTitle').textContent=s.title;$('detailText').textContent=s.text;$('detailCaption').textContent=s.caption+' · Ablauf nach Baustellenfoto und Klappvorrichtung (PDF S. 10) rekonstruiert, keine Herstelleranleitung. Schacht, Dreibein und Seilführung sind Darstellungsannahmen.';$$('button[data-insert]').forEach(b=>{b.classList.toggle('selected',+b.dataset.insert===idx);b.setAttribute('aria-current',+b.dataset.insert===idx?'step':'false');});$('insertPrev').disabled=idx===0;$('insertNext').disabled=idx===insertionStages.length-1;}
+}
+function updatePlayButtons(){$('insertPlay').textContent=state.insertPlaying?'Ⅱ':'▶';$('insertPlay').setAttribute('aria-label',state.insertPlaying?'Einbau pausieren':'Einbau abspielen');$('processPlay').textContent=state.playing?'Ⅱ':'▶';$('processPlay').setAttribute('aria-label',state.playing?'Ablauf pausieren':'Ablauf abspielen');$('explodePlay').textContent=state.explodePlaying?'Ⅱ':'▶';$('explodePlay').setAttribute('aria-label',state.explodePlaying?'Explosionsanimation pausieren':'Explosionsanimation starten');}
+function togglePlay(){if(state.mode==='insert'){if(state.insertTime>=insertEnd-.02)state.insertTime=0;state.insertPlaying=!state.insertPlaying;}else if(state.mode==='explode'){state.explodePlaying=!state.explodePlaying;if(state.explodePlaying)viewer?.fitExplosion();if(viewer?.targetExplode>=.99)state.explodeDirection=-1;else if(viewer?.targetExplode<=.01)state.explodeDirection=1;}else{if(state.mode!=='process')setMode('process');if(state.time>=endTime-.02)state.time=0;state.playUntil=endTime;state.playing=!state.playing;}updatePlayButtons();}
 function renderBom(){
  const gs=state.group==='all'?Object.keys(groupInfo):[state.group];$('bomTitle').textContent=state.group==='all'?'Stücklisten der vier Baugruppen':groupInfo[state.group].name+' · Stückliste';$('bomNote').textContent='Positionen und Mengen aus der PDF. Auf einen Eintrag klicken, um die entsprechenden Bauteile im Modell hervorzuheben.';
  if(viewer?.closedMould)$('bomNote').textContent+=' Die PDF zeigt die ursprüngliche Ausführung mit Blasenöffnung. Das geschlossene Schild ohne Anschlussblase folgt der Nutzerangabe; die ursprünglichen Positionsnummern bleiben erhalten.';
@@ -131,12 +141,17 @@ $$('[data-pan]').forEach(b=>b.onclick=()=>{stopRotation();viewer?.panView(...b.d
 viewer?.setDragMode('rotate');
 $('explosion').oninput=e=>{state.explodePlaying=false;setExplosion(+e.target.value/100);updatePlayButtons();};$('explosion').onchange=()=>viewer?.fit();
 $('explodeReset').onclick=()=>{state.explodePlaying=false;setExplosion(0);updatePlayButtons();};$('explodePlay').onclick=togglePlay;$('processPlay').onclick=togglePlay;
+$('insertPlay').onclick=togglePlay;$('insertTimeline').oninput=e=>{state.insertPlaying=false;state.insertTime=+e.target.value/1000;updateInsert();updatePlayButtons();};
+$('insertNext').onclick=()=>{state.insertPlaying=false;state.insertTime=Math.min(insertionStages.length-1,Math.floor(state.insertTime)+1)+.92;updateInsert();updatePlayButtons();};$('insertPrev').onclick=()=>{state.insertPlaying=false;state.insertTime=Math.max(0,Math.floor(state.insertTime)-1)+.92;updateInsert();updatePlayButtons();};
 $('timeline').oninput=e=>{state.playing=false;state.time=+e.target.value/1000;updateStage();updatePlayButtons();};
 $('nextStage').onclick=()=>{state.playing=false;state.time=Math.min(lastStage,Math.floor(state.time)+1)+.92;updateStage();updatePlayButtons();};$('prevStage').onclick=()=>{state.playing=false;state.time=Math.max(0,Math.floor(state.time)-1)+.92;updateStage();updatePlayButtons();};
 try{const saved=localStorage.getItem('kanaltec-speed');if([...$('speed').options].some(o=>o.value===saved)){state.speed=+saved;$('speed').value=saved;}}catch{}
 $('speed').onchange=e=>{state.speed=+e.target.value;try{localStorage.setItem('kanaltec-speed',String(state.speed));}catch{}};
 function stepAnimation(direction,wholePhase=false){
- if(state.mode==='process'){
+ if(state.mode==='insert'){
+  state.insertPlaying=false;const next=wholePhase?Math.floor(state.insertTime)+direction:Math.round((state.insertTime+direction*.02)*1000)/1000;
+  state.insertTime=Math.max(0,Math.min(insertEnd,next));updateInsert();
+ }else if(state.mode==='process'){
   state.playing=false;
   const next=wholePhase?Math.floor(state.time)+direction:Math.round((state.time+direction*.02)*1000)/1000;
   state.time=Math.max(0,Math.min(endTime,next));state.playUntil=endTime;updateStage();
@@ -160,14 +175,16 @@ document.addEventListener('keydown',e=>{
  if(e.altKey||e.ctrlKey||e.metaKey||document.querySelector('dialog[open]')||e.target.isContentEditable)return;
  const timelineControl=['timeline','explosion'].includes(e.target.id);
  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)&&!timelineControl)return;
- if(['ArrowLeft','ArrowRight'].includes(e.key)&&['process','explode'].includes(state.mode)){e.preventDefault();stepAnimation(e.key==='ArrowRight'?1:-1,e.shiftKey);return;}
+ if(['ArrowLeft','ArrowRight'].includes(e.key)&&['process','explode','insert'].includes(state.mode)){e.preventDefault();stepAnimation(e.key==='ArrowRight'?1:-1,e.shiftKey);return;}
  if(e.code==='Space'){e.preventDefault();if(!e.repeat)togglePlay();}
  if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();full(e.shiftKey||state.mode==='sources'?document.documentElement:$('viewport'));}if(e.key.toLowerCase()==='b'&&!e.repeat)$('labels').click();if(e.key.toLowerCase()==='r')viewer?.fit();if(e.key==='Escape'){selectPart(null);if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}
 });
 if(viewer)viewer.onFrame=dt=>{
  if(state.mode==='sources')return;
  if(state.playing&&state.mode==='process'){state.time+=dt*.11*state.speed;const end=state.playUntil??endTime;if(state.time>=end){state.time=end;state.playing=false;updatePlayButtons();}updateStage();}
- if(state.explodePlaying&&state.mode==='explode'){let v=viewer.targetExplode+dt*.19*state.speed*state.explodeDirection;if(v>=1){v=1;state.explodePlaying=false;state.explodeDirection=-1;updatePlayButtons();}else if(v<=0){v=0;state.explodePlaying=false;state.explodeDirection=1;updatePlayButtons();}setExplosion(v);}
+ if(state.insertPlaying&&state.mode==='insert'){state.insertTime+=dt*.13*state.speed;if(state.insertTime>=insertEnd){state.insertTime=insertEnd;state.insertPlaying=false;updatePlayButtons();}updateInsert();}
+  if(state.mode==='insert'&&viewer.insertState){const k=viewer.insertState,deg=Math.round(k.hinge*180/Math.PI),open=deg>=1,text=open?`Klappvorrichtung geöffnet ${deg}° · Federn gespannt`:k.stage<=2?'Klappvorrichtung gesperrt · Schenkel liegt an, Einheit bleibt starr':'Klappvorrichtung gestreckt · Federn entspannt',flag=open?'true':k.stage<=2?'locked':'false';if($('hingeReadout').lastChild.textContent!==text){$('hingeReadout').lastChild.textContent=text;$('hingeReadout').dataset.open=flag;}$('viewport').dataset.insertStage=k.stage;$('viewport').dataset.hingeAngle=deg;}
+  if(state.explodePlaying&&state.mode==='explode'){let v=viewer.targetExplode+dt*.19*state.speed*state.explodeDirection;if(v>=1){v=1;state.explodePlaying=false;state.explodeDirection=-1;updatePlayButtons();}else if(v<=0){v=0;state.explodePlaying=false;state.explodeDirection=1;updatePlayButtons();}setExplosion(v);}
  const layer=$('labelsLayer');layer.hidden=!state.labels||!!viewer.selected;
  if(!layer.hidden){const occupied=[];const items=state.mode==='process'?viewer.processAnchors().map((p,i)=>({l:$('process-label-'+i),p:p.point,name:p.name,side:p.side})):Object.keys(groupInfo).map(g=>({l:$('label-'+g),p:viewer.anchor(g)}));for(const l of layer.children)l.hidden=true;for(const item of items){const{l,p}=item;if(!p)continue;const q=viewer.project(p);l.hidden=!q.visible;if(l.hidden)continue;if(item.name)l.textContent=item.name;l.classList.toggle('label-left',item.side==='left');let x=Math.min(viewer.el.clientWidth-l.offsetWidth-12,Math.max(28,item.side==='left'?q.x-l.offsetWidth-55:q.x+80)),y=Math.max(12,Math.min(viewer.el.clientHeight-28,q.y));for(const r of occupied)if(Math.abs(r.y-y)<28&&Math.abs(r.x-x)<170)y=r.y+29;if(y>viewer.el.clientHeight-28)y=viewer.el.clientHeight-28;l.style.left=x+'px';l.style.top=y+'px';occupied.push({x,y});}}
  // Public, read-only DOM evidence for offline QA; no network services are used.

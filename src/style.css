@@ -105,3 +105,5 @@ html[data-theme=dark]{color-scheme:dark}
 [data-theme=dark] .trailer-link{border-color:#5aa6e6;background:#1c3346;color:#d7ebfb}
 [data-theme=dark] .trailer-link:hover{background:#2c5f88;color:#fff}
 @media(max-width:760px){.trailer-link{padding:6px 7px}.trailer-label{display:none}}
+.repair-config .level-label{display:block;font-size:12px;margin:10px 0 4px}
+.hinge-readout{display:flex;align-items:center;gap:8px;margin:8px 0 0;font-size:12px;opacity:.9}.hinge-readout i{width:10px;height:10px;border-radius:50%;background:#5f6d77;flex:none}.hinge-readout[data-open="true"] i{background:#e0a21b;box-shadow:0 0 8px #e0a21b}.hinge-readout[data-open="locked"] i{background:#399c94}
