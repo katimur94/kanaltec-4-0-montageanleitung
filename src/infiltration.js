@@ -94,7 +94,7 @@ export class InfiltrationExtras{
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec2 vFall;').replace('#include <begin_vertex>','#include <begin_vertex>\nvFall=uv;');
     sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uTime,uActivity;varying vec2 vFall;').replace('#include <color_fragment>',`#include <color_fragment>
  float along=vFall.y,x=vFall.x,edge=1.-x*x;
- float s1=fract(along*3.1-uTime*3.6+sin(x*9.+along*2.)*.12),s2=fract(along*5.3-uTime*5.1+x*2.3),lane=.5+.5*sin(x*21.+sin(along*4.-uTime*7.)*1.6);
+ float s1=fract(along*3.1-uTime*3.6+fract(sin(floor(x*6.)*12.9)*43.7)),s2=fract(along*5.3-uTime*5.1+fract(sin(floor(x*9.+3.)*7.3)*31.1)),lane=.5+.5*sin(x*21.+sin(along*1.3)*1.2);
  float streak=smoothstep(.55,1.,s1)+.6*smoothstep(.7,1.,s2);
  diffuseColor.a=uActivity*clamp(.32+.35*streak+.25*lane*edge,0.,.95)*smoothstep(0.,.35,edge+.1);
  diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.92,.92,.88),clamp(.55*streak+.2*lane,0.,.85));`);};

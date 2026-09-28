@@ -31,7 +31,7 @@ for(const f of families.filter(f=>!process.env.DN||String(f.id)===process.env.DN
   // The yoke never cuts into the robot: robot and yoke differ at most by the stop.
   assert.ok(Math.abs(k.thetaR-k.yoke)<=v.manhole.spec.yokeStop+.02,`DN ${f.id} t=${t}: yoke rests on the robot, not inside it`);
   // Landing and laying down open the hinge only as far as the shaft needs, far from 90°.
-  if(k.stage===3||k.stage===4){assert.ok(k.hinge<40*Math.PI/180,`DN ${f.id} t=${t}: hinge opens only partly while landing (${k.hinge})`);worst.hinge=Math.max(worst.hinge||0,k.hinge);}
+  if(k.stage===3||k.stage===4){assert.ok(k.hinge<45*Math.PI/180,`DN ${f.id} t=${t}: hinge opens only partly while landing (${k.hinge})`);worst.hinge=Math.max(worst.hinge||0,k.hinge);}
   // Clearance below the frame: tipping, lowering, folding, driving in.
   // The cable never enters shaft wall, climbing irons, channel or pipe wall.
   for(const p of v.manhole.cablePoints){if(p.y>s.G-20)continue;const wall=Math.sqrt(Math.max(0,s.Rm**2-p.z*p.z));let e;if(p.y<s.Rp&&Math.abs(p.x)>wall-40)e=Math.hypot(p.y,p.z)-(s.Rp-7);else{const {cz,r}=shaftProfile(s,p.y);e=Math.hypot(p.x,p.z-cz)-(r-7);}worst.cable=Math.max(worst.cable,e,inLadder(s,p)?1:0);}

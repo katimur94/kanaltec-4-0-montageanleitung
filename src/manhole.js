@@ -13,9 +13,9 @@ const lerp=THREE.MathUtils.lerp;
 
 export const insertionStages=[
  {title:'Auf der Ladebordwand anschlagen',text:'Der LKW steht seitlich am geöffneten Schacht, die Ladebordwand auf Ladehöhe. Roboter und angekuppelte Schalung liegen darauf in Richtung des Zielrohrs, Bumper vakuumiert. Der Hebebügel am Kranhaken wird mit seinen runden Bolzenköpfen in die seitlichen Schlitze zwischen den Rädern eingehängt. Die Kabelbombe hinten steht gerade in Verlängerung des Roboters; das Kabel läuft zur Trommel im Koffer.',caption:'Roter Säulenkran im Koffer, Einheit auf der Ladebordwand.'},
- {title:'Anheben und über den Schacht schwenken',text:'Der Kran hebt an. Die Einheit hängt mit den Bolzen des Hebebügels in den seitlichen Schlitzen und pendelt sich ein, bis der Schwerpunkt unter dem Haken liegt; die Querstrebe des Bügels liegt dabei auf dem Roboter auf und begrenzt die Neigung zwischen Bügel und Roboter. Das Gewicht der vorn liegenden Schalung will sie nach unten klappen – genau diese Richtung sperrt die Klappvorrichtung, weil der bewegliche Schenkel (Pos. 9) anliegt. Deshalb hängt die Einheit starr, rund 50° nach vorn geneigt.',caption:'Gleichgewicht am Haken · Klappvorrichtung gesperrt'},
- {title:'Durch die Öffnung absenken',text:'Der Kran lässt entlang der Achse der hängenden Einheit ab, die Schalung voraus. Solange es passt, bleibt die Hängeneigung; erst wenn das Heck durch Rahmen und Konus muss, führen die Monteure die Einheit von Hand etwas steiler (je nach Schacht rund 65–70°, nicht senkrecht). Im Schacht wird sie zum Aufsetzpunkt vor dem Rohr geführt. Die Kabelbombe bleibt gerade, die Steigbügel bleiben frei.',caption:'Lage aus Gewicht, Anschlag des Hebebügels, Führung von Hand und Kontakt mit der Schachtwand'},
- {title:'Aufsetzen vor dem Rohr',text:'Das Rad DN 70 an der Einbauhilfe (Pos. 4/6) setzt im Gerinne kurz vor dem Rohreinlauf auf; die Klappvorrichtung ist dabei noch geschlossen. Die Kabelbombe wird hochgeklappt. Während der Kran weiter ablässt, dreht sich die Schalung um das Rad flacher, bis sie in das Rohr passt. Der Roboter bleibt so steil, wie die Schachtwand hinter ihm verlangt – nur um diese Differenz öffnet die Klappvorrichtung gegen die zwei Federn.',caption:'Klappwinkel nur so groß wie nötig, im Schacht DN 1000 bis etwa 40°, in größeren Schächten weniger'},
+ {title:'Anheben und über den Schacht schwenken',text:'Der Kran hebt an. Die Einheit hängt mit den Bolzen des Hebebügels in den seitlichen Schlitzen und pendelt sich ein, bis der Schwerpunkt unter dem Haken liegt; die Kette zieht den Bügel dabei gerade nach oben; er kann frei wippen, bis seine Querstrebe am Gehäuse des Roboters anliegt. Das Gewicht der vorn liegenden Schalung will sie nach unten klappen – genau diese Richtung sperrt die Klappvorrichtung, weil der bewegliche Schenkel (Pos. 9) anliegt. Deshalb hängt die Einheit starr und steil nach vorn geneigt (je nach DN etwa 70–75°), der Bügel fast senkrecht.',caption:'Gleichgewicht am Haken · Klappvorrichtung gesperrt'},
+ {title:'Durch die Öffnung absenken',text:'Der Kran lässt entlang der Achse der hängenden Einheit ab, die Schalung voraus. Die Einheit passt mit ihrer Hängeneigung durch Rahmen und Konus; wo es eng wird, führen die Monteure sie von Hand. Im Schacht wird sie zum Aufsetzpunkt vor dem Rohr geführt. Die Kabelbombe bleibt gerade, die Steigbügel bleiben frei.',caption:'Lage aus Gewicht, Anschlag des Hebebügels, Führung von Hand und Kontakt mit der Schachtwand'},
+ {title:'Aufsetzen vor dem Rohr',text:'Das Rad DN 70 an der Einbauhilfe (Pos. 4/6) setzt im Gerinne kurz vor dem Rohreinlauf auf; die Klappvorrichtung ist dabei noch geschlossen. Die Kabelbombe wird hochgeklappt. Während der Kran weiter ablässt, dreht sich die Schalung um das Rad flacher, bis sie in das Rohr passt. Der Roboter bleibt so steil, wie die Schachtwand hinter ihm verlangt – nur um diese Differenz öffnet die Klappvorrichtung gegen die zwei Federn.',caption:'Klappwinkel nur so groß wie nötig, im Schacht DN 1000 bis etwa 45°, in größeren Schächten weniger'},
  {title:'Einschieben und Roboter ablegen',text:'Der Kran lässt weiter ab. Die Schalung gleitet in das Rohr und wird dabei nur so weit geneigt, wie der Rohrscheitel zulässt. Der Roboter legt sich dahinter ins Gerinne; die Federn ziehen die Klappvorrichtung wieder in die gestreckte Lage.',caption:'Klappwinkel geht auf 0° zurück'},
  {title:'Aushängen und einfahren',text:'Der Haken wird ausgehängt. Der Roboter fährt die Schalung durch das Abwasser in das Rohr; sobald Platz ist, klappt die Kabelbombe nach hinten in Fahrstellung. Das Kabel läuft von der Trommel über die Ladebordwand und die Schachtkante nach. Im Rohr beginnt der Ablauf unter „So funktioniert’s“.',caption:'Übergang zur Anfahrt der Schadstelle'}
 ];
@@ -28,7 +28,7 @@ export function manholeSpec(dn){
  // Tail lift of the truck parked with its rear at the shaft (floor height 1.1 m).
  // Truck parked beside the shaft; tail lift behind its rear (+x).
  const platform={x0:-1300,x1:600,z0:zT-1250,z1:zT+1250,y:G+1100,zT};
- return {dn,Rp,t,Rm,wall,ro,zc,platform,yokeTop:580,yokeStop:20*Math.PI/180,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
+ return {dn,Rp,t,Rm,wall,ro,zc,platform,yokeTop:580,yokeStop:60*Math.PI/180,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
 }
 // Inner radius and centre of the shaft at height y (vertical side stays at z = −Rm).
 export function shaftProfile(spec,y){
@@ -414,13 +414,14 @@ export class ManholeScene{
   this.concrete=new THREE.MeshStandardMaterial({color:'#9b9a94',...mortar,bumpScale:1.4,roughness:.96,vertexColors:true,side:THREE.DoubleSide});
   this.concreteOuter=new THREE.MeshStandardMaterial({color:'#8d8c86',...surfaceTextures('mortar'),bumpScale:1,roughness:.98,side:THREE.DoubleSide});
   this.channelMat=new THREE.MeshStandardMaterial({color:'#77736a',...surfaceTextures('mortar'),bumpScale:.5,roughness:.55,vertexColors:true,side:THREE.DoubleSide});
-  this.pipeMat=new THREE.MeshStandardMaterial({color:'#8a5236',...pipeTex,bumpScale:.12,roughness:.7,side:THREE.DoubleSide});
+  // Same vitrified clay as the repair animation (dark, salt-glazed).
+  this.pipeMat=new THREE.MeshStandardMaterial({color:'#422b21',...pipeTex,bumpScale:.12,roughness:1,metalness:0,envMapIntensity:.18,side:THREE.DoubleSide});
   const asphalt=asphaltTexture();asphalt.repeat.set(16,16);
   this.asphaltMat=new THREE.MeshStandardMaterial({color:'#9a9a9a',map:asphalt,bumpMap:asphalt,bumpScale:2,roughness:.92,side:THREE.DoubleSide});
   this.jointMat=new THREE.MeshStandardMaterial({color:'#4d4b46',roughness:1,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
   this.capConcrete=new THREE.MeshStandardMaterial({color:'#a3a29b',...surfaceTextures('mortar'),roughness:1});
   this.capSoil=new THREE.MeshStandardMaterial({color:'#7a5e44',...soil,bumpScale:1,roughness:1});
-  this.capPipe=new THREE.MeshStandardMaterial({color:'#7a4a31',roughness:1});
+  this.capPipe=new THREE.MeshStandardMaterial({color:'#4a3025',roughness:1});
   this.capAsphalt=new THREE.MeshStandardMaterial({color:'#303234',roughness:1});
   this.iron=new THREE.MeshStandardMaterial({color:'#2d3033',metalness:.7,roughness:.55});
   this.ladderMat=new THREE.MeshStandardMaterial({color:'#e2711d',roughness:.55,metalness:.05});

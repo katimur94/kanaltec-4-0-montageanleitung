@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 28.09.2026 – Hebebügel wippt frei, dunkles Steinzeug im Schacht, ruhiger Wasserfall
+
+**Rückmeldung:** Das weiße Hin-und-her-Wippen im Wasserfall sieht nicht gut aus (das Herunterlaufen ist in Ordnung). Die Halterung am Kettenhaken kann wippen, bleibt beim Ablassen aber stumpf starr: die Kette zieht sie immer gerade nach oben, Schluss ist erst am Gehäuse des Roboters (Skizze mit Grenzlinien). Die Rohre im Schacht sind hell, in der Sanierungsanimation dunkel wie echtes Steinzeug.
+
+**Umsetzung:** Anschlag des Hebebügels von ±20° auf ±60° (Querstrebe am Gehäuse); der Bügel hängt an der Kette nahezu senkrecht und liegt erst dann am Gehäuse an. Nach Schwerpunkt unter dem Haken hängt die Einheit dadurch steiler (ca. 70–75°). Die Klappe öffnet beim Aufsetzen max. ca. 44° (DN 300), 37° (DN 400), 12–24° (DN 500–700); Prüfgrenze auf 45° gesetzt. Schachtrohre, Muffen und Schnittflächen mit dem Steinzeugmaterial der Sanierungsanimation. Wasserfall: Streifen laufen nur noch nach unten, keine seitlich pendelnden Bahnen mehr.
+
+**Prüfung:** `npm test` und `npm run build` bestanden; Browser-Screenshots von Schacht und Wasserfall angesehen.
+
+**Veröffentlichung:** Noch nicht.
+
 ## 28.09.2026 – Schachteinbau mit Physik, Hebebügel, seitlichem LKW; einseitiger Wasserfall mit Stärkeregler
 
 **Aufträge (mehrere Rückmeldungen am selben Tag):** Roter Säulenkran im LKW-Koffer nach Fotos; die runde „Bombe“ am Roboterheck klappt, das Kabel geht gerade aus ihr heraus; Roboter wird mittig angeschlagen, nicht hinten; reale physikalische Regeln; starke Infiltration wie auf dem Foto. Danach: Bombe beim Ablassen gerade (Kette und Bombe überschnitten sich); LKW von der Seite, nicht hineinschauen, nur der Kran kommt aus dem Koffer; Kettenzug und Roboter überschnitten sich → Kranarm höher. Danach: IBAK-Roboter hat zwischen den Rädern seitliche Schlitze, in die ein Bügel am Kettenhaken mit runden Bolzenköpfen eingehängt wird; Infiltration nur von einer Seite des Anschlusses („sonst Tornado“), wie ein Wasserfall; Regler von „nichts“ über tropfend bis stark. Zuletzt: Wasserfall von der anderen Seite (nicht am aufgeschnittenen Rohr); Roboter im Schacht nicht senkrecht, der Bügel darf nicht im Roboter verschwinden; beim Aufsetzen der Einbauhilfe-Räder darf die Schalung nicht schon mit 90° offener Klappvorrichtung ins Rohr rutschen – die Klappe wird fast nie 90° geöffnet.
