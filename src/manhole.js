@@ -12,11 +12,11 @@ const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),smooth=x=>{x=clamp(x);return 
 const lerp=THREE.MathUtils.lerp;
 
 export const insertionStages=[
- {title:'Auf der Ladebordwand anschlagen',text:'Der LKW steht mit dem Heck am geöffneten Schacht, Ladebordwand auf Ladehöhe. Roboter und angekuppelte Schalung liegen darauf in Richtung des Zielrohrs, Bumper vakuumiert. Der Kranhaken wird an der Hebeöse oben mittig auf dem Roboter angeschlagen, die Kabelbombe hinten ist hochgeklappt; das Kabel läuft zur Trommel im Koffer.',caption:'Wie auf den Baustellenfotos: roter Säulenkran im Koffer, Einheit auf der Ladebordwand.'},
- {title:'Anheben und über den Schacht schwenken',text:'Der Kran hebt an. Die Einheit pendelt sich so ein, dass ihr gemeinsamer Schwerpunkt senkrecht unter dem Haken liegt. Das Gewicht der vorn liegenden Schalung will sie nach unten klappen – genau diese Richtung sperrt die Klappvorrichtung, weil der bewegliche Schenkel (Pos. 9) anliegt. Deshalb hängt die Einheit starr und schräg nach vorn geneigt. Schild und CutterCam zeigen zur Seite des Zielrohrs.',caption:'Gleichgewicht am Haken · Klappvorrichtung gesperrt'},
- {title:'Durch die Öffnung absenken',text:'Der Kran lässt ab. Wo Rahmen, Konus oder Schachtwand im Weg sind, liegt die Einheit an und wird steiler gedrückt; sobald Platz ist, pendelt sie wieder in ihre Gleichgewichtslage. Die Steigbügel bleiben frei.',caption:'Lage = geringste Energie bei Kontakt mit Wand und Sohle'},
- {title:'Aufsetzen und einklappen',text:'Das Rad DN 70 an der Einbauhilfe (Pos. 4/6) setzt im Gerinne auf und rutscht in das Rohr. Gerinne und Rohrsohle drücken die Schalung nach oben: Nur jetzt öffnet die Klappvorrichtung um den Gelenkbolzen, gegen die zwei Federn.',caption:'Klappwinkel entsteht durch den Kontakt, nicht von selbst'},
- {title:'Roboter ablegen',text:'Der Kran lässt weiter ab, bis der Roboter mit allen Rädern im Gerinne steht und die Schalung im Rohr liegt. Die Federn ziehen die Klappvorrichtung dabei wieder in die gestreckte Lage.',caption:'Klappwinkel geht auf 0° zurück'},
+ {title:'Auf der Ladebordwand anschlagen',text:'Der LKW steht seitlich am geöffneten Schacht, die Ladebordwand auf Ladehöhe. Roboter und angekuppelte Schalung liegen darauf in Richtung des Zielrohrs, Bumper vakuumiert. Der Hebebügel am Kranhaken wird mit seinen runden Bolzenköpfen in die seitlichen Schlitze zwischen den Rädern eingehängt. Die Kabelbombe hinten steht gerade in Verlängerung des Roboters; das Kabel läuft zur Trommel im Koffer.',caption:'Roter Säulenkran im Koffer, Einheit auf der Ladebordwand.'},
+ {title:'Anheben und über den Schacht schwenken',text:'Der Kran hebt an. Die Einheit hängt mit den Bolzen des Hebebügels in den seitlichen Schlitzen und pendelt sich ein, bis der Schwerpunkt unter dem Haken liegt; die Querstrebe des Bügels liegt dabei auf dem Roboter auf und begrenzt die Neigung zwischen Bügel und Roboter. Das Gewicht der vorn liegenden Schalung will sie nach unten klappen – genau diese Richtung sperrt die Klappvorrichtung, weil der bewegliche Schenkel (Pos. 9) anliegt. Deshalb hängt die Einheit starr, rund 50° nach vorn geneigt.',caption:'Gleichgewicht am Haken · Klappvorrichtung gesperrt'},
+ {title:'Durch die Öffnung absenken',text:'Der Kran lässt entlang der Achse der hängenden Einheit ab, die Schalung voraus. Solange es passt, bleibt die Hängeneigung; erst wenn das Heck durch Rahmen und Konus muss, führen die Monteure die Einheit von Hand etwas steiler (je nach Schacht rund 65–70°, nicht senkrecht). Im Schacht wird sie zum Aufsetzpunkt vor dem Rohr geführt. Die Kabelbombe bleibt gerade, die Steigbügel bleiben frei.',caption:'Lage aus Gewicht, Anschlag des Hebebügels, Führung von Hand und Kontakt mit der Schachtwand'},
+ {title:'Aufsetzen vor dem Rohr',text:'Das Rad DN 70 an der Einbauhilfe (Pos. 4/6) setzt im Gerinne kurz vor dem Rohreinlauf auf; die Klappvorrichtung ist dabei noch geschlossen. Die Kabelbombe wird hochgeklappt. Während der Kran weiter ablässt, dreht sich die Schalung um das Rad flacher, bis sie in das Rohr passt. Der Roboter bleibt so steil, wie die Schachtwand hinter ihm verlangt – nur um diese Differenz öffnet die Klappvorrichtung gegen die zwei Federn.',caption:'Klappwinkel nur so groß wie nötig, im Schacht DN 1000 bis etwa 40°, in größeren Schächten weniger'},
+ {title:'Einschieben und Roboter ablegen',text:'Der Kran lässt weiter ab. Die Schalung gleitet in das Rohr und wird dabei nur so weit geneigt, wie der Rohrscheitel zulässt. Der Roboter legt sich dahinter ins Gerinne; die Federn ziehen die Klappvorrichtung wieder in die gestreckte Lage.',caption:'Klappwinkel geht auf 0° zurück'},
  {title:'Aushängen und einfahren',text:'Der Haken wird ausgehängt. Der Roboter fährt die Schalung durch das Abwasser in das Rohr; sobald Platz ist, klappt die Kabelbombe nach hinten in Fahrstellung. Das Kabel läuft von der Trommel über die Ladebordwand und die Schachtkante nach. Im Rohr beginnt der Ablauf unter „So funktioniert’s“.',caption:'Übergang zur Anfahrt der Schadstelle'}
 ];
 export function manholeSpec(dn){
@@ -28,7 +28,7 @@ export function manholeSpec(dn){
  // Tail lift of the truck parked with its rear at the shaft (floor height 1.1 m).
  // Truck parked beside the shaft; tail lift behind its rear (+x).
  const platform={x0:-1300,x1:600,z0:zT-1250,z1:zT+1250,y:G+1100,zT};
- return {dn,Rp,t,Rm,wall,ro,zc,platform,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
+ return {dn,Rp,t,Rm,wall,ro,zc,platform,yokeTop:580,yokeStop:20*Math.PI/180,z0:zc*.55,G,top,coneTop:top,coneBottom:Rm>=600?top-200:top-620,cone:Rm<600,base:invert-260,water:invert+33,ladder:{depth:160,half:150,from:420}};
 }
 // Inner radius and centre of the shaft at height y (vertical side stays at z = −Rm).
 export function shaftProfile(spec,y){
@@ -71,7 +71,7 @@ function makeSolver(geo){
   }
   const wall=Math.sqrt(Math.max(0,spec.Rm*spec.Rm-z*z));
   if(y<spec.Rp&&Math.abs(x)>wall-2)return Math.max(0,Math.hypot(y,z)-(spec.Rp-1));
-  const {cz,r}=shaftProfile(spec,y);let v=Math.max(0,Math.hypot(x,z-cz)-(r-5));
+  const {cz,r}=shaftProfile(spec,y);let v=Math.max(0,Math.hypot(x,z-cz)-(r-8));
   if(y<spec.Rp+60)v=Math.max(v,floorAt(spec,x,z)+1-y);
   if(y>L.from-40&&y<spec.coneTop-150&&Math.abs(x)<L.half+25)v=Math.max(v,-spec.Rm+L.depth+17-z);
   return v;
@@ -89,30 +89,68 @@ function makeSolver(geo){
  const pinAt=(H,tr)=>V(H.x+Math.cos(tr)*pe.x-Math.sin(tr)*pe.y,H.y+Math.sin(tr)*pe.x+Math.cos(tr)*pe.y,H.z);
  // seed: start of a local descent (the hanging configuration); without it a
  // coarse global search, used only for the pick-up from the tail lift.
- // u: slack of the chain (eye above the hook) when the unit is supported;
- // w: pendulum swing along the pipe axis, raising the load by w²/2L.
- const tipY=spec.platform.y+1750,mTot=masses.robot+masses.mould;
- const solve=(H,seed)=>{
-  const Lc=Math.max(300,tipY-H.y),E3=(tr,h,u,w)=>energy(V(H.x+w,H.y+u+w*w/(2*Lc),H.z),tr,h)+0*mTot;
-  let best={tr:0,h:0,u:0,w:0,E:Infinity};
-  if(seed)best={tr:seed.thetaR,h:seed.h,u:seed.u||0,w:seed.w||0,E:E3(seed.thetaR,seed.h,seed.u||0,seed.w||0)};
-  else for(let a=-110;a<=30;a+=6)for(let b=0;b<=90;b+=10){const E=E3(a*DEG,b*DEG,0,0);if(E<best.E)best={tr:a*DEG,h:b*DEG,u:0,w:0,E};}
-  for(const d of seed?[8,4,2,1,.5,.25,.1]:[4,2,1,.5,.25,.1]){const step=d*DEG,du=d*6;for(let it=0;it<6;it++){let moved=false;for(const [dt,dh,dd,dw] of[[step,0,0,0],[-step,0,0,0],[0,step,0,0],[0,-step,0,0],[step,-step,0,0],[-step,step,0,0],[0,0,du,0],[0,0,-du,0],[0,0,0,du],[0,0,0,-du]]){const tr=best.tr+dt,h=clamp(best.h+dh,0,Math.PI/2),u=Math.max(0,best.u+dd),w=clamp(best.w+dw,-400,400),E=E3(tr,h,u,w);if(E<best.E-1e-7){best={tr,h,u,w,E};moved=true;}}if(!moved)break;}}
-  const eyeAt=V(H.x+best.w,H.y+best.u+best.w*best.w/(2*Lc),H.z);
-  return{thetaR:best.tr,h:best.h,u:best.u,w:best.w,eye:eyeAt,W:pinAt(eyeAt,best.tr)};
+ // The chain hook carries the lifting yoke; its round pins sit in the side
+ // slots, so the robot turns about the pins. The yoke's cross bar lies on the
+ // robot top at ±yokeStop, then yoke and robot turn together about the hook.
+ // H is the pin position with the yoke plumb; u: chain slack when the unit is
+ // supported; ty: yoke tilt.
+ // The yoke tilt is ty = tr + dy with |dy| ≤ stop (hard limit).
+ const Ly=spec.yokeTop,stop=spec.yokeStop;
+ const pinFrom=(H,u,ty)=>V(H.x+Ly*Math.sin(ty),H.y+Ly+u-Ly*Math.cos(ty),H.z);
+ // guide/kg: a fitter steering the unit by hand (guide rope) towards a tilt.
+ const solve=(H,seed,guide,kg=0)=>{
+  const E3=(tr,h,u,dy)=>energy(pinFrom(H,u,tr+dy),tr,h)+(kg?kg*(tr-guide)**2:0);
+  let best={tr:0,h:0,u:0,dy:0,E:Infinity};
+  if(seed){const dy=clamp((seed.ty||0)-seed.thetaR,-stop,stop);best={tr:seed.thetaR,h:seed.h,u:seed.u||0,dy,E:E3(seed.thetaR,seed.h,seed.u||0,dy)};}
+  else for(let a=-110;a<=30;a+=6)for(let b=0;b<=90;b+=10){const dy=clamp(-a*DEG,-stop,stop),E=E3(a*DEG,b*DEG,0,dy);if(E<best.E)best={tr:a*DEG,h:b*DEG,u:0,dy,E};}
+  // Moves: robot with yoke, hinge, both leaves, chain slack, robot under the resting yoke, yoke alone.
+  for(const d of seed?[8,4,2,1,.5,.25,.1]:[4,2,1,.5,.25,.1]){const step=d*DEG,du=d*6;for(let it=0;it<6;it++){let moved=false;for(const [dt,dh,dd,dy] of[[step,0,0,0],[-step,0,0,0],[0,step,0,0],[0,-step,0,0],[step,-step,0,0],[-step,step,0,0],[0,0,du,0],[0,0,-du,0],[step,0,0,-step],[-step,0,0,step],[0,0,0,step],[0,0,0,-step]]){const tr=best.tr+dt,h=clamp(best.h+dh,0,Math.PI/2),u=Math.max(0,best.u+dd),y=clamp(best.dy+dy,-stop,stop),E=E3(tr,h,u,y);if(E<best.E-1e-7){best={tr,h,u,dy:y,E};moved=true;}}if(!moved)break;}}
+  const ty=best.tr+best.dy,eyeAt=pinFrom(H,best.u,ty);
+  return{thetaR:best.tr,h:best.h,u:best.u,ty,eye:eyeAt,W:pinAt(eyeAt,best.tr)};
  };
  // Resting on the tail lift, straight and centred.
  const all=[...geo.formPts,...geo.robotPts],minX=all.reduce((m,p)=>Math.min(m,p.x),Infinity),maxX=all.reduce((m,p)=>Math.max(m,p.x),-Infinity);
  const W0=V(pin.x-(minX+maxX)/2+(P.x0+P.x1)/2,P.y-geo.yb+pin.y+1,(P.z0+P.z1)/2);
  // Final in-channel pose: rear just clear of the round shaft wall.
  const rearGap=geo.robotPts.reduce((m,p)=>Math.min(m,p.x-pin.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z))),Infinity);
- const final=V(Math.max(-80,22-rearGap),pin.y,0);
+ const final=V(Math.max(30,22-rearGap),pin.y,0);
  // Free hanging pose far above everything: how far the nose reaches below the eye.
  const ref=V(0,spec.G+9000,0),free=solve(ref),freeLow=(()=>{let m=Infinity;const c=Math.cos(free.thetaR),s=Math.sin(free.thetaR);for(let i=0;i<R.length;i+=3)m=Math.min(m,s*R[i]+c*R[i+1]);const tf=free.thetaR+free.h,c2=Math.cos(tf),s2=Math.sin(tf),W=pinAt(V(),free.thetaR);for(let i=0;i<F.length;i+=3)m=Math.min(m,W.y+s2*F[i]+c2*F[i+1]);return -m;})();
- // Horizontal centre of the freely hanging unit relative to the eye, so the
- // operator can pass it centred through frame and cone.
- const freeMid=(()=>{let lo=Infinity,hi=-Infinity;const c=Math.cos(free.thetaR),s=Math.sin(free.thetaR);for(let i=0;i<R.length;i+=3){const x=c*R[i]-s*R[i+1];lo=Math.min(lo,x);hi=Math.max(hi,x);}const tf=free.thetaR+free.h,c2=Math.cos(tf),s2=Math.sin(tf),W=pinAt(V(),free.thetaR);for(let i=0;i<F.length;i+=3){const x=W.x+c2*F[i]-s2*F[i+1];lo=Math.min(lo,x);hi=Math.max(hi,x);}return(lo+hi)/2;})();
- return{solve,W0,final,free,freeLow,freeMid,energy,pinAt};
+ // Axis of a hanging pose relative to the hook reference: centre c, direction
+ // d (towards the nose), extent s0 (rear) … s1 (nose) and all points.
+ const axisOf=q=>{const tr=q.thetaR,tf=tr+q.h,d=V(Math.cos(tr),Math.sin(tr),0),e=q.eye.clone().sub(ref),w=q.W.clone().sub(ref),pts=[];
+  for(let i=0;i<R.length;i+=3)pts.push(V(...rot(V(R[i],R[i+1],0),tr).add(e).toArray().slice(0,2),R[i+2]));
+  for(let i=0;i<F.length;i+=3)pts.push(V(...rot(V(F[i],F[i+1],0),tf).add(w).toArray().slice(0,2),F[i+2]));
+  const c=pts.reduce((a,p)=>a.add(V(p.x,p.y,0)),V()).multiplyScalar(1/pts.length);let s0=Infinity,s1=-Infinity;
+  for(const p of pts){const s=(p.x-c.x)*d.x+(p.y-c.y)*d.y;s0=Math.min(s0,s);s1=Math.max(s1,s);}
+  return{c,d,s0,s1,pts};};
+ // Passing frame, slab or cone opening (625/800/1000 mm): the operator lowers
+ // the unit along its axis. tau = axis coordinate (from the centroid, towards
+ // the nose) that is at frame height yf, at x = xoff. For a tilt th the
+ // worst clearance of the rigid unit (negative = fits).
+ const yf=spec.G-115,freeAxis=axisOf(free),AP=(()=>{const A=freeAxis,n=V(-A.d.y,A.d.x,0);return A.pts.map(p=>{const x=p.x-A.c.x,y=p.y-A.c.y;return[x*A.d.x+y*A.d.y,x*n.x+y*n.y,p.z+spec.z0];});})();
+ const viol2=(th,tau,xoff)=>{const c=Math.cos(th),s=Math.sin(th);let m=-Infinity;for(const [sp,qp,z] of AP){const y=yf+(sp-tau)*s+qp*c;if(y>spec.G)continue;const x=xoff+(sp-tau)*c-qp*s,{cz,r}=shaftProfile(spec,y);m=Math.max(m,Math.hypot(x,z-cz)-r,floorAt(spec,x,z)-y);}return m;};
+ const bestOff=(th,tau)=>{let lo=-spec.Rm*.8,hi=spec.Rm*.5;for(let i=0;i<24;i++){const a=lo+(hi-lo)/3,b=hi-(hi-lo)/3;if(viol2(th,tau,a)<viol2(th,tau,b))hi=b;else lo=a;}const x=(lo+hi)/2;return{x,v:viol2(th,tau,x)};};
+ // Flattest tilt that fits at each stage of the passage; where the hanging
+ // tilt does not fit, the fitters steer the unit steeper by hand (guide
+ // rope), ahead of time and only as far as needed, then let it go back.
+ const passPath=(()=>{const s0=freeAxis.s0,s1=freeAxis.s1,K=24,th0=free.thetaR,need=[],taus=[];
+  for(let k=0;k<=K;k++){const tau=s1-(s1-s0)*k/K;taus.push(tau);if(bestOff(th0,tau).v<=-10){need.push(th0);continue;}let lo=-88*DEG,hi=th0;for(let i=0;i<16;i++){const m=(lo+hi)/2;if(bestOff(m,tau).v<=-10)lo=m;else hi=m;}need.push(lo-1.5*DEG);}
+  const rate=DEG/30,tilt=[],lo=[],hi=[],mid=[];
+  for(let k=0;k<=K;k++){let t=th0;for(let j=0;j<=K;j++)t=Math.min(t,need[j]+rate*Math.abs(taus[k]-taus[j]));tilt.push(t);
+   // Feasible band of the crossing point; the operator keeps near its middle.
+   const o=bestOff(t,taus[k]),edge=(from,to)=>{if(viol2(t,taus[k],to)<=-10)return to;for(let i=0;i<18;i++){const m=(from+to)/2;if(viol2(t,taus[k],m)<=-10)from=m;else to=m;}return from;};
+   lo.push(edge(o.x,o.x-spec.Rm));hi.push(edge(o.x,o.x+spec.Rm));mid.push(o.v<=-10?(lo[k]+hi[k])/2:o.x);}
+  // Smooth the crossing point over the passage, but stay inside the band.
+  const xs=mid.map((_,k)=>{let a=0,n=0;for(let j=Math.max(0,k-3);j<=Math.min(K,k+3);j++){a+=mid[j];n++;}return clamp(a/n,Math.min(lo[k],hi[k]),Math.max(lo[k],hi[k]));});
+  // Pose at passage progress kf (0…K): the rigid hanging unit turned to the
+  // planned tilt about its centroid; yoke on its stop; hook reference H0.
+  const trf=free.thetaR,Wrel=free.W.clone().sub(ref).sub(freeAxis.c).setZ(0);
+  const at=kf=>{kf=clamp(kf,0,K);const i=Math.min(K-1,Math.floor(kf)),u=kf-i,t=lerp(tilt[i],tilt[i+1],u),tau=lerp(taus[i],taus[i+1],u),x=lerp(xs[i],xs[i+1],u);
+   const W=V(x-tau*Math.cos(t),yf-tau*Math.sin(t),0).add(rot(Wrel,t-trf)).setZ(spec.z0),eye=W.clone().sub(rot(pe,t)).setZ(spec.z0),ty=clamp(0,t-stop,t+stop);
+   return{tr:t,W,eye,ty,H0:eye.clone().sub(V(Ly*Math.sin(ty),Ly*(1-Math.cos(ty)),0))};};
+  return{K,at};})();
+ return{solve,W0,final,free,freeLow,freeAxis,passPath,energy,pinAt};
 }
 export function insertionKinematics(time,geo){
  if(geo.memo&&geo.memo.time===time)return geo.memo.k;
@@ -122,45 +160,104 @@ function insertionPose(time,geo){
  const {spec,pin,eye}=geo,N=insertionStages.length,T=clamp(time,0,N-.001),stage=Math.floor(T),f=T-stage;
  const S=geo.solver||(geo.solver=makeSolver(geo)),P=spec.platform;
  const toEye=eye.clone().sub(pin),eye0=S.W0.clone().add(toEye),eyeF=S.final.clone().add(toEye);
- const rest=V(eye0.x,eye0.y+900,eye0.z),lift=Math.max(P.y+S.freeLow+250,eye0.y+250),xs=-.32*spec.Rm,xTop=-S.freeMid;
- const yA=-spec.Rp+140+S.freeLow,yB=Math.max(eyeF.y+320,Math.min(yA-200,eyeF.y+700)),xm=lerp(xs,eyeF.x,.45);
- // Landing geometry (as validated before): the mould folds in on the channel
- // while the robot keeps its hanging tilt, then the robot is laid down.
- const fp=geo.formPts,rp=geo.robotPts;
+ const rest=V(eye0.x,eye0.y+900,eye0.z),lift=Math.max(P.y+S.freeLow+250,eye0.y+250);
+ // Landing: the guide wheel sets down in the channel; while the crane lowers,
+ // mould and robot flatten together, the mould slides into the pipe and the
+ // hinge opens only a little (site experience: almost never 90°).
+ const fp=geo.formPts;
  const contact=(theta,wx)=>{let y=-Infinity;for(const p of fp){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);y=Math.max(y,floorAt(spec,wx+q.x,p.z)-q.y);}return y;};
  const hangX=30,restY=pin.y-(S.rest??=contact(0,0)),lie=(theta,wx)=>contact(theta,wx)+restY*smooth(1+theta/(Math.PI/2)*2);
- const rearGap=theta=>{let m=Infinity;for(const p of rp){const q=rot(V(p.x-pin.x,p.y-pin.y,p.z),theta);m=Math.min(m,q.x+Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z)));}return m;};
- const th2=Math.max(S.free.thetaR,-Math.PI/2),W3=S.W3??=V(hangX,lie(th2,hangX),0),eye3=W3.clone().add(rot(toEye,th2));
- // Hook path of the crane operator for lifting and lowering.
+ // Clearance of the robot's rear to the shaft wall behind it (cone included),
+ // for robot tilt theta, cable bomb angle a (it turns about its own pivot) and
+ // pin height wy.
+ const RG=S.rearPts??=(()=>{const b=geo.bodyPts||geo.robotPts,pp=geo.plugPts||[],pv=(geo.plugPivot||pin).clone().sub(pin),o=[];
+  for(const p of b)o.push([p.x-pin.x,p.y-pin.y,p.z,0]);for(const p of pp)o.push([p.x,p.y,p.z,1]);return{o,pv};})();
+ const rearGap=(theta,a,wy)=>{const c=Math.cos(theta),s=Math.sin(theta),ca=Math.cos(a),sa=Math.sin(a);let m=Infinity;
+  for(const [x0,y0,z,k] of RG.o){const x=k?RG.pv.x+ca*x0-sa*y0:x0,y=k?RG.pv.y+sa*x0+ca*y0:y0,{cz,r}=shaftProfile(spec,wy+s*x+c*y);m=Math.min(m,c*x-s*y+Math.sqrt(Math.max(0,r*r-(z-cz)**2)));}return m;};
+ // Flattest robot tilt whose rear still clears the wall with the pin at wx.
+ const trNeed=(wx,a,wy)=>{if(rearGap(0,a,wy)+wx>=22)return 0;let lo=-Math.PI/2,hi=0;for(let i=0;i<22;i++){const m=(lo+hi)/2;if(rearGap(m,a,wy)+wx>=22)lo=m;else hi=m;}return lo;};
+ // Inside the pipe the mould can only be tilted as far as the crown allows.
+ const fitsPipe=(tf,wx)=>{const wy=lie(tf,wx),c=Math.cos(tf),s=Math.sin(tf);for(const p of fp){const x0=p.x-pin.x,y0=p.y-pin.y;if(wx+c*x0-s*y0>Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z))-2&&Math.hypot(wy+s*x0+c*y0,p.z)>spec.Rp-3)return false;}return true;};
+ const tfMin=(wx,from)=>{if(fitsPipe(from,wx))return from;let lo=from,hi=0;for(let i=0;i<22;i++){const m=(lo+hi)/2;if(fitsPipe(m,wx))hi=m;else lo=m;}return hi;};
+ // Pin position that puts the mould's front 15 mm before the pipe mouth.
+ const wxL=tf=>{const c=Math.cos(tf),s=Math.sin(tf);let m=Infinity;for(const p of fp){const x0=p.x-pin.x,y0=p.y-pin.y;m=Math.min(m,Math.sqrt(Math.max(0,spec.Rm**2-p.z*p.z))-(c*x0-s*y0));}return m-15;};
+ // Landing tilt: as flat as the hanging tilt allows, steep enough that the
+ // robot's rear (bomb still straight) is inside the shaft while the guide
+ // wheel stands on the channel just in front of the mouth.
+ const ok2=m=>{const wx=wxL(m);return rearGap(m,0,lie(m,wx))+wx>=22;};
+ const th2=S.th2??=(()=>{let lo=-Math.PI/2,hi=Math.min(S.free.thetaR,-.3);if(ok2(hi))return Math.max(hi,lo);for(let i=0;i<30;i++){const m=(lo+hi)/2;if(ok2(m))lo=m;else hi=m;}return lo;})();
+ // Mould tilt over the pin position while sliding in: never steeper than the
+ // crown allows, turning at most 1° per 4 mm so it levels ahead of the limit.
+ const tiltTable=(x0,t0)=>{const n=Math.max(8,Math.ceil((S.final.x-x0)/5)),w=i=>lerp(x0,S.final.x,i/n),lim=[];let from=t0;
+  for(let i=0;i<=n;i++){from=tfMin(w(i),from);lim.push(from);}
+  const k=Math.PI/180/4*(S.final.x-x0)/n,g=[];let run=-Infinity;
+  for(let i=n;i>=0;i--){run=Math.max(run-k,lim[i]);g[i]=Math.min(0,Math.max(run,t0*(1-smooth(i/n))));}
+  return{n,g};};
+ // Entry tilt: the mould turns about its guide wheel in front of the mouth
+ // until it has the tilt the sliding-in needs at its start.
+ const tfE=S.tfE??=tiltTable(wxL(th2),th2).g[0],wx1=S.wx1??=wxL(tfE),tilt=S.tilt??=tiltTable(wx1,tfE);
+ const mouldTilt=wx=>{const x=clamp((wx-wx1)/(S.final.x-wx1))*tilt.n,i=Math.min(tilt.n-1,Math.floor(x));return lerp(tilt.g[i],tilt.g[i+1],x-i);};
+ const W3=S.W3??=(()=>{const wx=wxL(th2);return V(wx,lie(th2,wx),0);})(),eye3=W3.clone().add(rot(toEye,th2)),stop=spec.yokeStop,Ly=spec.yokeTop,yokeFor=tr=>clamp(0,tr-stop,tr+stop);
+ // Hook reference at landing: the yoke rests on the robot at the stop, so the
+ // hook is not above the eye.
+ const ty3=yokeFor(th2),hook3=V(eye3.x-Ly*Math.sin(ty3),eye3.y-Ly*(1-Math.cos(ty3))+12,0);
+ // Stage 2 in three parts: lowering the hanging unit until its nose is at the
+ // frame (physics); the passage through frame, slab or cone, the fitters
+ // guiding the unit by hand (planned, collision-free); lowering in the shaft
+ // to the landing point, steered to the landing tilt (physics, contacts).
+ const PP=S.passPath,P0=S.P0??=PP.at(0),PK=S.PK??=PP.at(PP.K),xTop=P0.H0.x;
+ const seg=S.seg??=(()=>{const d1=Math.max(1,lift-P0.H0.y),d2=Math.max(1,P0.H0.y-PK.H0.y),d3=Math.max(1,PK.H0.y-hook3.y),T=d1+d2+d3;return{a:d1/T,b:(d1+d2)/T};})();
  const hookAt=(st,g)=>{
   if(st===1){const a=smooth(g/.75),b=smooth((g-.6)/.4);return V(lerp(eye0.x,xTop,b),lerp(eye0.y,lift,a),lerp(eye0.z,spec.z0,b));}
-  const y=lerp(lift,eye3.y+12,smooth(g)),side=Math.max(smooth((spec.coneBottom-350-y)/450),smooth((g-.8)/.2));return V(lerp(xTop,eye3.x,side),y,lerp(spec.z0,0,side));
+  if(st===2)return V(xTop,lerp(lift,P0.H0.y,g),spec.z0);
+  return V(lerp(PK.H0.x,hook3.x,smooth(g)),lerp(PK.H0.y,hook3.y,g),lerp(spec.z0,0,smooth(g/.7)));
  };
  // Stages 1–2 are solved as one continuous sequence (each pose starts from the
  // previous one), lightly damped and cached, so any seek order gives the same result.
  const table=st=>{
   S.tables??={};if(S.tables[st])return S.tables[st];
-  const n=48,raw=[];let seed=st===1?{thetaR:0,h:0,u:0,w:0}:(()=>{const e=table(1).at(-1);return{thetaR:e[0],h:e[1],u:e[4],w:e[5]};})();
-  for(let i=0;i<=n;i++){const H0=hookAt(st,i/n),q=S.solve(H0,seed||undefined);raw.push([q.thetaR,q.h,q.eye.x-H0.x,q.eye.y-H0.y,q.u,q.w]);seed=q;}
+  const n=48,raw=[];let seed=st===1?{thetaR:0,h:0,u:0,ty:0}:st===2?(()=>{const e=table(1).at(-1);return{thetaR:e[0],h:e[1],u:e[4],ty:e[5]};})():{thetaR:PK.tr,h:0,u:0,ty:PK.ty};
+  for(let i=0;i<=n;i++){const H0=hookAt(st,i/n),q=st===3?S.solve(H0,seed,lerp(PK.tr,th2,smooth(i/n)),3e5):S.solve(H0,seed);raw.push([q.thetaR,q.h,q.eye.x-H0.x,q.eye.y-H0.y,q.u,q.ty]);seed=q;}
   const damp=st===1?.3:1,sm=[raw[0].slice()];for(let i=1;i<=n;i++){const p=sm[i-1],r=raw[i];sm.push(p.map((v,k)=>v+(r[k]-v)*damp));}
   return S.tables[st]=sm.map((v,i)=>{const w=smooth((i/n-.8)/.2);return v.map((x,k)=>lerp(x,raw[i][k],w));});
  };
- let H,pose,rope=1,drive=0;
- if(stage===0){H=rest.clone().lerp(eye0,smooth(f/.7));pose={thetaR:0,h:0,W:S.W0.clone()};}
- else if(stage<3){
-  const tb=table(stage),x=f*48,i=Math.min(47,Math.floor(x)),u=x-i,a0=tb[i],a1=tb[i+1];H=hookAt(stage,f);
-  const tr=lerp(a0[0],a1[0],u);H=H.clone().add(V(lerp(a0[2],a1[2],u),lerp(a0[3],a1[3],u),0));
-  // Arrive exactly in the landing configuration at the end of lowering.
-  const b=stage===2?smooth((f-.85)/.15):0,trB=lerp(tr,th2,b);if(b>0)H.lerp(eye3,b);
-  pose={thetaR:trB,h:clamp(lerp(lerp(a0[1],a1[1],u),0,b),0,Math.PI/2),W:S.pinAt(H,trB)};
- }
- else if(stage===3){const tf=th2*(1-smooth(f)),W=V(hangX,lie(tf,hangX),0);pose={thetaR:th2,h:tf-th2,W};H=W.clone().add(rot(toEye,th2));}
- else if(stage===4){const tr=th2*(1-smooth(f)),W=V(Math.max(hangX,22-rearGap(tr)),pin.y,0);pose={thetaR:tr,h:-tr,W};H=W.clone().add(rot(toEye,tr));}
- else{drive=1400*smooth((f-.15)/.85);rope=1-smooth(f/.2);H=eyeF.clone().add(V(drive,0,0));pose={thetaR:0,h:0,W:S.final.clone().add(V(drive,0,0))};}
  // Cable bomb: straight while lifting and lowering (clear of the chain), folded
- // up only to lay the robot down in the shaft, back in line in the pipe.
- const up=-Math.PI/2,plug=stage<4?0:stage===4?lerp(0,up,smooth(f/.45)):lerp(-Math.PI/2,0,smooth((f-.45)/.3));
- return{stage,f,thetaF:pose.thetaR+pose.h,thetaR:pose.thetaR,W:pose.W,drive,rope,plug,hinge:pose.h,hook:H};
+ // up only after touching down, to lay the robot down in the shaft; back in
+ // line in the pipe.
+ const up=-Math.PI/2,plug=stage<3?0:stage===3?lerp(0,up,smooth((f-.05)/.35)):stage===4?up:lerp(up,0,smooth((f-.45)/.3));
+ let H,pose,rope=1,drive=0,ty=0;
+ if(stage===0){H=rest.clone().lerp(eye0,smooth(f/.7));pose={thetaR:0,h:0,W:S.W0.clone()};}
+ else if(stage===1){
+  const tb=table(1),x=f*48,i=Math.min(47,Math.floor(x)),u=x-i,a0=tb[i],a1=tb[i+1],L=k=>lerp(a0[k],a1[k],u);
+  H=hookAt(1,f).add(V(L(2),L(3),0));ty=L(5);pose={thetaR:L(0),h:clamp(L(1),0,Math.PI/2),W:S.pinAt(H,L(0))};
+ }
+ else if(stage===2){
+  const gs=smooth(f);
+  if(gs>=seg.a&&gs<seg.b){const q=PP.at((gs-seg.a)/(seg.b-seg.a)*PP.K);H=q.eye.clone();ty=q.ty;pose={thetaR:q.tr,h:0,W:q.W.clone()};}
+  else{
+   const part=gs<seg.a?2:3,g=part===2?gs/seg.a:(gs-seg.b)/(1-seg.b),tb=table(part),x=g*48,i=Math.min(47,Math.floor(x)),u=x-i,a0=tb[i],a1=tb[i+1],L=k=>lerp(a0[k],a1[k],u);
+   H=hookAt(part,g).add(V(L(2),L(3),0));let tr=L(0),h=clamp(L(1),0,Math.PI/2);ty=L(5);
+   // Hand over from the guided passage without a jerk.
+   if(part===3){const w=smooth(g/.12);tr=lerp(PK.tr,tr,w);h*=w;ty=lerp(PK.ty,ty,w);H.lerp(PK.eye,1-w);}
+   // Arrive exactly in the landing configuration at the end of lowering.
+   const b=smooth((f-.9)/.1);tr=lerp(tr,th2,b);h=lerp(h,0,b);ty=lerp(ty,yokeFor(th2),b);if(b>0)H.lerp(eye3,b);
+   pose={thetaR:tr,h,W:S.pinAt(H,tr)};
+  }
+ }
+ else if(stage===3){
+  // Touch-down in front of the mouth: while the crane lowers, the mould turns
+  // about its guide wheel until it is flat enough to enter; the robot keeps
+  // its rear clear of the wall, so the hinge opens only by the difference.
+  const tf=lerp(th2,tfE,smooth(f/.9)),wx=wxL(tf),W=V(wx,lie(tf,wx),0),tr=Math.min(tf,trNeed(wx,plug,W.y));
+  pose={thetaR:tr,h:tf-tr,W};H=W.clone().add(rot(toEye,tr));ty=yokeFor(tr);
+ }
+ else if(stage===4){
+  // The mould slides into the pipe, the robot lies down, the springs close the hinge.
+  const wx=lerp(wx1,S.final.x,smooth(f)),tf=mouldTilt(wx),W=V(wx,lie(tf,wx),0),tr=Math.min(tf,trNeed(wx,plug,W.y));
+  pose={thetaR:tr,h:tf-tr,W};H=W.clone().add(rot(toEye,tr));ty=yokeFor(tr);
+ }
+ else{drive=1400*smooth((f-.15)/.85);rope=1-smooth(f/.2);H=eyeF.clone().add(V(drive,0,0));pose={thetaR:0,h:0,W:S.final.clone().add(V(drive,0,0))};}
+ return{stage,f,thetaF:pose.thetaR+pose.h,thetaR:pose.thetaR,W:pose.W,drive,rope,plug,hinge:pose.h,hook:H,yoke:ty};
 }
 export function frameMatrix(theta,W,pin){return new THREE.Matrix4().makeTranslation(W.x,W.y,W.z).multiply(new THREE.Matrix4().makeRotationZ(theta)).multiply(new THREE.Matrix4().makeTranslation(-pin.x,-pin.y,-pin.z));}
 
@@ -409,11 +506,11 @@ export class ManholeScene{
   // Lifting yoke (photo): black square tube from the hook, silver cross bar and
   // two side straps with round pin heads that sit in the robot's side slots.
   this.yoke=new THREE.Group();this.yoke.name='Hebebügel';{const silver=new THREE.MeshStandardMaterial({color:'#c3c8cb',metalness:.85,roughness:.25}),blk=new THREE.MeshStandardMaterial({color:'#1a1d20',metalness:.3,roughness:.5}),w=78;
-   for(const sgn of[-1,1]){const leg=mesh(new THREE.BoxGeometry(34,300,7),silver);leg.position.set(0,150,sgn*w);this.yoke.add(leg);const pinH=mesh(new THREE.CylinderGeometry(13,13,16,20),silver);pinH.rotation.x=Math.PI/2;pinH.position.set(0,0,sgn*(w-9));this.yoke.add(pinH);}
-   const bar=mesh(new THREE.BoxGeometry(40,26,2*w+8),silver);bar.position.y=300;this.yoke.add(bar);
-   const tubeY=mesh(new THREE.BoxGeometry(46,300,46),blk);tubeY.position.y=450;this.yoke.add(tubeY);
-   const eyeR=mesh(new THREE.TorusGeometry(20,6,8,16),silver);eyeR.position.y=615;this.yoke.add(eyeR);}
-  this.group.add(this.yoke);this.yokeTop=640;
+   for(const sgn of[-1,1]){const leg=mesh(new THREE.BoxGeometry(34,230,7),silver);leg.position.set(0,115,sgn*w);this.yoke.add(leg);const pinH=mesh(new THREE.CylinderGeometry(13,13,16,20),silver);pinH.rotation.x=Math.PI/2;pinH.position.set(0,0,sgn*(w-9));this.yoke.add(pinH);}
+   const bar=mesh(new THREE.BoxGeometry(40,26,2*w+8),silver);bar.position.y=230;this.yoke.add(bar);
+   const tubeY=mesh(new THREE.BoxGeometry(46,300,46),blk);tubeY.position.y=390;this.yoke.add(tubeY);
+   const eyeR=mesh(new THREE.TorusGeometry(20,6,8,16),silver);eyeR.position.y=560;this.yoke.add(eyeR);}
+  this.group.add(this.yoke);this.yokeTop=spec.yokeTop;
   this.cableMat=new THREE.MeshStandardMaterial({color:'#15191c',roughness:.5});this.cable=mesh(new THREE.BufferGeometry(),this.cableMat);this.cable.name='Roboterkabel';this.cable.castShadow=false;this.group.add(this.cable);
   // Cable roller on the rim towards the truck.
   this.roller=V(-120,G+70,spec.zc-spec.ro+40);
@@ -466,12 +563,13 @@ export class ManholeScene{
  }
  // hook: world point on the robot rear; rope 0..1 attached; plug tip and
  // outgoing direction of the folded cable plug.
- update({hook,rope,plugTip,plugDir,clock=0}){
+ update({hook,yoke=0,rope,plugTip,plugDir,clock=0}){
   const s=this.spec;
   if(this.flowNormal)this.flowNormal.offset.set(-clock*280/420,.05*Math.sin(clock*.7));
   // Crane tip follows the hook while loaded; returns over the tail lift after release.
   // The yoke hangs plumb from its pins; the hook sits on top of it.
-  this.yoke.position.copy(hook);hook=hook.clone().add(V(0,this.yokeTop,0));
+  // Yoke turns about its pins (it rests on the robot top at the stop angle).
+  this.yoke.position.copy(hook);this.yoke.rotation.set(0,0,yoke);hook=hook.clone().add(V(-this.yokeTop*Math.sin(yoke),this.yokeTop*Math.cos(yoke),0));
   const want=rope>.999?hook.clone():hook.clone().lerp(this.truck.rest,1-rope);
   const tip=this.truck.pose(want);
   const hookPos=rope>.999?hook.clone():hook.clone().lerp(tip.clone().add(V(0,-600,0)),1-rope);
@@ -480,7 +578,7 @@ export class ManholeScene{
   const n=Math.min(this.chain.count,Math.floor(len/15));
   for(let i=0;i<this.chain.count;i++){if(i<n){q.setFromUnitVectors(V(0,1,0),dir);if(i%2)q.multiply(new THREE.Quaternion().setFromAxisAngle(V(0,1,0),Math.PI/2));m.compose(top.clone().addScaledVector(dir,(i+.5)*len/n),q,V(1,1.45,1));}else m.makeScale(0,0,0);this.chain.setMatrixAt(i,m);}
   this.chain.instanceMatrix.needsUpdate=true;
-  this.hook.position.copy(hookPos).add(V(0,20,0));if(rope<.999)this.yoke.position.copy(hookPos).add(V(0,-this.yokeTop,0));
+  this.hook.position.copy(hookPos).add(V(0,20,0));if(rope<.999){this.yoke.rotation.set(0,0,0);this.yoke.position.copy(hookPos).add(V(0,-this.yokeTop,0));}
   const pend=tip.clone().add(V(160,-1500,60));this.pendant.position.copy(pend);
   this.pendantCable.geometry.dispose();this.pendantCable.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([tip.clone().add(V(60,-200,40)),tip.clone().add(V(150,-800,70)),pend.clone().add(V(0,85,0))]),16,4,6,false);
   // Cable: straight out of the cable bomb, up the shaft clear of wall and

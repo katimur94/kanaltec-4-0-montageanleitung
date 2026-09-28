@@ -194,7 +194,7 @@ for(const f of families){
  }
  pose(.99);assert.ok(v.repair.streams.every(s=>s.path.caught),'Positioned shield catches all seven streams');
  // Water enters over one flank (user correction), so it leaves the shield on that side.
- assert.ok(v.repair.streams.filter(s=>s.enabled).every(s=>s.path.lip.z>0),'Water exits on the infiltration side');
+ assert.ok(v.repair.streams.filter(s=>s.enabled).every(s=>s.path.lip.z<0),'Water exits on the infiltration side');
  const waterBeforeCut=v.repair.streams.map(s=>s.path.lip.toArray());v.setSections({pipe:false,shield:true});pose(.99);
  assert.deepEqual(v.repair.streams.map(s=>s.path.lip.toArray()),waterBeforeCut,'Cutaway controls do not change physical runoff');v.setSections({pipe:true,shield:false});
  pose(1.999);assert.ok(v.repair.streams.every(s=>!s.runoffMesh.visible)&&v.repair.drops.every(d=>!d.mesh.visible),'Pressed shield stops lateral discharge and falling drops');

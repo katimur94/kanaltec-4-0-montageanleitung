@@ -46,7 +46,7 @@ export class InfiltrationExtras{
   this.films=new THREE.Group();this.wet=new THREE.Group();this.group.add(this.wet,this.films);
   // Films start at the lateral flanks of the breakout, where the wall is
   // already inclined and the water clings instead of dropping.
-  const starts=[1.45,1.2,1.75,1.02,1.98,1.6].slice(0,this.spec.films);
+  const starts=[1.45,1.2,1.75,1.02,1.98,1.6].map(a=>-a).slice(0,this.spec.films);
   this.filmRuns=[];
   starts.forEach((a,i)=>{
    const [x0,arc0]=contour(a),side=arc0<0?-1:1,end=side*R*Math.acos(-.84),drift=(i%2?1:-1)*(8+5*i);
@@ -111,11 +111,12 @@ export class InfiltrationExtras{
  // Rebuilt when the shield pose changes: surface part, tear-off, free fall.
  traceFall(shield,floorAt){
   const R=this.R,wf=this.spec.waterfall,width=lerp(70,190,wf),pts=[];
-  const arc0=46,arc1=arc0+R*(.22+.12*wf);
+  // Back flank (−z): the side that stays visible in the cut view.
+  const arc0=-46,arc1=arc0-R*(.22+.12*wf);
   for(let i=0;i<=10;i++){const arc=lerp(arc0,arc1,i/10);pts.push(surfacePoint(R,0,arc,-3-3*wf*i/10));}
-  const p1=pts.at(-1),t=V(0,-Math.sin(arc1/R),Math.cos(arc1/R)),v=t.multiplyScalar(lerp(500,1300,wf)),p=V();let hit=null;
+  const p1=pts.at(-1),t=p1.clone().sub(pts.at(-2)).normalize(),v=t.multiplyScalar(lerp(500,1300,wf)),p=V();let hit=null;
   for(let i=1;i<=240;i++){const tau=i*.003;p.copy(p1).addScaledVector(v,tau);p.y-=.5*G*tau*tau;
-   if(shield&&Math.abs(p.x-shield.x)<=250){const outer=R-10+3*(shield.seal||0)+2,dy=p.y-shield.lift;if(Math.abs(Math.atan2(p.z,dy))<=1.13&&Math.hypot(dy,p.z)<=outer){hit={point:p.clone(),normal:V(0,dy,p.z).normalize()};pts.push(p.clone());break;}}
+   if(shield&&Math.abs(p.x-shield.x)<=250){const outer=R-10+3*(shield.seal||0)+2,dy=p.y-shield.lift;const ang=Math.atan2(p.z,dy);if(Math.abs(ang)<=1.13&&Math.hypot(dy,p.z)<=outer){const q=V(p.x,shield.lift+outer*Math.cos(ang),outer*Math.sin(ang));hit={point:q,normal:V(0,dy,p.z).normalize()};pts.push(q.clone());break;}}
    if(Math.hypot(p.y,p.z)>=R-2||p.y<=floorAt(p.z)){const q=p.clone();if(p.y<=floorAt(p.z))q.y=floorAt(p.z);else q.setLength(R-2.5).setX(p.x);hit={point:q,normal:q.y<=floorAt(q.z)+.5?V(0,1,0):V(0,-q.y,-q.z).normalize()};pts.push(q);break;}
    if(i%6===0)pts.push(p.clone());}
   const pos=[],uv=[],idx=[],cols=8;let len=0;

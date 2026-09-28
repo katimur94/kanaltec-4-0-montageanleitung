@@ -21,7 +21,7 @@ for(const f of families)for(const I of [0,.2,.5,.85,1]){
  pose(0);
  if(I===0){assert.equal(v.repair.water.visible,false,'Zero intensity: dry');assert.ok(!x.films.visible,'No films when dry');console.log(`${f.label} · 0: dry OK`);continue;}
  assert.equal(v.repair.streams.filter(s=>s.enabled).length,spec.streams,'Active paths follow the intensity');
- assert.ok(v.repair.streams.filter(s=>s.enabled).every(s=>s.edge.z>0),'Water enters over one flank only');
+ assert.ok(v.repair.streams.filter(s=>s.enabled).every(s=>s.edge.z<0),'Water enters over the back flank only');
  assert.equal(x.filmRuns.length,spec.films,'Wall films follow the intensity');assert.equal(!!x.fall,spec.waterfall>0,'Waterfall from the upper intensities');
  const R=v.radius+12;
  for(const t of [0,.5,.8,.99,1.5]){

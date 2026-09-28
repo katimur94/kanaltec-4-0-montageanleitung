@@ -282,9 +282,10 @@ export class RepairScene {
   // The chosen level scales thickness and drip rate (display parameters).
   const level=levelSpec(options.infiltrationLevel);
   for(let i=0;i<7;i++){
-   // Water enters over one flank of the breakout only (+z side); the level
-   // enables the paths from the middle outwards.
-   const enabled=i<level.streams,a=Math.PI/2+[0,-1,1,-2,2,-3,3][i]*.2,[x,arc]=breakoutContour(a),edge=surfacePoint(R,x,arc,2);
+   // Water enters over one flank of the breakout only: the back side (−z),
+   // which stays visible when the pipe is shown cut open. The level enables
+   // the paths from the middle outwards.
+   const enabled=i<level.streams,a=-Math.PI/2+[0,-1,1,-2,2,-3,3][i]*.2,[x,arc]=breakoutContour(a),edge=surfacePoint(R,x,arc,2);
    const start=this.point(a,1,.2+(i%3)*.06),side=arc<0?-1:1,length=46+38*(i%3)+14*Math.sin(i*2.3);
    if(enabled){this.damp.add(makeMesh(strip(x,arc,side,length,2.6+1.2*(i%2),3,-.12,i),this.dampMaterial));
    this.damp.add(makeMesh(strip(x,arc,side,length*1.35,7+2*(i%3),5,-.08,i+.5),this.haloMaterial));
