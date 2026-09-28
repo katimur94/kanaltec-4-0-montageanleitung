@@ -28,6 +28,11 @@ def check(p,w,h):
 report=[]
 for name,w,h in FMT:
  master=SRC/f'{name}-0-88-silent.mp4'
+ # Chunked renders (8 s parts from a restart-safe run) are joined losslessly.
+ parts=sorted((SRC/'chunks').glob(f'{name}-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
+ if parts and not master.exists():
+  lst=SRC/'chunks'/f'{name}.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
+  run(['-f','concat','-safe','0','-i',str(lst),'-c','copy','-movflags','+faststart',str(master)])
  for kind,audio in [('Sprecher','film-narrated.wav'),('Musik','film-music.wav')]:
   dest=OUT/f'DiTom-DSS-Flex-Gesamtablauf-{name}-{kind}.mp4'
   run(['-i',str(master),'-i',str(AUD/audio),'-map','0:v','-map','1:a','-shortest']+enc(w,h)+[str(dest)]);report.append(check(dest,w,h))
