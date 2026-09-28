@@ -27,6 +27,8 @@ Run `send.py --check` first. If no configuration is available, first use the pri
 
 It reads `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` (or `ALLOWED_USER_ID`). Use `--replace` only for a requested credential change. Windows stores the pair using DPAPI under `~/.codex/private/telegram-delivery`; the encrypted file is tied to that computer/user and must not be copied as working credentials. macOS/Linux use the OS credential store through the optional Python `keyring` package with a secure backend. A process environment containing both Telegram variables is also supported; never print it or persist it to project files.
 
+Headless Linux without a secure keyring (for example a cloud container): import with `TELEGRAM_DELIVERY_PRIVATE_FILE=1 python scripts/configure.py --env-file "ABSOLUTE_PRIVATE_ENV_PATH"`. Only the two Telegram values are stored, in `~/.codex/private/telegram-delivery/credentials.json` with owner-only permissions (0600, folder 0700); `send.py` reads it automatically and refuses a file readable by others. It is not encrypted and lives only on that machine; an ephemeral container loses it when it is reclaimed. There, the durable route is the environment variables `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in the environment settings. A user-uploaded `.env` may contain unrelated keys; import only via `configure.py`, which ignores everything except the Telegram values.
+
 Receipt files remain private in `~/.codex/private/telegram-delivery`. Never print tokens, credential blobs, chat IDs, complete Bot API URLs or decrypted configuration. Windows delivery is verified in this project; other OS backends require a local check on the destination computer.
 
 

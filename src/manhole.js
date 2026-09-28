@@ -484,10 +484,10 @@ export class ManholeScene{
    cover.add(mesh(new THREE.CylinderGeometry(spec.ro-8,spec.ro-8,28,72),this.iron));
    for(let i=-5;i<=5;i++){const rib=mesh(new THREE.BoxGeometry(6,4,Math.sqrt(Math.max(0,(spec.ro-30)**2-(i*45)**2))*2),this.iron);rib.position.set(i*45,16,0);cover.add(rib);}
    cover.position.set(1700,G+14,420);cover.rotation.y=.3;this.group.add(cover);
-   const markMat=new THREE.MeshStandardMaterial({color:'#e9e8e1',roughness:.8});
+   const markMat=new THREE.MeshStandardMaterial({color:'#e9e8e1',roughness:.8});this.cut.push(markMat);
    for(let x=-4200;x<6200;x+=3000){const m=add(new THREE.BoxGeometry(1500,3,120),markMat);m.position.set(x,G+2,1300);}
    const coneMat=new THREE.MeshStandardMaterial({color:'#e2502b',roughness:.6}),white=new THREE.MeshStandardMaterial({color:'#f1f1ea',roughness:.5});
-   for(const [x,z] of[[-2600,600],[1700,-1150],[1500,900],[-1200,1200]]){const c=new THREE.Group();c.add(mesh(new THREE.BoxGeometry(380,30,380),new THREE.MeshStandardMaterial({color:'#222',roughness:.9})));const k=mesh(new THREE.ConeGeometry(150,700,32),coneMat);k.position.y=365;c.add(k);for(const y of[250,420]){const b=mesh(new THREE.CylinderGeometry(150*(1-(y-15)/700)-1,150*(1-(y+55)/700)-1,70,32,1,true),white);b.position.y=y+35;b.scale.setScalar(1.02);c.add(b);}c.position.set(x,G,z);this.group.add(c);}
+   for(const [x,z] of[[-2600,600],[1700,-1150],[1500,900],[-1200,1200]]){const c=new THREE.Group();c.add(mesh(new THREE.BoxGeometry(380,30,380),new THREE.MeshStandardMaterial({color:'#222',roughness:.9})));const k=mesh(new THREE.ConeGeometry(150,700,32),coneMat);k.position.y=365;c.add(k);for(const y of[250,420]){const b=mesh(new THREE.CylinderGeometry(150*(1-(y-15)/700)-1,150*(1-(y+55)/700)-1,70,32,1,true),white);b.position.y=y+35;b.scale.setScalar(1.02);c.add(b);}c.position.set(x,G,z);c.name='Leitkegel';this.group.add(c);}
   }
   this.truck=buildTruck(spec);this.group.add(this.truck.group);
   // Electric chain hoist under the boom tip (photo): orange housing, grey

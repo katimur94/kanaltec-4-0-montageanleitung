@@ -23,6 +23,12 @@ def load_credentials():
  token=os.environ.get('TELEGRAM_BOT_TOKEN');chat=os.environ.get('TELEGRAM_CHAT_ID') or os.environ.get('ALLOWED_USER_ID')
  if token and chat:return dict(token=token,chat=chat)
  if os.name=='nt':return json.loads(crypt((ROOT/'credentials.bin').read_bytes(),True))
+ # Headless Linux (e.g. cloud containers) without an OS keyring: private file,
+ # readable only by the owner, outside any repository.
+ private=ROOT/'credentials.json'
+ if private.exists():
+  if private.stat().st_mode&0o077:raise RuntimeError('Private credential file must be owner-only')
+  return json.loads(private.read_text())
  value=vault().get_password('codex-telegram-delivery','bot-and-recipient')
  if not value:raise RuntimeError('Telegram configuration missing')
  return json.loads(value)
@@ -34,6 +40,13 @@ def save_credentials(config,replace=False):
   if dest.exists() and not replace:raise RuntimeError('Configuration already exists')
   encrypted=crypt(raw.encode());ROOT.mkdir(parents=True,exist_ok=True);dest.write_bytes(encrypted)
   assert crypt(dest.read_bytes(),True)==raw.encode()
+ elif os.environ.get('TELEGRAM_DELIVERY_PRIVATE_FILE')=='1':
+  dest=ROOT/'credentials.json'
+  if dest.exists() and not replace:raise RuntimeError('Configuration already exists')
+  ROOT.mkdir(parents=True,exist_ok=True);os.chmod(ROOT,0o700)
+  fd=os.open(dest,os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)
+  with os.fdopen(fd,'w') as f:f.write(raw)
+  os.chmod(dest,0o600)
  else:
   backend=vault()
   if backend.get_password('codex-telegram-delivery','bot-and-recipient') and not replace:raise RuntimeError('Configuration already exists')

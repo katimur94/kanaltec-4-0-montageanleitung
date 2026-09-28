@@ -1,5 +1,18 @@
 # Werbung: DSS-Flex Verfahren
 
+## Gesamtablauf: Fräsen → Einbau im Schacht → Sanierung – 28.09.2026
+
+Ein durchgehender Film (88 s) aus dem aktuellen Modell: Fräsen von Einragung und Wurzeln, Einbau über den Schacht (LKW mit Säulenkran, Hebebügel, Aufsetzen vor dem Rohr, Klappvorrichtung), Sanierung mit Wassereintritt auf Stufe „stark“ (Regler 60 %). Kapitelkarten „1 · Fräsen“, „2 · Einbau im Schacht“, „3 · Sanierung“ mit weichen Abblenden. Je Format drei Fassungen: mit Sprecher, nur Musik und ein Werbespot (ca. 29 s, Zusammenschnitt mit Überblendungen). Formate: YouTube 1920 × 1080 und Reel/Instagram 1080 × 1920, 25 Bilder/s, H.264/AAC, jeweils unter 49 MB.
+
+Sprecher: synthetische Microsoft-Stimme `de-DE-ConradNeural`. Die angefragte ElevenLabs-Stimme ließ sich nicht vollständig verwenden: Bibliotheksstimmen verlangen den Creator-Tarif, und nach wenigen Segmenten hat ElevenLabs den kostenlosen Zugang des Kontos wegen „ungewöhnlicher Aktivität (Proxy/VPN)“ gesperrt. Eine ElevenLabs-Fassung lässt sich später allein über die Tonspur austauschen. Musik: eigene prozedurale Komposition.
+
+1. `node work/build-komplett-film.mjs` (Studio `work/film-komplett-studio.js`, baut auf `film-studio.js` auf).
+2. `node work/render-komplett-film.mjs --qa --times=…` für Kontrollbilder, dann `node work/render-komplett-film.mjs --lite --fps=25 --scale=.6667 --ss=1 --formats=YouTube` bzw. `Reel`. `--lite` (ohne GTAO, Bewegungsunschärfe und Wasser-Lichtbrechung) ist für Software-Rendering ohne GPU gedacht; mit GPU ohne `--lite` und mit `--scale=1`. Umgebungsvariablen: `KANALTEC_QA_RUNTIME` (Playwright), `KANALTEC_FFMPEG`, optional `KANALTEC_BROWSER_CHANNEL=msedge`.
+3. `python work/komplett-audio.py` erzeugt Sprecher-, Musik- und Werbespur.
+4. `python work/finish-komplett-films.py` vertont, schneidet den Werbespot, decodiert alle sechs Dateien vollständig, prüft Format, Pegel und Größe, erzeugt Vorschaubilder und den Galerieabschnitt „Gesamtablauf“.
+
+Ausgaben: `Videos/DSS-Flex-Verfahren-2026/DiTom-DSS-Flex-Gesamtablauf-{YouTube|Reel}-{Sprecher|Musik}.mp4` und `DiTom-DSS-Flex-Werbung-{YouTube|Reel}.mp4`.
+
 ## Realistische Neufassung – 23.09.2026 (lokal, nicht veröffentlicht)
 
 Gleiche Schnittfolge und Tonspuren (78 Sekunden), aber filmische Darstellung: YouTube in 3840 × 2160, Reels/Shorts 1080 × 1920 und Facebook-Feed 1080 × 1350, jeweils supersampelt. `work/film-studio.js` ergänzt Kamera-Scheinwerfer am CutterCam-Kopf, Kanal-Inspektionslicht, gedämpfte Umgebungsreflexion, Tiefendunst, GTAO-Umgebungsverdeckung, Bloom, Farbgrading, Vignette, Filmkorn, Bewegungsunschärfe (Unterbilder) beim Fräsen, Wasser mit Lichtbrechung, Sohlwasser und Staub im Lampenlicht. Neuer Auftakt als Kanalkamera-Fahrt auf den Wurzelzopf, danach Nahaufnahme von Wurzeln und Infiltration.

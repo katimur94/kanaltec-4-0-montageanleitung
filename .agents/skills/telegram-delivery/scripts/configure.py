@@ -11,7 +11,8 @@ def main():
  token=values.get('TELEGRAM_BOT_TOKEN','');chat=values.get('TELEGRAM_CHAT_ID') or values.get('ALLOWED_USER_ID','')
  if not re.fullmatch(r'\d+:[A-Za-z0-9_-]+',token) or not re.fullmatch(r'-?\d+',chat):raise RuntimeError('Required Telegram token or numeric recipient is missing')
  save_credentials(dict(token=token,chat=chat),a.replace)
- print(json.dumps({'ok':True,'encrypted':True,'configuration':'telegram-delivery'}))
+ import os
+ print(json.dumps({'ok':True,'storage':'private-owner-only-file' if os.name!='nt' and os.environ.get('TELEGRAM_DELIVERY_PRIVATE_FILE')=='1' else 'encrypted','configuration':'telegram-delivery'}))
 if __name__=='__main__':
  try:main()
  except Exception as e:print(json.dumps({'ok':False,'error_type':type(e).__name__}));sys.exit(1)
