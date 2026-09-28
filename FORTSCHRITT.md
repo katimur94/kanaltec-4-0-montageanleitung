@@ -1,5 +1,17 @@
 # Fortschrittschronik
 
+## 28.09.2026 – Schachteinbau: LKW-Kran, klappbarer Kabelstecker, Steigbügel, Kamerafahrt
+
+**Auftrag:** Kabelstecker am Roboterheck klappbar; oben ein LKW mit Kran, an dem der Roboter hängt und abgelassen wird, groß mit DiTom-Logo und DSS-Flex-Emblem; Steigeisen realistisch; Schacht so real wie die Sanierungsanimation; automatische Kameraführung; Kabel darf beim Ablassen nicht in die Schachtwand ragen.
+
+**Umsetzung:** `src/robot.js`: Kabelstecker als eigenes Klappteil am Heck (`setPlug`), im Rohr wie bisher nach unten zum Schleppkabel, im Schacht nach oben geklappt, beim Einfahren wieder nach hinten. `src/manhole.js`: LKW (Fahrerhaus, dunkler Kofferaufbau mit DiTom-Logo aus der Seite, gezeichnetem DSS-Flex-Emblem und Schriftzug, Heckladekran mit Säule, Knickarm, Zylindern, Winde, Haken und Abstützungen, Kabeltrommel mit Umlenkrolle an der Schachtkante). Der Kran folgt dem Haken am Roboterheck und fährt nach dem Aushängen zurück. Steigbügel nach DIN 19555 (kunststoffummantelte U-Bügel 300 mm, 160 mm Ausladung, 250 mm Teilung, Rosetten, Trittrillen) in einer Linie unter der senkrechten Seite des exzentrischen Konus an der Rückwand; die Öffnung ist deshalb zur Rückwand versetzt und die Einheit passiert sie neben den Bügeln. Realismus: Ringfugen, Feuchte- und Schmutzverlauf zur Sohle, fließendes Abwasser im Gerinne und in den Rohren (Roboter fährt hindurch, nasse Unterseite), Rohrmuffen, Steine im Erdschnitt, Bordstein, Markierung, Deckel mit Rippen. Kabelführung aus dem Stecker über die Umlenkrolle zur Trommel; jede Stützstelle wird innerhalb von Schacht, Konus, Gerinne und Rohr gehalten und von den Steigbügeln ferngehalten. Automatische **Kamerafahrt** je Schritt mit weichen Übergängen; Ziehen im Bild oder eine Ansichtstaste übernimmt die Kamera, der Knopf schaltet sie wieder ein.
+
+Schachtgrößen nach DWA-A 157 angelehnt: DN 300/400 → Schacht DN 1000 mit Konus und 625er Öffnung; DN 500/600 → DN 1200 mit Abdeckplatte und 800er Öffnung; DN 700 → DN 1500 mit 1000er Öffnung. DN 500 im DN-1000-Schacht passte mit Steigbügeln nicht durch die 625er Öffnung. Unter einer Abdeckplatte wird die Einheit erst senkrecht abgelassen, bis das Heck unter der Platte ist, dann über das Gerinne geschwenkt und abgesetzt. Schachttiefe 2,5 m (DN 1000) bzw. 3,0 m.
+
+**Grenzen:** LKW, Kran, Trommel und Schachtausstattung sind Darstellungen, keine bestimmten Fahrzeuge oder Hersteller. Lastannahmen und Standsicherheit des Krans sind nicht berechnet.
+
+**Prüfung:** `work/check-insertion.mjs` erweitert (Steigbügel frei, Kabel in allen Zeitpunkten innerhalb von Schacht/Rohr und außerhalb der Steigbügel). `npm test` und `npm run build` bestanden.
+
 ## 28.09.2026 – Einbau über den Schacht, realistischere Infiltration
 
 **Auftrag:** Infiltration realer und etwas mehr darstellen; überlegen und zeigen, wie Roboter samt Schalung in den Schacht gebracht werden, wobei die Klappvorrichtung eine Rolle spielt. Zuerst selbst prüfen, noch keine Veröffentlichung.

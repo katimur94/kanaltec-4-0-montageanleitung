@@ -133,7 +133,7 @@ export function smearGeometry(R,contour,cx=0){
 }
 // Tileable ripple normals for flowing sewage, streaked along the flow (x).
 let flowNormalCache=null;
-function flowNormalTexture(){
+export function flowNormalTexture(){
  if(flowNormalCache){const c=flowNormalCache.clone();c.needsUpdate=true;return c;}
  const size=256,height=new Float32Array(size*size),data=new Uint8Array(size*size*4);let seed=77;
  const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);

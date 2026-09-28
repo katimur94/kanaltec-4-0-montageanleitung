@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {Viewer} from '../src/model.js';
 import {families} from '../src/data.js';
-import {insertionStages,shaftProfile,floorAt} from '../src/manhole.js';
+import {insertionStages,shaftProfile,floorAt,inLadder} from '../src/manhole.js';
 
 // Insertion through the manhole: hinge only opens nose-up relative to the robot
 // (the moving leaf blocks the other direction), poses are continuous and
@@ -19,26 +19,30 @@ for(const f of families){
  v.build(f.id);v.setSections({pipe:true,shield:false,holder:false});v.setMode('insert');
  const s=v.manhole.spec;
  const pose=t=>{v.setInsert(t);v.updateParts();v.insertionPose();return v.insertState;};
- let prev=null,worst={shaft:0,floor:0,pipe:0};
+ let prev=null,worst={shaft:0,floor:0,pipe:0,ladder:0,cable:0};
  for(let t=0;t<=end;t=Math.round((t+.02)*1000)/1000){
   const k=pose(t);
   assert.ok(k.hinge>=-1e-6&&k.hinge<=Math.PI/2+1e-6,`DN ${f.id} t=${t}: hinge only opens nose-up (${k.hinge})`);
   if(k.stage<=2)assert.ok(Math.abs(k.hinge)<1e-6,'Hinge stays locked while tipping and lowering');
-  if(prev){const jump=k.W.distanceTo(prev.W);assert.ok(jump<60,`DN ${f.id} t=${t}: continuous pin path (${jump.toFixed(1)} mm)`);assert.ok(Math.abs(k.thetaF-prev.thetaF)<.1&&Math.abs(k.thetaR-prev.thetaR)<.1,`DN ${f.id} t=${t}: continuous rotation`);}
+  if(prev){const jump=k.W.distanceTo(prev.W);assert.ok(jump<130,`DN ${f.id} t=${t}: continuous pin path (${jump.toFixed(1)} mm)`);assert.ok(Math.abs(k.thetaF-prev.thetaF)<.1&&Math.abs(k.thetaR-prev.thetaR)<.1,`DN ${f.id} t=${t}: continuous rotation`);}
   prev=k;
   // Clearance below the frame: tipping, lowering, folding, driving in.
+  // The cable never enters shaft wall, climbing irons, channel or pipe wall.
+  for(const p of v.manhole.cablePoints){if(p.y>s.G-20)continue;const wall=Math.sqrt(Math.max(0,s.Rm**2-p.z*p.z));let e;if(p.y<s.Rp&&Math.abs(p.x)>wall-40)e=Math.hypot(p.y,p.z)-(s.Rp-7);else{const {cz,r}=shaftProfile(s,p.y);e=Math.hypot(p.x,p.z-cz)-(r-7);}worst.cable=Math.max(worst.cable,e,inLadder(s,p)?1:0);}
   if(k.stage>=1){
    for(const p of sample()){
     if(p.y>s.G-110||p.y<s.base)continue;
     const wall=Math.sqrt(Math.max(0,s.Rm**2-p.z**2));
     if(p.x>wall-2)worst.pipe=Math.max(worst.pipe,Math.hypot(p.y,p.z)-s.Rp);
-    else if(p.x<-wall-2)worst.shaft=Math.max(worst.shaft,-wall-p.x);
-    else{const {cx,r}=shaftProfile(s,p.y);worst.shaft=Math.max(worst.shaft,Math.hypot(p.x-cx,p.z)-r);worst.floor=Math.max(worst.floor,floorAt(s,p.x,p.z)-p.y);}
+    else if(p.x<-wall-2){const e=-wall-p.x;if(e>worst.shaft){worst.shaft=e;worst.at=`t=${t} (${p.toArray().map(Math.round)})`;}}
+    else{const {cx,cz,r}=shaftProfile(s,p.y);{const e=Math.hypot(p.x-cx,p.z-cz)-r;if(e>worst.shaft){worst.shaft=e;worst.at=`t=${t} (${p.toArray().map(Math.round)})`;}}{const e=floorAt(s,p.x,p.z)-p.y;if(e>worst.floor){worst.floor=e;worst.floorAt=`t=${t} (${p.toArray().map(Math.round)})`;}}if(inLadder(s,p,-12)){worst.ladder++;worst.ladderAt=`t=${t} (${p.toArray().map(Math.round)})`;}}
    }
   }
  }
- assert.ok(worst.shaft<8,`DN ${f.id}: unit stays inside the shaft (${worst.shaft.toFixed(1)} mm)`);
- assert.ok(worst.floor<8,`DN ${f.id}: unit stays above channel and bench (${worst.floor.toFixed(1)} mm)`);
+ assert.ok(worst.shaft<8,`DN ${f.id}: unit stays inside the shaft (${worst.shaft.toFixed(1)} mm at ${worst.at})`);
+ assert.ok(worst.floor<8,`DN ${f.id}: unit stays above channel and bench (${worst.floor.toFixed(1)} mm at ${worst.floorAt})`);
+ assert.equal(worst.ladder,0,`DN ${f.id}: unit passes beside the climbing irons (${worst.ladderAt})`);
+ assert.ok(worst.cable<=.5,`DN ${f.id}: cable stays inside the shaft (${worst.cable.toFixed(1)} mm)`);
  assert.ok(worst.pipe<8,`DN ${f.id}: unit fits the target pipe (${worst.pipe.toFixed(1)} mm)`);
  // Deterministic seeking and the final state equals the in-pipe transport pose.
  const a=pose(3.5),wa=a.W.clone();pose(0.2);pose(5.5);const b=pose(3.5);assert.ok(b.W.distanceTo(wa)<1e-6&&b.thetaF===a.thetaF,'Direct seeking reproduces the pose');

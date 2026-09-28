@@ -41,7 +41,7 @@ export class Robot{
   // Solve contact over all tread corners and sidewalls for every wheel angle.
   let wheelWorldY=-Infinity;for(const w of this.wheels){w.updateMatrixWorld(true);w.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=V().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld),radial=Math.hypot(p.x-w.position.x,p.y);wheelWorldY=Math.max(wheelWorldY,-Math.sqrt(pipeRadius**2-p.z**2)+radial);}});}
   this.wheelY=wheelWorldY+.65-anchor.y;this.axleDrop=this.bodyY-this.wheelY;for(const w of this.wheels){w.position.y=this.wheelY;this.carrier.add(w);}
-  this.buildChassis();this.buildExtension();bake(this.chassis);this.buildCamera();this.buildArm();this.lines=[];this.cutter=makeCutter();this.front.add(this.cutter.group);this.cutter.group.visible=false;
+  this.buildChassis();this.buildExtension();bake(this.chassis);this.buildPlug();this.buildCamera();this.buildArm();this.lines=[];this.cutter=makeCutter();this.front.add(this.cutter.group);this.cutter.group.visible=false;
   for(const[side,m]of [[-1,this.m.blue],[1,this.m.yellow]]){const o=tube([V(-1235,this.bodyY,side*30),V(-970,this.bodyY+65,side*40),V(-20,18,side*33)],2.7,m);this.group.add(o);this.lines.push({o,side});}this.pose(0,0);
  }
  makeWheel(side){
@@ -80,8 +80,19 @@ export class Robot{
   for(const side of [-1,1])g.add(bolt(13,m.steel,m.gasket,V(-1060,y,side*58)),ring(19,1,m.dark,V(-1060,y,side*56),'z'));
   for(const[x,l,r,ma]of [[-1124,65,46,m.polished],[-1199,97,43,m.steel],[-1260,30,24,m.dark],[-1284,33,16,m.gasket]])g.add(cyl(r,l,ma,V(x,y,0)));
   for(const x of [-1100,-1147,-1160,-1238])g.add(ring(44,.8,m.gasket,V(x,y,0)));for(let i=0;i<6;i++){const a=i*TAU/6;g.add(bolt(3,m.steel,m.gasket,V(-1248,y+33*Math.cos(a),33*Math.sin(a)),'x'));}
-  for(const x of [-1290,-1298,-1306,-1314])g.add(ring(12,1.5,m.black,V(x,y,0)));g.add(tube([V(-1300,y,0),V(-1375,y-8,-5),V(-1430,this.wheelY-this.wheelRadius+20,-5)],7,m.black));
  }
+ // Rear cable plug on its own folding joint: in the pipe it points down to the
+ // trailing cable; for manhole work it folds up so the cable leaves upwards.
+ buildPlug(){
+  const m=this.m,y=this.bodyY,p=new THREE.Group();p.name='Kabelstecker · hinten klappbar';p.position.set(-1300,y,0);this.plug=p;this.carrier.add(p);
+  p.add(cyl(10,30,m.steel,V(),'z'),cyl(11.5,6,m.dark,V(0,0,17),'z'),cyl(11.5,6,m.dark,V(0,0,-17),'z'),cyl(14,10,m.steel,V(-12,0,0)),cyl(15,40,m.black,V(-36,0,0)));
+  for(const x of [-22,-30,-38,-46])p.add(ring(15.3,1.4,m.dark,V(x,0,0)));
+  const relief=mesh(new THREE.CylinderGeometry(7,11,26,20),m.black);relief.rotation.z=Math.PI/2;relief.position.x=-69;p.add(relief);
+  bake(p);this.plugTip=V(-82,0,0);this.plugDefault=.52;p.rotation.z=this.plugDefault;
+  const tip=this.plugTip.clone().applyAxisAngle(V(0,0,1),this.plugDefault).add(p.position);
+  this.tailCable=tube([tip,tip.clone().add(V(-40,-14,-2)),V(-1430,this.wheelY-this.wheelRadius+20,-5)],7,m.black);this.tailCable.name='Roboterkabel';this.carrier.add(this.tailCable);
+ }
+ setPlug(angle){this.plug.rotation.z=angle??this.plugDefault;this.tailCable.visible=angle===undefined||Math.abs(angle-this.plugDefault)<1e-6;}
  buildExtension(){
   const m=this.m,y=this.bodyY,wy=this.wheelY,drop=y-wy,e=new THREE.Group();e.name=this.config.label;this.extension=e;this.chassis.add(e);
   for(const side of [-1,1])for(const x of [-940,-575]){

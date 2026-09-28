@@ -195,6 +195,7 @@ export class Viewer {
   this.floor=mesh(new THREE.PlaneGeometry(10000,10000),new THREE.ShadowMaterial({color:'#455861',opacity:.12}));this.floor.rotation.x=-Math.PI/2;this.floor.receiveShadow=true;this.floor.castShadow=false;this.scene.add(this.floor);
   this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.dampingFactor=.09;this.controls.minDistance=180;this.controls.maxDistance=5000;this.controls.maxPolarAngle=Math.PI*.94;this.controls.autoRotateSpeed=.8;
   this.model=new THREE.Group();this.context=new THREE.Group();this.scene.add(this.model,this.context);this.parts=[];this.group='all';this.explode=0;this.targetExplode=0;this.mode='explore';this.time=0;this.selected=null;this.faint=false;
+  this.controls.addEventListener('start',()=>{if(this.mode==='insert'&&this.autoCam){this.autoCam=false;this.el.dispatchEvent(new CustomEvent('autocam',{detail:false}));}});
   this.ray=new THREE.Raycaster();this.pointer=new THREE.Vector2();let start;
   this.renderer.domElement.addEventListener('pointerdown',e=>start=e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&this.dragMode!=='pan'?[e.clientX,e.clientY]:null);
   this.renderer.domElement.addEventListener('pointerup',e=>{if(!start||Math.hypot(e.clientX-start[0],e.clientY-start[1])>5)return;const b=this.renderer.domElement.getBoundingClientRect();this.pointer.set((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1);this.ray.setFromCamera(this.pointer,this.camera);const hits=this.ray.intersectObjects(this.parts.filter(p=>p.node.visible).map(p=>p.node),true);if(hits.length){let o=hits[0].object;while(o&&!o.userData.part)o=o.parent;if(o?.userData.part)this.onSelect(o.userData.part);} });
@@ -392,7 +393,7 @@ export class Viewer {
   this.damage=this.repair.cavity;
   this.context.visible=false;
  }
- setMode(mode){this.mode=mode;this.context.visible=mode==='process';this.floor.visible=!['process','insert'].includes(mode);if(mode==='insert')this.ensureManhole();if(this.manhole)this.manhole.group.visible=mode==='insert';wetLine.value=mode==='insert'?-1e9:this.wetY??-1e9;this.controls.maxDistance=mode==='insert'?11000:5000;if(mode==='process'||mode==='insert'){this.group='all';this.targetExplode=0;this.faint=false;}this.updateParts();this.fit();}
+ setMode(mode){this.mode=mode;this.context.visible=mode==='process';this.floor.visible=!['process','insert'].includes(mode);if(mode==='insert')this.ensureManhole();if(this.manhole)this.manhole.group.visible=mode==='insert';wetLine.value=mode==='insert'?this.manhole.spec.water:this.wetY??-1e9;this.controls.maxDistance=mode==='insert'?11000:5000;if(mode==='process'||mode==='insert'){this.group='all';this.targetExplode=0;this.faint=false;}this.updateParts();this.fit();}
  setGroup(group){this.group=group;this.select(null);this.updateParts();this.fit();}
  setExplode(value){this.targetExplode=value;}
  setSections(options){this.sections={...this.sections,...options};this.updateParts();this.applyMaterials();}
@@ -502,7 +503,7 @@ export class Viewer {
   if(p.key==='spring')return'spring';if(['hinge2','adapter','adapterbolts'].includes(p.key))return'robot';
   if(['hingebolts','washers'].includes(p.key)&&Math.floor(p.index/2)===1)return'robot';return'mould';
  }
- releaseInsert(){if(!this.insertActive)return;this.insertActive=false;if(this.robot)for(const m of [this.robot.m.black,...this.robot.lines.map(l=>l.o.material)])m.clippingPlanes=null;for(const c of this.model.children)c.matrixAutoUpdate=true;}
+ releaseInsert(){if(!this.insertActive)return;this.insertActive=false;this.robot?.setPlug();for(const c of this.model.children)c.matrixAutoUpdate=true;}
  travelPose(){
   // Same transport configuration as on the way to the defect: bumper vacuumed,
   // mould lowered on the robot arm.
@@ -516,7 +517,7 @@ export class Viewer {
   this.releaseInsert();this.updateParts();const lift=this.travelPose();this.model.position.set(0,0,0);this.model.updateMatrixWorld(true);
   const form=[],robot=[],p=V();
   for(const c of this.model.children){const side=this.insertSide(c);if(!c.visible||c===this.feed||c===this.repair?.hoseGroup)continue;
-   c.traverseVisible(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position,step=Math.max(1,Math.floor(a.count/3000)),flexible=o.material===this.robot.m.black||this.robot.lines.some(l=>l.o===o);for(let i=0;i<a.count;i+=step){p.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);if(side==='robot'&&flexible)(this._tail||(this._tail=[])).push(p.clone());else(side==='robot'?robot:form).push(p.clone());}});}
+   c.traverseVisible(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position,step=Math.max(1,Math.floor(a.count/3000)),flexible=this.robot.lines.some(l=>l.o===o)||o===this.robot.tailCable||(()=>{for(let n=o;n;n=n.parent)if(n===this.robot.plug)return true;return false;})();for(let i=0;i<a.count;i+=step){p.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld);if(side==='robot'&&flexible)(this._tail||(this._tail=[])).push(p.clone());else(side==='robot'?robot:form).push(p.clone());}});}
   // Thin the samples evenly; contact and wall checks run every frame.
   const thin=list=>{const step=Math.max(1,Math.ceil(list.length/16000));return list.filter((q,i)=>i%step===0);};
   const minOf=(list,f)=>list.reduce((m,q)=>Math.min(m,f(q)),Infinity);
@@ -525,7 +526,8 @@ export class Viewer {
   // are cut off at the chassis rear, where the separate robot cable begins.
   this._tail=null;
   const yb=Math.min(minOf(form,q=>q.y),minOf(robot,q=>q.y));form.splice(0,form.length,...thin(form));robot.splice(0,robot.length,...thin(robot));
-  this.insertGeo={spec:this.manhole.spec,pin:V(-365.5,28+lift,0),formPts:form,robotPts:robot,yb,hook:V(minX+260,top+4,0),cable:V(minX+6,rear.reduce((s,q)=>s+q.y,0)/rear.length,0),tailX:minX-2};
+  const H=Math.max(-minOf(form,q=>-q.y),-minOf(robot,q=>-q.y))-yb,halfWidth=Math.max(-minOf(form,q=>-Math.abs(q.z)),-minOf(robot,q=>-Math.abs(q.z)));
+  this.insertGeo={spec:this.manhole.spec,pin:V(-365.5,28+lift,0),formPts:form,robotPts:robot,yb,H,halfWidth,hook:V(minX+260,top+4,0),cable:V(minX+6,rear.reduce((s,q)=>s+q.y,0)/rear.length,0),tailX:minX-2};
   return this.insertGeo;
  }
  setInsert(t){this.insertTime=t;}
@@ -533,7 +535,7 @@ export class Viewer {
   this.ensureManhole();if(!this.manhole)return;
   const geo=this.insertionGeometry();this.releaseInsert();this.updateParts();const lift=this.travelPose();this.model.position.set(0,0,0);
   const k=this.insertState=insertionKinematics(this.insertTime||0,geo);
-  this.robot.pose(lift,k.drive);
+  this.robot.pose(lift,k.drive);this.robot.setPlug(k.plug);
   const Mf=frameMatrix(k.thetaF,k.W,geo.pin),Mr=frameMatrix(k.thetaR,k.W,geo.pin);
   for(const c of this.model.children){
    c.updateMatrix();const side=this.insertSide(c);
@@ -549,12 +551,31 @@ export class Viewer {
    c.matrixAutoUpdate=false;
   }
   this.insertActive=true;
-  // Hide the rigid rear cable stub behind the chassis; the shaft cable continues it.
-  const rearPoint=V(geo.tailX,0,0).applyMatrix4(Mr),axis=V(1,0,0).transformDirection(Mr);
-  (this.tailPlane||(this.tailPlane=new THREE.Plane())).setFromNormalAndCoplanarPoint(axis,rearPoint);
-  for(const m of [this.robot.m.black,...this.robot.lines.map(l=>l.o.material)])m.clippingPlanes=[this.tailPlane];
-  const rotR=new THREE.Matrix4().extractRotation(Mr);
-  this.manhole.update({hook:geo.hook.clone().applyMatrix4(Mr),rope:k.rope,cable:geo.cable.clone().applyMatrix4(Mr),cableDir:V(-1,0,0).applyMatrix4(rotR)});
+  this.model.updateMatrixWorld(true);
+  const plug=this.robot.plug,plugTip=plug.localToWorld(this.robot.plugTip.clone()),plugDir=V(-1,0,0).transformDirection(plug.matrixWorld);
+  this.manhole.update({hook:geo.hook.clone().applyMatrix4(Mr),rope:k.rope,plugTip,plugDir,clock:this.ambientClock??0});
+  this.robotCentre=V(-900,0,0).applyMatrix4(Mr);this.mouldCentre=V(0,0,0).applyMatrix4(Mf);
+ }
+ // Automatic camera: one framed shot per insertion step, blended at step ends
+ // and eased towards; dragging the view hands control back to the user.
+ insertShot(stage,f){
+  const s=this.manhole.spec,r=this.robotCentre,m=this.mouldCentre,unit=r.clone().lerp(m,.4);
+  const shots=[
+   {t:V(-700,s.G+700,-1200),d:V(.32,.2,1),dist:10500},
+   {t:unit.clone().lerp(V(0,s.G,s.zc),.35),d:V(.36,.2,1),dist:5600},
+   {t:unit.clone().add(V(150,0,0)),d:V(.3,.08,1),dist:3600},
+   {t:V(260,s.Rp*.4,0),d:V(.22,.14,1),dist:2500+s.Rp*2},
+   {t:unit.clone().lerp(V(260,s.Rp,0),.5),d:V(.2,.12,1),dist:2900+s.Rp*2},
+   {t:r.clone().add(V(350,60,0)),d:V(.42,.22,1),dist:2200+s.Rp*2}
+  ];
+  const a=shots[stage],b=shots[Math.min(stage+1,shots.length-1)],k=smooth((f-.82)/.18);
+  const t=a.t.clone().lerp(b.t,k),d=a.d.clone().normalize().lerp(b.d.clone().normalize(),k).normalize(),dist=THREE.MathUtils.lerp(a.dist,b.dist,k);
+  return{target:t,position:t.clone().addScaledVector(d,dist*Math.max(1,.75/Math.max(.45,this.camera.aspect)))};
+ }
+ insertCamera(dt){
+  if(!this.autoCam||!this.insertState||!this.robotCentre)return;
+  const shot=this.insertShot(this.insertState.stage,this.insertState.f),k=1-Math.exp(-dt*(this.snapCam?40:2.4));this.snapCam=false;
+  this.controls.target.lerp(shot.target,k);this.camera.position.lerp(shot.position,k);
  }
  bounds(){this.model.updateMatrixWorld(true);const b=new THREE.Box3();for(const p of this.parts)if(p.node.visible)b.expandByObject(p.node);if(this.robot?.group.visible)b.expandByObject(this.robot.group);return b;}
  shaftFocus(){this.model.updateMatrixWorld(true);return this.shaftPart.node.getWorldPosition(V()).add(V(13,2,0));}
@@ -567,7 +588,7 @@ export class Viewer {
   this.currentView=view;this.shaftTracking=null;
   if(this.mode==='insert'){
    this.ensureManhole();const s=this.manhole.spec;this.camera.fov=34;this.camera.updateProjectionMatrix();this.controls.minDistance=180;if(this.inspectionLamp)this.inspectionLamp.visible=false;
-   const b=view==='bottom'?new THREE.Box3(V(-s.Rm-150,-s.Rp-150,-300),V(s.Rm+1300,s.Rp+1250,300)):new THREE.Box3(V(-2000,s.base,-600),V(2600,s.apex.y+80,600));
+   const b=view==='bottom'?new THREE.Box3(V(-s.Rm-150,-s.Rp-150,-300),V(s.Rm+1300,s.Rp+1250,300)):new THREE.Box3(V(-3000,s.base,-4400),V(5600,s.G+3800,600));
    const dir=view==='side'?V(0,.02,1):view==='top'?V(.001,1,.001):view==='bottom'?V(.18,.1,1):V(.28,.16,1);
    const center=b.getCenter(V()),size=b.getSize(V()),dist=Math.max(size.y,size.x/Math.max(.8,this.camera.aspect))/(2*Math.tan(THREE.MathUtils.degToRad(17)))*1.08;
    this.camera.position.copy(center).add(dir.normalize().multiplyScalar(dist));this.controls.target.copy(center);this.controls.update();this.applyMaterials();
@@ -613,5 +634,5 @@ export class Viewer {
  fitExplosion(){const e=this.explode,t=this.targetExplode;this.targetExplode=1;this.fit();this.targetExplode=t;this.explode=e;this.updateParts();}
  screenshot(){this.renderer.render(this.scene,this.camera);return this.renderer.domElement.toDataURL('image/png');}
  resetPose(){if(this.robot)this.robot.cutter.group.visible=false;this.model.position.set(0,0,0);for(const p of this.parts){p.node.scale.set(1,1,1);p.node.quaternion.copy(p.originalRotation);}this.poseSeal(0);this.poseMechanism(0,0,0);}
- animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.ambientClock=now/1000;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=!['process','insert'].includes(this.mode)&&this.explode<.03;if(this.mode==='insert')this.insertionPose();else{this.releaseInsert();if(this.mode==='process')this.processPose();else this.resetPose();}this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
+ animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.ambientClock=now/1000;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=!['process','insert'].includes(this.mode)&&this.explode<.03;if(this.mode==='insert'){this.insertionPose();this.insertCamera(dt);}else{this.releaseInsert();if(this.mode==='process')this.processPose();else this.resetPose();}this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
 }

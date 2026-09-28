@@ -1,6 +1,6 @@
 # DSS-Flex Verfahren präsentieren
 
-**Neu: Einbau im Schacht (28.09.2026).** Reiter **03 Einbau im Schacht** öffnen und abspielen oder links einen der sechs Schritte wählen. Zeitachse, Pfeiltasten, Umschalt+Pfeil und Leertaste funktionieren wie im Ablauf. Unter der Zeitachse steht der aktuelle Zustand der Klappvorrichtung (gesperrt, geöffnet mit Winkel, gestreckt). **Schachtsohle** zoomt auf Aufsetzen und Einklappen; **Rohr aufschneiden** unter „Schnitt & Sicht“ schaltet auch den Schachtschnitt. Der Ablauf „So funktioniert’s“ ist jetzt Reiter 04.
+**Neu: Einbau im Schacht (28.09.2026).** Reiter **03 Einbau im Schacht** öffnen und abspielen oder links einen der sechs Schritte wählen. Zeitachse, Pfeiltasten, Umschalt+Pfeil und Leertaste funktionieren wie im Ablauf. Unter der Zeitachse steht der aktuelle Zustand der Klappvorrichtung (gesperrt, geöffnet mit Winkel, gestreckt). **Schachtsohle** zoomt auf Aufsetzen und Einklappen; **Rohr aufschneiden** unter „Schnitt & Sicht“ schaltet auch den Schachtschnitt. Die **Kamerafahrt** folgt automatisch jedem Schritt; sobald du im Bild ziehst oder eine Ansichtstaste wählst, steuerst du selbst – der Knopf **Kamerafahrt** unter der Zeitachse schaltet sie wieder ein. Der Ablauf „So funktioniert’s“ ist jetzt Reiter 04.
 
 **Neu: Wassereintritt.** Links unter **Anwendung** die Stärke wählen: **Tropfend**, **Rinnend** (Standard, mit Wandläufen und Wasserfäden) oder **Drückendes Grundwasser** (zusätzlich Strahlen aus Rissen). Bei geschlossenen Anwendungen nur mit Haken bei **Mit Infiltration**.
 
