@@ -10,6 +10,8 @@
 
 **Prüfung:** Kontrollbilder beider Formate vor dem Rendern angesehen; alle sechs MP4 vollständig decodiert (Format, Dauer, Spitzenpegel < 0 dB, < 49 MB), Kontaktbögen angesehen. Telegram: sechs Sendungen mit `ok: true` und `message_id`. `npm test` und `npm run build` bestanden.
 
+**Veröffentlichung:** Arbeitsbranch gepusht und `main` per Fast-Forward auf `ddede20` (kein Force-Push); damit sind auch die Schachteinbau-, Hebebügel- und Wasserfall-Änderungen der Einträge vom 28.09. live. Pages-Build ausgelöst; Live-Galerie enthält den Abschnitt „Gesamtablauf“, die Präsentation den Reiter „Einbau im Schacht“. Zwei Live-MP4 heruntergeladen: bytegleich mit dem Repository und vollständig decodierbar. Ein Browser-Abspieltest der Live-Seite war in der Cloud-Umgebung nicht möglich (Proxy-Zertifikat im Testbrowser).
+
 ## 28.09.2026 – Hebebügel wippt frei, dunkles Steinzeug im Schacht, ruhiger Wasserfall
 
 **Rückmeldung:** Das weiße Hin-und-her-Wippen im Wasserfall sieht nicht gut aus (das Herunterlaufen ist in Ordnung). Die Halterung am Kettenhaken kann wippen, bleibt beim Ablassen aber stumpf starr: die Kette zieht sie immer gerade nach oben, Schluss ist erst am Gehäuse des Roboters (Skizze mit Grenzlinien). Die Rohre im Schacht sind hell, in der Sanierungsanimation dunkel wie echtes Steinzeug.
@@ -18,7 +20,7 @@
 
 **Prüfung:** `npm test` und `npm run build` bestanden; Browser-Screenshots von Schacht und Wasserfall angesehen.
 
-**Veröffentlichung:** Noch nicht.
+**Veröffentlichung:** Am 29.09.2026 mit `ddede20` auf `main` veröffentlicht.
 
 ## 28.09.2026 – Schachteinbau mit Physik, Hebebügel, seitlichem LKW; einseitiger Wasserfall mit Stärkeregler
 
@@ -32,7 +34,7 @@ Infiltration (`src/infiltration.js`, `src/repair.js`, `src/main.js`, Vorlage/CSS
 
 **Prüfung:** `work/check-insertion.mjs` erweitert (Bügel nie mehr als der Anschlag gegen den Roboter geneigt, Klappe beim Aufsetzen/Ablegen < 40°, Freigang an der Gegenwand korrekt als Schacht- oder Rohrfreigang, optional `DN=…`), `work/check-infiltration.mjs` (Intensitäten 0/0,2/0,5/0,85/1, einseitig über die hintere Flanke, Wasserfall nie im Schild) und `work/check-model.mjs` angepasst. `npm test` und `npm run build` bestanden. Im Chromium (Software-Rendering) Einbau in den Stufen 0–4 per Screenshot angesehen (Hängen, Durchgang, Aufsetzen, Einschieben), keine Konsolenfehler.
 
-**Veröffentlichung:** Noch nicht. Commits nur lokal; Push und Pages erst nach Freigabe durch den Nutzer.
+**Veröffentlichung:** Am 29.09.2026 mit `ddede20` auf `main` veröffentlicht (siehe oben).
 
 ## 28.09.2026 – Schachteinbau: LKW-Kran, klappbarer Kabelstecker, Steigbügel, Kamerafahrt
 
