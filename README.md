@@ -1,5 +1,7 @@
 # DSS-Flex Verfahren – interaktive 3D-Präsentation
 
+**Filme Gesamtablauf (29.09.2026):** Fräsen → Einbau im Schacht → Sanierung als YouTube- und Reel-Fassung, jeweils mit Sprecher, nur Musik und als Werbespot – in der [Videogalerie](Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html). Produktion: [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md).
+
 **Einbau im Schacht und Wassereintritt (28.09.2026, lokaler Stand):** Reiter **03 Einbau im Schacht** zeigt in sechs Schritten, wie Roboter und Schalung vom seitlich stehenden LKW mit rotem Säulenkran über einen Hebebügel (Bolzen in den seitlichen Schlitzen) in den Schacht und ins Rohr kommen; Lage nach Gewicht, Anschlägen und Kontakten, Klappvorrichtung öffnet nur so weit wie nötig. Links unter **Anwendung** regelt **Wassereintritt** stufenlos von trocken bis Wasserfall; das Wasser kommt nur von einer Seite. Bedienung in [START-HIER.md](START-HIER.md). Schacht-, Kran- und Wassermaße sind Darstellungsannahmen.
 
 **Korrektur der geschlossenen Anwendungen (20.09.2026):** Einfüllstutzen mittig unter der Schadöffnung, mit passend positionierter Schalung und Abdrücken. Unter **Vorbereitung** kann bei fehlender Einragung direkt ohne Fräsen verpresst werden (sieben statt neun Schritte). Mit Einragung bleiben Fräsen und Werkzeugwechsel verfügbar. Der stillgelegte Anschluss wird fast vollständig gefüllt; im Schnitt ist seine gesamte Höhe sichtbar. Beide Abläufe und alle fünf DN geprüft. Lokaler Stand; bisherige Medien nicht neu exportiert.

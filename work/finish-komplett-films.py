@@ -39,7 +39,7 @@ for name,w,h in FMT:
  # Commercial: trimmed parts joined with cross-fades.
  parts=[];inputs=[];off=0;chain='';prev='[v0]'
  for i,(a,b) in enumerate(AD):
-  inputs+=['-ss',str(a),'-t',str(b-a),'-i',str(master)];parts.append(f'[{i}:v]settb=AVTB,fps=25,setpts=PTS-STARTPTS[v{i}]')
+  inputs+=['-ss',str(a),'-t',str(b-a),'-i',str(master)];parts.append(f'[{i}:v]setpts=PTS-STARTPTS,fps=25,format=yuv420p[v{i}]')
  for i in range(1,len(AD)):
   off+=AD[i-1][1]-AD[i-1][0]-XF;chain+=f';{prev}[v{i}]xfade=transition=fade:duration={XF}:offset={off:.3f}[x{i}]';prev=f'[x{i}]'
  dest=OUT/f'DiTom-DSS-Flex-Werbung-{name}.mp4'

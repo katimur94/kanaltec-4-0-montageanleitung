@@ -76,6 +76,6 @@ def mix(duration,rows,tag,m):
 if __name__=='__main__':
  asyncio.run(speak(FILM,'film'));asyncio.run(speak(AD,'ad'))
  fm=music(88,17092026,[.3,83.3]);am=music(29.5,28092026,[.2,25.0])
- wav(OUT/'film-music.wav',fm);fn,r1=mix(88,FILM,'film',fm);wav(OUT/'film-narrated.wav',fn);an,r2=mix(29.5,AD,'ad',am);wav(OUT/'ad-narrated.wav',an)
+ wav(OUT/'film-music.wav',fm*(.89/max(.01,float(np.max(np.abs(fm))))));fn,r1=mix(88,FILM,'film',fm);wav(OUT/'film-narrated.wav',fn);an,r2=mix(29.5,AD,'ad',am);wav(OUT/'ad-narrated.wav',an)
  (OUT/'report.json').write_text(json.dumps({'voice':'de-DE-ConradNeural (Microsoft, synthetic)','music':'own procedural instrumental','film':r1,'ad':r2},ensure_ascii=False,indent=1),encoding='utf-8')
  print(json.dumps({'film':[(r['text'][:30],r['raw'],r['speed']) for r in r1],'ad':[(r['text'][:30],r['raw'],r['speed']) for r in r2]},ensure_ascii=False,indent=0))

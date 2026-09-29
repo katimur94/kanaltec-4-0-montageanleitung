@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 29.09.2026 – Filme Gesamtablauf (Fräsen → Einbau im Schacht → Sanierung), Telegram-Versand, Veröffentlichung
+
+**Auftrag:** Videos für YouTube und Instagram-Reel: erst fräsen, dann Einbau im Schacht, danach Sanierung, schöne Übergänge; je ein Film mit Sprecher (deutsche männliche ElevenLabs-Stimme), einer nur mit Musik und ein reiner Werbefilm; Wassereintritt auf der vom Nutzer gezeigten Stufe („stark“). Vorher prüfen, ob ElevenLabs und Telegram funktionieren; per Telegram schicken, dann alles pushen und Pages live schalten. Telegram-Zugang aus hochgeladener `.env` im Skill merken.
+
+**Umsetzung:** Studio `work/film-komplett-studio.js` (88 s, Kapitelkarten, Abblenden mit Lichtwischer, Infiltration 60 %, Einbauszenen mit Tageslicht und den Schrittkameras der App), `work/render-komplett-film.mjs` (neustartsicher in 8-s-Abschnitten, Software-Modus `--lite`), `work/komplett-audio.py`, `work/finish-komplett-films.py`. Sechs Dateien in `Videos/DSS-Flex-Verfahren-2026/` (YouTube 1920 × 1080 und Reel 1080 × 1920, 25 Bilder/s; je Sprecher 88 s, Musik 88 s, Werbespot 29 s; 13–43 MB) und neuer Galerieabschnitt „Gesamtablauf“. Schacht: Leitkegel benannt, Fahrbahnmarkierung wird im Schnitt mit abgeschnitten. Telegram-Skill: auf Linux ohne Schlüsselbund private Datei nur für den Besitzer (0600) außerhalb des Repositorys.
+
+**Grenzen:** Gerendert ohne GPU (Software-Rendering) in 1280 × 720 bzw. 720 × 1280, auf 1080p skaliert, ohne Umgebungsverdeckung, Bewegungsunschärfe und Wasser-Lichtbrechung. Sprecher ist die synthetische Microsoft-Stimme „Conrad“: ElevenLabs-Bibliotheksstimmen verlangen einen bezahlten Tarif, und der kostenlose Zugang wurde nach 8 von 18 Sätzen wegen „ungewöhnlicher Aktivität (Proxy/VPN)“ gesperrt; eine ElevenLabs-Fassung ist später allein über die Tonspur möglich. Musik: eigene Komposition.
+
+**Prüfung:** Kontrollbilder beider Formate vor dem Rendern angesehen; alle sechs MP4 vollständig decodiert (Format, Dauer, Spitzenpegel < 0 dB, < 49 MB), Kontaktbögen angesehen. Telegram: sechs Sendungen mit `ok: true` und `message_id`. `npm test` und `npm run build` bestanden.
+
 ## 28.09.2026 – Hebebügel wippt frei, dunkles Steinzeug im Schacht, ruhiger Wasserfall
 
 **Rückmeldung:** Das weiße Hin-und-her-Wippen im Wasserfall sieht nicht gut aus (das Herunterlaufen ist in Ordnung). Die Halterung am Kettenhaken kann wippen, bleibt beim Ablassen aber stumpf starr: die Kette zieht sie immer gerade nach oben, Schluss ist erst am Gehäuse des Roboters (Skizze mit Grenzlinien). Die Rohre im Schacht sind hell, in der Sanierungsanimation dunkel wie echtes Steinzeug.
