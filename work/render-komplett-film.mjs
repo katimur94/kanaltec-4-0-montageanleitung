@@ -12,7 +12,8 @@ const arg=(k,d)=>{const a=process.argv.find(a=>a.startsWith(`--${k}=`));return a
 const runtime=process.env.KANALTEC_QA_RUNTIME||path.resolve('work/qa/runtime');
 const {chromium}=createRequire(runtime+'/package.json')('playwright');
 const ffmpeg=process.env.KANALTEC_FFMPEG||'ffmpeg';
-const root=path.resolve('work/qa/komplett/studio');
+// --studio=work/qa/schalung/studio renders another studio (default: complete-process film).
+const root=path.resolve(arg('studio','work/qa/komplett/studio'));
 const server=createServer(async(req,res)=>{try{const name=req.url==='/'?'index.html':req.url.slice(1);if(!['index.html','film.js','logo.png'].includes(name)){res.writeHead(404).end();return;}res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript':name.endsWith('.png')?'image/png':'text/html');res.end(await readFile(path.join(root,name)));}catch{res.writeHead(404).end();}});
 server.listen(0,'127.0.0.1');await once(server,'listening');
 const channel=process.env.KANALTEC_BROWSER_CHANNEL;
