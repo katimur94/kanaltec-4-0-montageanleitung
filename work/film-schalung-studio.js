@@ -26,13 +26,14 @@ const DURATION=30;
 // Shots: explode amount, visible group, bladder unwinding/inflation, orbit angle and distance.
 const groups=['s','h','z','u'];
 function state(t){
- const S={group:'all',explode:0,ext:0,inf:0,seal:0,yaw:-.6+t*.11,pitch:.32,dist:1,label:null};
- if(t<8){S.dist=lerp(1.25,1,ease((t-2)/6));}
+ // Three-quarter view from the front (shield arc visible); a side elevation makes the formwork look squat.
+ const S={group:'all',explode:0,ext:0,inf:0,seal:0,yaw:-1+.35*Math.sin(t*.22),pitch:.22,dist:1,label:null};
+ if(t<8){S.dist=lerp(1.15,.93,ease((t-2)/6));}
  else if(t<12){S.explode=ease((t-8)/3);S.dist=1.18;S.label={title:'4 Baugruppen',sub:'Schalung · Halteeinheit · Zentraleinheit · Unterteil',t0:8.6,t1:11.8};}
- else if(t<20){const i=Math.min(3,Math.floor((t-12)/2)),g=groups[i];S.group=g;S.explode=.55;S.dist=1.02;S.pitch=.3;
+ else if(t<20){const i=Math.min(3,Math.floor((t-12)/2)),g=groups[i];S.group=g;S.explode=.55;S.dist=g==='s'?1.3:1.02;S.pitch=.2;
   S.label={title:groupInfo[g].name,sub:teaser[g],t0:12+i*2+.15,t1:12+i*2+1.9,color:groupInfo[g].color};}
  else if(t<21.2){S.explode=1-ease((t-20)/1.2);S.dist=1.05;}
- else if(t<27){const u=(t-21.2)/5.8;S.ext=smooth(u/.45);S.inf=smooth((u-.45)/.4);S.seal=smooth(u/.35);S.dist=1.12;S.pitch=.38;
+ else if(t<27){const u=(t-21.2)/5.8;S.ext=smooth(u/.45);S.inf=smooth((u-.45)/.4);S.seal=smooth(u/.35);S.dist=1.12;S.pitch=.28;
   S.label={title:'Dichtblase & Anschlussblase',sub:'Abdichten · Anschluss freihalten',t0:21.6,t1:26.6};}
  else {S.ext=1-smooth((t-27)/1.2);S.inf=1-smooth((t-27)/.8);S.seal=1-smooth((t-27)/1);S.dist=1.1;S.label={title:'DN 300 – DN 700',sub:'Eine Schalung für fünf Baugrößen',t0:27.2,t1:30};}
  return S;
