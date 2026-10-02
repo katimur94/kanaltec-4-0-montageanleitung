@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 02.10.2026 – Werbespot mit Motion Graphics (Reel) und Schalungs-Motion-Video
+
+**Auftrag:** Motion-Video im Reel-Format über die Schalung; nach Rückmeldung („zu schlicht“) ein Werbespot mit Motion Graphics, explosiven Animationen und Übergängen, der zum DSS-Flex Verfahren anspricht, ohne einzelne Bauteile zu erklären. Per Telegram schicken und in die Galerie stellen.
+
+**Umsetzung:** `work/film-schalung-studio.js` (30 s, Drehung, Explosionsansicht, Baugruppen, Blasen) und `work/film-werbung-studio.js` (25 s, 120 BPM: Glitch-Hook, Problem-Schnitte, Ringe/Speedlines-Reveal, 3D-Schalung mit Explosions-Burst, Partikeln und Blitz, Schritte mit Farbwischern über Szenen aus dem Gesamtfilm, Häkchen-Versprechen, Logo-Slam mit Aufruf). Eigene Musik `work/werbung-audio.py`, Fertigstellung `work/finish-werbung.py`, Renderer liefert Studio-Unterordner aus. Galerieabschnitt „Werbespot“.
+
+**Prüfung:** Kontrollbilder angesehen und zwei Fehler behoben (Schrift schwarz statt weiß, stehender Farbwischer); fertige MP4 vollständig decodiert (1080 × 1920, 25 s, 23,5 MB, Spitzenpegel −2,1 dB), Kontaktbogen angesehen. Telegram: Versand mit `ok: true` und `message_id` bestätigt.
+
 ## 29.09.2026 – Filme Gesamtablauf (Fräsen → Einbau im Schacht → Sanierung), Telegram-Versand, Veröffentlichung
 
 **Auftrag:** Videos für YouTube und Instagram-Reel: erst fräsen, dann Einbau im Schacht, danach Sanierung, schöne Übergänge; je ein Film mit Sprecher (deutsche männliche ElevenLabs-Stimme), einer nur mit Musik und ein reiner Werbefilm; Wassereintritt auf der vom Nutzer gezeigten Stufe („stark“). Vorher prüfen, ob ElevenLabs und Telegram funktionieren; per Telegram schicken, dann alles pushen und Pages live schalten. Telegram-Zugang aus hochgeladener `.env` im Skill merken.
