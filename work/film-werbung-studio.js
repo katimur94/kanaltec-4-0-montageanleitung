@@ -94,7 +94,7 @@ async function frame(t){
   word('DSS-FLEX',W/2-u*60,H*.28,330,{outline:true,color:'rgba(108,192,242,.55)',maxW:W*2.2,align:'center'});
   word('DSS-FLEX',W/2+u*60,H*.62,330,{outline:true,color:'rgba(226,35,26,.45)',maxW:W*2.2,align:'center'});
   const [sx,sy]=shakeAt(t,[7,7.6],40);
-  const fly=outExpo(u/1.1),yaw=lerp(-7.4,-1.15,fly)+Math.max(0,u-1.1)*.22;
+  const fly=outExpo(u/1.1),yaw=lerp(-7.4,-1.15,fly)+Math.max(0,u-1.1)*.1;
   const im=product(t,{yaw,pitch:lerp(.75,.32,fly),dist:lerp(3.2,1,fly)*(1+ex*.35),explode:ex});
   ctx.drawImage(im,sx,sy-H*.04,W,H);
   speedLines(W/2,H*.45,(t<6.4?(1-u/.9):0)+(t>=7&&t<7.9?1-(t-7)/.9:0),Math.floor(t*25));
@@ -133,7 +133,8 @@ async function frame(t){
  }else{// OUTRO: product + logo slam
   const lt=t-21.5;const g=ctx.createRadialGradient(W/2,H*.4,20,W/2,H*.45,H*.8);g.addColorStop(0,'#173a57');g.addColorStop(1,'#03070b');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   grid(.6,lt*1.5);
-  const im=product(t,{yaw:-1.3+lt*.45,pitch:.35,dist:lerp(2,1.55,outExpo(lt/.8))});ctx.drawImage(im,0,H*.17,W,H);
+  // Stays in the three-quarter front view: a side elevation makes the formwork look squat.
+  const im=product(t,{yaw:-1.35+lt*.14,pitch:.28,dist:lerp(1.9,1.4,outExpo(lt/.8))});ctx.drawImage(im,0,H*.17,W,H);
   const [sx,sy]=shakeAt(lt,[.6],30);
   rings(W/2,H*.2,(lt-.6)/1.2,C.white,3);particles(W/2,H*.2,(lt-.6)/1.1,21,80,C.cyan);
   logoAt(W/2+sx,H*.2+sy,W*.8,smooth((lt-.6)/.08),lerp(2.4,1,outBack((lt-.6)/.35)));
