@@ -14,7 +14,9 @@ const {chromium}=createRequire(runtime+'/package.json')('playwright');
 const ffmpeg=process.env.KANALTEC_FFMPEG||'ffmpeg';
 // --studio=work/qa/schalung/studio renders another studio (default: complete-process film).
 const root=path.resolve(arg('studio','work/qa/komplett/studio'));
-const server=createServer(async(req,res)=>{try{const name=req.url==='/'?'index.html':req.url.slice(1);if(!['index.html','film.js','logo.png'].includes(name)){res.writeHead(404).end();return;}res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript':name.endsWith('.png')?'image/png':'text/html');res.end(await readFile(path.join(root,name)));}catch{res.writeHead(404).end();}});
+// Serves the studio folder (including sub-folders such as footage/), nothing outside it.
+const types={'.js':'text/javascript','.png':'image/png','.jpg':'image/jpeg','.html':'text/html'};
+const server=createServer(async(req,res)=>{try{const rel=decodeURIComponent(req.url.split('?')[0]).replace(/^\/+/,'')||'index.html',file=path.resolve(root,rel);if(!file.startsWith(root+path.sep)||!types[path.extname(file)]){res.writeHead(404).end();return;}res.setHeader('Content-Type',types[path.extname(file)]);res.end(await readFile(file));}catch{res.writeHead(404).end();}});
 server.listen(0,'127.0.0.1');await once(server,'listening');
 const channel=process.env.KANALTEC_BROWSER_CHANNEL;
 const browser=await chromium.launch(channel?{channel,headless:true,args:['--ignore-gpu-blocklist']}:{headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
