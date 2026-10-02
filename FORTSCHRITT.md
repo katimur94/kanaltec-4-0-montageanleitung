@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 02.10.2026 – Werbespot: Schalung im Outro nicht mehr gestaucht
+
+**Auftrag:** Die gestauchte Ansicht auch im Werbespot beheben, Blitz- und Explosionseffekte behalten.
+
+**Umsetzung:** `work/film-werbung-studio.js`: Outro-Kamera bleibt in der Dreiviertelansicht von vorn (vorher Drehung bis zur flachen Seitenansicht), tiefer und näher; Nachdrehen im Hero-Auftritt verlangsamt. Nur die Abschnitte 5–10 s und 20–25 s neu gerendert, Effekte unverändert.
+
+**Prüfung:** Kontrollbilder und Kontaktbogen angesehen; MP4 vollständig decodiert (1080 × 1920, 25 s, 23,6 MB, Spitzenpegel −2,1 dB). Telegram: Versand mit `ok: true` bestätigt. Noch nicht auf `main`/Pages.
+
 ## 02.10.2026 – Schalungs-Motion-Video: Kamera schräg von vorn
 
 **Auftrag:** „Die Schalung sieht etwas zusammengepresst aus.“
