@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 02.10.2026 – Schalungs-Motion-Video: Kamera schräg von vorn
+
+**Auftrag:** „Die Schalung sieht etwas zusammengepresst aus.“
+
+**Befund:** Keine Bildverzerrung (Renderer-Seitenverhältnis und Kamera stimmen überein, Modell unverändert wie in der App). Die Kamera drehte fast auf die reine Seitenansicht von leicht oben; ohne sichtbaren Schildbogen wirkte die Schalung flach gedrückt.
+
+**Umsetzung:** `work/film-schalung-studio.js`: Dreiviertelansicht von vorn mit sanftem Schwenk statt Rundumdrehung, niedrigere Kamera, Anfang näher, Einzelansicht „Schalung“ weiter (Schild vorher seitlich abgeschnitten). Video neu gerendert.
+
+**Prüfung:** Kontrollbilder und Kontaktbogen angesehen; MP4 vollständig decodiert (1080 × 1920, 30 s, 7,7 MB, Spitzenpegel −1,3 dB). Telegram: Versand mit `ok: true` bestätigt. Noch nicht auf `main`/Pages.
+
 ## 02.10.2026 – Werbespot mit Motion Graphics (Reel) und Schalungs-Motion-Video
 
 **Auftrag:** Motion-Video im Reel-Format über die Schalung; nach Rückmeldung („zu schlicht“) ein Werbespot mit Motion Graphics, explosiven Animationen und Übergängen, der zum DSS-Flex Verfahren anspricht, ohne einzelne Bauteile zu erklären. Per Telegram schicken und in die Galerie stellen.
