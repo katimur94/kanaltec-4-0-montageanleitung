@@ -3,6 +3,7 @@ import {families,groupInfo,bom,stages as originalStages,sources,videos,PHASE} fr
 import {repairCases,stagesForRepair,processTimeFor} from './closure.js';
 import assets from './assets.json';
 import {insertionStages} from './manhole.js';
+import {laserText} from './laser-aid.js';
 const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)];
 const stages=[...originalStages];
 let lastStage=stages.length-1, endTime=stages.length-.001;
@@ -25,7 +26,7 @@ renderStages();
 $('insertButtons').innerHTML=insertionStages.map((s,i)=>`<button class="groupbutton" data-insert="${i}"><span class="stage-no">${String(i+1).padStart(2,'0')}</span><strong>${s.title}</strong></button>`).join('');
 $$('button[data-insert]').forEach(b=>b.onclick=()=>{state.insertPlaying=false;state.insertTime=+b.dataset.insert+.92;updateInsert();updatePlayButtons();});
 const insertEnd=insertionStages.length-.001;
-$('labelsLayer').innerHTML=Object.entries(groupInfo).map(([g,d],i)=>`<div id="label-${g}" class="modellabel" style="--gcolor:${d.color}"><i></i><span>0${i+1}</span>${d.short}</div>`).join('')+[0,1,2,3,4].map(i=>`<div id="process-label-${i}" class="modellabel" hidden style="--gcolor:#399c94"></div>`).join('');
+$('labelsLayer').innerHTML=Object.entries(groupInfo).map(([g,d],i)=>`<div id="label-${g}" class="modellabel" style="--gcolor:${d.color}"><i></i><span>0${i+1}</span>${d.short}</div>`).join('')+[0,1,2,3,4,5,6].map(i=>`<div id="process-label-${i}" class="modellabel" hidden style="--gcolor:#399c94"></div>`).join('');
 $('sourceLinks').innerHTML=sources.map(s=>`<a class="source-card" href="${s.url}" target="_blank" rel="noopener noreferrer"><strong>${s.title} ↗</strong><span>${s.note}</span></a>`).join('');
 videos[1].title='Historische Videoreferenz · Stutzensanierung';videos[2].title='Historische Videoreferenz · Verfahrensdarstellung';
 $('videoLinks').innerHTML=videos.map((v,i)=>`<a class="source-card" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener noreferrer"><strong>0${i+1} · ${v.title} ↗</strong><span>YouTube · Hermes Technologie</span></a>`).join('');
@@ -95,7 +96,7 @@ function updateInfo(){
 function setExplosion(v,fit=false){viewer?.setExplode(v);$('explosion').value=Math.round(v*100);$('explosionValue').textContent=Math.round(v*100)+' %';if(fit)viewer?.fit();}
 function updateStage(force=false){
  const idx=Math.min(lastStage,Math.floor(state.time)),s=stages[idx];viewer?.setProcess(processTimeFor(stages,state.time));$('timeline').value=Math.round(state.time*1000);$('stageCount').textContent=(idx+1)+' / '+stages.length;
- if(force||idx!==state.lastStage){state.lastStage=idx;$('detailIndex').textContent=String(idx+1).padStart(2,'0');$('detailTitle').textContent=s.title;$('detailText').textContent=s.text;$('detailCaption').textContent=s.caption;$$('button[data-stage]').forEach(b=>{b.classList.toggle('selected',+b.dataset.stage===idx);b.setAttribute('aria-current',+b.dataset.stage===idx?'step':'false');});$('prevStage').disabled=idx===0;$('nextStage').disabled=idx===lastStage;}
+ if(force||idx!==state.lastStage){state.lastStage=idx;$('detailIndex').textContent=String(idx+1).padStart(2,'0');$('detailTitle').textContent=s.title;const laser=viewer?.laserAid&&s.laserText;$('detailText').textContent=laser?s.laserText:s.text;$('detailCaption').textContent=laser&&s.laserCaption?s.laserCaption:s.caption;$$('button[data-stage]').forEach(b=>{b.classList.toggle('selected',+b.dataset.stage===idx);b.setAttribute('aria-current',+b.dataset.stage===idx?'step':'false');});$('prevStage').disabled=idx===0;$('nextStage').disabled=idx===lastStage;}
 }
 function updateInsert(force=false){
  const idx=Math.min(insertionStages.length-1,Math.floor(state.insertTime)),s=insertionStages[idx];viewer?.setInsert(state.insertTime);$('insertTimeline').value=Math.round(state.insertTime*1000);$('insertCount').textContent=(idx+1)+' / '+insertionStages.length;
@@ -133,6 +134,9 @@ function changeRepair(){
  $('processControl').querySelector('.rangeends span').textContent=milling?'Fräsen':'Positionieren';renderStages();
  state.lastStage=-1;$('family').onchange();
 }
+try{const saved=localStorage.getItem('kanaltec-laser');if(saved==='off')$('laserAid').checked=false;}catch{}
+function applyLaser(){if(viewer)viewer.laserAid=$('laserAid').checked;try{localStorage.setItem('kanaltec-laser',$('laserAid').checked?'on':'off');}catch{}state.lastStage=-1;updateStage(true);}
+$('laserAid').onchange=applyLaser;if(viewer)viewer.laserAid=$('laserAid').checked;
 $('repairCase').onchange=changeRepair;$('cavitySize').onchange=changeRepair;$('infiltration').onchange=changeRepair;$('preparation').onchange=changeRepair;$('infiltrationLevel').onchange=changeRepair;$('infiltrationLevel').oninput=showInfiltration;
 $('drawing').onclick=openDrawing;$('fidelity').onclick=()=>{state.ref='research';setMode('sources');};
 $('ghost').onclick=()=>{const on=$('ghost').getAttribute('aria-pressed')!=='true';$('ghost').setAttribute('aria-pressed',String(on));viewer?.setGhost(on);};
@@ -211,6 +215,9 @@ if(viewer)viewer.onFrame=dt=>{
   $('viewport').dataset.shaftAngle=viewer.shaftPart.node.rotation.x.toFixed(4);$('viewport').dataset.bladderExtension=viewer.winding.extension.toFixed(4);$('viewport').dataset.storedBladder=(viewer.closedMould?0:viewer.winding.storedLength).toFixed(3);$('viewport').dataset.sensorFull=full;
   const seal=viewer.sealAir<.001?'Entspannt · zwischen Schild und Träger':viewer.sealAir>.999?'Aufgeblasen · Schalung abgedichtet':n===PHASE.REMOVE?'Entspannen · Abdichtung lösen':'Aufblasen · letzte Abdichtung herstellen';if($('sealStatus').textContent!==seal)$('sealStatus').textContent=seal;
   $('viewport').dataset.sealAir=viewer.sealAir.toFixed(4);
+  const ls=viewer.laserStatus,lstate=ls?.visible?(ls.green?'green':ls.red?'red':'dark'):'off',ltext=viewer.laserAid?laserText(ls):'Ausgeschaltet · Positionieren wie bisher nach Sicht';
+  $('laserStatus').hidden=!viewer.laserAid;if($('laserStatus').dataset.state!==lstate)$('laserStatus').dataset.state=lstate;if($('laserText').textContent!==ltext)$('laserText').textContent=ltext;
+  $('viewport').dataset.laserState=ls?.state||'off';$('viewport').dataset.laserTravel=ls?.d==null?'':ls.d.toFixed(2);
   $('viewport').dataset.bumperAir=viewer.bumperAir.toFixed(4);$('viewport').dataset.upperLift=viewer.upperLift.toFixed(3);
  }
 };

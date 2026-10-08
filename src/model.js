@@ -10,6 +10,7 @@ import {millingState,millingTarget,millingSpec} from './milling.js';
 import {breakoutContour,branchBottom} from './repair.js';
 import {injectionFitting,injectionSpec} from './injection-fitting.js';
 import {ManholeScene,insertionKinematics,frameMatrix,insertionMasses} from './manhole.js';
+import {LaserAid,laserTravel,laserState,laserSpec} from './laser-aid.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 // Waterline of the dry-weather flow; parts below it look wet (darker, glossy).
@@ -326,6 +327,8 @@ export class Viewer {
   this.inlet=injectionFitting();this.model.add(this.inlet);
   this.sensor=new THREE.Group();this.sensor.add(cyl(6,12,palettes.darkMetal,V(0,-6,0)),cyl(9,2,mat('#c3312e',.1,.5),V(0,1,0)),torus(10.5,1.5,palettes.gold,V(0,1,0)));this.model.add(this.sensor);
   this.robotAnchor=this.parts.find(p=>p.group==='z'&&p.key==='adapter');this.robot=new Robot(R+12,this.robotAnchor.base);this.model.add(this.robot.group);
+  // Laser-Positionierhilfe: Vorschlag, kein Bauteil der DiTom-Stückliste.
+  this.laserAid??=true;this.laser=new LaserAid(R+12,this.bottom);this.laser.group.visible=false;this.model.add(this.laser.group);
   const robotY=this.robot.bodyY+this.robotAnchor.base.y;
   const end=this.inlet.userData.hoseEnd.clone().add(V(ports.inletX,R-10,0));
   const approach=end.clone().addScaledVector(this.inlet.userData.hoseDirection,12);
@@ -403,6 +406,7 @@ export class Viewer {
  updateParts(){const groupDelta={s:V(0,240,0),h:V(0,35,0),z:V(0,-140,0),u:V(0,-300,0)};
   const drive=this.sections?.holder;
   if(this.repair)this.repair.setCut(!!this.sections.pipe);
+  this.laser?.setCut(!!this.sections.pipe);
   this.manhole?.setCut(!!this.sections.pipe);
   for(const p of this.parts){const frontHolder=drive&&p.base.z>0&&((p.group==='h'&&['sides','rail','pins','blocks','blockbolts','sidebolts','railbolts'].includes(p.key))||(p.group==='s'&&['mounts','straps','bolts','mountbolts'].includes(p.key)));p.node.visible=(this.group==='all'||p.group===this.group)&&!frontHolder;p.node.position.copy(p.base);if(this.explode>0){const d=p.delta.clone();if(this.group==='all'){d.multiplyScalar(.6);d.add(groupDelta[p.group]);}p.node.position.addScaledVector(d,this.explode);}}
  }
@@ -412,6 +416,9 @@ export class Viewer {
   const t=this.time,stage=Math.min(PHASE.REMOVE,Math.floor(t)),f=t-stage,R=this.radius+12;
   const approach=stage===PHASE.POSITION?1-smooth(f):stage===PHASE.REMOVE?smooth((f-.88)/.12):0;
   this.model.position.x=this.workOffset-430*approach;
+  // Mit Laser-Positionierhilfe: über den Anschluss bis zur roten Linie,
+  // Halt zum Nullen, dann den gemessenen Weg zurück bis zur grünen Linie.
+  if(stage===PHASE.POSITION&&this.laserAid)this.model.position.x=laserTravel(f,this.workOffset).x;
   const press=stage<PHASE.BUMPER?0:stage===PHASE.BUMPER?smooth(f):stage===PHASE.REMOVE?1-smooth((f-.75)/.12):1;
   const bumperScale=THREE.MathUtils.lerp(.28,1+8/98,press),lift=98*(bumperScale-1);
   const seal=stage<PHASE.SEAL?0:stage===PHASE.SEAL?smooth(f):stage===PHASE.REMOVE?1-smooth((f-.64)/.1):1;
@@ -432,8 +439,16 @@ export class Viewer {
   this.robot.cutter.group.visible=false;
   this.repair.setCutter(null);this.waterObstacles();
   this.repair.update({time:t,clock:this.ambientClock??t,fill,hoseFront,injecting:stage===PHASE.MORTAR&&!this.sensorFull,sealed:seal,cured:stage>=PHASE.CURE,shield:{x:this.model.position.x,lift,seal,press}});
+  this.poseLaser(this.laserAid?laserState(t,this.workOffset,this.ambientClock??t*9):null,lift);
 
  }
+ poseLaser(state,lift=0){
+  if(!this.laser)return;
+  const show=!!state&&this.laserAid&&this.mode==='process'&&this.group==='all';
+  this.laser.group.visible=show;this.laserStatus=show?state:null;
+  if(show)this.laser.pose(lift,this.model.position.x,state);
+ }
+ laserTarget(){return -laserSpec.x-this.workOffset;}
  // Lower-unit parts in the dry-weather flow as world boxes: the plate lies just
  // under the surface (water runs over it), block, wheel holder and roller
  // stand in the flow (bow wave and wake). Hidden parts cause no waves.
@@ -458,7 +473,9 @@ export class Viewer {
    this.model.position.x=this.workOffset-430;const lift=-70.56;this.upperLift=lift;
    for(const p of this.parts){if(p.group!=='u')p.node.position.y+=lift;if(p.key==='bumper'){p.node.scale.y=.28;p.node.position.y-=35.28;}}
    this.poseMechanism(0,0,lift);this.robot.cutter.group.visible=false;
+   this.poseLaser({visible:false},lift);
   }else{
+   this.poseLaser(null,0);
    for(const p of this.parts)p.node.visible=false;
    this.winding.group.visible=this.inlet.visible=this.sensor.visible=this.feed.visible=this.repair.hoseGroup.visible=false;
    const target=millingTarget(R,state,breakoutContour,branchBottom,passage.radius,millingKind);
@@ -509,7 +526,7 @@ export class Viewer {
   // mould lowered on the robot arm.
   this.resetPose();const lift=-70.56;this.upperLift=lift;this.bumperAir=0;this.sensorFull=false;
   for(const p of this.parts){if(p.group!=='u')p.node.position.y+=lift;if(p.key==='bumper'){p.node.scale.y=.28;p.node.position.y-=35.28;}}
-  this.poseMechanism(0,0,lift);this.robot.cutter.group.visible=false;this.feed.visible=false;if(this.repair)this.repair.hoseGroup.visible=false;
+  this.poseMechanism(0,0,lift);this.poseLaser(null);this.robot.cutter.group.visible=false;this.feed.visible=false;if(this.repair)this.repair.hoseGroup.visible=false;
   return lift;
  }
  insertionGeometry(){
@@ -639,10 +656,11 @@ export class Viewer {
   {name:this.closedMould?'Geschlossenes Schalungsschild':'Starre runde Blasenspitze',point:this.closedMould?V(x,this.radius+this.upperLift+3*this.sealAir,0):V(x,this.winding.tip.position.y+y+7,0)},
   {name:'45°-Messingwinkel · Opferschlauch',side:'left',point:V(x+ports.inletX,this.inlet.position.y-13,0)},
   {name:this.sensorFull?'Drucksensor · voll':'Drucksensor',point:V(x+ports.sensorX,this.sensor.position.y+2,0)},
-  {name:'Dichtblase zwischen Schild & Träger',side:'left',point:V(x-185,this.radius-2+3*this.sealAir+y,0)}
+  {name:'Dichtblase zwischen Schild & Träger',side:'left',point:V(x-185,this.radius-2+3*this.sealAir+y,0)},
+  ...(this.laserStatus?.visible?[{name:this.laserStatus.green?'Laserlinie grün · Ziel erreicht':'Laserlinie rot · Startlinie',side:'left',point:V(x+laserSpec.x,this.radius+12,-40)},{name:'Messrad an der Rohrwand',side:'left',point:this.laser.wheel.position.clone().add(V(x,0,0))}]:[])
  ];}
  fitExplosion(){const e=this.explode,t=this.targetExplode;this.targetExplode=1;this.fit();this.targetExplode=t;this.explode=e;this.updateParts();}
  screenshot(){this.renderer.render(this.scene,this.camera);return this.renderer.domElement.toDataURL('image/png');}
- resetPose(){if(this.robot)this.robot.cutter.group.visible=false;this.model.position.set(0,0,0);for(const p of this.parts){p.node.scale.set(1,1,1);p.node.quaternion.copy(p.originalRotation);}this.poseSeal(0);this.poseMechanism(0,0,0);}
+ resetPose(){if(this.robot)this.robot.cutter.group.visible=false;this.poseLaser(null);this.model.position.set(0,0,0);for(const p of this.parts){p.node.scale.set(1,1,1);p.node.quaternion.copy(p.originalRotation);}this.poseSeal(0);this.poseMechanism(0,0,0);}
  animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.ambientClock=now/1000;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=!['process','insert'].includes(this.mode)&&this.explode<.03;if(this.mode==='insert'){this.insertionPose();this.insertCamera(dt);}else{this.releaseInsert();if(this.mode==='process')this.processPose();else this.resetPose();}this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
 }

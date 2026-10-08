@@ -1,5 +1,19 @@
 # Fortschrittschronik
 
+## 08.10.2026 – Laser-Positionierhilfe im Modell und Film
+
+**Auftrag:** Den Vorschlag zur genaueren Positionierung (Rot/Grün-Linienlaser mit Messrad statt „3 Sekunden zurückfahren“) in die Animation einbauen und daraus ein Video erstellen. Bisherige Praxis laut Nutzer: mit der Schalung über den Anschluss fahren, eine kleine Kante offen lassen, dann geschätzt 3 s rückwärts.
+
+**Umsetzung:** Neues Modul `src/laser-aid.js`: Hauptbox mit zwei Linienlasern (rot/grün) auf dem Zentralrohr, Laserlinie quer am Scheitel 25 mm hinter der hinteren Schildkante, Lichtfächer, Messrad (200 mm Umfang) mit Drehgeberbox, Schwinge, Zugfeder und Kabel. Unter **Positionieren** fährt die Einheit jetzt über den Anschluss, bis die rote Linie auf der Anschlussmitte steht (Halt, Doppelblitz = genullt), und dann den festen Weg L zurück: grün blinkend ab 15 mm vor dem Ziel, dauerhaft grün bei ±3 mm. L ergibt sich aus der Geometrie (offene Schalung 275 mm, geschlossene 209 mm wegen des versetzten Einfüllstutzens). Schalter **Laser-Positionierhilfe** links unter Anwendung (Standard ein, im Browser gespeichert); ausgeschaltet bleibt die bisherige Anfahrt unverändert. Neue Statusanzeige im Mechanik-Readout, zwei zusätzliche Beschriftungen, eigener Schritttext für offene und geschlossene Schalung.
+
+**Konstruktionsbefund:** Das Zentralrohr hebt sich beim Anpressen um bis zu ca. 80 mm (DN 300). Eine dort gelagerte Schwinge verliert den Wandkontakt; die Schwinge ist deshalb an der Stützplatte des Unterteils gelagert, die unten bleibt. Messrad bei 4–5 Uhr auf der hinteren (nicht geschnittenen) Rohrseite, über dem Trockenwetterabfluss.
+
+**Film:** `work/film-laser-studio.js`, `work/build-laser-film.mjs`, `work/render-laser-film.mjs`, Musik `work/laser-music.py` (eigene Komposition, 34 s). DN 400, offene Schalung, Infiltration 55 %. Schnitt: Titel · über den Anschluss fahren · rote Linie auf der Mitte · Kanalkamera beim Nullen · Rückweg bis Grün mit Messrad-Anzeige · Anpressen · Hauptbox · Messrad · Abschluss. Gerendert ohne GPU (Chromium/SwiftShader, 1600 × 900, ohne MSAA mit FXAA), auf 1920 × 1080 skaliert, 25 Bilder/s. Nur für den Film werden die extrem fein unterteilten Hülsen (Zentralrohr, Schildhalterung, Aufnahmen) durch gleich große einfache Rohre ersetzt; Website und Prüfgeometrie bleiben unverändert.
+
+**Prüfung:** Neuer Test `work/check-laser.mjs` (in `npm test`): Start an der Werkzeugwechselposition, rote Linie nach dem Überfahren auf der Anschlussmitte, Doppelblitz, monotoner Rückweg, Grünblinken vor Dauergrün, Endlage exakt auf der Arbeitsposition, Rad an der Rohrwand und über dem Wasser (Fahrt und angepresst), Box unter dem Träger, Rücksprünge, unveränderte Anfahrt ohne Laser, keine Anzeige in den Baugruppenansichten – alle fünf DN, offen und geschlossen. Vollständiger `npm test` und `npm run build` bestanden. Kontrollbilder des Films angesehen und Kamera der Detailansicht zweimal korrigiert.
+
+**Grenzen:** Prototyp-Vorschlag, kein Bauteil der DiTom-Stückliste, nicht im Kanal erprobt. Box-, Rad- und Lasermaße, L und Toleranzen sind Darstellungsannahmen. Lokaler Stand, nicht auf GitHub/Pages veröffentlicht.
+
 ## 02.10.2026 – Werbespot mit Motion Graphics (Reel) und Schalungs-Motion-Video
 
 **Auftrag:** Motion-Video im Reel-Format über die Schalung; nach Rückmeldung („zu schlicht“) ein Werbespot mit Motion Graphics, explosiven Animationen und Übergängen, der zum DSS-Flex Verfahren anspricht, ohne einzelne Bauteile zu erklären. Per Telegram schicken und in die Galerie stellen.

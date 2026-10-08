@@ -1,5 +1,7 @@
 # DSS-Flex Verfahren – interaktive 3D-Präsentation
 
+**Laser-Positionierhilfe (08.10.2026, lokaler Stand):** Rot/Grün-Linienlaser mit Messrad im Schritt **Positionieren**, Schalter unter **Anwendung**. Bedienung in [START-HIER.md](START-HIER.md), Details in [FORTSCHRITT.md](FORTSCHRITT.md).
+
 **Filme Gesamtablauf (29.09.2026):** Fräsen → Einbau im Schacht → Sanierung als YouTube- und Reel-Fassung, jeweils mit Sprecher, nur Musik und als Werbespot – in der [Videogalerie](Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html). Produktion: [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md).
 
 **Einbau im Schacht und Wassereintritt (28.09.2026, lokaler Stand):** Reiter **03 Einbau im Schacht** zeigt in sechs Schritten, wie Roboter und Schalung vom seitlich stehenden LKW mit rotem Säulenkran über einen Hebebügel (Bolzen in den seitlichen Schlitzen) in den Schacht und ins Rohr kommen; Lage nach Gewicht, Anschlägen und Kontakten, Klappvorrichtung öffnet nur so weit wie nötig. Links unter **Anwendung** regelt **Wassereintritt** stufenlos von trocken bis Wasserfall; das Wasser kommt nur von einer Seite. Bedienung in [START-HIER.md](START-HIER.md). Schacht-, Kran- und Wassermaße sind Darstellungsannahmen.

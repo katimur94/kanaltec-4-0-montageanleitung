@@ -21,7 +21,8 @@ export function stagesForRepair(kind,milling=true){
   ['Aushärten lassen','Bumper und Dichtblase halten das Schild angepresst, bis der Mörtel die erforderliche Festigkeit erreicht. Die Animationsdauer entspricht keiner realen Aushärtezeit.'],
   ['Ausschalen & kontrollieren',`Nach dem Aushärten entspannt sich die Dichtblase. Der Bumper wird vakuumiert, die Schalung senkt sich und fährt weg. Am ${place} bleibt eine geschlossene, der Rohrinnenwand folgende Mörtelfläche zurück. Opferschlauch wechseln; Messingwinkel reinigen und wiederverwenden.`]
  ];
- return texts.map(([title,text],i)=>({...stages[i],phase:i,title,text,focus:title,caption:'Geschlossene Schalung nach Nutzerangabe. Schadensform, Hohlraum, Fülltiefe und Verpressung sind schematische Darstellungen.'})).filter(s=>milling||s.phase>=2);
+ const laserText=`Mit vakuumiertem, flachem Bumper fährt der Roboter die geschlossene Schalung über ${pipe?'das Rohrloch':'den stillgelegten Anschluss'} hinaus, bis die rote Laserlinie am Scheitel auf der Mitte der Öffnung steht. Nach 2 Sekunden Stillstand nullt das Messrad; die Linie blinkt zweimal. Beim Zurückfahren blinkt sie kurz vor dem Ziel grün und leuchtet dauerhaft grün, sobald der Einfüllstutzen genau mittig unter der Öffnung steht. ${milling?'Die Einragung wurde zuvor entfernt.':'Fräsen und Werkzeugwechsel entfallen.'}`;
+ return texts.map(([title,text],i)=>({...stages[i],phase:i,title,text,focus:title,laserText:i===2?laserText:undefined,caption:'Geschlossene Schalung nach Nutzerangabe. Schadensform, Hohlraum, Fülltiefe und Verpressung sind schematische Darstellungen.'})).filter(s=>milling||s.phase>=2);
 }
 
 export function processTimeFor(stages,time){
