@@ -1,5 +1,19 @@
 # Fortschrittschronik
 
+## 08.10.2026 – Laser-Heckmodul: Umbau, Zeichnungen, 3D-Bilder, Montageanleitung
+
+**Auftrag:** Die erste Laser-Positionierhilfe (Box auf dem Zentralrohr, Messrad seitlich an der Rohrwand) sah laut Nutzer hässlich aus. Stattdessen „verpacken“: die Platte unter dem Bumper nach hinten verlängern, hinten genauso aussehen lassen wie vorne – mit gefedertem Rad, weil Muffen und Versätze sonst gegen das Rad stoßen und es auf Dauer beschädigen. Dazu technische Zeichnungen, 3D-Bilder und Montageanleitung.
+
+**Umsetzung im Modell (`src/laser-aid.js`):** Heckmodul komplett am Unterteil: Verlängerungsplatte (224 × 105 × 7, Radausschnitt 64 × 29) mit Verbindungslasche unter der Stoßfuge; flaches Messgehäuse (107 × 96 × 28), Kabelkanal und Laserturm (32 × 32 × 46, Laser bei z 22/38, Laserebene 197 mm hinter der Stoßfuge = 15 mm hinter der hinteren Schildkante). Hinten wie vorne ein RAD DN70, hier in einer Schwinge mit Lagerbock (Gabelkopf mit Schlitz) und Druckfeder außen neben dem Rad (Federweg +12/−6 mm, Federteller am äußeren Arm, Federwinkel auf der äußeren Wange). Weg über Magnet in der Radwelle und vergossenen AS5600-Kopf am Arm. Das Modul hebt beim Anpressen nicht mit; L bleibt 265/199 mm (Darstellungsannahme). Neu: Das abgesenkte Zentralrohr steht in der Laserebene und wirft ab DN 350–400 eine seitliche Schattenlücke auf den Scheitel; Linie und Fächer sind dort unterbrochen (`laserVisible`), die Linienmitte bleibt immer beleuchtet.
+
+**Konstruktionsbefunde beim Zeichnen behoben:** Feder lag zuerst in der Radebene und Federwinkel über dem Rad (Kollision beim Einfedern) → Feder nach außen versetzt. Innerer Schwingenarm berührte die innere Wange → Schlitz 28 mm. Ladebuchse saß zwischen Gehäuse und Lagerbock → Seitenwand. Sensorkabel außen an Wange und Federwinkel vorbei.
+
+**Zeichnungen und Montage:** `work/heck-drawings.mjs` erzeugt aus derselben Geometrie `Zeichnungen/Laser-Heckmodul-DSS-Flex.pdf` (9 Blätter A3: Übersicht, Zusammenbau 1:1, Explosion + Stückliste, Einzelteile Platte/Lasche, Lagerbock/Federwinkel/Schwinge/Radwelle 2:1, Gehäuse/Turm/Sensor + Schaltplan, Federung/Einbaulage je DN/Schnitte 1:5 mit Laserschatten, Montageanleitung 2 Blätter mit Anzugsmomenten und Erprobungsprotokoll). 3D-Bilder über `work/heck-stills-studio.js`, `work/build-heck-stills.mjs`, `work/render-heck-stills.mjs` und `work/heck-shots.json` (ohne GPU). Ausgewählte Renderbilder liegen in `Zeichnungen/3D-Bilder/`. Firmware auf AS5600 umgestellt: `Zeichnungen/firmware/DSS_Laser_Positionierhilfe/` (Arduino-ESP32 3.0.7, kompiliert). Bauanleitung als Artifact auf v2 aktualisiert.
+
+**Prüfung:** `work/check-laser.mjs` erweitert (Rad frei von Feder, Federwinkel und Gehäusen über −6…+12 mm Federweg; Schwinge nur im Radausschnitt durch die Platte und frei im Lagerbock-Schlitz; Linienmitte trotz Zentralrohr-Schatten beleuchtet). `npm test` vollständig bestanden, `npm run build` ausgeführt. PDF-Blätter gerastert und angesehen, Standbilder angesehen; gebaute `index.html` im Browser (Software-Rendering) bei DN 350–400 in Überfahr- und Zielstellung geöffnet. Der Film vom selben Tag zeigt noch die erste Bauform.
+
+**Grenzen:** Entwurf, nicht für Fertigung freigegeben, nicht im Kanal erprobt. Alle Maße des Heckmoduls, Federdaten, L und Toleranzen sind Konstruktionsvorschläge bzw. Darstellungsannahmen; die Lage der hinteren Schildkante und die Unterseite der Stützplatte am Gerät nachmessen. Auf Branch `laser-positionierhilfe`, nicht auf Pages veröffentlicht.
+
 ## 08.10.2026 – Laser-Positionierhilfe im Modell und Film
 
 **Auftrag:** Den Vorschlag zur genaueren Positionierung (Rot/Grün-Linienlaser mit Messrad statt „3 Sekunden zurückfahren“) in die Animation einbauen und daraus ein Video erstellen. Bisherige Praxis laut Nutzer: mit der Schalung über den Anschluss fahren, eine kleine Kante offen lassen, dann geschätzt 3 s rückwärts.
@@ -12,7 +26,7 @@
 
 **Prüfung:** Neuer Test `work/check-laser.mjs` (in `npm test`): Start an der Werkzeugwechselposition, rote Linie nach dem Überfahren auf der Anschlussmitte, Doppelblitz, monotoner Rückweg, Grünblinken vor Dauergrün, Endlage exakt auf der Arbeitsposition, Rad an der Rohrwand und über dem Wasser (Fahrt und angepresst), Box unter dem Träger, Rücksprünge, unveränderte Anfahrt ohne Laser, keine Anzeige in den Baugruppenansichten – alle fünf DN, offen und geschlossen. Vollständiger `npm test` und `npm run build` bestanden. Kontrollbilder des Films angesehen und Kamera der Detailansicht zweimal korrigiert.
 
-**Grenzen:** Prototyp-Vorschlag, kein Bauteil der DiTom-Stückliste, nicht im Kanal erprobt. Box-, Rad- und Lasermaße, L und Toleranzen sind Darstellungsannahmen. Lokaler Stand, nicht auf GitHub/Pages veröffentlicht.
+**Grenzen:** Prototyp-Vorschlag, kein Bauteil der DiTom-Stückliste, nicht im Kanal erprobt. Box-, Rad- und Lasermaße, L und Toleranzen sind Darstellungsannahmen. Auf Branch `laser-positionierhilfe` gepusht, nicht auf Pages veröffentlicht. Bauform am selben Tag durch das Heckmodul ersetzt (Eintrag oben).
 
 ## 02.10.2026 – Werbespot mit Motion Graphics (Reel) und Schalungs-Motion-Video
 

@@ -1,0 +1,290 @@
+[
+ {
+  "name": "iso-heck",
+  "view": "unit",
+  "pos": [
+   -560,
+   40,
+   430
+  ],
+  "target": [
+   -175,
+   -160,
+   0
+  ],
+  "fov": 30
+ },
+ {
+  "name": "iso-heck-oben",
+  "view": "unit",
+  "pos": [
+   -380,
+   240,
+   330
+  ],
+  "target": [
+   -170,
+   -165,
+   0
+  ],
+  "fov": 32
+ },
+ {
+  "name": "iso-heck-unten",
+  "view": "unit",
+  "pos": [
+   -560,
+   -300,
+   420
+  ],
+  "target": [
+   -170,
+   -175,
+   0
+  ],
+  "fov": 30
+ },
+ {
+  "name": "iso-gesamt",
+  "view": "assembly",
+  "pos": [
+   -900,
+   250,
+   900
+  ],
+  "target": [
+   -120,
+   -80,
+   0
+  ],
+  "fov": 30
+ },
+ {
+  "name": "explosion",
+  "view": "unit",
+  "explode": 1,
+  "pos": [
+   -700,
+   120,
+   620
+  ],
+  "target": [
+   -185,
+   -130,
+   0
+  ],
+  "fov": 32
+ },
+ {
+  "name": "m1",
+  "view": "unit",
+  "pos": [
+   -640,
+   70,
+   500
+  ],
+  "target": [
+   -185,
+   -165,
+   0
+  ],
+  "fov": 28,
+  "parts": []
+ },
+ {
+  "name": "m2",
+  "view": "unit",
+  "pos": [
+   -640,
+   70,
+   500
+  ],
+  "target": [
+   -185,
+   -165,
+   0
+  ],
+  "fov": 28,
+  "parts": [
+   "plate",
+   "strap"
+  ],
+  "highlight": [
+   "plate",
+   "strap"
+  ]
+ },
+ {
+  "name": "m3",
+  "view": "unit",
+  "pos": [
+   -640,
+   70,
+   500
+  ],
+  "target": [
+   -185,
+   -165,
+   0
+  ],
+  "fov": 28,
+  "parts": [
+   "plate",
+   "strap",
+   "block",
+   "fork",
+   "wheel",
+   "sensor"
+  ],
+  "highlight": [
+   "block",
+   "fork",
+   "wheel",
+   "sensor"
+  ]
+ },
+ {
+  "name": "m4",
+  "view": "unit",
+  "pos": [
+   -640,
+   70,
+   500
+  ],
+  "target": [
+   -185,
+   -165,
+   0
+  ],
+  "fov": 28,
+  "parts": [
+   "plate",
+   "strap",
+   "block",
+   "fork",
+   "wheel",
+   "sensor",
+   "bracket",
+   "spring"
+  ],
+  "highlight": [
+   "bracket",
+   "spring"
+  ]
+ },
+ {
+  "name": "m5",
+  "view": "unit",
+  "pos": [
+   -640,
+   70,
+   500
+  ],
+  "target": [
+   -185,
+   -165,
+   0
+  ],
+  "fov": 28,
+  "parts": [
+   "plate",
+   "strap",
+   "block",
+   "fork",
+   "wheel",
+   "sensor",
+   "bracket",
+   "spring",
+   "housing",
+   "channel",
+   "tower"
+  ],
+  "highlight": [
+   "housing",
+   "channel",
+   "tower"
+  ]
+ },
+ {
+  "name": "m6",
+  "view": "unit",
+  "pos": [
+   -640,
+   70,
+   500
+  ],
+  "target": [
+   -185,
+   -165,
+   0
+  ],
+  "fov": 28,
+  "highlight": []
+ },
+ {
+  "name": "feder-0",
+  "view": "unit",
+  "pos": [
+   -250,
+   -150,
+   -460
+  ],
+  "target": [
+   -250,
+   -160,
+   -30
+  ],
+  "fov": 24,
+  "deflection": 0
+ },
+ {
+  "name": "feder-12",
+  "view": "unit",
+  "pos": [
+   -250,
+   -150,
+   -460
+  ],
+  "target": [
+   -250,
+   -160,
+   -30
+  ],
+  "fov": 24,
+  "deflection": 12
+ },
+ {
+  "name": "kanal-rot",
+  "process": true,
+  "dark": true,
+  "time": 2.45,
+  "pos": [
+   -260,
+   90,
+   760
+  ],
+  "target": [
+   -60,
+   30,
+   0
+  ],
+  "fov": 36
+ },
+ {
+  "name": "kanal-gruen",
+  "process": true,
+  "dark": true,
+  "time": 2.99,
+  "pos": [
+   -540,
+   120,
+   760
+  ],
+  "target": [
+   -200,
+   40,
+   0
+  ],
+  "fov": 36
+ }
+]

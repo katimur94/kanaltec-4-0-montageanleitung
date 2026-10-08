@@ -1,6 +1,6 @@
 # Projektstand und Übergabe – DSS-Flex Verfahren
 
-**Laser-Positionierhilfe (08.10.2026, lokaler Stand):** `src/laser-aid.js` ergänzt eine Rot/Grün-Laser-Positionierhilfe mit Messrad (Vorschlag, kein Stücklistenteil). Positionieren: über den Anschluss bis die rote Linie auf der Mitte steht, Nullen mit Doppelblitz, fester Rückweg L bis zur grünen Linie. Schalter unter Anwendung, ausgeschaltet bleibt die alte Anfahrt. Schwinge an der Stützplatte, weil sich das Zentralrohr beim Anpressen hebt. Test `work/check-laser.mjs`; Film über `work/build-laser-film.mjs` und `work/render-laser-film.mjs` (ohne GPU möglich). Details in [FORTSCHRITT.md](FORTSCHRITT.md). Nicht veröffentlicht.
+**Laser-Heckmodul (08.10.2026, Branch `laser-positionierhilfe`):** `src/laser-aid.js` ergänzt eine Rot/Grün-Laser-Positionierhilfe als Heckmodul am Unterteil (Vorschlag, kein Stücklistenteil): verlängerte Stützplatte mit flachem Messgehäuse, Laserturm und gefedertem RAD DN70 (Schwinge, Feder außen, AS5600-Weggeber). Positionieren: über den Anschluss bis die rote Linie auf der Mitte steht, Nullen mit Doppelblitz, fester Rückweg L bis zur grünen Linie; ausgeschaltet bleibt die alte Anfahrt. Zentralrohr-Schatten auf der Linie wird dargestellt. Test `work/check-laser.mjs`; Zeichnungen und Montageanleitung `Zeichnungen/Laser-Heckmodul-DSS-Flex.pdf` aus `work/heck-drawings.mjs`, 3D-Bilder aus `work/render-heck-stills.mjs`, Firmware in `Zeichnungen/firmware/`. Der Laserfilm zeigt noch die erste Bauform. Details in [FORTSCHRITT.md](FORTSCHRITT.md). Nicht auf Pages veröffentlicht.
 
 **Filme Gesamtablauf (29.09.2026):** Sechs Filme (YouTube/Reel × Sprecher/Musik/Werbung) aus dem aktuellen Modell, Galerieabschnitt „Gesamtablauf“; Sprecher synthetisch (Microsoft Conrad), da ElevenLabs gesperrt. Veröffentlicht am 29.09.2026 (`main` `ddede20`, Pages). Details in FORTSCHRITT.md und work/VIDEO-PRODUKTION.md.
 
@@ -155,7 +155,7 @@ X verläuft längs des Kanals, Y nach oben, Z quer zum Kanal. Modelllängen sind
 | `src/debris.js` | Fräsgut: Tonscherben und Wurzelstücke mit ballistischer Flugbahn in echten Sekunden |
 | `src/manhole.js` | Schacht mit Steigbügeln und Gerinne, LKW mit Säulenkran und Hebebügel, Kabelführung, Einbauphysik und geplanter Durchgang (Klappvorrichtung öffnet nur Nase hoch) |
 | `src/infiltration.js` | Stufenloser Wassereintritt (einseitig), Wandläufe, Wasserfall gegen das Schild, Bodenkörner und Fäden |
-| `src/laser-aid.js` | Laser-Positionierhilfe: Hauptbox mit Linienlasern, Scheitellinie, Messrad mit Schwinge; Fahrprofil `laserTravel` und Anzeige `laserState` |
+| `src/laser-aid.js` | Laser-Heckmodul: Maße `heck`, Bohrbild `plateHoles`, Teile mit Federung, Scheitellinie mit Zentralrohr-Schatten (`laserVisible`); Fahrprofil `laserTravel` und Anzeige `laserState` |
 | `src/data.js` | Varianten, PDF-Stücklisten, Phasen, Quellenlinks; unsichere Teile ausdrücklich markieren |
 | `src/closure.js` | Anwendungsauswahl und Beschreibungen für geschlossene Schalung; ursprüngliche PDF-Stücklisten unverändert |
 | `src/assets.json` | Eingebettete PDF, Seitenbilder und Fotos; keine Zugangsdaten |
@@ -166,7 +166,8 @@ X verläuft längs des Kanals, Y nach oben, Z quer zum Kanal. Modelllängen sind
 | `work/check-milling.mjs` | Werkzeugkontakt, Außenabtrag, unveränderter Anschlussquerschnitt, feste Gliedlängen, Wiederverfüllung und Rücksprünge über alle fünf DN |
 | `work/check-insertion.mjs` | Einbau im Schacht: Klapprichtung und -winkel, Bügelanschlag, Stetigkeit, Rücksprünge, Freigang in Schacht/Gerinne/Rohr über alle fünf DN (`DN=400` prüft eine Größe) |
 | `work/check-infiltration.mjs` | Wassereintritt 0–100 %: einseitig, Wasserfall endet am Schild, Abdichtung beim Anpressen, kein Wasser nach Verfüllung |
-| `work/check-laser.mjs` | Laser-Positionierhilfe: Überfahren, Nullen, Rückweg bis Grün, Radkontakt, Rücksprünge, unveränderte Anfahrt ohne Laser über alle fünf DN |
+| `work/check-laser.mjs` | Laser-Heckmodul: Überfahren, Nullen, Rückweg bis Grün, Rad auf der Sohle, Freigang im Rohr und über den Federweg, Linienmitte beleuchtet, Rücksprünge, unveränderte Anfahrt ohne Laser über alle fünf DN |
+| `work/heck-drawings.mjs` | Zeichnungen und Montageanleitung des Heckmoduls als PDF (A3) aus `src/laser-aid.js`; Bilder aus `work/render-heck-stills.mjs` + `work/heck-shots.json` |
 | `work/check-closure.mjs` | Geschlossene Schildmitte, erhaltene Funktionsöffnungen, massiver Verschluss, Rohrloch ohne Anschluss, trockene/nasse Fälle und Rücksprünge über alle fünf DN |
 
 Nicht die minifizierte Ausgabe in `index.html` bearbeiten. Quellen ändern und neu bauen. Auf dem ursprünglichen Arbeitscomputer existiert zusätzlich ein äußerer Entwicklungsordner mit `work/runtime` und `work/prepare-github.mjs`; das ist keine Voraussetzung auf anderen Computern. Im geklonten Repository kommen Three.js und esbuild ausschließlich über `npm ci` aus der Lockdatei.

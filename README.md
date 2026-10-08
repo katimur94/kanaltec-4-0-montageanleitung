@@ -1,6 +1,6 @@
 # DSS-Flex Verfahren – interaktive 3D-Präsentation
 
-**Laser-Positionierhilfe (08.10.2026, lokaler Stand):** Rot/Grün-Linienlaser mit Messrad im Schritt **Positionieren**, Schalter unter **Anwendung**. Bedienung in [START-HIER.md](START-HIER.md), Details in [FORTSCHRITT.md](FORTSCHRITT.md).
+**Laser-Positionierhilfe (08.10.2026, Branch `laser-positionierhilfe`):** Rot/Grün-Linienlaser im Heckmodul mit gefedertem Messrad im Schritt **Positionieren**, Schalter unter **Anwendung**. Zeichnungen und Montageanleitung: [Zeichnungen/Laser-Heckmodul-DSS-Flex.pdf](Zeichnungen/Laser-Heckmodul-DSS-Flex.pdf). Bedienung in [START-HIER.md](START-HIER.md), Details in [FORTSCHRITT.md](FORTSCHRITT.md).
 
 **Filme Gesamtablauf (29.09.2026):** Fräsen → Einbau im Schacht → Sanierung als YouTube- und Reel-Fassung, jeweils mit Sprecher, nur Musik und als Werbespot – in der [Videogalerie](Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html). Produktion: [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md).
 
