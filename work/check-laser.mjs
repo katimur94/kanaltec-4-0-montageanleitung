@@ -65,6 +65,9 @@ for(const f of families)for(const kind of ['open','closure']){
   near(v.laser.fanPos[1],v.upperLift+laserHead.y1,'Light fan starts on top of the laser head',.001);
   assert.ok(v.robot.laserLine.visible,'Laser cable runs from the cable bomb along the robot');
  }
+ // Sohlenabstreifer: Lippe vor und hinter dem Rad in der Radspur, knapp über der Sohle (Gummi legt sich an).
+ {const w=heck.wiper,g=v.laser.geo;assert.ok(Math.min(...w.xs)<heck.fork.axleX-heck.wheel.r&&Math.max(...w.xs)>heck.fork.axleX+heck.wheel.r,'Sole wipers sit in front of and behind the wheel');
+  assert.ok(w.lip.w>heck.wheel.w,'Wiper lip is wider than the wheel track');near(new THREE.Box3().setFromObject(v.laser.parts.wiper).min.y,g.contactY+w.lip.gap,'Wiper lip ends just above the invert',.01);}
  // Spiralkabel Messrad ↔ Laserkopf: dehnt sich beim Anpressen, bleibt im Bereich eines 4-adrigen Spiralkabels.
  assert.ok(Math.max(...spirals)>Math.min(...spirals)+20,'Spiral cable stretches when the mould is pressed');
  for(const l of spirals)assert.ok(l>=spiralSpec.min&&l<=spiralSpec.max,`Spiral cable length ${l.toFixed(0)} mm within ${spiralSpec.min}…${spiralSpec.max} mm`);
@@ -76,11 +79,11 @@ for(const f of families)for(const kind of ['open','closure']){
  for(const d of [-6,0,6,12]){
   v.laser.setDeflection(d);v.model.updateMatrixWorld(true);
   const inv=new THREE.Matrix4().copy(v.laser.group.matrixWorld).invert(),c=v.laser.wheel.position,p=new THREE.Vector3(),n=heck.plate.notch;let hit=0,plateHit=0;
-  for(const k of ['plate','strap','block','bracket','spring'])v.laser.parts[k].traverse(o=>{if(!o.isMesh)return;const g=o.geometry.attributes.position;for(let i=0;i<g.count;i++){p.fromBufferAttribute(g,i).applyMatrix4(o.matrixWorld).applyMatrix4(inv);if(Math.hypot(p.x-c.x,p.y-c.y)<heck.wheel.r+1&&Math.abs(p.z-heck.wheel.z)<heck.wheel.w/2+1)hit++;}});
+  for(const k of ['plate','strap','block','bracket','spring','wiper'])v.laser.parts[k].traverse(o=>{if(!o.isMesh)return;const g=o.geometry.attributes.position;for(let i=0;i<g.count;i++){p.fromBufferAttribute(g,i).applyMatrix4(o.matrixWorld).applyMatrix4(inv);if(Math.hypot(p.x-c.x,p.y-c.y)<heck.wheel.r+1&&Math.abs(p.z-heck.wheel.z)<heck.wheel.w/2+1)hit++;}});
   v.laser.parts.fork.traverse(o=>{if(!o.isMesh)return;const g=o.geometry.attributes.position;for(let i=0;i<g.count;i++){p.fromBufferAttribute(g,i).applyMatrix4(o.matrixWorld).applyMatrix4(inv);if(p.y<v.bottom+3.5&&p.y>v.bottom-3.5&&!(p.x<n.x0&&p.z>n.z0&&p.z<n.z1))plateHit++;
    // Schwinge läuft frei im Schlitz des Lagerbocks (nicht in Wangen oder Boden).
    const b=heck.block,top=v.bottom+3.5,inBlock=p.x<b.x0-.2&&p.x>b.x1+.2&&p.z>b.z0+.2&&p.z<b.z1-.2&&p.y>top+.2&&p.y<top+b.h-.2,inSlot=p.z>b.slot[0]+.2&&p.z<b.slot[1]-.2&&p.y>top+b.base+.2;if(inBlock&&!inSlot)plateHit++;}});
-  assert.equal(hit,0,`Wheel clears spring, bracket and block at deflection ${d}`);assert.equal(plateHit,0,`Swing arm passes the plate only through the wheel notch at deflection ${d}`);
+  assert.equal(hit,0,`Wheel clears spring, bracket, block and sole wipers at deflection ${d}`);assert.equal(plateHit,0,`Swing arm passes the plate only through the wheel notch at deflection ${d}`);
   const sp=heck.spring;assert.ok(sp.z+sp.od/2<heck.wheel.z-heck.wheel.w/2-3,'Spring sits outboard of the wheel');
  }
  v.laser.setDeflection(0);near(v.laser.wheel.position.y,a0,'Suspension returns',.001);

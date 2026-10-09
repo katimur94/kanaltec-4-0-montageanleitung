@@ -23,14 +23,16 @@ export const laserSpec={
 };
 // Untere Baugruppe (Unterteil-Koordinaten: x längs, y hoch, z quer), gleich für alle DN.
 export const heck={
- plate:{x0:-68,x1:-192,w:105,t:7,corner:6,notch:{x0:-128,z0:-45,z1:-16}},
+ plate:{x0:-68,x1:-218,w:105,t:7,corner:6,notch:{x0:-128,z0:-45,z1:-16}},
  strap:{x0:-108,x1:-28,w:80,t:6,bolts:[[-48,-25],[-48,25],[-88,-25],[-88,25]]},
  block:{x0:-106,x1:-124,z0:-52,z1:-10,h:24,pivotH:12,base:4,slot:[-44,-16]},
  fork:{pivotX:-115,axleX:-170,armZ:[-41,-19],armT:4,armH:12,seat:{x0:-139,x1:-151,z0:-53,t:3}},
- wheel:{r:35,w:12,z:-30},
- spring:{x:-145,z:-47,od:12,wire:1,free:34,coils:8},
+ wheel:{r:35,w:12,z:-30,grooves:36},   // Gummi 60 Shore A mit Querlamellen (rutschfest auf Sielhaut)
+ spring:{x:-145,z:-47,od:12,wire:1.4,free:34,coils:8},
  bracket:{x0:-108,x1:-152,z0:-53,z1:-41,t:5,web:{x1:-118}},
- anchor:{x:-130,z:-47,h:3}   // Zugentlastung des Spiralkabels auf dem Federwinkel
+ anchor:{x:-130,z:-47,h:3},  // Zugentlastung des Spiralkabels auf dem Federwinkel
+ // Sohlenabstreifer vor und hinter dem Rad: Leiste unter der Platte, Gummilippe wischt die Radspur frei.
+ wiper:{xs:[-130,-210],w:8,t:5,z0:-51,z1:-2,lip:{w:16,t:3,gap:1.5}}
 };
 // Laserkopf auf dem Zentralrohr (y relativ zur Rohrachse, die beim Anpressen um lift mitgeht).
 export const laserHead={
@@ -43,7 +45,7 @@ export const tubeTravelY=-70.56;
 // Spiralkabel Messrad ↔ Laserkopf: 4 × 0,25 mm² PUR, Ruhelänge ca. 100 mm, Arbeitsbereich bis 400 mm.
 export const spiralSpec={rest:100,min:100,max:400};
 // Bohrungen der Verlängerungsplatte [x, z, Ø]: Lasche M6, Lagerbock M5/M4 (Senkschrauben von unten).
-export const plateHoles=[[-88,-25,6.6],[-88,25,6.6],[-115,-48,5.5],[-115,-13,4.5]];
+export const plateHoles=[[-88,-25,6.6],[-88,25,6.6],[-115,-48,5.5],[-115,-13,4.5],[-130,-48.75,3.4],[-130,-9,4.5],[-210,-48.75,3.4],[-210,-9,4.5]];
 // Lichtfächer der Linienlaser: halber Öffnungswinkel am Scheitel (vom Rohrmittelpunkt aus).
 export const laserFan={half:.62};
 export function heckGeometry(R,bottom){
@@ -136,11 +138,19 @@ export class LaserAid{
   this.forkGroup=fork;add('fork',fork);
   const wheel=new THREE.Group();wheel.position.copy(G.axle);
   this.spin=new THREE.Group();wheel.add(this.spin);
+  // Querlamellen in der Lauffläche (Profil gegen Schlupf auf glitschiger Sohle).
+  const groove=new THREE.MeshStandardMaterial({color:'#3a434b',roughness:.8});for(let i=0;i<S.wheel.grooves;i++){const a=i/S.wheel.grooves*Math.PI*2,g=boxAt(-.45,.45,-1,1,-S.wheel.w/2+.6,S.wheel.w/2-.6,groove);g.position.set(Math.cos(a)*(S.wheel.r-.6),Math.sin(a)*(S.wheel.r-.6),0);g.rotation.z=a;this.spin.add(g);}
   this.spin.add(cyl(S.wheel.r,S.wheel.w,rubber,V(),'z',40),cyl(11,S.wheel.w+1,darkMetal,V(),'z',24),cyl(3,S.wheel.w+1.4,new THREE.MeshStandardMaterial({color:'#c6302a',roughness:.5}),V(0,7,0),'z',12));
   wheel.add(cyl(4,S.fork.armZ[1]-S.fork.armZ[0]+S.fork.armT,bolt,V(),'z',16));
   this.wheel=wheel;add('wheel',wheel);this.wr=S.wheel.r;
   const sensor=new THREE.Group();sensor.add(cyl(8,9,potting,V(G.axle.x,G.axle.y,S.fork.armZ[0]-S.fork.armT/2-4.5),'z',24));add('sensor',sensor);
   this.springGroup=add('spring',new THREE.Group());
+  // 24 Sohlenabstreifer: Leiste unter der Platte (über den Radausschnitt), Gummilippe in der Radspur.
+  const wp=S.wiper,wg=new THREE.Group(),lipMat=new THREE.MeshStandardMaterial({color:'#2a2f33',roughness:.85});
+  for(const x of wp.xs){wg.add(boxAt(x-wp.w/2,x+wp.w/2,bottom-p.t/2-wp.t,bottom-p.t/2,wp.z0,wp.z1,darkMetal));
+   wg.add(boxAt(x-wp.lip.t/2,x+wp.lip.t/2,G.contactY+wp.lip.gap,bottom-p.t/2-wp.t,S.wheel.z-wp.lip.w/2,S.wheel.z+wp.lip.w/2,lipMat));
+   for(const z of [-48.75,-9])wg.add(screwHead(V(x,bottom-p.t/2-wp.t-2.5,z),bolt));}
+  add('wiper',wg);
   // ---- Laserkopf auf dem Zentralrohr (hebt mit dem Rohr) ----
   const hd=new THREE.Group();hd.name='Laserkopf';
   hd.add(slab(rounded(H.x0,H.x1,-H.w/2,H.w/2,H.corner),H.y0,H.y1-H.y0-2,anod));
@@ -174,7 +184,7 @@ export class LaserAid{
  // Federweg positiv = Rad nach oben eingefedert (z. B. an einer Muffe); lift = Höhe der Rohrachse.
  layout(){
   const S=heck,G=this.geo,H=laserHead,key=[this.explode,this.deflection,this.lift].join(',');if(key===this.poseKey)return;this.poseKey=key;
-  const e=this.explode,off={plate:[0,0,0],strap:[0,-90,0],block:[0,45,0],bracket:[0,130,0],fork:[-60,30,0],wheel:[-130,0,0],sensor:[-130,0,-70],spring:[0,90,0],head:[-20,120,0]};
+  const e=this.explode,off={plate:[0,0,0],strap:[0,-90,0],wiper:[0,-55,0],block:[0,45,0],bracket:[0,130,0],fork:[-60,30,0],wheel:[-130,0,0],sensor:[-130,0,-70],spring:[0,90,0],head:[-20,120,0]};
   for(const [k,g] of Object.entries(this.parts))g.position.set(...(off[k]||[0,0,0]).map(v=>v*e));
   this.parts.head.position.y+=this.lift;
   const len=G.pivot.distanceTo(G.axle),dy=clamp(G.axle.y+this.deflection-G.pivot.y,-.9*len,.9*len),dx=-Math.sqrt(len*len-dy*dy);

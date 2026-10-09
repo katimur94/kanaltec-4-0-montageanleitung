@@ -1,5 +1,11 @@
 # Fortschrittschronik
 
+## 09.10.2026 – Messrad rutschfest für glitschige Sohle
+
+**Anlass (Nutzer):** Das Rad muss sicher und rutschfrei laufen, die Sohle im Kanal ist glitschig.
+
+**Umsetzung:** Drei Maßnahmen zusammen, ohne den Liner zu verletzen (keine Spikes/Rändel): Lauffläche Gummi 60 Shore A mit 36 Querlamellen (im Modell sichtbar), stärkere Druckfeder d 1,4 statt 1,0 (Radkraft rechnerisch ≈ 22 N in Ruhe, ≈ 36 N eingefedert statt 5–8 N), und zwei Sohlenabstreifer (Leiste unter der Platte, NBR-Lippe 16 mm in der Radspur) vor und hinter dem Rad, die die Sielhaut wegwischen – wichtig vor allem hinter dem Rad, weil dort beim gemessenen Rückweg die Fahrtrichtung liegt. Dafür ist die Plattenverlängerung auf 150 mm verlängert (Bohrbild W1–W4). Kalibrierung jetzt auf nassem Liner im Versuchsrohr empfohlen. Test prüft Lage der Abstreifer vor/hinter dem Rad, Lippe knapp über der Sohle und Freigang des Rades zu den Abstreifern über den Federweg. Zeichnungen (Stückliste Pos. 6/7/24, LPH-110/111/150), Renderbilder und Bauanleitung aktualisiert. Ob das in echter Sielhaut reicht, zeigt erst der Versuch.
+
 ## 09.10.2026 – Laser-Positionierhilfe v3: Laserkopf am Zentralrohr, Bedienkasten im Fahrzeug
 
 **Anlass (Nutzer):** Bei DN 300 gibt es unter dem Bumper keinen Distanzblock, also kaum Platz; die Platte liegt in der Sohle immer unter Wasser; Nullen soll per Knopf im Fahrzeug neben den Roboter-Bedienelementen gehen; kein Akku, weil im Roboterkabel 4 freie Adern liegen. Die Kabelbombe hinter dem Roboter hat die Stecker für Drehmotor, Blase und Druckschalter – dort eine zusätzliche Steckdose für das Lasermodul, von dort wie bei den anderen ein Spiralkabel nach vorn zum Zentralrohr; zwischen Laser und Messrad ebenfalls ein Spiralkabel, weil sich beide beim Anpressen auseinanderbewegen.
