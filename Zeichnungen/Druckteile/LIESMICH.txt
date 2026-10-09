@@ -1,0 +1,39 @@
+DSS-Flex Laser-Positionierhilfe v3 – Druckteile (Druckversion D1)
+=================================================================
+
+Entwurf, nicht im Kanal getestet. Erzeugt mit work/druckteile/druckteile.py (CadQuery)
+aus derselben Geometrie wie 3D-Modell und Zeichnungen.
+
+Ordner
+  STL/   Druckteile in Druckausrichtung (liegen richtig auf dem Bett)
+  3MF/   dieselben Teile als 3MF
+  STEP/  dieselben Teile als STEP zum Weiterbearbeiten
+         Baugruppe_Messrad.step, Baugruppe_Laserkopf.step: alles in Einbaulage
+         (inkl. Kaufteile vereinfacht)
+
+Anzahl: Dateien mit "_2x" zweimal drucken, alle anderen einmal.
+
+Material
+  Kein PLA. Unten im Abwasser PETG oder ASA, besser PA12 (SLS/MJF) beim Druckdienst.
+  Laserkopf: ASA oder PETG schwarz.
+  Platte und Lasche für den Dauerbetrieb aus Metall: 01_Verlaengerungsplatte.step
+  (Alu 7 mm) und 02_Verbindungslasche.step (Edelstahl 6 mm) lasern/wasserstrahlen.
+
+Einstellungen (FDM)
+  Düse 0,4 · Schicht 0,2 mm · 5 Wände · 6 Böden/Decken · 60 % Gyroid
+  Platte und Lasche 100 %. Keine Stützstruktur nötig.
+
+Nacharbeit
+  Lagerbock: Ø7,8 auf Ø8 H7 reiben.
+  Gleitlagersitze (Schwinge): Ø9,8 auf Ø10 H7 reiben.
+  Kugellagersitze (Schwinge): Ø11,8 auf Ø12 H7 reiben; Lager MF128 mit Bund zum Rad.
+  12 Gewindeeinsätze M3 (Bohrung Ø4,0, Länge 5,7) einschmelzen:
+    Lagerbock 4 unten + 2 oben, Innenarm-Querriegel 2, Laserkopf 4 von unten.
+
+Abweichungen zu den Frästeil-Zeichnungen (Laser-Positionierhilfe-DSS-Flex.pdf)
+  - Platte: kein Außensteg hinter x -140 (Platz für das Drehgebergehäuse);
+    Bohrungen Lagerbock 4 x M3 senk, hinterer Abstreifer innen, M6 vorn mit Mutter.
+  - Schwinge zweiteilig (Außenarm mit Federteller, Innenarm mit Nabe und Querriegel).
+  - Drehgebergehäuse 34 x 30 x 10 für AS5600-Platinen bis 24 x 24 mm, Boden 0,8 mm.
+  - Laserkopf: seitliche M8-Verschraubung auf Höhe 30 mm über Rohrachse,
+    Rohrschellen mit je 2 x M3 x 25 (halten zugleich den Kopf).

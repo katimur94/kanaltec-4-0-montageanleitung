@@ -1,5 +1,15 @@
 # Fortschrittschronik
 
+## 09.10.2026 – 3D-Druckteile (Druckversion D1) mit Explosionsansicht
+
+**Auftrag (Nutzer):** Viele Teile per 3D-Druck; druckgerechtes Modell und Explosionsansicht, alles in der Bauanleitung (Artifact).
+
+**Umsetzung:** `work/druckteile/druckteile.py` (CadQuery) modelliert alle Eigenbauteile neu aus derselben Bezugsgeometrie (`work/druckteile/geo.mjs` → `geo.json` aus `src/laser-aid.js`, Schwingenlänge nach DN 400). 13 Druckdateien in `Zeichnungen/Druckteile/` als STL, 3MF und STEP in Druckausrichtung, dazu `Baugruppe_Messrad.step` und `Baugruppe_Laserkopf.step` in Einbaulage, `teile.json` und `LIESMICH.txt`. Druckgerecht: ohne Stützstruktur, Gewindeeinsätze M3 (12 Stück), Lagerbohrungen mit Reibzugabe (Ø7,8/9,8/11,8), Federsenkungen ohne Änderung der Federlänge. Konstruktive Abweichungen der Druckversion gegenüber den Frästeil-Zeichnungen: Schwinge zweiteilig (Außenarm mit Federteller, Innenarm mit Nabe und Querriegel), Lagerauge Ø22 statt Bohrung in 12 mm Armhöhe, neues Drehgebergehäuse 34 × 30 × 10 (Boden 0,8 mm, Spalt Chip–Magnet ≈ 1,3 mm, Welle dafür 0,5 mm nach innen), Platte ohne Außensteg hinter x −140 und neues Bohrbild (Lagerbock 4 × M3 senk, Abstreifer hinten innen, M6 vorn mit Mutter), Lagerbock-Grundplatte hinter der Achse freigeschnitten, Laserkopf mit Laseraufnahmen Ø9,3/Ø12,4 und Kabelfenstern, Rohrschellen mit je 2 × M3 × 25, seitliche M8-Verschraubung auf y 30. Das Web-Modell (`src/`) und das PDF bleiben die Frästeil-Fassung.
+
+**Bauanleitung:** Neuer Abschnitt „3D-Druck“ mit 3D-Ansicht (Baugruppe Messrad/Laserkopf, Explosionsregler, Federweg −6…+12 mm, Kaufteile ein/aus, Namen per Antippen), ZIP-Downloads je Teil und gesamt, Material, Nacharbeit, Kleinteile und Zusammenbau. Generator der Seite liegt außerhalb des Repos (Scratchpad).
+
+**Geprüft:** `druckteile.py --check`: keine Durchdringung zwischen Schwinge/Rad/Lager/Gehäuse und festen Teilen bei Federweg −6/0/+6/+12 in allen fünf DN; Federlänge im Bereich; kleinster Abstand zur Sohle 2,0 mm (DN 300, −6, Drehgebergehäuse), sonst ≥ 3 mm. Druckausrichtung und Baugruppe in Chromium gerendert und angesehen; Seite bei 390 px ohne Querscrollen. Nicht gedruckt, nicht montiert; AS5600-Platinengröße und Grünlaser-Maße sind Annahmen (Tasche 24 × 24, Ø12 × ≤ 34).
+
 ## 09.10.2026 – Amazon-Warenkorb und Anpassung an lieferbare Teile
 
 **Auftrag:** Alle Materialien als detaillierten Amazon-Warenkorb.

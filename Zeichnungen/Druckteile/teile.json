@@ -1,0 +1,210 @@
+[
+ {
+  "key": "platte",
+  "file": "01_Verlaengerungsplatte",
+  "pos": "1",
+  "name": "Verlängerungsplatte",
+  "qty": 1,
+  "mat": "Prototyp PETG/ASA · Serie Alu 7 mm (STEP lasern/wasserstrahlen)",
+  "orient": "flach, Unterseite (mit Senkungen) aufs Bett",
+  "post": "—",
+  "size": [
+   150.0,
+   105.0,
+   7.0
+  ],
+  "volume": 86.7
+ },
+ {
+  "key": "lasche",
+  "file": "02_Verbindungslasche",
+  "pos": "2",
+  "name": "Verbindungslasche",
+  "qty": 1,
+  "mat": "Prototyp PETG/ASA · Serie Edelstahl 6 mm (STEP)",
+  "orient": "flach aufs Bett",
+  "post": "—",
+  "size": [
+   80.0,
+   80.0,
+   6.0
+  ],
+  "volume": 37.5
+ },
+ {
+  "key": "lagerbock",
+  "file": "03_Lagerbock",
+  "pos": "3",
+  "name": "Lagerbock (Gabelkopf)",
+  "qty": 1,
+  "mat": "PETG/ASA oder PA12 (SLS/MJF)",
+  "orient": "stehend, Grundplatte aufs Bett",
+  "post": "Bohrung Ø8 auf 8 H7 reiben · 6 Gewindeeinsätze M3 einschmelzen (4 unten, 2 oben)",
+  "size": [
+   20.0,
+   44.0,
+   24.0
+  ],
+  "volume": 7.2
+ },
+ {
+  "key": "federwinkel",
+  "file": "04_Federwinkel",
+  "pos": "4",
+  "name": "Federwinkel mit Zugentlastung",
+  "qty": 1,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "kopfüber, Oberseite aufs Bett (Zapfen zeigt nach oben)",
+  "post": "—",
+  "size": [
+   48.0,
+   18.0,
+   25.0
+  ],
+  "volume": 6.7
+ },
+ {
+  "key": "schwinge_aussen",
+  "file": "05a_Schwinge_Aussenarm",
+  "pos": "5a",
+  "name": "Schwinge Außenarm mit Federteller",
+  "qty": 1,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "flach, Innenseite aufs Bett (Federteller zeigt nach oben)",
+  "post": "Ø10 auf 10 H7, Lagersitz auf 12 H7 reiben",
+  "size": [
+   86.8,
+   22.0,
+   15.5
+  ],
+  "volume": 6.3
+ },
+ {
+  "key": "schwinge_innen",
+  "file": "05b_Schwinge_Innenarm",
+  "pos": "5b",
+  "name": "Schwinge Innenarm mit Nabe und Querriegel",
+  "qty": 1,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "flach, Außenseite aufs Bett (Nabe und Riegel nach oben)",
+  "post": "Ø10 auf 10 H7, Lagersitz auf 12 H7 reiben · 2 Gewindeeinsätze M3 in den Riegel",
+  "size": [
+   73.3,
+   22.0,
+   22.0
+  ],
+  "volume": 7.3
+ },
+ {
+  "key": "distanzring_1",
+  "file": "05c_Distanzring_2x",
+  "pos": "5c",
+  "name": "Distanzring 11/8,3 × 3",
+  "qty": 2,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "flach",
+  "post": "Länge an die Radnabe anpassen (Rad 12 breit → 3 mm)",
+  "size": [
+   13.0,
+   13.0,
+   3.0
+  ],
+  "volume": 0.2
+ },
+ {
+  "key": "drehgebergehaeuse",
+  "file": "08_Drehgebergehaeuse",
+  "pos": "8",
+  "name": "Drehgebergehäuse AS5600 (wird vergossen)",
+  "qty": 1,
+  "mat": "PETG/ASA (kein Metall: Magnetfeld)",
+  "orient": "Boden (0,8 mm) aufs Bett, offen nach oben",
+  "post": "Platine Chip voran einlegen, Kabel durch, mit Gießharz vergießen",
+  "size": [
+   34.0,
+   30.0,
+   10.0
+  ],
+  "volume": 4.8
+ },
+ {
+  "key": "abstreifer_vorn",
+  "file": "24a_Abstreifer_vorn",
+  "pos": "24a",
+  "name": "Sohlenabstreifer vorn (Leiste)",
+  "qty": 1,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "auf der Seite liegend",
+  "post": "Lippe NBR 16 × 3 einstecken, 2 × M3 quer klemmen",
+  "size": [
+   49.0,
+   6.0,
+   8.0
+  ],
+  "volume": 1.8
+ },
+ {
+  "key": "abstreifer_hinten",
+  "file": "24b_Abstreifer_hinten",
+  "pos": "24b",
+  "name": "Sohlenabstreifer hinten (Leiste)",
+  "qty": 1,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "auf der Seite liegend",
+  "post": "wie vorn",
+  "size": [
+   38.0,
+   6.0,
+   8.0
+  ],
+  "volume": 1.2
+ },
+ {
+  "key": "laserkopf",
+  "file": "13_Laserkopf_Gehaeuse",
+  "pos": "13",
+  "name": "Laserkopf-Gehäuse (wird vergossen)",
+  "qty": 1,
+  "mat": "ASA oder PETG, schwarz",
+  "orient": "stehend, Boden aufs Bett",
+  "post": "4 Gewindeeinsätze M3 von unten · Laser ausrichten (Linie quer), vergießen, Fenster einkleben",
+  "size": [
+   40.0,
+   44.0,
+   39.0
+  ],
+  "volume": 25.2
+ },
+ {
+  "key": "schelle_oben_1",
+  "file": "14a_Rohrschelle_Oberteil_2x",
+  "pos": "14a",
+  "name": "Rohrschelle Oberteil",
+  "qty": 2,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "kopfüber, Oberseite aufs Bett",
+  "post": "—",
+  "size": [
+   8.0,
+   44.0,
+   10.5
+  ],
+  "volume": 2.2
+ },
+ {
+  "key": "schelle_unten_1",
+  "file": "14b_Rohrschelle_Unterteil_2x",
+  "pos": "14b",
+  "name": "Rohrschelle Unterteil",
+  "qty": 2,
+  "mat": "PETG/ASA oder PA12",
+  "orient": "Ohren aufs Bett (Bogen oben)",
+  "post": "—",
+  "size": [
+   8.0,
+   44.0,
+   13.0
+  ],
+  "volume": 1.7
+ }
+]
