@@ -158,8 +158,8 @@ OUTER_CUT_X = -140.0   # Druckversion: Außenstreifen hinter x −140 entfällt 
 
 HOLES_A = [(-88, -25), (-88, 25)]                                  # M6 + Mutter oben
 HOLES_D = [(-112, -48), (-121, -48), (-112, -12), (-121, -12)]     # M3 Senk von unten -> Einsatz Lagerbock
-HOLES_WF = [(-130, -48.75), (-130, -9)]                            # Abstreifer vorn, M3 + Mutter oben
-HOLES_WR = [(-210, -11), (-210, -3)]                               # Abstreifer hinten, M3 + Mutter oben
+HOLES_WF = [(-130, -12), (-130, -5)]                               # Abstreifer-Halter vorn, M3 + Mutter oben
+HOLES_WR = [(-210, -12), (-210, -5)]                               # Abstreifer-Halter hinten, M3 + Mutter oben
 
 def make_plate():
     p = box(X0, X1, -T, 0, -HW, HW)
@@ -339,27 +339,71 @@ part('drehgebergehaeuse', rocker_place(SENSOR_L), 'messrad', pos='8', name='Dreh
      post='Platine Chip voran einlegen, Kabel durch, mit Gießharz vergießen',
      local=SENSOR_L, rocker=True, printrot=[('y', 180)], explode=[0, 0, -75], color='#3a3f45')
 
-# --- Sohlenabstreifer --------------------------------------------------------
+# --- Sohlenabstreifer: fester Halter + Wischleiste zum Wechseln ohne Werkzeug ----
+# Der Halter bleibt an der Platte. Die Wischleiste (TPU, Gleitstück + Lippe aus einem Stück)
+# wird von außen (−z) in die Schwalbenschwanznut geschoben und rastet ein; zum Wechseln
+# an der Lippe herausziehen. Im Betonrohr schleift die Lippe schneller ab: Ersatz drucken.
 WP = S['wiper']
-def make_wiper(x, z0, z1, holes):
-    y0, y1 = -T - 6, -T
-    b = box(x - 4, x + 4, y0, y1, z0, z1)
+WH = dict(z0=-46.0, z1=-2.0, stop=-18.0, w=14.0, h=7.0, top=9.5, bot=6.0, roof=1.5, clr=.25)
+DET = dict(z=-21.0, y=-T - 4.0, r=1.5)            # Rastung: Bohrung Ø3 in der Schiene, Noppe an der Leiste
+
+def _dove(x, w_top, w_bot, y_top, y_bot, z0, z1):
+    return prism([(x - w_bot / 2, y_bot, z0), (x + w_bot / 2, y_bot, z0), (x + w_top / 2, y_top, z0), (x - w_top / 2, y_top, z0)], (0, 0, z1 - z0))
+
+def make_holder(x, holes):
+    y1, y0 = -T, -T - WH['h']
+    b = box(x - WH['w'] / 2, x + WH['w'] / 2, y0, y1, WH['z0'], WH['z1'])
     b = fillet_edges(b, 1, lambda e: (lambda a, c: abs(a.x - c.x) < 1e-6 and abs(a.y - c.y) < 1e-6)(e.startPoint(), e.endPoint()))
-    lz0, lz1 = WZ - WP['lip']['w'] / 2 - .5, WZ + WP['lip']['w'] / 2 + .5
-    cuts = [box(x - 1.65, x + 1.65, y0 - 1, y0 + 4, lz0, lz1)]                  # Schlitz für Lippe 3 mm
-    for z in (WZ - 4, WZ + 4):
-        cuts.append(cylx(M3_CLR / 2, y0 + 2, z, x - 5, x + 5))
+    cuts = [_dove(x, WH['top'], WH['bot'], y1 - WH['roof'], y0 - .01, WH['z0'] - 1, WH['stop']),
+            cylx(DET['r'], DET['y'], DET['z'], x - WH['w'], x)]                    # Rastbohrung nur in der −x-Schiene
     for hz in holes:
         cuts.append(cyly(M3_CLR / 2, x, hz, y0 - 1, y1 + 1))
         cuts.append(cyly(3.3, x, hz, y0 - 1, y0 + 3))
-    return C(b, *cuts)
+    b = C(b, *cuts)
+    # Einführschräge am offenen Ende
+    return b
 
-part('abstreifer_vorn', make_wiper(-130, -51, -2, [z for _, z in HOLES_WF]), 'messrad', pos='24a', name='Sohlenabstreifer vorn (Leiste)', qty=1,
-     mat='PETG/ASA oder PA12', orient='auf der Seite liegend', post='Lippe NBR 16 × 3 einstecken, 2 × M3 quer klemmen',
-     printrot=[('y', -90)], explode=[0, -32, 0], color='#5d6872')
-part('abstreifer_hinten', make_wiper(-210, -38, 0, [z for _, z in HOLES_WR]), 'messrad', pos='24b', name='Sohlenabstreifer hinten (Leiste)', qty=1,
-     mat='PETG/ASA oder PA12', orient='auf der Seite liegend', post='wie vorn',
-     printrot=[('y', -90)], explode=[0, -32, 0], color='#5d6872')
+def lip_edge(d, z, overlap=2.0):
+    """Lippenkante folgt der Sohlenkrümmung: Rohrradius plus Überdeckung (Lippe legt sich an)."""
+    r = d["R"] + overlap
+    return -math.sqrt(r * r - z * z) - d['top']
+
+def make_strip(x, d):
+    c = WH['clr']
+    y1, y0 = -T - WH['roof'] - c, -T - WH['h']
+    za, zb = WH['z0'] + .3, WH['stop'] - .3
+    slider = _dove(x, WH['top'] - 2 * c, WH['bot'] - 2 * c + (WH['top'] - WH['bot']) * c / (WH['h'] - WH['roof']), y1, y0, za, zb)
+    # Lippe 3 mm, Unterkante als Polygon entlang z (Sohlenkrümmung)
+    n = 14
+    zs = [za + (zb - za) * i / n for i in range(n + 1)]
+    pts = [(z, lip_edge(d, z)) for z in zs]
+    poly = [(x - 1.5, y0 + .01, za)] + [(x - 1.5, y, z) for z, y in pts] + [(x - 1.5, y0 + .01, zb)]
+    lip = prism(poly, (3, 0, 0))
+    strip = U(slider, lip)
+    # Rastnoppe auf der −x-Flanke
+    hw = (WH['bot'] + (WH['top'] - WH['bot']) * (DET['y'] - y0) / (WH['h'] - WH['roof'])) / 2 - c
+    strip = U(strip, cq.Solid.makeSphere(1.1, V(x - hw + .35, DET['y'], DET['z'])).intersect(box(x - hw - 2, x - hw + .5, DET['y'] - 2, DET['y'] + 2, DET['z'] - 2, DET['z'] + 2)))
+    # Griffkerbe am Einschubende (Finger/Zange)
+    return C(strip, box(x - .6, x + .6, y0 - 30, y0 - 3, za - 1, za + 3))
+
+part('halter_vorn', make_holder(-130, [z for _, z in HOLES_WF]), 'messrad', pos='24a', name='Abstreifer-Halter (bleibt an der Platte)', qty=2,
+     mat='PETG/ASA oder PA12', orient='kopfüber, Nut nach oben', post='—',
+     printrot=[('x', -90)], explode=[0, -30, 0], color='#5d6872', dup='halter')
+part('halter_hinten', make_holder(-210, [z for _, z in HOLES_WR]), 'messrad', pos='24a', name='Abstreifer-Halter (bleibt an der Platte)', qty=0,
+     mat='', orient='', post='', printrot=[('x', -90)], explode=[0, -30, 0], color='#5d6872', hidden_print=True)
+STRIPS = {}
+for d in GEO['dn']:
+    STRIPS[d['dn']] = [make_strip(-130, d), make_strip(-210, d)]
+part('wischleiste_vorn', STRIPS[REF['dn']][0], 'messrad', pos='24b', name='Wischleiste mit Lippe (Verschleißteil)', qty=2,
+     mat='TPU 95A', orient='stehend, Einschubende aufs Bett', post='einschieben bis sie einrastet; Ersatz vorrätig drucken',
+     printrot=[], explode=[0, -28, -55], color='#e0a23a', hidden_print=True)
+part('wischleiste_hinten', STRIPS[REF['dn']][1], 'messrad', pos='24b', name='Wischleiste mit Lippe (Verschleißteil)', qty=0,
+     mat='', orient='', post='', printrot=[], explode=[0, -28, -55], color='#e0a23a', hidden_print=True)
+for d in GEO['dn']:
+    lbl = {300: 'DN 300', 400: 'DN 400', 500: 'DN 500', 600: 'DN 600', 700: 'DN 650–700'}[d['dn']]
+    part(f'wischleiste_dn{d["dn"]}', STRIPS[d['dn']][0], 'druck', pos='24b', name=f'Wischleiste {lbl} (2 × je Schalung, Verschleißteil)', qty=2,
+         mat='TPU 95A (Shore 95 A)', orient='stehend, Einschubende aufs Bett',
+         post='Lippe folgt der Sohle dieser Rohrgröße; Ersatz vorrätig drucken', printrot=[], explode=[0, 0, 0], color='#e0a23a', noview=True)
 
 # --- Referenzteile untere Baugruppe ------------------------------------------
 def make_wheel():
@@ -403,7 +447,7 @@ for x, z in HOLES_A:
     scr.append(screw(10.5, 3.3, 6, 20, (x, -T - ST['t'], z), (0, 1, 0)))
     scr.append(nut(10, 6, (x, 0, z), (0, 1, 0)))
 for x, z in HOLES_WF + HOLES_WR:
-    scr.append(screw(5.5, 3, 3, 16, (x, -T - 3, z), (0, 1, 0)))
+    scr.append(screw(5.5, 3, 3, 16, (x, -T - WH['h'] + 3, z), (0, 1, 0)))
     scr.append(nut(5.5, 4, (x, 0, z), (0, 1, 0)))
 ref('schrauben_unten', U(*scr), 'messrad', name='Schrauben/Muttern A2', explode=[0, 0, 0], color='#8f9aa3', follow='platte')
 rsc = [screw(6.7, 1.7, 3, 12, ((XB[0] + XB[1]) / 2, v, ZO0), (0, 0, 1), csk=True) for v in (-3.5, 3.5)]
@@ -521,8 +565,10 @@ FILE_NAMES = {
     'federwinkel': '04_Federwinkel', 'schwinge_aussen': '05a_Schwinge_Aussenarm', 'schwinge_innen': '05b_Schwinge_Innenarm',
     'distanzring_1': '05c_Distanzring_2x', 'drehgebergehaeuse': '08_Drehgebergehaeuse',
     'laserkopf': '13_Laserkopf_Gehaeuse', 'schelle_oben_1': '14a_Rohrschelle_Oberteil_2x',
-    'schelle_unten_1': '14b_Rohrschelle_Unterteil_2x', 'abstreifer_vorn': '24a_Abstreifer_vorn',
-    'abstreifer_hinten': '24b_Abstreifer_hinten'}
+    'schelle_unten_1': '14b_Rohrschelle_Unterteil_2x', 'halter_vorn': '24a_Abstreifer_Halter_2x',
+    'wischleiste_dn300': '24b_Wischleiste_DN300_2x', 'wischleiste_dn400': '24b_Wischleiste_DN400_2x',
+    'wischleiste_dn500': '24b_Wischleiste_DN500_2x', 'wischleiste_dn600': '24b_Wischleiste_DN600_2x',
+    'wischleiste_dn700': '24b_Wischleiste_DN650-700_2x'}
 
 def export_all(outdir):
     stl, step, tmf = (os.path.join(outdir, d) for d in ('STL', 'STEP', '3MF'))
@@ -559,6 +605,8 @@ def export_view(outdir):
     items = []
     for kind, table in (('print', PARTS), ('ref', REFS)):
         for key, p in table.items():
+            if p.get('noview'):
+                continue
             fn = f'{key}.stl'
             cq.exporters.export(p['solid'], os.path.join(outdir, fn), tolerance=0.05, angularTolerance=0.2)
             items.append(dict(key=key, file=fn, kind=kind, group=p['group'], name=p['name'], pos=p.get('pos', ''),
@@ -600,7 +648,7 @@ def check():
             a = alpha_for(d['axle'][1] + defl)
             mins = []
             for k, p in list(PARTS.items()) + list(REFS.items()):
-                if p['group'] != 'messrad' or k in ('rad', 'radnabe', 'stuetzplatte', 'feder'):
+                if p['group'] != 'messrad' or k in ('rad', 'radnabe', 'stuetzplatte', 'feder') or k.startswith('wischleiste'):
                     continue
                 s = rocker_place(p['local'], a) if p.get('rocker') else p['solid']
                 verts = s.tessellate(0.2)[0]
@@ -613,6 +661,15 @@ def check():
         v = PARTS[k]['local'].intersect(WHEEL_L).Volume()
         if v > 0.05:
             report.append(f'KOLLISION Rad ↔ {k}: {v:.2f} mm³')
+    # Wischleiste sitzt spielfrei-frei in der Nut (Noppe greift in die Rastbohrung)
+    for h, w in (('halter_vorn', 'wischleiste_vorn'), ('halter_hinten', 'wischleiste_hinten')):
+        v = PARTS[h]['solid'].intersect(PARTS[w]['solid']).Volume()
+        if v > 0.05:
+            report.append(f'KOLLISION {h} ↔ {w}: {v:.2f} mm³')
+    # Lippe erreicht die Sohle in jeder DN (Überdeckung an der Radspur)
+    for d in GEO['dn']:
+        e = [lip_edge(d, z) - (-math.sqrt(d['R'] ** 2 - z * z) - d['top']) for z in (-38, -30, -22)]
+        clear.append(f'DN{d["dn"]} Wischleiste: Lippe {min(-x for x in e):.1f}–{max(-x for x in e):.1f} mm über die Sohle hinaus (biegt sich an)')
     seat0 = to_world(SEAT_U, SEAT_V)[1]
     return report, clear, dict(alpha0=ALPHA0, L=L, seat_u=SEAT_U, seat_y=seat0, spring_len=BRACKET_Y - seat0)
 

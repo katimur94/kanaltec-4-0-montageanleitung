@@ -128,36 +128,100 @@
   "volume": 4.8
  },
  {
-  "key": "abstreifer_vorn",
-  "file": "24a_Abstreifer_vorn",
+  "key": "halter_vorn",
+  "file": "24a_Abstreifer_Halter_2x",
   "pos": "24a",
-  "name": "Sohlenabstreifer vorn (Leiste)",
-  "qty": 1,
+  "name": "Abstreifer-Halter (bleibt an der Platte)",
+  "qty": 2,
   "mat": "PETG/ASA oder PA12",
-  "orient": "auf der Seite liegend",
-  "post": "Lippe NBR 16 × 3 einstecken, 2 × M3 quer klemmen",
+  "orient": "kopfüber, Nut nach oben",
+  "post": "—",
   "size": [
-   49.0,
-   6.0,
-   8.0
+   14.0,
+   44.0,
+   7.0
   ],
-  "volume": 1.8
+  "volume": 2.8
  },
  {
-  "key": "abstreifer_hinten",
-  "file": "24b_Abstreifer_hinten",
+  "key": "wischleiste_dn300",
+  "file": "24b_Wischleiste_DN300_2x",
   "pos": "24b",
-  "name": "Sohlenabstreifer hinten (Leiste)",
-  "qty": 1,
-  "mat": "PETG/ASA oder PA12",
-  "orient": "auf der Seite liegend",
-  "post": "wie vorn",
+  "name": "Wischleiste DN 300 (2 × je Schalung, Verschleißteil)",
+  "qty": 2,
+  "mat": "TPU 95A (Shore 95 A)",
+  "orient": "stehend, Einschubende aufs Bett",
+  "post": "Lippe folgt der Sohle dieser Rohrgröße; Ersatz vorrätig drucken",
   "size": [
-   38.0,
-   6.0,
-   8.0
+   9.0,
+   20.6,
+   27.4
   ],
-  "volume": 1.2
+  "volume": 2.1
+ },
+ {
+  "key": "wischleiste_dn400",
+  "file": "24b_Wischleiste_DN400_2x",
+  "pos": "24b",
+  "name": "Wischleiste DN 400 (2 × je Schalung, Verschleißteil)",
+  "qty": 2,
+  "mat": "TPU 95A (Shore 95 A)",
+  "orient": "stehend, Einschubende aufs Bett",
+  "post": "Lippe folgt der Sohle dieser Rohrgröße; Ersatz vorrätig drucken",
+  "size": [
+   9.0,
+   20.9,
+   27.4
+  ],
+  "volume": 2.2
+ },
+ {
+  "key": "wischleiste_dn500",
+  "file": "24b_Wischleiste_DN500_2x",
+  "pos": "24b",
+  "name": "Wischleiste DN 500 (2 × je Schalung, Verschleißteil)",
+  "qty": 2,
+  "mat": "TPU 95A (Shore 95 A)",
+  "orient": "stehend, Einschubende aufs Bett",
+  "post": "Lippe folgt der Sohle dieser Rohrgröße; Ersatz vorrätig drucken",
+  "size": [
+   9.0,
+   21.1,
+   27.4
+  ],
+  "volume": 2.2
+ },
+ {
+  "key": "wischleiste_dn600",
+  "file": "24b_Wischleiste_DN600_2x",
+  "pos": "24b",
+  "name": "Wischleiste DN 600 (2 × je Schalung, Verschleißteil)",
+  "qty": 2,
+  "mat": "TPU 95A (Shore 95 A)",
+  "orient": "stehend, Einschubende aufs Bett",
+  "post": "Lippe folgt der Sohle dieser Rohrgröße; Ersatz vorrätig drucken",
+  "size": [
+   9.0,
+   21.2,
+   27.4
+  ],
+  "volume": 2.2
+ },
+ {
+  "key": "wischleiste_dn700",
+  "file": "24b_Wischleiste_DN650-700_2x",
+  "pos": "24b",
+  "name": "Wischleiste DN 650–700 (2 × je Schalung, Verschleißteil)",
+  "qty": 2,
+  "mat": "TPU 95A (Shore 95 A)",
+  "orient": "stehend, Einschubende aufs Bett",
+  "post": "Lippe folgt der Sohle dieser Rohrgröße; Ersatz vorrätig drucken",
+  "size": [
+   9.0,
+   21.3,
+   27.4
+  ],
+  "volume": 2.2
  },
  {
   "key": "laserkopf",

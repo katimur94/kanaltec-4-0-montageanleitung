@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 09.10.2026 – Sohlenabstreifer mit Wechsel-Wischleiste (Druckversion)
+
+**Anlass (Nutzer):** Der Abstreifer muss sich leicht abbauen lassen; im Betonrohr schleift die Lippe schnell ab.
+
+**Umsetzung:** In `work/druckteile/druckteile.py` ist der Abstreifer zweiteilig: ein fester Halter (14 × 7 × 44, Schwalbenschwanznut von außen offen, Anschlag innen, Rastbohrung Ø3) bleibt mit je 2 × M3 × 16 an der Platte (neue Bohrungen x −130 / −210, z −12 / −5). Die Wischleiste ist ein TPU-95A-Teil aus Gleitstück und 3-mm-Lippe; sie wird ohne Werkzeug eingeschoben und rastet mit einer Noppe ein. Lippenkante folgt der Sohlenkrümmung mit 2 mm Überdeckung; je DN eine Datei (`24b_Wischleiste_DN…_2x`). Klemmschrauben der alten Gummilippe entfallen. Bauanleitung: Tabelle, Kleinteile, Zusammenbau und neuer Abschnitt „Wischleiste wechseln“.
+
+**Geprüft:** `--check`: keine Kollision (auch Halter ↔ Wischleiste und Rad bei −6 … +12 mm), Lippe in allen DN 2,0 mm über die Sohle, Halterabstand zur Sohle ≥ 6,9 mm. Teile und Viewer gerendert und angesehen. Nicht gedruckt; Passung der TPU-Leiste in der Nut (0,25 mm Spiel je Seite) muss der Probedruck zeigen. PDF und Web-Modell zeigen weiter die verschraubte Leiste.
+
 ## 09.10.2026 – 3D-Druckteile (Druckversion D1) mit Explosionsansicht
 
 **Auftrag (Nutzer):** Viele Teile per 3D-Druck; druckgerechtes Modell und Explosionsansicht, alles in der Bauanleitung (Artifact).

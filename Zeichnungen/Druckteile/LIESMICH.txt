@@ -13,6 +13,12 @@ Ordner
 
 Anzahl: Dateien mit "_2x" zweimal drucken, alle anderen einmal.
 
+Sohlenabstreifer: Wischleiste ohne Werkzeug wechseln
+  24a_Abstreifer_Halter_2x bleibt an der Platte (je 2 x M3 x 16, Mutter oben).
+  24b_Wischleiste_DN..._2x (TPU 95A) von außen in die Nut schieben, bis sie einrastet;
+  zum Tauschen an der Lippe herausziehen. Lippenkante folgt der Sohle der jeweiligen
+  Rohrgröße und ragt 2 mm darüber hinaus. Verschleißteil: für Betonrohr Ersatz drucken.
+
 Material
   Kein PLA. Unten im Abwasser PETG oder ASA, besser PA12 (SLS/MJF) beim Druckdienst.
   Laserkopf: ASA oder PETG schwarz.
@@ -22,6 +28,7 @@ Material
 Einstellungen (FDM)
   Düse 0,4 · Schicht 0,2 mm · 5 Wände · 6 Böden/Decken · 60 % Gyroid
   Platte und Lasche 100 %. Keine Stützstruktur nötig.
+  Wischleisten: TPU 95A, 100 %, 20-30 mm/s, möglichst Direktextruder.
 
 Nacharbeit
   Lagerbock: Ø7,8 auf Ø8 H7 reiben.
@@ -32,7 +39,8 @@ Nacharbeit
 
 Abweichungen zu den Frästeil-Zeichnungen (Laser-Positionierhilfe-DSS-Flex.pdf)
   - Platte: kein Außensteg hinter x -140 (Platz für das Drehgebergehäuse);
-    Bohrungen Lagerbock 4 x M3 senk, hinterer Abstreifer innen, M6 vorn mit Mutter.
+    Bohrungen Lagerbock 4 x M3 senk, Abstreifer-Halter je 2 x M3 innen, M6 vorn mit Mutter.
+  - Abstreifer zweiteilig: fester Halter mit Schwalbenschwanznut + TPU-Wischleiste.
   - Schwinge zweiteilig (Außenarm mit Federteller, Innenarm mit Nabe und Querriegel).
   - Drehgebergehäuse 34 x 30 x 10 für AS5600-Platinen bis 24 x 24 mm, Boden 0,8 mm.
   - Laserkopf: seitliche M8-Verschraubung auf Höhe 30 mm über Rohrachse,
