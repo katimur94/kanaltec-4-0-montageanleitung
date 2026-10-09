@@ -1,5 +1,16 @@
 # Werbung: DSS-Flex Verfahren
 
+## Laser-Positionierhilfe – Anbau und Einsatz – 09.10.2026
+
+Erklärfilm (ca. 3 min, 1920 × 1080, 25 Bilder/s) mit Sprecher, Untertiteln und eigener Musik. Teil 1 zeigt den Anbau der Druckversion an der Schalung in neun Schritten (Teile fliegen nacheinander ein, Federweg- und Wischleisten-Wechsel als Demonstration), dann den Bedienkasten. Teil 2 zeigt den Einsatz im Kanal mit dem Prozessmodell aus `src/model.js` (DN 350–400, offene Schalung): über den Anschluss, rote Linie auf die Mitte, NULL, zurück bis Grün mit Bedienkasten-Einblendung, Anpressen, Nahaufnahme Messrad.
+
+1. `python work/laser-anbau-audio.py --speak` – Sprecher je Szene (edge-tts, `de-DE-ConradNeural`), misst die Längen und schreibt den Zeitplan `work/qa/laser-anbau/timeline.json` aus dem Drehbuch `work/laser-anbau-script.json`.
+2. `node work/build-laser-anbau-film.mjs` – bündelt `work/film-laser-anbau-studio.js`; erzeugt die Druckteil-Netze mit `work/druckteile/druckteile.py --view` (CadQuery).
+3. `node work/render-laser-anbau-film.mjs --qa --r=.6667 --times=…` für Kontrollbilder; Film in Abschnitten mit `work/qa/laser-anbau/render-all.sh` (3D intern 1280 × 720, Schrift und Einblendungen in 1920 × 1080).
+4. `python work/laser-anbau-audio.py --mix`, danach Bild und Ton mit FFmpeg zusammenführen.
+
+Ausgabe: `Videos/DSS-Flex-Verfahren-2026/DiTom-Laser-Positionierhilfe-Anbau-und-Einsatz.mp4`.
+
 ## Gesamtablauf: Fräsen → Einbau im Schacht → Sanierung – 28.09.2026
 
 Ein durchgehender Film (88 s) aus dem aktuellen Modell: Fräsen von Einragung und Wurzeln, Einbau über den Schacht (LKW mit Säulenkran, Hebebügel, Aufsetzen vor dem Rohr, Klappvorrichtung), Sanierung mit Wassereintritt auf Stufe „stark“ (Regler 60 %). Kapitelkarten „1 · Fräsen“, „2 · Einbau im Schacht“, „3 · Sanierung“ mit weichen Abblenden. Je Format drei Fassungen: mit Sprecher, nur Musik und ein Werbespot (ca. 29 s, Zusammenschnitt mit Überblendungen). Formate: YouTube 1920 × 1080 und Reel/Instagram 1080 × 1920, 25 Bilder/s, H.264/AAC, jeweils unter 49 MB.

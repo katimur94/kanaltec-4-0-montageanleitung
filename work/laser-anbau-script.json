@@ -1,0 +1,720 @@
+{
+ "title": "Laser-Positionierhilfe – Anbau und Einsatz",
+ "dn": 400,
+ "note": "Drehbuch für work/film-laser-anbau-studio.js. min = Mindestdauer in s; die tatsächliche Dauer ergibt sich aus der Sprecherlänge (work/laser-anbau-audio.py). Kameras in Modellkoordinaten (mm), bei Einsatz-Szenen relativ zur Fahrposition, wenn rel=true.",
+ "shots": [
+  {
+   "id": "intro",
+   "type": "brand",
+   "min": 4.0,
+   "text": "Laser-Positionierhilfe für die DSS-Flex Schalung. Anbau und Einsatz."
+  },
+  {
+   "id": "a1",
+   "type": "asm",
+   "min": 6,
+   "chapter": "Anbau 1 · Verlängerungsplatte",
+   "text": "Zuerst die Verlängerungsplatte: stumpf an die Stützplatte legen. Die Lasche kommt von unten und wird mit vier M6-Schrauben verschraubt.",
+   "arrive": [
+    [
+     "platte",
+     [
+      -140,
+      0,
+      0
+     ],
+     0
+    ],
+    [
+     "lasche",
+     [
+      0,
+      -90,
+      0
+     ],
+     0.25
+    ],
+    [
+     "schrauben_unten",
+     [
+      0,
+      -60,
+      0
+     ],
+     0.45
+    ]
+   ],
+   "pos": [
+    -430,
+    -90,
+    -330
+   ],
+   "pos2": [
+    -410,
+    -100,
+    -310
+   ],
+   "target": [
+    -140,
+    -172,
+    -15
+   ],
+   "fov": 26
+  },
+  {
+   "id": "a2",
+   "type": "asm",
+   "min": 5,
+   "chapter": "Anbau 2 · Abstreifer-Halter",
+   "text": "Dann die zwei Abstreifer-Halter von unten anschrauben. Sie bleiben dauerhaft an der Platte.",
+   "arrive": [
+    [
+     "halter_vorn",
+     [
+      0,
+      -70,
+      0
+     ],
+     0
+    ],
+    [
+     "halter_hinten",
+     [
+      0,
+      -70,
+      0
+     ],
+     0.15
+    ]
+   ],
+   "pos": [
+    -380,
+    -330,
+    -260
+   ],
+   "pos2": [
+    -360,
+    -320,
+    -245
+   ],
+   "target": [
+    -165,
+    -182,
+    -20
+   ],
+   "fov": 28
+  },
+  {
+   "id": "a3",
+   "type": "asm",
+   "min": 4.5,
+   "chapter": "Anbau 3 · Lagerbock",
+   "text": "Der Lagerbock wird mit vier M3-Senkschrauben von unten befestigt.",
+   "arrive": [
+    [
+     "lagerbock",
+     [
+      0,
+      80,
+      0
+     ],
+     0
+    ]
+   ],
+   "pos": [
+    -360,
+    -110,
+    -280
+   ],
+   "pos2": [
+    -345,
+    -115,
+    -268
+   ],
+   "target": [
+    -125,
+    -160,
+    -28
+   ],
+   "fov": 24
+  },
+  {
+   "id": "a4",
+   "type": "asm",
+   "min": 7,
+   "chapter": "Anbau 4 · Schwinge mit Messrad",
+   "text": "Die Schwinge kommt fertig vormontiert: Messrad, Welle mit Magnet und Kugellager. Den Lagerbolzen durch den Lagerbock stecken und mit Sicherungsringen sichern.",
+   "arrive": [
+    [
+     "schwinge_aussen",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "schwinge_innen",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "distanzring_1",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "distanzring_2",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "rad",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "radnabe",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "radwelle",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "magnet",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "lager_1",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "lager_2",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "gleitlager_1",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "gleitlager_2",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "schrauben_schwinge",
+     [
+      -120,
+      50,
+      -60
+     ],
+     0
+    ],
+    [
+     "lagerbolzen",
+     [
+      0,
+      0,
+      -90
+     ],
+     0.5
+    ]
+   ],
+   "pos": [
+    -420,
+    -100,
+    -330
+   ],
+   "pos2": [
+    -400,
+    -105,
+    -315
+   ],
+   "target": [
+    -150,
+    -160,
+    -25
+   ],
+   "fov": 26
+  },
+  {
+   "id": "a5",
+   "type": "asm",
+   "min": 7,
+   "chapter": "Anbau 5 · Feder und Federwinkel",
+   "text": "Die Feder auf den Federteller, den Federwinkel darüber und mit zwei Schrauben auf die Wange. So drückt das Rad immer auf die Sohle und federt über Muffen ein.",
+   "arrive": [
+    [
+     "feder",
+     [
+      0,
+      70,
+      0
+     ],
+     0
+    ],
+    [
+     "federwinkel",
+     [
+      0,
+      100,
+      0
+     ],
+     0.2
+    ]
+   ],
+   "demo": "deflection",
+   "pos": [
+    -360,
+    -95,
+    -300
+   ],
+   "pos2": [
+    -350,
+    -100,
+    -292
+   ],
+   "target": [
+    -145,
+    -150,
+    -35
+   ],
+   "fov": 26
+  },
+  {
+   "id": "a6",
+   "type": "asm",
+   "min": 5,
+   "chapter": "Anbau 6 · Drehgeber",
+   "text": "Außen an die Schwinge kommt das vergossene Drehgebergehäuse. Es zählt die Radumdrehungen über den Magneten in der Welle.",
+   "arrive": [
+    [
+     "drehgebergehaeuse",
+     [
+      0,
+      0,
+      -90
+     ],
+     0
+    ]
+   ],
+   "pos": [
+    -300,
+    -140,
+    -260
+   ],
+   "pos2": [
+    -292,
+    -142,
+    -252
+   ],
+   "target": [
+    -170,
+    -168,
+    -45
+   ],
+   "fov": 26
+  },
+  {
+   "id": "a7",
+   "type": "asm",
+   "min": 8,
+   "chapter": "Anbau 7 · Wischleisten",
+   "text": "Die Wischleisten aus TPU werden von außen in die Halter geschoben, bis sie einrasten. Sie wischen die Spur vor dem Rad frei. Sind sie abgeschliffen, zum Beispiel im Betonrohr: einfach herausziehen und neue einschieben, ohne Werkzeug.",
+   "arrive": [
+    [
+     "wischleiste_vorn",
+     [
+      0,
+      0,
+      -80
+     ],
+     0
+    ],
+    [
+     "wischleiste_hinten",
+     [
+      0,
+      0,
+      -80
+     ],
+     0.15
+    ]
+   ],
+   "demo": "swap",
+   "pos": [
+    -380,
+    -260,
+    -300
+   ],
+   "pos2": [
+    -365,
+    -255,
+    -288
+   ],
+   "target": [
+    -170,
+    -182,
+    -30
+   ],
+   "fov": 28
+  },
+  {
+   "id": "a8",
+   "type": "asm",
+   "min": 7,
+   "chapter": "Anbau 8 · Laserkopf",
+   "text": "Der Laserkopf sitzt oben auf dem Zentralrohr, direkt hinter der Schildkante und über dem Wasser. Zwei Schellen von unten, dann die Laserlinien quer ausrichten.",
+   "arrive": [
+    [
+     "schelle_oben_1",
+     [
+      0,
+      50,
+      0
+     ],
+     0
+    ],
+    [
+     "schelle_oben_2",
+     [
+      0,
+      50,
+      0
+     ],
+     0
+    ],
+    [
+     "laserkopf",
+     [
+      0,
+      90,
+      0
+     ],
+     0.12
+    ],
+    [
+     "verschraubungen",
+     [
+      0,
+      90,
+      0
+     ],
+     0.12
+    ],
+    [
+     "laser_rot",
+     [
+      0,
+      140,
+      0
+     ],
+     0.3
+    ],
+    [
+     "laser_gruen",
+     [
+      0,
+      140,
+      0
+     ],
+     0.3
+    ],
+    [
+     "fenster",
+     [
+      0,
+      160,
+      0
+     ],
+     0.4
+    ],
+    [
+     "schelle_unten_1",
+     [
+      0,
+      -60,
+      0
+     ],
+     0.45
+    ],
+    [
+     "schelle_unten_2",
+     [
+      0,
+      -60,
+      0
+     ],
+     0.45
+    ],
+    [
+     "schrauben_kopf",
+     [
+      0,
+      -90,
+      0
+     ],
+     0.55
+    ]
+   ],
+   "pos": [
+    -520,
+    70,
+    -300
+   ],
+   "pos2": [
+    -500,
+    60,
+    -285
+   ],
+   "target": [
+    -270,
+    -45,
+    0
+   ],
+   "fov": 28,
+   "headFocus": true
+  },
+  {
+   "id": "a9",
+   "type": "asm",
+   "min": 7,
+   "chapter": "Anbau 9 · Spiralkabel und Stecker",
+   "text": "Ein Spiralkabel verbindet Messrad und Laserkopf, ein zweites führt zur neuen Steckdose an der Kabelbombe. Von dort laufen vier freie Adern im Roboterkabel bis ins Fahrzeug.",
+   "cables": true,
+   "robot": true,
+   "pos": [
+    -1000,
+    150,
+    -800
+   ],
+   "pos2": [
+    -930,
+    120,
+    -740
+   ],
+   "target": [
+    -520,
+    -80,
+    0
+   ],
+   "fov": 30
+  },
+  {
+   "id": "a10",
+   "type": "card",
+   "min": 6,
+   "chapter": "Bedienkasten im Fahrzeug",
+   "text": "Im Fahrzeug sitzt der Bedienkasten neben der Robotersteuerung. Mit WAHL stellt man die Schalung ein, mit NULL wird genullt."
+  },
+  {
+   "id": "e1",
+   "type": "use",
+   "min": 5,
+   "chapter": "Einsatz 1 · Über den Anschluss fahren",
+   "a": 2.0,
+   "b": 2.3,
+   "text": "Im Kanal: mit roter Laserlinie über den Anschluss fahren.",
+   "pos": [
+    -430,
+    260,
+    1380
+   ],
+   "pos2": [
+    -330,
+    240,
+    1300
+   ],
+   "target": [
+    -210,
+    95,
+    0
+   ],
+   "target2": [
+    -120,
+    110,
+    0
+   ]
+  },
+  {
+   "id": "e2",
+   "type": "use",
+   "min": 4.5,
+   "chapter": "Einsatz 2 · Rote Linie auf die Mitte",
+   "a": 2.3,
+   "b": 2.44,
+   "text": "Bis die rote Linie genau auf der Anschlussmitte steht. Dann stehen bleiben.",
+   "pos": [
+    160,
+    190,
+    930
+   ],
+   "pos2": [
+    110,
+    175,
+    860
+   ],
+   "target": [
+    -10,
+    150,
+    0
+   ],
+   "box": true
+  },
+  {
+   "id": "e3",
+   "type": "use",
+   "min": 5,
+   "chapter": "Einsatz 3 · NULL drücken",
+   "a": 2.44,
+   "b": 2.585,
+   "text": "NULL drücken. Die Linie blitzt zweimal, die Anzeige zeigt den Restweg.",
+   "ride": true,
+   "cam": [
+    -470,
+    62,
+    0
+   ],
+   "look": [
+    -240,
+    -12,
+    0
+   ],
+   "inside": true,
+   "hideRobot": true,
+   "box": true
+  },
+  {
+   "id": "e4",
+   "type": "use",
+   "min": 11,
+   "chapter": "Einsatz 4 · Zurückfahren bis Grün",
+   "a": 2.585,
+   "b": 2.9995,
+   "ease": "late",
+   "text": "Jetzt zurückfahren. Das Messrad misst mit, die Anzeige zählt herunter. Kurz vor dem Ziel blinkt die Linie grün: langsam weiter. Bei Dauergrün stoppen. Die Schildöffnung steht mittig unter dem Anschluss.",
+   "ride": true,
+   "cam": [
+    -470,
+    62,
+    0
+   ],
+   "look": [
+    -240,
+    -12,
+    0
+   ],
+   "inside": true,
+   "hideRobot": true,
+   "box": true
+  },
+  {
+   "id": "e5",
+   "type": "use",
+   "min": 6,
+   "chapter": "Einsatz 5 · Anpressen",
+   "a": 2.9995,
+   "b": 3.45,
+   "text": "Anpressen. Der Laserkopf geht mit dem Zentralrohr nach oben, das Spiralkabel dehnt sich mit. Das Messrad bleibt unten auf der Sohle.",
+   "pos": [
+    -640,
+    120,
+    760
+   ],
+   "pos2": [
+    -600,
+    110,
+    700
+   ],
+   "target": [
+    -200,
+    -40,
+    0
+   ],
+   "box": true
+  },
+  {
+   "id": "e6",
+   "type": "use",
+   "min": 6,
+   "chapter": "Detail · Messrad auf der Sohle",
+   "a": 2.62,
+   "b": 2.8,
+   "text": "Unten läuft das gefederte Messrad mit Profil durch die Sohle. Die Wischleisten davor und dahinter halten die Spur frei.",
+   "ride": true,
+   "cam": [
+    -330,
+    -120,
+    -110
+   ],
+   "look": [
+    -160,
+    -190,
+    -35
+   ],
+   "inside": true,
+   "hideRobot": true,
+   "fov": 45
+  },
+  {
+   "id": "outro",
+   "type": "brand",
+   "min": 4.5,
+   "outro": true,
+   "text": "DiTom. Rot fahren, grün stoppen, mittig sanieren.",
+   "say": "Ditom. Rot fahren, grün stoppen, mittig sanieren."
+  }
+ ]
+}

@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 09.10.2026 – Film „Laser-Positionierhilfe – Anbau und Einsatz“
+
+**Auftrag (Nutzer):** Video mit Anbringung, Erklärung und Nutzung mit dem Schalungssystem.
+
+**Umsetzung:** `Videos/DSS-Flex-Verfahren-2026/DiTom-Laser-Positionierhilfe-Anbau-und-Einsatz.mp4` (3:04 min, 1920 × 1080, 25 Bilder/s, H.264/AAC, 45,5 MB). Drehbuch `work/laser-anbau-script.json`, Sprecher/Zeitplan/Musik `work/laser-anbau-audio.py` (synthetische Stimme de-DE-ConradNeural, eigene Musik), Studio `work/film-laser-anbau-studio.js`, Bau/Render `work/build-laser-anbau-film.mjs`, `work/render-laser-anbau-film.mjs`. Teil 1: Anbau der Druckversion an der Schalung in neun Schritten (Teile fliegen nacheinander ein; Federweg und Wischleisten-Wechsel vorgeführt), Bedienkasten-Tafel. Teil 2: Einsatz im Kanal mit `src/model.js` (DN 350–400, offen) und eingeblendetem Bedienkasten (Anzeige wie Firmware: ----, 0, Restweg, LED), Anpressen, Nahaufnahme Messrad. Die Positionierhilfe erscheint im Film als Druckversion (Netze aus `druckteile.py --view`), Website und PDF zeigen weiter die Frästeil-Fassung.
+
+**Geprüft:** Kontrollbilder aller Szenen vor dem Rendern angesehen, Kameras dreimal korrigiert; fertige Abschnitte stichprobenartig angesehen; MP4 vollständig decodiert, Format und Länge geprüft. Nicht veröffentlicht.
+
 ## 09.10.2026 – Sohlenabstreifer mit Wechsel-Wischleiste (Druckversion)
 
 **Anlass (Nutzer):** Der Abstreifer muss sich leicht abbauen lassen; im Betonrohr schleift die Lippe schnell ab.
