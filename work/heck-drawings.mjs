@@ -121,9 +121,9 @@ const bom=[
  [1,'Verlängerungsplatte','1','EN AW-6082 T6, 7 mm, eloxiert','LPH-111',`${fmt(P.plate.x1)} × ${P.plate.w}, Radausschnitt`],
  [2,'Verbindungslasche','1','1.4301, 6 mm','LPH-111','unter der Stoßfuge, 4 × M6'],
  [3,'Lagerbock (Gabelkopf)','1','EN AW-7075 T6','LPH-120','Schlitz 28, Bohrung Ø8 H7'],
- [4,'Federwinkel mit Zugentlastung','1','EN AW-7075 T6','LPH-120','Federführung Ø12,5, Kabelschelle'],
+ [4,'Federwinkel mit Zugentlastung','1','EN AW-7075 T6','LPH-120','Federführung Ø13,5, Kabelschelle'],
  [5,'Schwinge','1','EN AW-7075 T6','LPH-120','Lagersitze Ø12 H7, Federteller'],
- [6,'Messrad Ø70 × 12, Gummi 60 Shore A, Querlamellen','1','NBR/EPDM-Belag auf Alu-Nabe','Kaufteil',`${S.wheel.grooves} Lamellen 0,8 × 3 tief, Nabe Ø8`],
+ [6,'Messrad 200 mm Umfang (Ø63,66), Lauffläche geriffelt','1','Gummi/PU auf Alu-Nabe, Breite ≤ 16','Kaufteil','Bohrung 8 (ggf. von 6 aufbohren)'],
  [7,`Druckfeder ${fmt(dW)} × ${fmt(P.spring.od)} × ${P.spring.free}`,'1','EN 10270-3 (1.4310)','Kaufteil',`n = ${nA}, c ≈ ${fmt(rate)} N/mm`],
  [8,'Drehgeberkopf AS5600, vergossen','1','Gießharz, Kabel PUR 4 × 0,14','LPH-130','Spalt zum Magneten 1,0 ± 0,5'],
  [9,'Radwelle Ø8 h6 × 26','1','1.4305','LPH-120','Stirnseite Senkung Ø6,1 × 2,6'],
@@ -157,7 +157,7 @@ const box=(x,y,w,h,html,cls='')=>`<div class="ov ${cls}" style="left:${x}mm;top:
  svg+=await pic('iso-kopf',25,138,190,70,CROP.kopf)+await pic('iso-heck-unten',220,138,185,70,CROP.unten);
  svg+=text(28,20,'Schalung mit Roboter: Laserkabel von der Kabelbombe, Spiralkabel nach vorn',{size:3,anchor:'start',cls:'cap'})+text(223,20,'Messrad unten an der Stützplatte, Laserkopf oben auf dem Zentralrohr',{size:3,anchor:'start',cls:'cap'});
  svg+=text(28,143,'Laserkopf (vergossen) mit Rohrschellen und Spiralkabeln',{size:3,anchor:'start',cls:'cap'})+text(223,143,'Unterseite: Lasche unter der Stoßfuge, Rad im Ausschnitt',{size:3,anchor:'start',cls:'cap'});
- const html=box(25,213,220,0,`<h1>Laser-Positionierhilfe für DSS-Flex · v3</h1><p>Unten läuft hinter der Stützplatte ein <b>gefedertes RAD DN70</b> als Messrad – vergossen, ohne Gehäuse, für den Dauerbetrieb im Abwasser. Die Laser sitzen als kleiner <b>Laserkopf auf dem Zentralrohr</b> über dem Wasser. Ein Spiralkabel verbindet beide und dehnt sich beim Anpressen. Vom Laserkopf geht ein Spiralkabel zur neuen Steckdose an der Kabelbombe, von dort über die <b>4 freien Adern</b> zum <b>Bedienkasten im Fahrzeug</b>: Restweg in mm, Knopf <b>NULL</b>, Wahl der Schalung. Strom kommt aus dem Fahrzeug – kein Akku.</p>`,'intro');
+ const html=box(25,213,220,0,`<h1>Laser-Positionierhilfe für DSS-Flex · v3</h1><p>Unten läuft hinter der Stützplatte ein <b>gefedertes Messrad (200 mm Umfang)</b> – vergossen, ohne Gehäuse, für den Dauerbetrieb im Abwasser. Die Laser sitzen als kleiner <b>Laserkopf auf dem Zentralrohr</b> über dem Wasser. Ein Spiralkabel verbindet beide und dehnt sich beim Anpressen. Vom Laserkopf geht ein Spiralkabel zur neuen Steckdose an der Kabelbombe, von dort über die <b>4 freien Adern</b> zum <b>Bedienkasten im Fahrzeug</b>: Restweg in mm, Knopf <b>NULL</b>, Wahl der Schalung. Strom kommt aus dem Fahrzeug – kein Akku.</p>`,'intro');
  const facts=box(250,213,157,0,`<table class="facts"><tr><th>Stoßfuge → Laserebene</th><td>${fmt(laserX)} mm (${fmt(laserX-shieldX)} mm hinter der Schildkante)</td></tr><tr><th>Rückweg L offen / Abschluss</th><td>${Lopen} / ${Lclosed} mm (Modellwert, je Schalung messen)</td></tr><tr><th>Federweg Messrad</th><td>+12 / −6 mm</td></tr><tr><th>Verlängerung der Stützplatte</th><td>${fmt(P.plate.x1)} × ${P.plate.w} × ${P.plate.t} mm</td></tr><tr><th>Adern im Roboterkabel</th><td>4: +24 V, 0 V, RS-485 A, B</td></tr></table>`);
  sheet({name:'Übersicht und Kenndaten',no:'LPH-000',scale:'—',svg,html:html+facts});
 }
@@ -277,7 +277,7 @@ const box=(x,y,w,h,html,cls='')=>`<div class="ov ${cls}" style="left:${x}mm;top:
  s+=dimV(FY(-pl.t),FY(axle[1]-S.wheel.r),FX(axle[0]),FX(axle[0]),xr+14,fmt(-(axle[1]-S.wheel.r)-pl.t),{below:true});
  s+=dimH(FX(P.strap.x0),FX(P.strap.x1),FY(-pl.t-P.strap.t),FY(-pl.t-P.strap.t),FY(-pl.t-P.strap.t)+9,fmt(P.strap.x1-P.strap.x0));
  s+=dimH(FX(0),FX(pl.x1),FY(-pl.t),FY(-pl.t),FY(-pl.t-P.strap.t)+16,fmt(pl.x1));
- s+=note(FX(axle[0])+S.wheel.r*.71,FY(axle[1]-S.wheel.r*.71),xr+22,FY(-38),'Ø70 RAD DN70');
+ s+=note(FX(axle[0])+S.wheel.r*.71,FY(axle[1]-S.wheel.r*.71),xr+22,FY(-38),'Messrad Ø63,66 (200 mm Umfang)');
  s+=text(xr+22,FY(-38)+3.6,'Stellung DN 350–400, Federweg 0',{size:2.3,anchor:'start',cls:'mut'});
  // --- Draufsicht (unter der Vorderansicht; unten = Radseite −z)
  const oy2=196,TY=z=>oy2-z,nt=P.notch,rc=pl.corner;
@@ -392,7 +392,7 @@ const box=(x,y,w,h,html,cls='')=>`<div class="ov ${cls}" style="left:${x}mm;top:
   s+=dimH(FX(br.x0),FX(br.x1),FY(br.y+br.t),FY(br.y+br.t),FY(br.y+br.t)-22,fmt(L))+dimH(FX(br.x0),FX(P.spring.x),FY(br.y),FY(br.y),FY(24)+8,fmt(P.spring.x-br.x0))+dimH(FX(br.x0),FX(br.web),FY(24),FY(24),FY(24)+16,fmt(wb));
   s+=dimV(FY(24),FY(br.y+br.t),FX(br.x1),FX(br.x1),FX(br.x1)+8,fmt(hh))+dimV(FY(br.y),FY(br.y+br.t),FX(br.x1),FX(br.x1),FX(br.x1)+16,fmt(br.t));
   s+=note(FX(br.x0+wb/2)-2.25*k,FY(26),FX(br.x0)-2,FY(24)+36,'Ø4,5 durch, Senkung Ø8 × 4,4 für M4');
-  s+=note(FX(P.spring.x)-5*k,FY(br.y)+.5*k,FX(br.web)+5,FY(34),'Federführung Ø12,5 × 1 tief',{right:true});
+  s+=note(FX(P.spring.x)-5*k,FY(br.y)+.5*k,FX(br.web)+5,FY(34),'Federführung Ø13,5 × 1 tief',{right:true});
   s+=text(FX(br.x0)+L*k/2,FY(24)+26,`Breite (z) ${fmt(br.z1-br.z0)} mm, z ${fmt(br.z0)} … ${fmt(br.z1)}`,{size:2.6,cls:'mut'});
  }
  // Pos. 5 Schwinge: Seitenansicht und Draufsicht (U-Form)
@@ -412,7 +412,7 @@ const box=(x,y,w,h,html,cls='')=>`<div class="ov ${cls}" style="left:${x}mm;top:
   s+=line(FX(L),TZ(az[1]+at/2+3),FX(L),TZ(az[0]-at/2-3),'c')+line(FX(-10),TZ(S.wheel.z),FX(L+12),TZ(S.wheel.z),'c');
   s+=dimV(TZ(az[1]+at/2),TZ(az[0]-at/2),FX(L+8),FX(L+8),FX(L+8)+8,fmt(az[1]-az[0]+at))+dimV(TZ(az[1]-at/2),TZ(az[0]+at/2),FX(L+8),FX(L+8),FX(L+8)+16,fmt(az[1]-az[0]-at));
   s+=dimV(TZ(az[0]-at/2),TZ(se.z0),FX(-sb),FX(-sb),FX(-sb)-6,fmt(az[0]-at/2-se.z0));
-  s+=text(FX(L)+20,TZ(se.z0)-2,'Federteller außen (Radseite −z),',{size:2.6,anchor:'start',cls:'mut'})+text(FX(L)+20,TZ(se.z0)+1.8,'Federführung Ø12,5 × 1 tief',{size:2.6,anchor:'start',cls:'mut'});
+  s+=text(FX(L)+20,TZ(se.z0)-2,'Federteller außen (Radseite −z),',{size:2.6,anchor:'start',cls:'mut'})+text(FX(L)+20,TZ(se.z0)+1.8,'Federführung Ø13,5 × 1 tief',{size:2.6,anchor:'start',cls:'mut'});
  }
  // Pos. 9 Radwelle
  {const ox=300,oy=190,FX=u=>ox+u*k,FY=v=>oy-v*k,L=S.fork.armZ[1]-S.fork.armZ[0]+S.fork.armT;
@@ -472,7 +472,7 @@ const box=(x,y,w,h,html,cls='')=>`<div class="ov ${cls}" style="left:${x}mm;top:
   s+=line(FX(-6),TZ(0),FX(Lh+10),TZ(0),'c')+line(FX(lu),TZ(H.w/2+4),FX(lu),TZ(-H.w/2-4),'c');
   s+=dimV(TZ(H.w/2),TZ(-H.w/2),FX(-4),FX(-4),FX(-10),fmt(H.w))+dimV(TZ(H.lasers[1].z),TZ(H.lasers[0].z),FX(Lh+6),FX(Lh+6),FX(Lh+6)+8,fmt(H.lasers[1].z-H.lasers[0].z));
   s+=dimH(FX(0),FX(gs),TZ(-H.w/2-6),TZ(-H.w/2-6),TZ(-H.w/2-6)+7,fmt(gs));
-  s+=note(FX(lu)+3,TZ(H.lasers[0].z)+3,FX(lu)+4,TZ(-H.w/2)+26,'Fenster PMMA 2, Laser Ø12 H7 × 30',{right:true});
+  s+=note(FX(lu)+3,TZ(H.lasers[0].z)+3,FX(lu)+4,TZ(-H.w/2)+26,'Fenster PMMA 2, Laseraufnahme nach Modul (Ø9 / Ø12)',{right:true});
  }
  // --- Pos. 8 Drehgeberkopf
  {const ox=25,oy=226,kk=2;
@@ -535,7 +535,7 @@ const box=(x,y,w,h,html,cls='')=>`<div class="ov ${cls}" style="left:${x}mm;top:
  let s=await pic('feder-0',22,16,94,58,CROP.feder)+await pic('feder-12',120,16,94,58,CROP.feder)+await pic('fahrt',218,16,94,58,CROP.fahrt)+await pic('anpressen',316,16,92,58,CROP.fahrt);
  s+=text(24,78,'Federweg 0',{size:2.8,anchor:'start',cls:'cap'})+text(122,78,'Muffe/Versatz: +12 mm',{size:2.8,anchor:'start',cls:'cap'})+text(220,78,'Fahrstellung',{size:2.8,anchor:'start',cls:'cap'})+text(318,78,`Angepresst: Kopf +${fmt(stroke)} mm`,{size:2.8,anchor:'start',cls:'cap'});
  const html=box(22,84,190,0,`<h3>Einbaulage je Schalung (aus dem Modell)</h3><table class="bom"><thead><tr><th>Schalung</th><th>Rohr-Ø</th><th>Radachse über Plattenoberkante</th><th>Rad unter Plattenunterkante</th><th>Schwinge geneigt</th></tr></thead><tbody>${dnRows.map(r=>`<tr><td>${r.label}</td><td>${r.R*2}</td><td>${fmt(r.axle)}</td><td>${fmt(-r.wheelBelow)}</td><td>${fmt(r.angle)}°</td></tr>`).join('')}</tbody></table><p class="mut">Gleiche Teile für alle fünf Schalungen. Die Sohle liegt im Modell immer 28,5 mm unter der Plattenoberkante, nur die Krümmung ändert sich; die Feder gleicht die bis 2,5 mm andere Radlage aus. Bei DN 300 ohne Distanzblock den echten Abstand Stützplatte–Sohle nachmessen.</p>`)
- +box(218,84,190,0,`<h3>Feder (Rechenwerte, DN 350–400)</h3><table class="facts"><tr><th>Druckfeder</th><td>d ${fmt(dW)} · D<sub>a</sub> ${fmt(P.spring.od)} · L<sub>0</sub> ${P.spring.free} · n ${nA} · 1.4310</td></tr><tr><th>Federrate</th><td>c = G·d⁴ / (8·D<sub>m</sub>³·n) ≈ ${fmt(rate)} N/mm</td></tr><tr><th>Einbaulänge</th><td>${fmt(L1)} mm (Vorspannung ${fmt(P.spring.free-L1)} mm ≈ ${fmt(F1)} N)</td></tr><tr><th>Eingefedert +12 / ausgefedert −6</th><td>${fmt(L2)} mm (≈ ${fmt(F2)} N) / ${fmt(L3)} mm · Blocklänge ≈ ${fmt(Lblock)} mm</td></tr><tr><th>Hebel Feder / Rad</th><td>${fmt(Math.abs(pivot[0]-P.spring.x))} / ${fmt(armLen)} mm → Radkraft ≈ ${fmt(F1*lever)} … ${fmt(F2*lever)} N</td></tr></table><p class="mut">Gegen Schlupf auf der glitschigen Sohle wirken drei Dinge zusammen: weiche Gummilauffläche mit Querlamellen, Radkraft von gut 20 N (das Unterteil wiegt ein Vielfaches, es hebt nicht ab) und die Sohlenabstreifer vor und hinter dem Rad, die die Sielhaut aus der Radspur wischen. Keine Spikes oder Rändel – die würden den Liner verletzen.</p>
+ +box(218,84,190,0,`<h3>Feder (Rechenwerte, DN 350–400)</h3><table class="facts"><tr><th>Druckfeder</th><td>d ${fmt(dW)} · D<sub>a</sub> ${fmt(P.spring.od)} · L<sub>0</sub> ${P.spring.free} · n ${nA} · 1.4310</td></tr><tr><th>Federrate</th><td>c = G·d⁴ / (8·D<sub>m</sub>³·n) ≈ ${fmt(rate)} N/mm</td></tr><tr><th>Einbaulänge</th><td>${fmt(L1)} mm (Vorspannung ${fmt(P.spring.free-L1)} mm ≈ ${fmt(F1)} N)</td></tr><tr><th>Eingefedert +12 / ausgefedert −6</th><td>${fmt(L2)} mm (≈ ${fmt(F2)} N) / ${fmt(L3)} mm · Blocklänge ≈ ${fmt(Lblock)} mm</td></tr><tr><th>Hebel Feder / Rad</th><td>${fmt(Math.abs(pivot[0]-P.spring.x))} / ${fmt(armLen)} mm → Radkraft ≈ ${fmt(F1*lever)} … ${fmt(F2*lever)} N</td></tr></table><p class="mut">Gegen Schlupf auf der glitschigen Sohle wirken drei Dinge zusammen: weiche Gummilauffläche mit Querlamellen, Radkraft von ${fmt(F1*lever)} … ${fmt(F2*lever)} N (das Unterteil wiegt ein Vielfaches, es hebt nicht ab) und die Sohlenabstreifer vor und hinter dem Rad, die die Sielhaut aus der Radspur wischen. Keine Spikes oder Rändel – die würden den Liner verletzen.</p>
  <h3>Spiralkabel Messrad ↔ Laserkopf</h3><table class="bom small"><thead><tr><th>Schalung</th><th>Fahrt</th><th>angepresst</th></tr></thead><tbody>${dnRows.map(r=>`<tr><td>${r.label}</td><td>${fmt(r.spiral[0])} mm</td><td>${fmt(r.spiral[1])} mm</td></tr>`).join('')}</tbody></table><p class="mut">Ruhelänge ≈ ${spiralSpec.rest} mm, Arbeitsbereich bis ${spiralSpec.max} mm (PUR 4 × 0,25 mm²). Unten an der Zugentlastung auf dem Federwinkel, oben an der seitlichen Verschraubung des Laserkopfs.</p>`);
  sheet({name:'Federung, Spiralkabel, Einbaulage je DN',no:'LPH-150',scale:'—',svg:s,html});
 }

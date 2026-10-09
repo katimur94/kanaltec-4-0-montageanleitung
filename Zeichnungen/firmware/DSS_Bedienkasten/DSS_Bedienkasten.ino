@@ -189,7 +189,7 @@ void loadCfg() {
   prefs.begin("laser", false);
   for (int i = 0; i < NPROF; i++) { char k[4]; snprintf(k, sizeof(k), "L%d", i); cfg.L[i] = prefs.getFloat(k, (i % 2) ? 199.0f : 265.0f); }
   cfg.active     = prefs.getInt("act", 2);
-  cfg.mmPerCount = prefs.getFloat("mpc", 219.91f / 4096.0f);   // RAD DN70, 12 bit
+  cfg.mmPerCount = prefs.getFloat("mpc", 200.0f / 4096.0f);    // Messrad 200 mm Umfang, 12 bit
   cfg.tol        = prefs.getFloat("tol", 3.0f);
   cfg.warn       = prefs.getFloat("warn", 15.0f);
   cfg.invert     = prefs.getBool("inv", false);

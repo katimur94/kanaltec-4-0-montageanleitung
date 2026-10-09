@@ -3,7 +3,7 @@ import {PHASE} from './data.js';
 
 // Laser-Positionierhilfe v3 (Prototyp-Vorschlag, nicht Teil der DiTom-Stückliste).
 // Nach Nutzervorgaben vom 08./09.10.2026:
-// - Unten nur eine kurze Verlängerung der Stützplatte mit gefedertem RAD DN70
+// - Unten nur eine kurze Verlängerung der Stützplatte mit gefedertem Messrad (200 mm Umfang)
 //   (Schwinge, Druckfeder außen) und vergossenem Magnet-Drehgeber (AS5600).
 //   Dort liegt alles dauerhaft im Abwasser: keine Elektronik-Box, kein Akku.
 // - Die Laser sitzen als kleiner vergossener Laserkopf auf dem Zentralrohr,
@@ -27,8 +27,8 @@ export const heck={
  strap:{x0:-108,x1:-28,w:80,t:6,bolts:[[-48,-25],[-48,25],[-88,-25],[-88,25]]},
  block:{x0:-106,x1:-124,z0:-52,z1:-10,h:24,pivotH:12,base:4,slot:[-44,-16]},
  fork:{pivotX:-115,axleX:-170,armZ:[-41,-19],armT:4,armH:12,seat:{x0:-139,x1:-151,z0:-53,t:3}},
- wheel:{r:35,w:12,z:-30,grooves:36},   // Gummi 60 Shore A mit Querlamellen (rutschfest auf Sielhaut)
- spring:{x:-145,z:-47,od:12,wire:1.4,free:34,coils:8},
+ wheel:{r:31.83,w:12,z:-30,grooves:32},   // Messrad 200 mm Umfang (Ø63,66), Gummi/PU mit Profil (rutschfest auf Sielhaut)
+ spring:{x:-145,z:-47,od:13,wire:1.4,free:35,coils:8},
  bracket:{x0:-108,x1:-152,z0:-53,z1:-41,t:5,web:{x1:-118}},
  anchor:{x:-130,z:-47,h:3},  // Zugentlastung des Spiralkabels auf dem Federwinkel
  // Sohlenabstreifer vor und hinter dem Rad: Leiste unter der Platte, Gummilippe wischt die Radspur frei.
@@ -124,7 +124,7 @@ export class LaserAid{
   add('plate',slab(shape,bottom-p.t/2,p.t,metal,plateHoles.map(([x,z,d])=>[x,z,d/2])));
   const st=S.strap,strap=add('strap',slab(rounded(st.x0,st.x1,-st.w/2,st.w/2,4),bottom-p.t/2-st.t,st.t,darkMetal));
   for(const [x,z] of st.bolts)strap.add(screwHead(V(x,bottom-p.t/2-st.t-2.5,z),bolt));
-  // 6 Lagerbock (Gabelkopf), 7 Federwinkel mit Zugentlastung, 8 Schwinge, 9 RAD DN70, 10 Feder, 11 Drehgeberkopf.
+  // 6 Lagerbock (Gabelkopf), 7 Federwinkel mit Zugentlastung, 8 Schwinge, 9 Messrad, 10 Feder, 11 Drehgeberkopf.
   const b=S.block,bk=new THREE.Group();bk.add(slab(rounded(b.x0,b.x1,b.z0,b.z1,2),top,b.base,metal),slab(rounded(b.x0,b.x1,b.z0,b.slot[0],1.5),top+b.base,b.h-b.base,metal),slab(rounded(b.x0,b.x1,b.slot[1],b.z1,1.5),top+b.base,b.h-b.base,metal));const block=add('block',bk);
   block.add(cyl(4,b.z1-b.z0+10,bolt,G.pivot.clone(),'z',16));
   const k=S.bracket,br=add('bracket',slab(rounded(k.x0,k.x1,k.z0,k.z1,2),G.bracketY,k.t,metal));br.add(boxAt(k.x0,k.web.x1,top+b.h,G.bracketY,k.z0,k.z1,metal));

@@ -1,5 +1,11 @@
 # Fortschrittschronik
 
+## 09.10.2026 – Amazon-Warenkorb und Anpassung an lieferbare Teile
+
+**Auftrag:** Alle Materialien als detaillierten Amazon-Warenkorb.
+
+**Umsetzung:** Recherche auf amazon.de (Suchtreffer, Produktseiten über einen Lesedienst am 09.10.2026; Preise ohne Gewähr, Lieferland des Abrufs nicht Deutschland). In der Bauanleitung (Artifact) ein Sammel-Link für 31 Artikel (ca. 314 € + ca. 33 € Versand), eine Liste mit 6 Angeboten, bei denen eine Variante zu wählen ist, und die Teile, die nicht über Amazon gehen (Frästeile, Einbaudose wie an der Kabelbombe, empfohlenes Fachhandels-Messrad). Konstruktion an lieferbare Teile angepasst: Messrad 200 mm Umfang (Ø63,66 statt 70, Bohrung ggf. von 6 auf 8 mm), Druckfeder 1,4 × 13 × 35 (Federführung Ø13,5; Radkraft rechnerisch ≈ 15–27 N), Laseraufnahme nach Modul (roter Laserfuchs Ø9). Firmware-Startwert 200 mm/4096. Modell, Test, Renderbilder und PDF neu erzeugt.
+
 ## 09.10.2026 – Messrad rutschfest für glitschige Sohle
 
 **Anlass (Nutzer):** Das Rad muss sicher und rutschfrei laufen, die Sohle im Kanal ist glitschig.
