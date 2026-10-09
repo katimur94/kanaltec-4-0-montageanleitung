@@ -3,43 +3,43 @@
   "name": "iso-heck",
   "view": "unit",
   "pos": [
-   -560,
-   40,
-   430
+   -650,
+   120,
+   520
   ],
   "target": [
-   -175,
-   -160,
+   -190,
+   -110,
    0
   ],
   "fov": 30
  },
  {
-  "name": "iso-heck-oben",
+  "name": "iso-kopf",
   "view": "unit",
   "pos": [
-   -380,
-   240,
-   330
+   -470,
+   60,
+   250
   ],
   "target": [
-   -170,
-   -165,
+   -268,
+   -45,
    0
   ],
-  "fov": 32
+  "fov": 24
  },
  {
   "name": "iso-heck-unten",
   "view": "unit",
   "pos": [
-   -560,
-   -300,
-   420
+   -700,
+   -330,
+   560
   ],
   "target": [
-   -170,
-   -175,
+   -180,
+   -120,
    0
   ],
   "fov": 30
@@ -47,13 +47,14 @@
  {
   "name": "iso-gesamt",
   "view": "assembly",
+  "robot": true,
   "pos": [
-   -900,
-   250,
+   -1150,
+   300,
    900
   ],
   "target": [
-   -120,
+   -300,
    -80,
    0
   ],
@@ -64,47 +65,35 @@
   "view": "unit",
   "explode": 1,
   "pos": [
-   -700,
-   120,
-   620
+   -720,
+   160,
+   640
   ],
   "target": [
-   -185,
-   -130,
+   -180,
+   -95,
    0
   ],
   "fov": 32
  },
  {
   "name": "m1",
+  "parts": [],
   "view": "unit",
   "pos": [
-   -640,
-   70,
-   500
+   -620,
+   110,
+   520
   ],
   "target": [
    -185,
-   -165,
+   -115,
    0
   ],
-  "fov": 28,
-  "parts": []
+  "fov": 30
  },
  {
   "name": "m2",
-  "view": "unit",
-  "pos": [
-   -640,
-   70,
-   500
-  ],
-  "target": [
-   -185,
-   -165,
-   0
-  ],
-  "fov": 28,
   "parts": [
    "plate",
    "strap"
@@ -112,22 +101,22 @@
   "highlight": [
    "plate",
    "strap"
-  ]
- },
- {
-  "name": "m3",
+  ],
   "view": "unit",
   "pos": [
-   -640,
-   70,
-   500
+   -620,
+   110,
+   520
   ],
   "target": [
    -185,
-   -165,
+   -115,
    0
   ],
-  "fov": 28,
+  "fov": 30
+ },
+ {
+  "name": "m3",
   "parts": [
    "plate",
    "strap",
@@ -141,22 +130,22 @@
    "fork",
    "wheel",
    "sensor"
-  ]
- },
- {
-  "name": "m4",
+  ],
   "view": "unit",
   "pos": [
-   -640,
-   70,
-   500
+   -620,
+   110,
+   520
   ],
   "target": [
    -185,
-   -165,
+   -115,
    0
   ],
-  "fov": 28,
+  "fov": 30
+ },
+ {
+  "name": "m4",
   "parts": [
    "plate",
    "strap",
@@ -170,22 +159,22 @@
   "highlight": [
    "bracket",
    "spring"
-  ]
- },
- {
-  "name": "m5",
+  ],
   "view": "unit",
   "pos": [
-   -640,
-   70,
-   500
+   -620,
+   110,
+   520
   ],
   "target": [
    -185,
-   -165,
+   -115,
    0
   ],
-  "fov": 28,
+  "fov": 30
+ },
+ {
+  "name": "m5",
   "parts": [
    "plate",
    "strap",
@@ -195,63 +184,122 @@
    "sensor",
    "bracket",
    "spring",
-   "housing",
-   "channel",
-   "tower"
+   "head"
   ],
   "highlight": [
-   "housing",
-   "channel",
-   "tower"
-  ]
- },
- {
-  "name": "m6",
+   "head"
+  ],
   "view": "unit",
   "pos": [
-   -640,
-   70,
-   500
+   -620,
+   110,
+   520
   ],
   "target": [
    -185,
-   -165,
+   -115,
    0
   ],
-  "fov": 28,
-  "highlight": []
+  "fov": 30
+ },
+ {
+  "name": "m6",
+  "highlight": [],
+  "view": "unit",
+  "pos": [
+   -620,
+   110,
+   520
+  ],
+  "target": [
+   -185,
+   -115,
+   0
+  ],
+  "fov": 30
  },
  {
   "name": "feder-0",
   "view": "unit",
   "pos": [
-   -250,
+   -150,
    -150,
    -460
   ],
   "target": [
-   -250,
+   -150,
    -160,
    -30
   ],
   "fov": 24,
-  "deflection": 0
+  "deflection": 0,
+  "parts": [
+   "plate",
+   "strap",
+   "block",
+   "fork",
+   "wheel",
+   "sensor",
+   "bracket",
+   "spring"
+  ]
  },
  {
   "name": "feder-12",
   "view": "unit",
   "pos": [
-   -250,
+   -150,
    -150,
    -460
   ],
   "target": [
-   -250,
+   -150,
    -160,
    -30
   ],
   "fov": 24,
-  "deflection": 12
+  "deflection": 12,
+  "parts": [
+   "plate",
+   "strap",
+   "block",
+   "fork",
+   "wheel",
+   "sensor",
+   "bracket",
+   "spring"
+  ]
+ },
+ {
+  "name": "anpressen",
+  "view": "unit",
+  "lift": 8,
+  "pos": [
+   -200,
+   -60,
+   -900
+  ],
+  "target": [
+   -200,
+   -80,
+   0
+  ],
+  "fov": 30
+ },
+ {
+  "name": "fahrt",
+  "view": "unit",
+  "pos": [
+   -200,
+   -60,
+   -900
+  ],
+  "target": [
+   -200,
+   -80,
+   0
+  ],
+  "fov": 30
  },
  {
   "name": "kanal-rot",

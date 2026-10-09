@@ -445,7 +445,7 @@ export class Viewer {
  poseLaser(state,lift=0){
   if(!this.laser)return;
   const show=!!state&&this.laserAid&&this.mode==='process'&&this.group==='all';
-  this.laser.group.visible=show;this.laserStatus=show?state:null;
+  this.laser.group.visible=show;this.laserStatus=show?state:null;if(this.robot?.laserLine)this.robot.laserLine.visible=show;
   if(show)this.laser.pose(lift,this.model.position.x,state);
  }
  laserTarget(){return -laserSpec.x-this.workOffset;}
@@ -657,7 +657,7 @@ export class Viewer {
   {name:'45°-Messingwinkel · Opferschlauch',side:'left',point:V(x+ports.inletX,this.inlet.position.y-13,0)},
   {name:this.sensorFull?'Drucksensor · voll':'Drucksensor',point:V(x+ports.sensorX,this.sensor.position.y+2,0)},
   {name:'Dichtblase zwischen Schild & Träger',side:'left',point:V(x-185,this.radius-2+3*this.sealAir+y,0)},
-  ...(this.laserStatus?.visible?[{name:this.laserStatus.green?'Laserlinie grün · Ziel erreicht':'Laserlinie rot · Startlinie',side:'left',point:V(x+laserSpec.x,this.radius+12,-40)},{name:'Gefedertes Messrad (Heckmodul)',side:'left',point:this.laser.wheel.position.clone().add(V(x,0,0))}]:[])
+  ...(this.laserStatus?.visible?[{name:this.laserStatus.green?'Laserlinie grün · Ziel erreicht':'Laserlinie rot · Startlinie',side:'left',point:V(x+laserSpec.x,this.radius+12,-40)},{name:'Gefedertes Messrad',side:'left',point:this.laser.wheel.position.clone().add(V(x,0,0))},{name:'Laserkopf auf dem Zentralrohr',point:V(x+laserSpec.x,this.upperLift+50,22)}]:[])
  ];}
  fitExplosion(){const e=this.explode,t=this.targetExplode;this.targetExplode=1;this.fit();this.targetExplode=t;this.explode=e;this.updateParts();}
  screenshot(){this.renderer.render(this.scene,this.camera);return this.renderer.domElement.toDataURL('image/png');}

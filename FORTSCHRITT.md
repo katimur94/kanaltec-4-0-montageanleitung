@@ -1,5 +1,19 @@
 # Fortschrittschronik
 
+## 09.10.2026 – Laser-Positionierhilfe v3: Laserkopf am Zentralrohr, Bedienkasten im Fahrzeug
+
+**Anlass (Nutzer):** Bei DN 300 gibt es unter dem Bumper keinen Distanzblock, also kaum Platz; die Platte liegt in der Sohle immer unter Wasser; Nullen soll per Knopf im Fahrzeug neben den Roboter-Bedienelementen gehen; kein Akku, weil im Roboterkabel 4 freie Adern liegen. Die Kabelbombe hinter dem Roboter hat die Stecker für Drehmotor, Blase und Druckschalter – dort eine zusätzliche Steckdose für das Lasermodul, von dort wie bei den anderen ein Spiralkabel nach vorn zum Zentralrohr; zwischen Laser und Messrad ebenfalls ein Spiralkabel, weil sich beide beim Anpressen auseinanderbewegen.
+
+**Umsetzung (`src/laser-aid.js`, `src/robot.js`):** Messgehäuse, Kabelkanal und Laserturm entfallen. Unten bleibt eine auf 124 mm gekürzte Verlängerung der Stützplatte mit gefedertem RAD DN70 (Schwinge, Feder außen, vergossener AS5600-Kopf) und einer Zugentlastung auf dem Federwinkel. Die Laser sitzen als vergossener Laserkopf (40 × 44 × 39 mm, zwei Rohrschellen) auf dem Zentralrohr über dem Wasser, Vorderkante 2 mm hinter der Schildkante, Laserebene unverändert 15 mm dahinter; er hebt beim Anpressen 78,6 mm mit. Spiralkabel Messrad ↔ Laserkopf (Modell: 155–334 mm je DN, Spezifikation Ruhelänge ≈ 100, bis 400 mm) und Laserkopf → Kabelbombe; am Roboter eine eigene Laserleitung von der Bombe. Der Zentralrohr-Schatten der v2 entfällt, weil der Laser nun auf dem Rohr sitzt. Nullen in Animation und Texten per Knopf NULL.
+
+**Elektrik und Firmware:** 4 Adern: +24 V (12–24 V), 0 V, RS-485 A/B. `Zeichnungen/firmware/DSS_Laserkopf` (ESP32-C3: zählt AS5600-Umdrehungen, schaltet Laser, antwortet auf Befehle, Laser aus ohne Verbindung) und `Zeichnungen/firmware/DSS_Bedienkasten` (ESP32: Anzeige TM1637 mit Restweg, NULL kurz/lang, WAHL für 10 Profile DN × offen/Abschluss, LED, Summer, WLAN-Einstellseite, Kalibrierung). Beide mit arduino-cli (esp32 3.0.7) kompiliert, nicht auf Hardware getestet. Die v2-Firmware (Akku, AS5600 direkt) ist ersetzt.
+
+**Zeichnungen:** `work/heck-drawings.mjs` → `Zeichnungen/Laser-Positionierhilfe-DSS-Flex.pdf`, 11 Blätter A3: Übersicht, Anordnung im Rohr 1:2 mit Schnitten 1:5 (DN 300/700), Explosion + Stückliste, Zusammenbau untere Baugruppe 1:1, Platte/Lasche, Lagerbock/Federwinkel/Schwinge/Welle, Laserkopf + Drehgeberkopf 2:1, Elektrik (Verkabelungsplan, Steckerbelegung, Frontplatte Bedienkasten 1:1), Federung/Spiralkabel je DN, Montageanleitung (2 Blätter). Renderbilder in `Zeichnungen/3D-Bilder/`. Das v2-PDF ist ersetzt.
+
+**Prüfung:** `work/check-laser.mjs` angepasst: untere Baugruppe hebt nicht, Laserkopf hebt mit dem Rohr, sitzt hinter der Schildkante, innerhalb des Schildträger-Radius, über dem Wasser und frei von Schalung/Robot; Rohr nie im Kopfkörper; Spiralkabel dehnt sich und bleibt im Arbeitsbereich; Fächer beginnt auf dem Kopf; Freigang des Rades über den Federweg. `npm test` vollständig bestanden, `npm run build` ausgeführt. PDF-Blätter und Renderbilder (aus `src/`, inkl. Prozessansicht im Kanal) angesehen; die gebaute `index.html` wurde für v3 nicht erneut im Browser geöffnet.
+
+**Grenzen:** Entwurf, nicht im Kanal erprobt. Offene Angaben: Fahrzeugspannung (Auslegung 12–24 V), echter Abstand Stützplatte–Sohle bei DN 300, Steckertyp der Kabelbombe, Lage der Schildkante am Gerät. Auf Branch `laser-positionierhilfe`, nicht auf Pages.
+
 ## 08.10.2026 – Laser-Heckmodul: Umbau, Zeichnungen, 3D-Bilder, Montageanleitung
 
 **Auftrag:** Die erste Laser-Positionierhilfe (Box auf dem Zentralrohr, Messrad seitlich an der Rohrwand) sah laut Nutzer hässlich aus. Stattdessen „verpacken“: die Platte unter dem Bumper nach hinten verlängern, hinten genauso aussehen lassen wie vorne – mit gefedertem Rad, weil Muffen und Versätze sonst gegen das Rad stoßen und es auf Dauer beschädigen. Dazu technische Zeichnungen, 3D-Bilder und Montageanleitung.
@@ -12,7 +26,7 @@
 
 **Prüfung:** `work/check-laser.mjs` erweitert (Rad frei von Feder, Federwinkel und Gehäusen über −6…+12 mm Federweg; Schwinge nur im Radausschnitt durch die Platte und frei im Lagerbock-Schlitz; Linienmitte trotz Zentralrohr-Schatten beleuchtet). `npm test` vollständig bestanden, `npm run build` ausgeführt. PDF-Blätter gerastert und angesehen, Standbilder angesehen; gebaute `index.html` im Browser (Software-Rendering) bei DN 350–400 in Überfahr- und Zielstellung geöffnet. Der Film vom selben Tag zeigt noch die erste Bauform.
 
-**Grenzen:** Entwurf, nicht für Fertigung freigegeben, nicht im Kanal erprobt. Alle Maße des Heckmoduls, Federdaten, L und Toleranzen sind Konstruktionsvorschläge bzw. Darstellungsannahmen; die Lage der hinteren Schildkante und die Unterseite der Stützplatte am Gerät nachmessen. Auf Branch `laser-positionierhilfe`, nicht auf Pages veröffentlicht.
+**Grenzen:** Entwurf, nicht für Fertigung freigegeben, nicht im Kanal erprobt. Alle Maße des Heckmoduls, Federdaten, L und Toleranzen sind Konstruktionsvorschläge bzw. Darstellungsannahmen; die Lage der hinteren Schildkante und die Unterseite der Stützplatte am Gerät nachmessen. Auf Branch `laser-positionierhilfe`, nicht auf Pages veröffentlicht. Am 09.10.2026 durch v3 ersetzt (Eintrag oben); PDF und Firmware dieses Standes liegen nur noch in der Git-Historie.
 
 ## 08.10.2026 – Laser-Positionierhilfe im Modell und Film
 

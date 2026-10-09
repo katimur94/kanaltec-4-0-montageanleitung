@@ -42,7 +42,11 @@ export class Robot{
   let wheelWorldY=-Infinity;for(const w of this.wheels){w.updateMatrixWorld(true);w.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){const p=V().fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld),radial=Math.hypot(p.x-w.position.x,p.y);wheelWorldY=Math.max(wheelWorldY,-Math.sqrt(pipeRadius**2-p.z**2)+radial);}});}
   this.wheelY=wheelWorldY+.65-anchor.y;this.axleDrop=this.bodyY-this.wheelY;for(const w of this.wheels){w.position.y=this.wheelY;this.carrier.add(w);}
   this.buildChassis();this.buildExtension();bake(this.chassis);this.buildPlug();this.buildCamera();this.buildArm();this.lines=[];this.cutter=makeCutter();this.front.add(this.cutter.group);this.cutter.group.visible=false;
-  for(const[side,m]of [[-1,this.m.blue],[1,this.m.yellow]]){const o=tube([V(-1235,this.bodyY,side*30),V(-970,this.bodyY+65,side*40),V(-20,18,side*33)],2.7,m);this.group.add(o);this.lines.push({o,side});}this.pose(0,0);
+  for(const[side,m]of [[-1,this.m.blue],[1,this.m.yellow]]){const o=tube([V(-1235,this.bodyY,side*30),V(-970,this.bodyY+65,side*40),V(-20,18,side*33)],2.7,m);this.group.add(o);this.lines.push({o,side});}
+  // Laser-Positionierhilfe (Vorschlag): eigener Stecker an der Kabelbombe, Kabel neben der gelben Leitung nach vorn;
+  // vorn geht es als Spiralkabel zum Laserkopf auf dem Zentralrohr weiter (src/laser-aid.js).
+  this.laserLine=tube([V(-1235,this.bodyY,20),V(-970,this.bodyY+60,26),V(-20,30,10)],2,this.m.dark);this.laserLine.name='Laserkabel · 4 Adern';this.group.add(this.laserLine);this.laserLine.visible=false;
+  this.pose(0,0);
  }
  makeWheel(side){
   const g=new THREE.Group(),m=this.m,r=this.wheelRadius,w=this.config.width,pur=this.config.tread==='pur',t=pur?m.pur:m.tire;g.name='Antriebsrad';
@@ -179,6 +183,7 @@ export class Robot{
   this.cameraDrum.rotation.z=Math.atan2(this.pipeRadius-65+lift-(this.anchor.y+this.bodyY+36),630);
   const rotate=p=>p.sub(this.rotationAxis).applyAxisAngle(V(1,0,0),roll).add(this.rotationAxis);
   for(const{o,side}of this.lines){o.geometry.dispose();o.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(lx+dx,this.bodyY+20,side*30),V(Math.max(lx+150,-1080)+dx,this.bodyY+45,side*39),V(-970+dx,this.bodyY+68,side*38),V(-535+dx,this.bodyY+68,side*43),rotate(V(-350+dx,this.bodyY+46,side*64)),rotate(a.clone().lerp(e,.62).add(V(0,24,side*65))),rotate(V(-20+reach,lift+18,side*33))]),96,2.7,10,false);}
+  if(this.laserLine){this.laserLine.geometry.dispose();this.laserLine.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(lx+dx,this.bodyY+14,20),V(Math.max(lx+150,-1080)+dx,this.bodyY+40,27),V(-970+dx,this.bodyY+62,26),V(-535+dx,this.bodyY+62,30),rotate(V(-350+dx,this.bodyY+40,52)),rotate(a.clone().lerp(e,.62).add(V(0,30,50))),rotate(V(-40+reach,lift+58,18)),rotate(V(-2+reach,lift+64,4))]),96,2,8,false);}
  }
  dispose(){const materials=new Set(),textures=new Set();this.group.traverse(o=>{if(o.isMesh){materials.add(o.material);if(o.material.bumpMap)textures.add(o.material.bumpMap);}});textures.forEach(t=>t.dispose());materials.forEach(m=>m.dispose());}
 }

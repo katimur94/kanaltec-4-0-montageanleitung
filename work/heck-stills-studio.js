@@ -15,7 +15,7 @@ const scene=viewer.scene,camera=viewer.camera,renderer=viewer.renderer;
 const fill=new THREE.DirectionalLight('#ffffff',1.1);fill.position.set(-600,300,700);scene.add(fill);
 const under=new THREE.DirectionalLight('#ffffff',.9);under.position.set(-300,-700,500);scene.add(under);const side=new THREE.DirectionalLight('#ffffff',.9);side.position.set(-200,100,-800);scene.add(side);
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
-const keys=['plate','strap','block','bracket','fork','wheel','sensor','spring','housing','channel','tower'];
+const keys=['plate','strap','block','bracket','fork','wheel','sensor','spring','head'],cableKeys=['spiral','feedSpiral','sensorCable'];
 function shot(o){
  if(o.dn&&o.dn!==dn){dn=o.dn;viewer.build(dn);}
  const L=viewer.laser;
@@ -26,15 +26,18 @@ function shot(o){
   viewer.explode=viewer.targetExplode=0;viewer.updateParts();viewer.resetPose();
   // Fahrstellung: Bumper vakuumiert, obere Baugruppe abgesenkt.
   if(o.travel!==false)viewer.travelPose();
+  // Anpressstellung nur angedeutet: obere Baugruppen auf o.lift anheben (Bumper bleibt flach).
+  if(o.lift!=null)for(const p of viewer.parts)if(p.group!=='u')p.node.position.y+=o.lift-(viewer.upperLift??-70.56);
   viewer.feed.visible=false;viewer.floor.visible=false;
-  // view: 'assembly' komplette Schalung, 'unit' nur Unterteil, 'heck' nur Heckmodul.
-  const view=o.view||'assembly';for(const p of viewer.parts)p.node.visible=view==='assembly'||(view==='unit'&&p.group==='u');
+    // view: 'assembly' komplette Schalung, 'unit' Unterteil + Zentralrohr, 'heck' nur Positionierhilfe.
+  const view=o.view||'assembly';for(const p of viewer.parts)p.node.visible=view==='assembly'||(view==='unit'&&(p.group==='u'||p.key==='tube'));
   viewer.winding.group.visible=viewer.inlet.visible=viewer.sensor.visible=view==='assembly';
-  L.group.visible=true;L.pose(0,0,{visible:!!o.laserOn,red:o.laserOn==='red',green:o.laserOn==='green'});
+  L.group.visible=true;L.pose(o.lift??viewer.upperLift??-70.56,0,{visible:!!o.laserOn,red:o.laserOn==='red',green:o.laserOn==='green'});
+  if(viewer.robot?.laserLine)viewer.robot.laserLine.visible=o.robot===true;
  }
  L.setExplode(o.explode||0);L.setDeflection(o.deflection||0);
  for(const k of keys)L.parts[k].visible=!o.parts||o.parts.includes(k);
- L.cable.visible=!o.parts||o.parts.includes('cable');
+ for(const c of cableKeys)L[c].visible=(L.explode===0)&&(!o.parts||o.parts.includes('cable'));
  if(o.highlight){for(const k of keys)L.parts[k].traverse(m=>{if(m.isMesh&&m.material.emissive){if(!m.userData.baseEmissive)m.userData.baseEmissive=m.material.emissive.clone();m.material=m.material.clone();m.material.emissive.set(o.highlight.includes(k)?'#1e88ac':'#000000');m.material.emissiveIntensity=o.highlight.includes(k)?.35:0;}});}
  viewer.model.updateMatrixWorld(true);
  const target=V(...o.target),pos=V(...o.pos);
@@ -42,7 +45,7 @@ function shot(o){
   const s=o.ortho,cam=new THREE.OrthographicCamera(-s*width/height,s*width/height,s,-s,1,20000);cam.position.copy(pos);cam.up.set(...(o.up||[0,1,0]));cam.lookAt(target);cam.updateMatrixWorld();renderer.render(scene,cam);
  }else{camera.position.copy(pos);camera.up.set(0,1,0);camera.fov=o.fov||32;camera.updateProjectionMatrix();camera.lookAt(target);camera.updateMatrixWorld();viewer.inspectionLamp.visible=!!o.lamp;renderer.render(scene,camera);}
  const cam=o.ortho?null:camera,anchors={};
- if(cam)for(const k of [...keys,'cable']){const g=k==='cable'?L.cable:L.parts[k];if(!g.visible)continue;const b=new THREE.Box3().setFromObject(g);if(b.isEmpty())continue;const c=b.getCenter(V(0,0,0)).project(cam);anchors[k]=[(c.x+1)/2,(1-c.y)/2];}
+ if(cam)for(const k of [...keys,'spiral']){const g=k==='spiral'?L.spiral:L.parts[k];if(!g.visible)continue;const b=new THREE.Box3().setFromObject(g);if(b.isEmpty())continue;const c=b.getCenter(V(0,0,0)).project(cam);anchors[k]=[(c.x+1)/2,(1-c.y)/2];}
  return {img:renderer.domElement.toDataURL('image/jpeg',.92).split(',')[1],anchors};
 }
 window.stills={shot,viewer,info:()=>({bottom:viewer.bottom,radius:viewer.radius,geo:viewer.laser.geo})};window.ready=true;
