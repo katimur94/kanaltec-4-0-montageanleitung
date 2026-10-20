@@ -10,6 +10,8 @@ import {millingState,millingTarget,millingSpec} from './milling.js';
 import {breakoutContour,branchBottom} from './repair.js';
 import {injectionFitting,injectionSpec} from './injection-fitting.js';
 import {ManholeScene,insertionKinematics,frameMatrix,insertionMasses} from './manhole.js';
+import {LinerScene,linerState,linerShot,reachToLiner} from './liner.js';
+import {makeInjectionCone,conformPad,restPad,coneSpec} from './injection-cone.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 // Waterline of the dry-weather flow; parts below it look wet (darker, glossy).
@@ -195,7 +197,7 @@ export class Viewer {
   this.floor=mesh(new THREE.PlaneGeometry(10000,10000),new THREE.ShadowMaterial({color:'#455861',opacity:.12}));this.floor.rotation.x=-Math.PI/2;this.floor.receiveShadow=true;this.floor.castShadow=false;this.scene.add(this.floor);
   this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.dampingFactor=.09;this.controls.minDistance=180;this.controls.maxDistance=5000;this.controls.maxPolarAngle=Math.PI*.94;this.controls.autoRotateSpeed=.8;
   this.model=new THREE.Group();this.context=new THREE.Group();this.scene.add(this.model,this.context);this.parts=[];this.group='all';this.explode=0;this.targetExplode=0;this.mode='explore';this.time=0;this.selected=null;this.faint=false;
-  this.controls.addEventListener('start',()=>{if(this.mode==='insert'&&this.autoCam){this.autoCam=false;this.el.dispatchEvent(new CustomEvent('autocam',{detail:false}));}});
+  this.controls.addEventListener('start',()=>{if(['insert','liner'].includes(this.mode)&&this.autoCam){this.autoCam=false;this.el.dispatchEvent(new CustomEvent('autocam',{detail:false}));}});
   this.ray=new THREE.Raycaster();this.pointer=new THREE.Vector2();let start;
   this.renderer.domElement.addEventListener('pointerdown',e=>start=e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&this.dragMode!=='pan'?[e.clientX,e.clientY]:null);
   this.renderer.domElement.addEventListener('pointerup',e=>{if(!start||Math.hypot(e.clientX-start[0],e.clientY-start[1])>5)return;const b=this.renderer.domElement.getBoundingClientRect();this.pointer.set((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1);this.ray.setFromCamera(this.pointer,this.camera);const hits=this.ray.intersectObjects(this.parts.filter(p=>p.node.visible).map(p=>p.node),true);if(hits.length){let o=hits[0].object;while(o&&!o.userData.part)o=o.parent;if(o?.userData.part)this.onSelect(o.userData.part);} });
@@ -212,7 +214,7 @@ export class Viewer {
   this.camera.position.add(offset);this.controls.target.add(offset);this.controls.update();
  }
  setTheme(dark){this.scene.background.set(dark?'#17222c':'#edf0ef');this.floor.material.opacity=dark?.28:.12;this.floor.material.color.set(dark?'#000000':'#455861');}
- clear(){this.releaseInsert?.();if(this.manhole){this.scene.remove(this.manhole.group);this.manhole.dispose();this.manhole=null;}this.insertGeo=null;this.repair?.dispose();this.robot?.dispose();for(const n of [this.model,this.context]){n.traverse(o=>{if(o.isMesh){if(![...cached.values()].includes(o.geometry))o.geometry.dispose();if(o.userData.origMat)o.material.dispose();}});n.clear();}this.parts=[];this.robot=null;this.repair=null;}
+ clear(){this.releaseInsert?.();if(this.manhole){this.scene.remove(this.manhole.group);this.manhole.dispose();this.manhole=null;}if(this.liner){this.scene.remove(this.liner.group);this.liner.dispose();this.liner=null;}this.cone=null;this.insertGeo=null;this.repair?.dispose();this.robot?.dispose();for(const n of [this.model,this.context]){n.traverse(o=>{if(o.isMesh){if(![...cached.values()].includes(o.geometry))o.geometry.dispose();if(o.userData.origMat)o.material.dispose();}});n.clear();}this.parts=[];this.robot=null;this.repair=null;}
  addPart(g,row,i,position,explode,object){
   const node=new THREE.Group();node.position.copy(position);node.add(object);this.model.add(node);const p={group:g,pos:row.pos,key:row.key,index:i,name:row.name,qty:row.qty,kind:row.kind,note:row.note,node,base:position.clone(),delta:explode,originalRotation:node.quaternion.clone()};node.userData.part=p;this.parts.push(p);return p;
  }
@@ -326,6 +328,8 @@ export class Viewer {
   this.inlet=injectionFitting();this.model.add(this.inlet);
   this.sensor=new THREE.Group();this.sensor.add(cyl(6,12,palettes.darkMetal,V(0,-6,0)),cyl(9,2,mat('#c3312e',.1,.5),V(0,1,0)),torus(10.5,1.5,palettes.gold,V(0,1,0)));this.model.add(this.sensor);
   this.robotAnchor=this.parts.find(p=>p.group==='z'&&p.key==='adapter');this.robot=new Robot(R+12,this.robotAnchor.base);this.model.add(this.robot.group);
+  // Injection cone for void filling behind a liner: screwed onto the same spindle as the milling head.
+  this.cone=makeInjectionCone();this.cone.group.position.set(millingSpec.spindleX,coneSpec.mountY,0);this.cone.group.visible=false;this.robot.cutter.group.add(this.cone.group);
   const robotY=this.robot.bodyY+this.robotAnchor.base.y;
   const end=this.inlet.userData.hoseEnd.clone().add(V(ports.inletX,R-10,0));
   const approach=end.clone().addScaledVector(this.inlet.userData.hoseDirection,12);
@@ -393,7 +397,7 @@ export class Viewer {
   this.damage=this.repair.cavity;
   this.context.visible=false;
  }
- setMode(mode){this.mode=mode;this.context.visible=mode==='process';this.floor.visible=!['process','insert'].includes(mode);if(mode==='insert')this.ensureManhole();if(this.manhole)this.manhole.group.visible=mode==='insert';wetLine.value=mode==='insert'?this.manhole.spec.water:this.wetY??-1e9;this.controls.maxDistance=mode==='insert'?11000:5000;if(mode==='process'||mode==='insert'){this.group='all';this.targetExplode=0;this.faint=false;}this.updateParts();this.fit();}
+ setMode(mode){this.mode=mode;this.context.visible=mode==='process';this.floor.visible=!['process','insert','liner'].includes(mode);if(mode==='insert')this.ensureManhole();if(this.manhole)this.manhole.group.visible=mode==='insert';if(mode==='liner')this.ensureLiner();if(this.liner)this.liner.group.visible=mode==='liner';wetLine.value=mode==='insert'?this.manhole.spec.water:mode==='liner'?-1e9:this.wetY??-1e9;this.controls.maxDistance=mode==='insert'?11000:mode==='liner'?7000:5000;if(mode==='process'||mode==='insert'||mode==='liner'){this.group='all';this.targetExplode=0;this.faint=false;}this.updateParts();this.fit();}
  setGroup(group){this.group=group;this.select(null);this.updateParts();this.fit();}
  setExplode(value){this.targetExplode=value;}
  setSections(options){this.sections={...this.sections,...options};this.updateParts();this.applyMaterials();}
@@ -403,7 +407,7 @@ export class Viewer {
  updateParts(){const groupDelta={s:V(0,240,0),h:V(0,35,0),z:V(0,-140,0),u:V(0,-300,0)};
   const drive=this.sections?.holder;
   if(this.repair)this.repair.setCut(!!this.sections.pipe);
-  this.manhole?.setCut(!!this.sections.pipe);
+  this.manhole?.setCut(!!this.sections.pipe);this.liner?.setCut(!!this.sections.pipe&&!(this.mode==='liner'&&this.currentView==='channel'));
   for(const p of this.parts){const frontHolder=drive&&p.base.z>0&&((p.group==='h'&&['sides','rail','pins','blocks','blockbolts','sidebolts','railbolts'].includes(p.key))||(p.group==='s'&&['mounts','straps','bolts','mountbolts'].includes(p.key)));p.node.visible=(this.group==='all'||p.group===this.group)&&!frontHolder;p.node.position.copy(p.base);if(this.explode>0){const d=p.delta.clone();if(this.group==='all'){d.multiplyScalar(.6);d.add(groupDelta[p.group]);}p.node.position.addScaledVector(d,this.explode);}}
  }
  setProcess(t){this.time=this.closedMould&&this.repairOptions.milling===false?Math.max(PHASE.POSITION,t):t;}
@@ -448,6 +452,7 @@ export class Viewer {
   this.repair.setWaterObstacles(this.model.visible===false?[]:list.slice(0,6));
  }
  preparationPose(){
+  this.mountCutter();
   const t=this.time,R=this.radius+12,state=millingState(t);
   const millingKind=this.repairOptions.kind==='pipe'?'pipe':this.closedMould;
   this.poseSeal(0);this.bumperAir=0;this.upperLift=0;this.sensorFull=false;
@@ -494,6 +499,81 @@ export class Viewer {
   if(change)this.repair.setCutter(null);
   this.waterObstacles();
   this.repair.update({time:t,clock:this.ambientClock??t,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false,shield:withMould?{x:this.workOffset-430,lift:-70.56,seal:0,press:0}:null});
+ }
+ // Void filling behind a liner: own scene, own timeline (src/liner.js).
+ mountCutter(){if(!this.cone||!this.cone.group.visible)return;this.cone.group.visible=false;this.robot.cutter.disk.visible=true;this.coneKey='';restPad(this.cone);}
+ ensureLiner(){
+  if(this.liner||!this.id)return this.liner;
+  // Rotary axis height with the robot standing on the liner (lifted by its wall).
+  const probe=new LinerScene(this.id,insertCut,{kind:this.linerKind||'kliner'});
+  const axisY=this.robotAnchor.base.y+this.robot.rotationAxis.y+probe.spec.tl;probe.dispose();
+  this.liner=new LinerScene(this.id,insertCut,{kind:this.linerKind||'kliner',axisY});this.liner.group.visible=this.mode==='liner';this.liner.setCut(!!this.sections?.pipe);this.scene.add(this.liner.group);return this.liner;
+ }
+ setLiner(t){this.linerTime=t;}
+ setLinerKind(kind){this.linerKind=kind;if(this.liner){this.scene.remove(this.liner.group);this.liner.dispose();this.liner=null;}if(this.mode==='liner')this.ensureLiner();}
+ linerPose(){
+  const L=this.ensureLiner();if(!L)return;const spec=L.spec,st=this.linerState=linerState(this.linerTime||0,spec);
+  for(const p of this.parts)p.node.visible=false;
+  for(const o of [this.winding?.group,this.inlet,this.sensor,this.feed,this.repair?.hoseGroup])if(o)o.visible=false;
+  const hide=!!this.sections?.hideRobot,base=this.robotAnchor.base,axisY=this.robot.rotationAxis.y,tool=st.tool==='cone',tip=tool?spec.tip.cone:spec.tip.cutter;
+  this.model.position.set(st.travel,spec.tl,0);this.robot.group.position.copy(base);this.robot.group.visible=!hide;this.robot.receiver.visible=false;
+  // Same solution as the milling head: the rotary module behind CutterCam
+  // turns the tool axis, the arms lift along it. off = tip beyond the liner.
+  const d=reachToLiner(spec,st.roll)+st.off,local=V(spec.holeP.x-base.x-tip.x,axisY+d-tip.y,0);
+  this.robot.pose(local.y,st.travel,st.roll,local.x);
+  const c=this.robot.cutter;c.group.visible=!hide;c.group.position.copy(local);c.group.quaternion.identity();c.disk.visible=!tool;c.disk.rotation.y=st.spin?st.t*180:0;
+  this.cone.group.visible=tool&&!hide;
+  this.model.updateMatrixWorld(true);
+  let squash=0;
+  if(tool){const key=[st.travel,st.roll,st.off].map(v=>v.toFixed(3)).join();if(key!==this.coneKey){this.coneKey=key;this.coneSquash=st.off>-4?conformPad(this.cone,spec.RL):(restPad(this.cone),0);}squash=this.coneSquash||0;}
+  this.linerSquash=squash;
+  L.setHose(tool&&!hide?this.linerHose():null,st.hose);
+  L.update(st,this.ambientClock??0);
+  this.robotCentre=V(st.travel-500,0,0);
+  if(this.currentView==='channel'&&!this.autoCam)this.placeCutterCam();
+ }
+ linerHose(){
+  // From the brass barb backwards beside the spindle, then along the robot.
+  const cone=this.cone.group,barb=this.cone.barb,w=p=>p.applyMatrix4(cone.matrixWorld),r=p=>p.applyMatrix4(this.robot.group.matrixWorld),y=this.robot.bodyY;
+  const tip=barb.localToWorld(V(0,31,0)),out=barb.localToWorld(V(0,58,0));
+  return [tip,out,w(V(-75,-10,22)),w(V(-80,-95,52)),r(V(-330,y+70,58)),r(V(-700,y+72,54)),r(V(-1100,y+62,48)),r(V(-1500,y+34,44)),r(V(-2300,y+14,40))];
+ }
+ fitLiner(view){
+  const L=this.ensureLiner();if(!L)return;const s=L.spec,c=s.cav;this.linerPose();
+  this.camera.fov=view==='channel'?70:34;this.camera.updateProjectionMatrix();this.controls.minDistance=view==='channel'?10:120;if(this.inspectionLamp)this.inspectionLamp.visible=view==='channel';
+  this.model.updateMatrixWorld(true);
+  if(view==='channel'){this.placeCutterCam();return;}
+  let b=new THREE.Box3(V(-1500,-s.R-30,-s.R-40),V(650,s.R+s.w+c.H+60,s.R+40));
+  if(view==='damage')b=new THREE.Box3(V(c.cx-c.ax-60,s.R-60,-s.R*.8),V(c.cx+c.ax+60,s.R+s.w+c.H+50,40));
+  if(view==='robot')b=new THREE.Box3().setFromObject(this.robot.group);
+  if(view==='tool'){const o=this.robot.cutter.group.getWorldPosition(V());b=new THREE.Box3(o.clone().add(V(-120,-40,-110)),o.clone().add(V(220,280,110)));}
+  const dir=view==='side'?V(0,.05,1):view==='front'?V(1,.06,0):view==='top'?V(.001,1,.001):view==='damage'?V(.08,.16,1):view==='robot'?V(.3,.55,1):view==='tool'?V(.35,.2,1):V(.3,.22,1);
+  const center=b.getCenter(V()),sz=b.getSize(V()),dist=Math.max(view==='tool'?260:400,Math.max(sz.y,sz.x/Math.max(.8,this.camera.aspect))/(2*Math.tan(THREE.MathUtils.degToRad(17)))*1.2);
+  this.camera.position.copy(center).add(dir.normalize().multiplyScalar(dist+sz.z*.5));this.controls.target.copy(center);this.controls.update();
+ }
+ placeCutterCam(){
+  // CutterCam: from the camera head forward and up to the tool; follows the robot.
+  // The camera view shows the whole pipe, the section cut is only an outside view.
+  const s=this.liner.spec,eye=this.robot.cameraEye.getWorldPosition(V()),tool=(this.cone.group.visible?this.cone.outlet:this.robot.cutter.disk).getWorldPosition(V());
+  this.camera.position.copy(eye).add(V(6,4,0));this.controls.target.copy(tool.lerp(s.holeP.clone().add(V(this.linerState.travel,0,0)),.4));this.controls.update();
+ }
+ linerAnchors(){
+  if(!this.liner||!this.linerState)return [];const s=this.liner.spec,st=this.linerState,c=s.cav,at=(x,phi,r)=>V(x,r*Math.cos(phi),r*Math.sin(phi));
+  const tool=st.tool==='cone'?this.cone.outlet.getWorldPosition(V()).add(V(0,-30,0)):this.robot.cutter.disk.getWorldPosition(V());
+  return [
+   {name:s.kind==='kliner'?'K-Liner (Kurzliner)':'Schlauchliner (Inliner)',side:'left',point:at(s.kind==='kliner'?s.kliner.x0+90:-700,-2.4,s.RL)},
+   {name:'Altrohr gebrochen · Scherben fehlen',point:at(s.brk.cx+s.brk.ax*1.25,0,s.R+s.w)},
+   {name:st.fill>0?'Verpressmörtel im Hohlraum':'Hohlraum hinter dem Liner',point:at(c.cx,c.cs/s.Rm,s.R+s.w+c.H*.55)},
+   {name:st.tool==='cone'?'Verpresskegel (Arbeitsname)':'Fräskopf',side:'left',point:tool},
+   {name:st.tool==='cone'?'Verpressschlauch an der Messingtülle':st.holeIn>0?'Verpressbohrung im Liner':'Bohrstelle',point:st.tool==='cone'&&this.liner.hose?.visible?this.liner.hose.geometry.parameters.path.getPointAt(.18):s.holeP.clone()}
+  ];
+ }
+ linerShotNow(){const s=this.linerState;return linerShot(this.liner.spec,s.stage,s.f,s.travel);}
+ linerCamera(dt){
+  if(!this.autoCam||!this.linerState||!this.liner)return;
+  const shot=this.linerShotNow(),k=1-Math.exp(-dt*(this.snapCam?40:2.4));this.snapCam=false;
+  const pos=shot.target.clone().addScaledVector(shot.dir,shot.dist*Math.max(1,.75/Math.max(.45,this.camera.aspect)));
+  this.controls.target.lerp(shot.target,k);this.camera.position.lerp(pos,k);
  }
  ensureManhole(){if(this.manhole||!this.id)return;this.manhole=new ManholeScene(this.id,insertCut);this.manhole.group.visible=this.mode==='insert';this.manhole.setCut(!!this.sections?.pipe);this.scene.add(this.manhole.group);}
  // Parts carried by the robot side of the hinge (PDF p. 10): moving leaf,
@@ -604,6 +684,7 @@ export class Viewer {
    this.camera.position.copy(center).add(dir.normalize().multiplyScalar(dist));this.controls.target.copy(center);this.controls.update();this.applyMaterials();
    if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));return;
   }
+  if(this.mode==='liner'){this.fitLiner(view);if(this.el)this.el.dispatchEvent(new CustomEvent('viewchange',{detail:{view}}));return;}
   if(this.inspectionLamp)this.inspectionLamp.visible=['channel','shaft'].includes(view);
   this.camera.fov=view==='channel'?72:view==='shaft'?44:34;this.camera.updateProjectionMatrix();this.controls.minDistance=view==='shaft'?70:180;
   if(view==='shaft'){
@@ -643,6 +724,6 @@ export class Viewer {
  ];}
  fitExplosion(){const e=this.explode,t=this.targetExplode;this.targetExplode=1;this.fit();this.targetExplode=t;this.explode=e;this.updateParts();}
  screenshot(){this.renderer.render(this.scene,this.camera);return this.renderer.domElement.toDataURL('image/png');}
- resetPose(){if(this.robot)this.robot.cutter.group.visible=false;this.model.position.set(0,0,0);for(const p of this.parts){p.node.scale.set(1,1,1);p.node.quaternion.copy(p.originalRotation);}this.poseSeal(0);this.poseMechanism(0,0,0);}
- animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.ambientClock=now/1000;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=!['process','insert'].includes(this.mode)&&this.explode<.03;if(this.mode==='insert'){this.insertionPose();this.insertCamera(dt);}else{this.releaseInsert();if(this.mode==='process')this.processPose();else this.resetPose();}this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
+ resetPose(){this.mountCutter();if(this.robot)this.robot.cutter.group.visible=false;this.model.position.set(0,0,0);for(const p of this.parts){p.node.scale.set(1,1,1);p.node.quaternion.copy(p.originalRotation);}this.poseSeal(0);this.poseMechanism(0,0,0);}
+ animate(){requestAnimationFrame(()=>this.animate());const now=performance.now(),dt=Math.min((now-this.last)/1000,.05);this.last=now;this.ambientClock=now/1000;this.explode+=(this.targetExplode-this.explode)*Math.min(1,dt*7);if(Math.abs(this.targetExplode-this.explode)<.0001)this.explode=this.targetExplode;this.updateParts();this.floor.visible=!['process','insert','liner'].includes(this.mode)&&this.explode<.03;if(this.mode==='insert'){this.insertionPose();this.insertCamera(dt);}else if(this.mode==='liner'){this.releaseInsert();this.linerPose();this.linerCamera(dt);}else{this.releaseInsert();if(this.mode==='process')this.processPose();else this.resetPose();}this.followShaft();this.controls.update();this.renderer.render(this.scene,this.camera);this.onFrame?.(dt);}
 }

@@ -1,5 +1,18 @@
 # Fortschrittschronik
 
+## 20.10.2026 – Neuer Reiter „Liner verpressen“: Hohlraum hinter dem Liner verfüllen
+
+**Auftrag:** Neue Verpressvariante nach Nutzerfotos und -beschreibung als Animation mit 3D-Ansicht und danach als Video: Die Haltung hat bereits einen K-Liner oder Inliner, der Fräser fräst dort ein Loch, wo dahinter der Hohlraum liegt, dann wird der Fräser gegen ein neues Bauteil (noch ohne Namen) getauscht und der Hohlraum hinter dem Liner verpresst.
+
+**Umsetzung:**
+- `src/injection-cone.js`: Bauteil nach den sechs Fotos mit Arbeitsname **Verpresskegel**: schwarzer Gummikegel, rote Dichtauflage (ca. Ø 76 mm) mit schwarzem Gummiring um den mittleren Auslass, Messing-Schlauchtülle seitlich (zeigt zum Roboter), Gewindeaufnahme unten. Er wird auf dieselbe CutterCam-Spindel geschraubt wie der Fräskopf. Die Gummioberseite verformt sich beim Anpressen an die Linerkrümmung (`conformPad`). Alle Maße aus den Handfotos geschätzt.
+- `src/liner.js`: eigene Szene und Zeitachse mit sieben Schritten (Ausgangslage, Anfahren/Ausrichten, Verpressloch fräsen, Werkzeugwechsel am Schacht, Kegel anpressen, verpressen, aushärten/kontrollieren). Altrohr aus Steinzeug mit gebrochener Stelle (fehlende Scherben, Bruchkante), Liner (K-Liner mit auslaufenden Enden oder durchgehender Schlauchliner, wählbar), Erdreich mit ausgespültem Hohlraum, Abwasser in der Sohle, Frässpäne. Die Bohrung entsteht aus der Pilzfräser-Kontur (innen ca. Ø 60, außen ca. Ø 39 mm) und öffnet sich stetig beim Eintauchen. Der Mörtel läuft zuerst als Film aus der Bohrung, setzt sich an den tiefsten Stellen ab und steigt nach einer Volumentabelle, bis der Hohlraum voll ist; Verpressschlauch mit fortschreitender Füllung. Liner-, Hohlraum-, Bohrungs- und Mörtelmaße sind Darstellungsannahmen.
+- `src/model.js`: Modus `liner`, Roboter mit derselben Kinematik wie beim Fräsen (Drehmodul hinter der CutterCam, Hub entlang der Werkzeugachse), steht auf dem Liner. Automatische Kamerafahrt je Schritt, Ansichten **CutterCam** (Kamerablick, folgt dem Roboter, ohne Rohrschnitt) und **Hohlraum**, Beschriftungen. Beim Verlassen des Reiters sitzt wieder der Fräskopf auf der Spindel.
+- `src/main.js`, Vorlage, CSS: Reiter **05 Liner verpressen** (So funktioniert’s jetzt 04, Quellen 06), Schrittliste, Zeitachse, Zustandsanzeige (Bohrung, Stauchung der Dichtauflage, Füllgrad), Linertyp-Auswahl, Hilfe.
+- `work/check-liner.mjs` (in `npm test`): Bohrung im Bruch und unter dem Hohlraum, Werkzeug trifft die geplante Achse, Dichtauflage liegt auf dem Liner und der Auslass mittig über der Bohrung, Roboter und Schlauch im Liner, Mörtel nur hinter dem Liner, Stetigkeit, Rücksprünge, beide Linertypen, alle fünf DN.
+
+**Prüfung:** `npm test` (alle bisherigen Prüfungen und die neue) bestanden; `npm run build` erzeugt beide HTML-Dateien. Im Browser (Chromium, Software-Rendering) alle Schritte, CutterCam- und Hohlraumansicht, Beschriftungen, DN 300/400/700 angesehen, keine Konsolenfehler.
+
 ## 02.10.2026 – Werbespot: Schalung im Outro nicht mehr gestaucht
 
 **Auftrag:** Die gestauchte Ansicht auch im Werbespot beheben, Blitz- und Explosionseffekte behalten.
