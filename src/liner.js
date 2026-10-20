@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import {surfaceTextures} from './repair-surface.js';
 import {flowNormalTexture} from './repair.js';
 import {millingSpec} from './milling.js';
+import {coneCutterRadius,coneCutterSpec} from './cone-cutter.js';
+import {coneSpec} from './injection-cone.js';
 
 // Void filling behind a liner (user description 20.10.2026): the pipe already
 // carries a K-liner or an inliner, the cutter mills a small hole where the
@@ -14,20 +16,17 @@ const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),smooth=x=>{x=clamp(x);return 
 export const linerKinds=[{id:'kliner',label:'K-Liner (Kurzliner)'},{id:'inliner',label:'Schlauchliner (Inliner)'}];
 export const linerStages=[
  {title:'Liner mit Hohlraum dahinter',text:'Die Haltung ist bereits mit einem Liner saniert. Hinter dem Liner liegt noch ein Hohlraum: Am gebrochenen Altrohr ist das Bettungsmaterial ausgespült. Der Liner überbrückt die Stelle, liegt dort aber nicht mehr am Boden an.',caption:'Ausgangslage'},
- {title:'Fräsroboter fährt an',text:'Der IBAK-Roboter fährt mit dem Fräskopf bis unter den Hohlraum. Über die CutterCam wird die Stelle gesucht; das Drehmodul hinter der Kamera richtet den Fräser zur Bohrstelle aus.',caption:'Anfahren und ausrichten'},
- {title:'Verpressloch fräsen',text:'Der Fräser hebt an und fräst ein kleines Loch durch den Liner – genau dort, wo dahinter der Hohlraum liegt. Danach senkt er wieder ab; die Späne fallen in die Sohle.',caption:'Bohrung durch den Liner'},
- {title:'Werkzeug wechseln',text:'Der Roboter fährt zurück zum Schacht. Dort wird der Fräskopf gegen den Verpresskegel getauscht: Der Kegel wird auf dieselbe Spindel geschraubt und der Verpressschlauch auf die Messingtülle gesteckt. Danach fährt der Roboter wieder an die Bohrung.',caption:'Fräskopf ab, Verpresskegel auf'},
+ {title:'Fräsroboter fährt an',text:'Der IBAK-Roboter fährt mit einem Kegelfräser auf der Spindel bis unter den Hohlraum. Über die CutterCam wird die Stelle gesucht; das Drehmodul hinter der Kamera richtet den Fräser zur Bohrstelle aus.',caption:'Anfahren und ausrichten'},
+ {title:'Liner öffnen',text:'Der Kegelfräser hebt an und dringt mit der Spitze durch den Liner – genau dort, wo dahinter der Hohlraum liegt. Die Bohrung wird nur so weit geöffnet, dass der Verpresskegel sie sicher überdeckt. Danach senkt der Fräser ab; die Späne fallen in die Sohle.',caption:'Bohrung mit dem Kegelfräser'},
+ {title:'Werkzeug wechseln',text:'Der Roboter fährt zurück zum Schacht. Dort wird der Kegelfräser gegen den DVK-Flex Verpresskegel getauscht: Der Kegel wird auf dieselbe Spindel geschraubt und der Verpressschlauch auf die schräg nach unten zeigende Messingtülle gesteckt. Danach fährt der Roboter wieder an die Bohrung.',caption:'Kegelfräser ab, Verpresskegel auf'},
  {title:'Verpresskegel anpressen',text:'Das Drehmodul stellt denselben Winkel wie beim Fräsen ein, der Arm hebt den Kegel an. Die rote Dichtauflage legt sich rund um die Bohrung an den Liner und wird leicht gestaucht. Der Auslass sitzt mittig über dem Loch.',caption:'Abdichten an der Bohrung'},
- {title:'Hohlraum verpressen',text:'Verpressmörtel läuft durch den Schlauch, die Messingtülle und den Kegel in die Bohrung. Hinter dem Liner breitet er sich aus, füllt zuerst die tiefen Stellen am Altrohr und steigt dann, bis der Hohlraum voll ist.',caption:'Verfüllen hinter dem Liner'},
+ {title:'Hohlraum verpressen',text:'Verpressmörtel läuft durch den Schlauch, die schräge Messingtülle und den Kegel in die Bohrung. Hinter dem Liner breitet er sich aus, füllt zuerst die tiefen Stellen am Altrohr und steigt dann, bis der Hohlraum voll ist.',caption:'Verfüllen hinter dem Liner'},
  {title:'Aushärten & kontrollieren',text:'Der Kegel bleibt angepresst, bis der Mörtel angezogen hat. Dann senkt der Arm ab: Die Bohrung ist mit Mörtel verschlossen und der Hohlraum hinter dem Liner verfüllt. Der Roboter fährt zurück.',caption:'Ergebnis'}
 ];
 export const linerEnd=linerStages.length-.001;
 
 const cavEdge=a=>1+.08*Math.sin(3*a+.7)+.05*Math.sin(5*a+2)+.03*Math.sin(9*a+.3);
 const breakEdge=a=>1+.1*Math.sin(4*a+.3)+.07*Math.sin(7*a+1.1)+.05*Math.sin(13*a+2.4)+.035*Math.sin(23*a+.8)+.02*Math.sin(41*a+1.7);
-// Dome profile of the mushroom cutter (src/cutter.js): radius at a depth below its apex.
-const domeDepth=[0,.07,.22,.42].map(k=>k*millingSpec.depth),domeR=[7,.6*millingSpec.width/2,millingSpec.width/2-3,millingSpec.width/2];
-export function domeRadius(d){if(d<=0)return 0;for(let i=1;i<domeDepth.length;i++)if(d<=domeDepth[i])return lerp(domeR[i-1],domeR[i],(d-domeDepth[i-1])/(domeDepth[i]-domeDepth[i-1]));return domeR[domeR.length-1];}
 
 // axisY: world height of the CutterCam rotary axis with the robot standing on the liner.
 export function linerSpec(dn,kind='kliner',axisY=-18){
@@ -40,9 +39,10 @@ export function linerSpec(dn,kind='kliner',axisY=-18){
   kliner:{x0:-330-.25*dn,x1:290+.25*dn,feather:45},
   cav:{cx:30,cs:-.12*Rm,ax:150+.2*dn,as:85+.2*dn,H:80+.12*dn},
   brk:{cx:-6,cs:Rm*phiH,ax:.42*(150+.2*dn),as:.45*(85+.2*dn)},
-  lowCut:-55,lowCone:-50,press:.8,plunge:tl+1.5,
-  tip:{cutter:V(millingSpec.spindleX,millingSpec.motorLength+millingSpec.depth/2,0),cone:V(millingSpec.spindleX,197+55,0)}};
- spec.holeIn=domeRadius(spec.plunge);spec.holeOut=domeRadius(spec.plunge-tl);
+  // The cone cutter pierces the liner until the bore is about Ø 19 mm outside.
+  lowCut:-55,lowCone:-50,press:.8,plunge:tl+19.5,
+  tip:{cutter:V(millingSpec.spindleX,coneCutterSpec.tipY,0),cone:V(millingSpec.spindleX,coneSpec.mountY+coneSpec.height,0)}};
+ spec.holeIn=coneCutterRadius(spec.plunge);spec.holeOut=coneCutterRadius(spec.plunge-tl);
  return spec;
 }
 // Distance from the rotary axis to the liner along a roll angle.
@@ -71,7 +71,7 @@ export function linerState(t,spec){
  else if(stage===4)st.roll=R*smooth(f/.3);
  else if(stage===5)st.roll=R;
  else if(stage===6)st.roll=R*(1-smooth((f-.42)/.16));
- if(stage===2){st.off=f<.25?lerp(spec.lowCut,-10,smooth(f/.25)):f<.7?lerp(-10,P,(f-.25)/.45):lerp(P,spec.lowCut,smooth((f-.72)/.17));st.spin=f>.06&&f<.9;}
+ if(stage===2){st.off=f<.25?lerp(spec.lowCut,-10,smooth(f/.25)):f<.7?lerp(-10,P,(f-.25)/.45):lerp(P,spec.lowCut,smooth((f-.72)/.2));st.spin=f>.06&&f<.9;}
  if(stage>=3)st.off=spec.lowCone;
  if(stage===4)st.off=lerp(spec.lowCone,spec.press,smooth((f-.32)/.53));
  if(stage===5)st.off=spec.press;
@@ -80,15 +80,15 @@ export function linerState(t,spec){
  st.hose=stage===5?smooth(f/.22):stage>5?1:0;
  st.fill=stage===5?smooth((f-.22)/.73):stage>5?1:0;
  st.cure=stage===6?smooth(f/.35):0;
- st.holeIn=domeRadius(st.plunge);st.holeOut=domeRadius(st.plunge-spec.tl);
+ st.holeIn=coneCutterRadius(st.plunge);st.holeOut=coneCutterRadius(st.plunge-spec.tl);
  return st;
 }
 export function linerReadout(st,spec,squash=0){
  const deg=Math.round(-st.roll*180/Math.PI);
  if(st.stage===0)return {text:'Liner eingebaut · Hohlraum dahinter noch leer',flag:'false'};
- if(st.stage===1)return {text:st.f<.55?'Fräser in Fahrstellung · Roboter fährt an':`Drehmodul richtet aus · ${deg}°`,flag:'false'};
- if(st.stage===2)return st.holeOut>0?{text:`Liner durchbohrt · Bohrung außen Ø ${Math.round(st.holeOut*2)} mm`,flag:'true'}:{text:st.off>-12?'Fräser fräst in den Liner':'Fräser hebt an',flag:'true'};
- if(st.stage===3)return {text:st.tool==='cutter'?'Rückfahrt zum Schacht · Werkzeugwechsel':'Verpresskegel auf der Spindel · Schlauch angeschlossen',flag:'locked'};
+ if(st.stage===1)return {text:st.f<.55?'Kegelfräser in Fahrstellung · Roboter fährt an':`Drehmodul richtet aus · ${deg}°`,flag:'false'};
+ if(st.stage===2)return st.holeOut>0?{text:`Liner geöffnet · Bohrung innen Ø ${Math.round(st.holeIn*2)}, außen Ø ${Math.round(st.holeOut*2)} mm`,flag:'true'}:{text:st.off>-12?'Kegelfräser dringt in den Liner ein':'Kegelfräser hebt an',flag:'true'};
+ if(st.stage===3)return {text:st.tool==='cutter'?'Rückfahrt zum Schacht · Werkzeugwechsel':'DVK-Flex Verpresskegel auf der Spindel · Schlauch angeschlossen',flag:'locked'};
  if(st.stage===4)return squash>.2?{text:`Dichtauflage angepresst · am Rand bis ${squash.toFixed(1).replace('.',',')} mm gestaucht`,flag:'locked'}:{text:`Kegel richtet sich zur Bohrung aus · ${deg}°`,flag:'false'};
  if(st.stage===5)return st.fill>0?{text:`Verpressen · Hohlraum ${Math.round(st.fill*100)} % verfüllt`,flag:'true'}:{text:'Mörtel läuft durch den Verpressschlauch',flag:'true'};
  return st.cure<1?{text:'Mörtel zieht an · Kegel bleibt angepresst',flag:'true'}:{text:'Bohrung verschlossen · Hohlraum verfüllt',flag:'locked'};
@@ -158,6 +158,9 @@ export class LinerScene{
   this.clipped=[this.pipeMat,this.linerMat,this.linerEdgeMat,this.soilMat,this.groutMat];
   this.caps=[];
   this.buildPipe();this.buildLiner();this.buildSoil();this.buildGrout();this.buildWater();this.buildChips();
+  // Pipe, liner and soil are thin shells around a section: as shadow casters they
+  // only produce stray patterns inside. Robot and tools keep casting onto the liner.
+  this.group.traverse(o=>{if(o.isMesh)o.castShadow=false;});
   this.hose=null;this.hoseKey='';this.lastFill=-1;this.lastHole='';
   this.setCut(false);this.update(linerState(0,spec));
  }
@@ -314,7 +317,9 @@ export class LinerScene{
   else this.hoseFill.geometry=new THREE.BufferGeometry();
  }
  setCut(on){
-  if(this.cut===on)return;this.cut=on;for(const m of this.clipped){m.clippingPlanes=on?[this.cutPlane]:null;m.needsUpdate=true;}
+  if(this.cut===on)return;this.cut=on;
+  // The cut-away half casts no shadows either, so no stray light/shadow patterns appear inside.
+  for(const m of this.clipped){m.clippingPlanes=on?[this.cutPlane]:null;m.clipShadows=on;m.needsUpdate=true;}
   for(const c of this.caps)c.visible=on;this.groutCap.visible=on&&this.lastFill>0;
  }
  update(st,clock=0){

@@ -1,6 +1,6 @@
 # Projektstand und Übergabe – DSS-Flex Verfahren
 
-**Liner verpressen (20.10.2026):** Neuer Reiter **05 Liner verpressen** (`src/liner.js`, `src/injection-cone.js`): Hohlraum hinter einem K-Liner oder Schlauchliner über eine gefräste Bohrung verfüllen. Sieben Schritte mit eigener Zeitachse, Werkzeugwechsel vom Fräskopf auf den Verpresskegel (Arbeitsname, Bauteil nach Nutzerfotos, Maße geschätzt) auf derselben CutterCam-Spindel. Prüfung `check-liner.mjs`. Liner-, Hohlraum- und Mörtelmaße sind Darstellungsannahmen. Reiter „So funktioniert’s“ ist jetzt 04, Quellen 06.
+**Liner verpressen (20.10.2026):** Neuer Reiter **05 Liner verpressen** (`src/liner.js`, `src/injection-cone.js`): Hohlraum hinter einem K-Liner oder Schlauchliner über eine gefräste Bohrung verfüllen. Sieben Schritte mit eigener Zeitachse, Öffnen mit einem Kegelfräser, dann Werkzeugwechsel auf den Verpresskegel **DVK-Flex** (Namensvorschlag: Ditom Verpress-Kegel Flexibel; Bauteil nach Nutzerfotos, Messingtülle schräg zur Kegelflanke, Maße geschätzt) auf derselben CutterCam-Spindel. Prüfung `check-liner.mjs`. Liner-, Hohlraum- und Mörtelmaße sind Darstellungsannahmen. Reiter „So funktioniert’s“ ist jetzt 04, Quellen 06.
 
 **Filme Gesamtablauf (29.09.2026):** Sechs Filme (YouTube/Reel × Sprecher/Musik/Werbung) aus dem aktuellen Modell, Galerieabschnitt „Gesamtablauf“; Sprecher synthetisch (Microsoft Conrad), da ElevenLabs gesperrt. Veröffentlicht am 29.09.2026 (`main` `ddede20`, Pages). Details in FORTSCHRITT.md und work/VIDEO-PRODUKTION.md.
 
@@ -156,7 +156,8 @@ X verläuft längs des Kanals, Y nach oben, Z quer zum Kanal. Modelllängen sind
 | `src/manhole.js` | Schacht mit Steigbügeln und Gerinne, LKW mit Säulenkran und Hebebügel, Kabelführung, Einbauphysik und geplanter Durchgang (Klappvorrichtung öffnet nur Nase hoch) |
 | `src/infiltration.js` | Stufenloser Wassereintritt (einseitig), Wandläufe, Wasserfall gegen das Schild, Bodenkörner und Fäden |
 | `src/liner.js` | Reiter Liner verpressen: Altrohr mit Bruch, K-Liner/Schlauchliner, Hohlraum im Erdreich, Bohrung, Mörtelfüllung, Schlauch, Kamerafahrt |
-| `src/injection-cone.js` | Verpresskegel (Arbeitsname) nach Nutzerfotos und Anpassen der Dichtauflage an den Liner |
+| `src/injection-cone.js` | DVK-Flex Verpresskegel (Namensvorschlag) nach Nutzerfotos, schräge Messingtülle, Anpassen der Dichtauflage an den Liner |
+| `src/cone-cutter.js` | Kegelfräser zum Öffnen des Liners und Bohrungskontur |
 | `src/data.js` | Varianten, PDF-Stücklisten, Phasen, Quellenlinks; unsichere Teile ausdrücklich markieren |
 | `src/closure.js` | Anwendungsauswahl und Beschreibungen für geschlossene Schalung; ursprüngliche PDF-Stücklisten unverändert |
 | `src/assets.json` | Eingebettete PDF, Seitenbilder und Fotos; keine Zugangsdaten |

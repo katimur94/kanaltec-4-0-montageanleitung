@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),TAU=Math.PI*2;
 
-// Injection cone (working name "Verpresskegel"; the part has no name yet).
+// Injection cone "DVK-Flex Verpresskegel" (name proposal: Ditom Verpress-Kegel
+// Flexibel, following DSS-Flex; the part had no name yet).
 // Shape after the user's photos of 20.10.2026: black rubber cone, a red
 // sealing pad on the wide face with a black rubber ring around the central
 // outlet, a brass hose barb on the flank and a threaded bore underneath that
@@ -12,7 +13,8 @@ export const coneSpec={
  height:55,         // underside to pad face
  padOuter:38,padInner:13,padBottom:48,padTop:55,
  outlet:8,          // free outlet radius through ring and body
- barbY:24,          // barb axis above the underside, pointing backwards (-x)
+ barbY:24,          // barb base above the underside; the barb points backwards (-x)
+                    // and downwards, square to the cone flank (photos)
  maxSquash:9,       // rubber top compression limit (display value)
  flexFrom:41        // the rubber cone deforms above this height
 };
@@ -32,7 +34,7 @@ function residueTexture(seed,base,smear,size=256){
 }
 
 export function makeInjectionCone(){
- const group=new THREE.Group();group.name='Verpresskegel (Arbeitsname) · auf der CutterCam-Spindel';
+ const group=new THREE.Group();group.name='DVK-Flex Verpresskegel (Namensvorschlag) · auf der CutterCam-Spindel';
  const rubber=new THREE.MeshStandardMaterial({color:'#ffffff',map:residueTexture(4711,[22,24,27],[150,148,140]),roughness:.66,metalness:.02,envMapIntensity:.6,side:THREE.DoubleSide});
  const red=new THREE.MeshStandardMaterial({color:'#ffffff',map:residueTexture(911,[176,36,58],[214,170,170]),roughness:.82,metalness:0,side:THREE.DoubleSide});
  const ringMat=new THREE.MeshStandardMaterial({color:'#0d0f11',roughness:.55,metalness:.02,side:THREE.DoubleSide});
@@ -53,7 +55,9 @@ export function makeInjectionCone(){
  const pad=add(lathe(padProfile,96),red);pad.name='Rote Dichtauflage';
  pad.userData.rest=Float32Array.from(pad.geometry.attributes.position.array);
  // Brass hose barb on the flank, pointing back towards the robot.
- const barb=new THREE.Group();barb.name='Messing-Schlauchtülle';barb.position.set(-(22+(35.6-22)*(c.barbY-4)/36)+1.5,c.barbY,0);barb.rotation.z=Math.PI/2;group.add(barb);
+ // Screwed in square to the flank: outwards and inclined downwards.
+ const slope=(35.6-22)/36,normal=V(-1,-slope,0).normalize(),flank=V(-(22+slope*(c.barbY-4)),c.barbY,0);
+ const barb=new THREE.Group();barb.name='Messing-Schlauchtülle · schräg zur Kegelflanke';barb.position.copy(flank).addScaledVector(normal,-1.5);barb.quaternion.setFromUnitVectors(V(0,1,0),normal);group.add(barb);
  add(new THREE.CylinderGeometry(9.5,9.5,6,32),brass,barb).position.y=3;
  const ribs=[[4.2,31],[6.2,31]];for(let i=0;i<5;i++){const y=30-i*4.6;ribs.push([7.1,y-1.2],[6.2,y-4.4]);}ribs.push([6.2,6],[4.2,6]);
  add(lathe(ribs.map(([r,y])=>[r,y]),40),brass,barb);add(lathe([[4.25,6.2],[4.25,30.8]],24),dark,barb);

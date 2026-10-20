@@ -1,5 +1,18 @@
 # Fortschrittschronik
 
+## 20.10.2026 – Korrektur Liner verpressen: Kegelfräser, schräge Messingtülle, Name DVK-Flex
+
+**Auftrag:** Zum Öffnen einen Kegelfräser verwenden (mit dem Pilzfräser öffnet man nicht), die Schräglage der Messingtülle für den Betonschlauch beachten und einen Namen nach dem Muster DSS-Flex (Ditom Sanierungs-Schalung Flexibel) vorschlagen.
+
+**Umsetzung:**
+- `src/cone-cutter.js`: Hartmetall-Kegelfräser mit Wendelnuten auf derselben CutterCam-Spindel (Spannmutter, Schaft, Kegel Ø 36 mm, 40 mm lang). Im Reiter Liner verpressen sitzt nur noch dieser Fräser auf der Spindel, der Pilzfräser bleibt den übrigen Abläufen vorbehalten. Die Spitze dringt 19,5 mm über die Linerwand hinaus; die Bohrung folgt der Kegelkontur (außen Ø 19 mm, innen Ø 23–28 mm je nach Linerdicke) und liegt sicher unter der roten Dichtauflage. Maße sind Darstellungsannahmen.
+- `src/injection-cone.js`: Messingtülle rechtwinklig zur Kegelflanke eingeschraubt, also nach außen und ca. 21° nach unten geneigt (nach den Fotos); der Verpressschlauch läuft von dort nach unten zum Roboter.
+- Namensvorschlag **DVK-Flex – Ditom Verpress-Kegel Flexibel** in Bauteilname, Schritten, Beschriftung, Hilfe und Film (als Vorschlag gekennzeichnet in der App).
+- `work/check-liner.mjs`: prüft zusätzlich Kegelfräser statt Pilzfräser im Reiter und die Neigung der Tülle (15–30° nach unten).
+- Film: Kapitel „1 · Liner öffnen“, Namensbalken beim Verpresskegel, Sprechertext angepasst; Scheinwerfer der Kamera ohne Schattenwurf (der flach über den Scheitel gezogene Werkzeugschatten sah wie eine Falte im Liner aus). Rohr, Liner und Erdreich werfen keine Schatten mehr; nur Roboter und Werkzeuge.
+
+**Prüfung:** `check-liner.mjs` für beide Linertypen und alle fünf DN bestanden; Build neu; Kontrollbilder (App und Filmstudio) von Kegelfräser, Bohrung, Tülle und Namensbalken angesehen.
+
 ## 20.10.2026 – Neuer Reiter „Liner verpressen“: Hohlraum hinter dem Liner verfüllen
 
 **Auftrag:** Neue Verpressvariante nach Nutzerfotos und -beschreibung als Animation mit 3D-Ansicht und danach als Video: Die Haltung hat bereits einen K-Liner oder Inliner, der Fräser fräst dort ein Loch, wo dahinter der Hohlraum liegt, dann wird der Fräser gegen ein neues Bauteil (noch ohne Namen) getauscht und der Hohlraum hinter dem Liner verpresst.

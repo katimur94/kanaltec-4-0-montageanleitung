@@ -28,7 +28,9 @@ const sunLights=scene.children.filter(o=>o.isDirectionalLight||o.isHemisphereLig
 const rim=new THREE.DirectionalLight('#a9c9ea',1.0);rim.position.set(-700,420,-900);scene.add(rim);
 const bounce=new THREE.DirectionalLight('#ffc98f',.45);bounce.position.set(100,-600,300);scene.add(bounce);sunLights.push(rim,bounce);
 const eye=viewer.robot.cameraEye;
-const headlight=new THREE.SpotLight('#fff1dc',12,2600,.62,.75,0);headlight.castShadow=true;headlight.shadow.mapSize.set(2048,2048);headlight.shadow.camera.near=8;headlight.shadow.camera.far=2600;headlight.shadow.bias=-.0006;
+// No shadows from the camera headlight: at grazing angles the tool's shadow is
+// smeared along the crown and reads like a fold in the liner.
+const headlight=new THREE.SpotLight('#fff1dc',12,2600,.62,.75,0);headlight.castShadow=false;headlight.shadow.mapSize.set(2048,2048);headlight.shadow.camera.near=8;headlight.shadow.camera.far=2600;headlight.shadow.bias=-.0006;
 {eye.add(headlight);const aim=new THREE.Object3D();aim.position.set(600,160,0);eye.add(aim);headlight.target=aim;}
 // Work light from the front onto the crown, as the camera's LED ring would give.
 const crownLight=new THREE.SpotLight('#f5f7ff',6,2200,.45,.75,0);crownLight.position.set(-150,40,950);crownLight.target.position.set(0,180,-40);scene.add(crownLight,crownLight.target);
@@ -95,10 +97,10 @@ const shots=[
  {start:3,end:8.5,a:.15,b:.6,key:'Ausgangslage',chapter:'Hohlraum hinter dem Liner',pos:[-620,330,1650],pos2:[-260,300,1180],target:[-90,170,0],target2:[30,215,0],fov:36},
  {start:8.5,end:12.5,a:.6,b:1.5,key:'Anfahrt',follow:[330,170,1000],aim:[-170,30,0],fov:36},
  {start:12.5,end:16,a:1.5,b:1.97,key:'Ausrichten',inside:true,pos:[430,-45,70],pos2:[370,-35,60],target:[0,135,-35],fov:58},
- {start:16,end:23,a:2,b:2.95,key:'Fräsen',chapter:'1 · Verpressloch fräsen',pos:[300,30,650],pos2:[230,55,560],target:[0,150,-40],fov:36,blur:4},
+ {start:16,end:23,a:2,b:2.95,key:'Liner öffnen',chapter:'1 · Liner öffnen',pos:[300,30,650],pos2:[230,55,560],target:[0,150,-40],fov:36,blur:4},
  {start:23,end:25.5,a:3.005,b:3.04,key:'Bohrung',cutterCam:true,fov:64},
  {start:25.5,end:31,a:3.04,b:3.82,key:'Werkzeugwechsel',chapter:'2 · Werkzeugwechsel',pos:[-1550,330,3350],pos2:[-1350,300,3150],target:[-1000,40,0],fov:36},
- {start:31,end:35,a:3.82,b:4.3,key:'Verpresskegel',cone:[175,-25,330],fov:36},
+ {start:31,end:35,a:3.82,b:4.3,key:'Verpresskegel',cone:[175,-25,330],fov:36,caption:['DVK-Flex Verpresskegel','Ditom Verpress-Kegel Flexibel']},
  {start:35,end:41,a:4.3,b:4.99,key:'Anpressen',pos:[210,-15,520],pos2:[165,-5,470],target:[0,125,-40],fov:36},
  {start:41,end:44,a:5,b:5.24,key:'Schlauch',chapter:'3 · Hohlraum verpressen',pos:[-700,220,1100],pos2:[-620,200,1000],target:[-380,70,0],fov:36},
  {start:44,end:52,a:5.24,b:5.98,key:'Verfüllen',pos:[130,370,1280],pos2:[70,330,1070],target:[20,235,-20],fov:36},
@@ -135,7 +137,7 @@ function pose(s,t){
  const st=viewer.linerState;let pos,target;
  if(s.cutterCam){
   pos=eye.getWorldPosition(V()).add(V(6,4,0));
-  const tool=(viewer.cone.group.visible?viewer.cone.outlet:viewer.robot.cutter.disk).getWorldPosition(V());
+  const tool=(viewer.cone.group.visible?viewer.cone.outlet:viewer.coneCutter.tip).getWorldPosition(V());
   target=tool.lerp(S.holeP.clone().add(V(st.travel,0,0)),.4);
  }else if(s.follow){target=V(st.travel,0,0).add(V(...s.aim));pos=target.clone().add(V(...s.follow));}
  else if(s.cone){target=viewer.cone.outlet.getWorldPosition(V()).add(V(0,-40,0));pos=target.clone().add(V(...s.cone).multiplyScalar(1.04-.08*e));}
@@ -155,6 +157,7 @@ function frame(t){
  ctx.globalAlpha=1;
  const lw=width*.15,lh=lw*logo.height/logo.width,pad=width*.03;ctx.save();ctx.globalAlpha=.92;ctx.drawImage(logo,pad,pad,lw,lh);ctx.restore();
  if(s.chapter){const a=smooth((t-s.start-.35)/.5)*(1-smooth((t-s.start-2.8)/.6));if(a>0){const m=Math.min(width,height),x=width*.05,y=height*.84;ctx.save();ctx.font=titleFont(600,m*.05);const tw=ctx.measureText(s.chapter).width;ctx.globalAlpha=a;ctx.fillStyle='rgba(6,12,18,.55)';ctx.fillRect(x-m*.02,y-m*.075,tw+m*.06,m*.1);ctx.fillStyle='#6cc0f2';ctx.fillRect(x-m*.02,y-m*.075,m*.008,m*.1);ctx.fillStyle='#eef5fa';ctx.textAlign='left';ctx.fillText(s.chapter,x,y);ctx.restore();}}
+ if(s.caption){const a=smooth((t-s.start-.45)/.45)*(1-smooth((t-s.end+.75)/.45));if(a>0){const m=Math.min(width,height),x=width*.62,y=height*.78;ctx.save();ctx.globalAlpha=a;ctx.font=titleFont(600,m*.046);const w1=ctx.measureText(s.caption[0]).width;ctx.font=titleFont(400,m*.03);const w=Math.max(w1,ctx.measureText(s.caption[1]).width);ctx.fillStyle='rgba(6,12,18,.6)';ctx.fillRect(x-m*.025,y-m*.07,w+m*.06,m*.125);ctx.fillStyle='#d23b4f';ctx.fillRect(x-m*.025,y-m*.07,m*.008,m*.125);ctx.textAlign='left';ctx.fillStyle='#eef5fa';ctx.font=titleFont(600,m*.046);ctx.fillText(s.caption[0],x,y-m*.01);ctx.fillStyle='#b5cad9';ctx.font=titleFont(400,m*.03);ctx.fillText(s.caption[1],x,y+m*.038);ctx.restore();}}
  const next=shots[shots.indexOf(s)+1],bigIn=!!s.chapter,bigOut=!next||!!next.chapter,din=bigIn?.55:.22,dout=bigOut?.55:.22;
  const fade=Math.min(1,(t-s.start)/din,(s.end-t)/dout);if(fade<1){ctx.fillStyle=`rgba(4,8,12,${(1-fade)*.92})`;ctx.fillRect(0,0,width,height);}
  return canvas.toDataURL('image/jpeg',.95).split(',')[1];

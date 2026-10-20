@@ -1,5 +1,5 @@
 """Finish the film "Verpressen hinter dem Liner" (1920x1080, 66 s, narrated).
-Input: render chunks in work/qa/liner/chunks (render-komplett-film.mjs --studio=work/qa/liner/studio)
+Input: render chunks in work/qa/liner/chunks2 (render-komplett-film.mjs --studio=work/qa/liner/studio)
 and work/qa/liner/audio/film-narrated.wav (work/liner-audio.py).
 Output: Videos/DSS-Flex-Verfahren-2026/DiTom-Verpressen-hinter-dem-Liner.mp4 (+ preview), decoded completely."""
 import json,re,subprocess,sys
@@ -10,9 +10,9 @@ FF=imageio_ffmpeg.get_ffmpeg_exe();SRC=Path('work/qa/liner');OUT=Path('Videos/DS
 def run(a):
  r=subprocess.run([FF,'-hide_banner','-y','-loglevel','error']+a,capture_output=True,text=True)
  if r.returncode:raise RuntimeError(r.stderr[-1500:])
-parts=sorted((SRC/'chunks').glob('YouTube-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
+parts=sorted((SRC/'chunks2').glob('YouTube-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
 assert [int(p.name.split('-')[1]) for p in parts]==list(range(0,66,6)),parts
-lst=SRC/'chunks'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
+lst=SRC/'chunks2'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
 master=SRC/'YouTube-silent.mp4';run(['-f','concat','-safe','0','-i',str(lst),'-c','copy',str(master)])
 dest=OUT/'DiTom-Verpressen-hinter-dem-Liner.mp4'
 run(['-i',str(master),'-i',str(SRC/'audio'/'film-narrated.wav'),'-map','0:v','-map','1:a','-shortest','-c:v','libx264','-preset','slow','-crf','19','-maxrate','9000k','-bufsize','18000k',

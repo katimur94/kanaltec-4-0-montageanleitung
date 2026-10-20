@@ -7,14 +7,14 @@ import asyncio,importlib.util,json
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('ka','work/komplett-audio.py');ka=importlib.util.module_from_spec(spec);spec.loader.exec_module(ka)
 ka.OUT=Path('work/qa/liner/audio');ka.OUT.mkdir(parents=True,exist_ok=True)
-# "Ditom" is written phonetically (the voice reads "DiTom" as two words).
+# "Ditom" and "De Vau Ka Flex" (DVK-Flex) are written phonetically for the voice.
 FILM=[(0.3,2.6,'Verpressen hinter dem Liner.'),
  (3.15,5.35,'Die Haltung ist mit einem Liner saniert. Doch dahinter liegt ein Hohlraum.'),
  (8.6,3.7,'Der Fräsroboter fährt an die Stelle.'),
  (12.6,3.3,'Die CutterCam findet die Bohrstelle.'),
- (16.6,6.1,'Der Fräser bohrt ein Loch durch den Liner, genau dort, wo dahinter der Hohlraum liegt.'),
- (25.8,5.4,'Dann der Werkzeugwechsel: Statt des Fräskopfs kommt der Verpresskegel auf die Spindel.'),
- (31.4,3.4,'Der Schlauch sitzt auf der Messingtülle.'),
+ (16.6,6.1,'Der Kegelfräser öffnet den Liner, genau dort, wo dahinter der Hohlraum liegt.'),
+ (25.8,5.4,'Werkzeugwechsel: Der De Vau Ka Flex Verpresskegel kommt auf die Spindel.'),
+ (31.3,3.6,'Der Schlauch sitzt auf der schrägen Messingtülle.'),
  (35.2,5.8,'Der Kegel fährt an die Bohrung. Die rote Dichtauflage legt sich an den Liner.'),
  (41.4,2.5,'Jetzt wird verpresst.'),
  (44.2,7.7,'Der Mörtel läuft durch Schlauch und Kegel in die Bohrung und füllt den Hohlraum hinter dem Liner, von unten nach oben.'),

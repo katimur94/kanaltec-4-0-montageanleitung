@@ -30,7 +30,9 @@ for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!proces
   if(prev){assert.ok(Math.abs(st.travel-prev.travel)<210,`${tag} t=${t}: continuous travel`);assert.ok(Math.abs(st.roll-prev.roll)<.08,`${tag} t=${t}: continuous roll`);assert.ok(Math.abs(st.off-prev.off)<14,`${tag} t=${t}: continuous lift`);}
   prev=st;
   // Tool tip on the planned axis: the robot solution reaches the bore.
-  const tool=st.tool==='cone'?v.cone.outlet.getWorldPosition(V()):v.robot.cutter.disk.localToWorld(V(0,8,0));
+  const tool=st.tool==='cone'?v.cone.outlet.getWorldPosition(V()):v.coneCutter.tip.getWorldPosition(V());
+  // The liner is opened with the cone cutter, never with the mushroom milling head.
+  assert.ok(!v.robot.cutter.disk.visible&&v.coneCutter.group.visible===(st.tool!=='cone'),`${tag} t=${t}: cone cutter for opening, injection cone afterwards`);
   if(st.travel===0&&Math.abs(st.roll-s.roll)<1e-9){const target=s.holeP.clone().addScaledVector(s.holeU,st.off);worst.tip=Math.max(worst.tip,tool.distanceTo(target));}
   // Robot, tool and hose inside the liner (the working tip may touch it).
   for(const q of points(v.robot.group)){
@@ -54,14 +56,16 @@ for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!proces
  assert.ok(worst.robot<=0,`${tag}: robot inside the liner (${worst.robot.toFixed(1)} mm)`);
  assert.ok(worst.hose<=0,`${tag}: hose inside the liner (${worst.hose.toFixed(1)} mm)`);
  assert.ok(worst.squash>.5&&worst.squash<=coneSpec.padTop-coneSpec.padBottom-1.5,`${tag}: pad compressed, within its limit (${worst.squash.toFixed(2)} mm)`);
+ // Brass barb square to the cone flank: outwards and inclined downwards.
+ {const q=new THREE.Quaternion();v.cone.barb.getWorldQuaternion(q);const b=V(0,1,0).applyQuaternion(q),axis=V(0,1,0).applyQuaternion(v.cone.group.getWorldQuaternion(new THREE.Quaternion()));const tilt=Math.asin(-b.dot(axis))*180/Math.PI;assert.ok(tilt>15&&tilt<30,`${tag}: barb inclined downwards (${tilt.toFixed(1)}°)`);}
  // Direct jumps backwards: no bore, no grout, milling head back on the spindle.
- pose(6.9);pose(.5);assert.ok(!v.liner.holeWall.visible&&!v.liner.grout.visible&&!v.liner.plug.visible,`${tag}: rewind removes bore and grout`);assert.ok(v.robot.cutter.disk.visible&&!v.cone.group.visible,`${tag}: rewind restores the milling head`);
+ pose(6.9);pose(.5);assert.ok(!v.liner.holeWall.visible&&!v.liner.grout.visible&&!v.liner.plug.visible,`${tag}: rewind removes bore and grout`);assert.ok(v.coneCutter.group.visible&&!v.cone.group.visible,`${tag}: rewind restores the cone cutter`);
  pose(5.5);const mid=v.liner.lastFill;pose(1);pose(5.5);assert.equal(v.liner.lastFill,mid,`${tag}: same fill after a jump`);
  // Full fill reaches the roof; the void floor is the liner where the old pipe is broken.
  pose(linerEnd);assert.ok(v.liner.plug.visible&&v.liner.groutTop(s.cav.cx,s.cav.cs,1).top>voidRoof(s,s.cav.cx,s.cav.cs)-.5,`${tag}: void completely filled`);
  assert.equal(voidFloor(s,s.holeP.x,arc),s.R,`${tag}: floor below the bore is the liner`);
  // Leaving the tab mounts the milling head again for the other animations.
- v.setMode('process');v.resetPose();assert.ok(!v.cone.group.visible&&v.robot.cutter.disk.visible,`${tag}: milling head restored outside the tab`);
+ v.setMode('process');v.resetPose();assert.ok(!v.cone.group.visible&&!v.coneCutter.group.visible&&v.robot.cutter.disk.visible,`${tag}: milling head restored outside the tab`);
  console.log(`${tag}: bore Ø ${(2*s.holeOut).toFixed(0)}/${(2*s.holeIn).toFixed(0)} mm, pad ≤ ${worst.squash.toFixed(1)} mm, robot margin ${(-worst.robot).toFixed(1)} mm, hose margin ${(-worst.hose).toFixed(1)} mm`);
 }
 console.log('Liner void filling checks passed');

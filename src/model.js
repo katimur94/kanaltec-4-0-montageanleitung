@@ -12,6 +12,7 @@ import {injectionFitting,injectionSpec} from './injection-fitting.js';
 import {ManholeScene,insertionKinematics,frameMatrix,insertionMasses} from './manhole.js';
 import {LinerScene,linerState,linerShot,reachToLiner} from './liner.js';
 import {makeInjectionCone,conformPad,restPad,coneSpec} from './injection-cone.js';
+import {makeConeCutter,coneCutterSpec} from './cone-cutter.js';
 
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 // Waterline of the dry-weather flow; parts below it look wet (darker, glossy).
@@ -330,6 +331,8 @@ export class Viewer {
   this.robotAnchor=this.parts.find(p=>p.group==='z'&&p.key==='adapter');this.robot=new Robot(R+12,this.robotAnchor.base);this.model.add(this.robot.group);
   // Injection cone for void filling behind a liner: screwed onto the same spindle as the milling head.
   this.cone=makeInjectionCone();this.cone.group.position.set(millingSpec.spindleX,coneSpec.mountY,0);this.cone.group.visible=false;this.robot.cutter.group.add(this.cone.group);
+  // The liner is opened with a cone cutter on the same spindle (user correction).
+  this.coneCutter=makeConeCutter();this.coneCutter.group.position.set(millingSpec.spindleX,0,0);this.coneCutter.group.visible=false;this.robot.cutter.group.add(this.coneCutter.group);
   const robotY=this.robot.bodyY+this.robotAnchor.base.y;
   const end=this.inlet.userData.hoseEnd.clone().add(V(ports.inletX,R-10,0));
   const approach=end.clone().addScaledVector(this.inlet.userData.hoseDirection,12);
@@ -501,7 +504,7 @@ export class Viewer {
   this.repair.update({time:t,clock:this.ambientClock??t,fill:0,hoseFront:0,injecting:false,sealed:0,cured:false,shield:withMould?{x:this.workOffset-430,lift:-70.56,seal:0,press:0}:null});
  }
  // Void filling behind a liner: own scene, own timeline (src/liner.js).
- mountCutter(){if(!this.cone||!this.cone.group.visible)return;this.cone.group.visible=false;this.robot.cutter.disk.visible=true;this.coneKey='';restPad(this.cone);}
+ mountCutter(){if(!this.cone||(!this.cone.group.visible&&!this.coneCutter.group.visible&&this.robot.cutter.disk.visible))return;this.cone.group.visible=this.coneCutter.group.visible=false;this.robot.cutter.disk.visible=true;this.coneKey='';restPad(this.cone);}
  ensureLiner(){
   if(this.liner||!this.id)return this.liner;
   // Rotary axis height with the robot standing on the liner (lifted by its wall).
@@ -521,7 +524,7 @@ export class Viewer {
   // turns the tool axis, the arms lift along it. off = tip beyond the liner.
   const d=reachToLiner(spec,st.roll)+st.off,local=V(spec.holeP.x-base.x-tip.x,axisY+d-tip.y,0);
   this.robot.pose(local.y,st.travel,st.roll,local.x);
-  const c=this.robot.cutter;c.group.visible=!hide;c.group.position.copy(local);c.group.quaternion.identity();c.disk.visible=!tool;c.disk.rotation.y=st.spin?st.t*180:0;
+  const c=this.robot.cutter;c.group.visible=!hide;c.group.position.copy(local);c.group.quaternion.identity();c.disk.visible=false;this.coneCutter.group.visible=!tool;this.coneCutter.group.rotation.y=st.spin?st.t*180:0;
   this.cone.group.visible=tool&&!hide;
   this.model.updateMatrixWorld(true);
   let squash=0;
@@ -536,7 +539,7 @@ export class Viewer {
   // From the brass barb backwards beside the spindle, then along the robot.
   const cone=this.cone.group,barb=this.cone.barb,w=p=>p.applyMatrix4(cone.matrixWorld),r=p=>p.applyMatrix4(this.robot.group.matrixWorld),y=this.robot.bodyY;
   const tip=barb.localToWorld(V(0,31,0)),out=barb.localToWorld(V(0,58,0));
-  return [tip,out,w(V(-75,-10,22)),w(V(-80,-95,52)),r(V(-330,y+70,58)),r(V(-700,y+72,54)),r(V(-1100,y+62,48)),r(V(-1500,y+34,44)),r(V(-2300,y+14,40))];
+  return [tip,out,w(V(-98,-30,24)),w(V(-92,-100,52)),r(V(-330,y+70,58)),r(V(-700,y+72,54)),r(V(-1100,y+62,48)),r(V(-1500,y+34,44)),r(V(-2300,y+14,40))];
  }
  fitLiner(view){
   const L=this.ensureLiner();if(!L)return;const s=L.spec,c=s.cav;this.linerPose();
@@ -554,18 +557,18 @@ export class Viewer {
  placeCutterCam(){
   // CutterCam: from the camera head forward and up to the tool; follows the robot.
   // The camera view shows the whole pipe, the section cut is only an outside view.
-  const s=this.liner.spec,eye=this.robot.cameraEye.getWorldPosition(V()),tool=(this.cone.group.visible?this.cone.outlet:this.robot.cutter.disk).getWorldPosition(V());
+  const s=this.liner.spec,eye=this.robot.cameraEye.getWorldPosition(V()),tool=(this.cone.group.visible?this.cone.outlet:this.coneCutter.tip).getWorldPosition(V());
   this.camera.position.copy(eye).add(V(6,4,0));this.controls.target.copy(tool.lerp(s.holeP.clone().add(V(this.linerState.travel,0,0)),.4));this.controls.update();
  }
  linerAnchors(){
   if(!this.liner||!this.linerState)return [];const s=this.liner.spec,st=this.linerState,c=s.cav,at=(x,phi,r)=>V(x,r*Math.cos(phi),r*Math.sin(phi));
-  const tool=st.tool==='cone'?this.cone.outlet.getWorldPosition(V()).add(V(0,-30,0)):this.robot.cutter.disk.getWorldPosition(V());
+  const tool=st.tool==='cone'?this.cone.outlet.getWorldPosition(V()).add(V(0,-30,0)):this.coneCutter.tip.getWorldPosition(V()).add(V(0,-25,0));
   return [
    {name:s.kind==='kliner'?'K-Liner (Kurzliner)':'Schlauchliner (Inliner)',side:'left',point:at(s.kind==='kliner'?s.kliner.x0+90:-700,-2.4,s.RL)},
    {name:'Altrohr gebrochen · Scherben fehlen',point:at(s.brk.cx+s.brk.ax*1.25,0,s.R+s.w)},
    {name:st.fill>0?'Verpressmörtel im Hohlraum':'Hohlraum hinter dem Liner',point:at(c.cx,c.cs/s.Rm,s.R+s.w+c.H*.55)},
-   {name:st.tool==='cone'?'Verpresskegel (Arbeitsname)':'Fräskopf',side:'left',point:tool},
-   {name:st.tool==='cone'?'Verpressschlauch an der Messingtülle':st.holeIn>0?'Verpressbohrung im Liner':'Bohrstelle',point:st.tool==='cone'&&this.liner.hose?.visible?this.liner.hose.geometry.parameters.path.getPointAt(.18):s.holeP.clone()}
+   {name:st.tool==='cone'?'DVK-Flex Verpresskegel':'Kegelfräser',side:'left',point:tool},
+   {name:st.tool==='cone'?'Verpressschlauch an der schrägen Messingtülle':st.holeIn>0?'Verpressbohrung im Liner':'Bohrstelle',point:st.tool==='cone'&&this.liner.hose?.visible?this.liner.hose.geometry.parameters.path.getPointAt(.18):s.holeP.clone()}
   ];
  }
  linerShotNow(){const s=this.linerState;return linerShot(this.liner.spec,s.stage,s.f,s.travel);}
