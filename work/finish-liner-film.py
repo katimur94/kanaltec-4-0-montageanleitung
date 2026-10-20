@@ -15,7 +15,7 @@ assert [int(p.name.split('-')[1]) for p in parts]==list(range(0,66,6)),parts
 lst=SRC/'chunks2'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
 master=SRC/'YouTube-silent.mp4';run(['-f','concat','-safe','0','-i',str(lst),'-c','copy',str(master)])
 dest=OUT/'DiTom-Verpressen-hinter-dem-Liner.mp4'
-run(['-i',str(master),'-i',str(SRC/'audio'/'film-narrated.wav'),'-map','0:v','-map','1:a','-shortest','-c:v','libx264','-preset','slow','-crf','19','-maxrate','9000k','-bufsize','18000k',
+run(['-i',str(master),'-i',str(SRC/'audio'/'film-narrated.wav'),'-map','0:v','-map','1:a','-shortest','-c:v','libx264','-preset','slow','-crf','21','-maxrate','5200k','-bufsize','10400k',
  '-pix_fmt','yuv420p','-r','25','-c:a','aac','-b:a','192k','-movflags','+faststart',str(dest)])
 r=subprocess.run([FF,'-hide_banner','-xerror','-i',str(dest),'-af','volumedetect','-f','null','-'],capture_output=True,text=True,errors='replace');assert r.returncode==0,r.stderr[-800:]
 info=dict(size=dest.stat().st_size,peak=float(re.search(r'max_volume: ([\-\d.]+) dB',r.stderr)[1]),res='1920x1080' in r.stderr,dur=re.search(r'Duration: ([\d:.]+)',r.stderr)[1])

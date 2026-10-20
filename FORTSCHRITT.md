@@ -13,6 +13,8 @@
 
 **Prüfung:** `check-liner.mjs` für beide Linertypen und alle fünf DN bestanden; Build neu; Kontrollbilder (App und Filmstudio) von Kegelfräser, Bohrung, Tülle und Namensbalken angesehen.
 
+**Film „Verpressen hinter dem Liner“:** `Videos/DSS-Flex-Verfahren-2026/DiTom-Verpressen-hinter-dem-Liner.mp4`, 1920 × 1080, 66 s, mit Sprecher (Microsoft Conrad, synthetisch; edge-tts lokal auf 7.3.1 aktualisiert, da 7.2.8 mit HTTP 403 abgewiesen wurde) und eigener Musik. Studio `work/film-liner-studio.js`, Ton `work/liner-audio.py`, Fertigstellung `work/finish-liner-film.py` (41,8 MB, unter der Telegram-Grenze). Kontrollbilder und Kontaktbogen angesehen, MP4 vollständig decodiert (Spitzenpegel −2,9 dB). Telegram: Versand mit `ok: true` bestätigt. Galerieabschnitt „Verpressen hinter dem Liner“ lokal ergänzt (dabei Cache-Schlüssel des neu gerenderten Werbespots aktualisiert). Noch nicht auf `main`/Pages.
+
 ## 20.10.2026 – Neuer Reiter „Liner verpressen“: Hohlraum hinter dem Liner verfüllen
 
 **Auftrag:** Neue Verpressvariante nach Nutzerfotos und -beschreibung als Animation mit 3D-Ansicht und danach als Video: Die Haltung hat bereits einen K-Liner oder Inliner, der Fräser fräst dort ein Loch, wo dahinter der Hohlraum liegt, dann wird der Fräser gegen ein neues Bauteil (noch ohne Namen) getauscht und der Hohlraum hinter dem Liner verpresst.
