@@ -4,7 +4,7 @@
 
 **Korrektur (`src/liner.js`):** Die rote Markierung der Bohrstelle tauchte zu Beginn jedes Schritts nach dem Öffnen (Werkzeugwechsel, Anpressen, Verpressen, Aushärten) kurz wieder auf. Sie blendet jetzt nur im Schritt „Liner öffnen“ aus und bleibt danach weg. `work/check-liner.mjs` prüft das zusätzlich.
 
-**Filme:** Kamerafahrten (`work/film-liner-studio.js`, 73 s, Kapitel Einmessen/Liner einbauen/Öffnen/Werkzeugwechsel/Verpressen), Sprechertext (`work/liner-audio.py`) und Werbespot (`work/film-liner-werbung-studio.js`: Einmessen, Liner rein, Öffnen, Verpressen) auf den neuen Ablauf umgestellt; Rendern läuft.
+**Filme:** Kamerafahrten (`work/film-liner-studio.js`, jetzt 73 s, Kapitel 1 Einmessen · 2 Liner einbauen · 3 Liner öffnen · 4 Werkzeugwechsel · 5 Hohlraum verpressen; CutterCam beim Einmessen mit Messstrahl und Markierung), Sprechertext (`work/liner-audio.py`) und Werbespot (`work/film-liner-werbung-studio.js`: Einmessen, Liner rein, Öffnen, Verpressen) auf den neuen Ablauf umgestellt. `DiTom-Verpressen-hinter-dem-Liner.mp4` (46,6 MB, Spitze −2,9 dB) und `…-nur-Musik.mp4` (46,6 MB, Spitze −1,4 dB) neu gerendert (`work/qa/liner/chunks3`), vollständig decodiert, Kontaktbogen und Endbilder angesehen; beide per Telegram mit `ok: true` zugestellt. Galerie: Text und Cache-Schlüssel erneuert. Werbespot wird noch neu gerendert. Noch nicht auf `main`/Pages.
 
 **Prüfung:** `npm test` (alle Prüfungen, `check-liner.mjs` für beide Linertypen und alle fünf DN) bestanden, Build neu; Kontrollbilder des Filmstudios angesehen.
 
