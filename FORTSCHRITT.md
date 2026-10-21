@@ -1,5 +1,19 @@
 # Fortschrittschronik
 
+## 21.10.2026 – Liner verpressen: blankes Rohr, Riesenhohlraum, Einmessen, Linereinbau
+
+**Auftrag:** Ablauf neu: Blankes Rohr mit sehr großem Hohlraum, zuerst wird eingemessen, wo später das Loch gebohrt wird, dann kommt der Liner rein, es wird geöffnet und mit DVK verpresst.
+
+**Umsetzung (`src/liner.js`, `src/model.js`, `src/main.js`):**
+- Neun Schritte statt sieben: 1 Blankes Rohr, großer Hohlraum · 2 Bohrstelle einmessen · 3 Liner einbauen · 4 Zur eingemessenen Stelle · 5 Liner öffnen · 6 Werkzeug wechseln · 7 DVK-Flex anpressen · 8 Hohlraum verpressen · 9 Aushärten & kontrollieren. Die bisherige Öffnen-/Verpressfolge ist unverändert übernommen.
+- Großer Hohlraum (DN 400: ca. 880 × 540 mm in der Abwicklung, 320 mm hoch; größerer Bruch im Scheitel). Ohne Liner sieht man von innen durch den Bruch in den Hohlraum.
+- Einmessen: Der Roboter fährt ohne Werkzeug (nur Motorblock und Spindel) an, das Drehmodul zeigt auf die Bruchstelle, ein roter Messstrahl der CutterCam setzt eine Markierung (Fadenkreuz) an der späteren Bohrstelle; Anzeige „Eingemessen: Station 12,40 m · 11 Uhr“ (Beispielwerte, Uhrzeit aus der tatsächlichen Lage im Modell). Die Markierung bleibt bis zum Öffnen sichtbar und liegt nach dem Linereinbau auf der Lineroberfläche.
+- Linereinbau: K-Liner fährt auf einem durchscheinend dargestellten Packer mit Zugseil ein, wird aufgeblasen und angepresst, der Packer entspannt und wird herausgezogen. Schlauchliner: Einstülpfront läuft durch die Haltung (Schnittebene an der Front). Der K-Liner überlappt den Bruch auf beiden Seiten.
+- Rohr länger (Roboter bleibt beim Wegfahren im Rohr), Kameraeinstellungen und Beschriftungen für die neuen Schritte, Schritttext für den Schlauchliner.
+- `work/check-liner.mjs`: neun Schritte, kein Liner vor dem Einbau, Markierung an der späteren Bohrung, Messstrahl endet an der Markierung, Packer im Liner, K-Liner überlappt den Bruch, Roboterfreigang gegen Altrohr bzw. Liner, Rücksprünge.
+
+**Prüfung:** `check-liner.mjs` für beide Linertypen und alle fünf DN bestanden; Build neu; im Browser alle neuen Schritte, CutterCam beim Einmessen, Packer und Einstülpen angesehen, keine Konsolenfehler. Die Filme zeigen noch den bisherigen Ablauf.
+
 ## 21.10.2026 – Liner-Film ohne Sprecher, Werbespot-Reel DVK-Flex, Korrektur DSS-Flex-Werbespot
 
 **Auftrag:** Den Film „Verpressen hinter dem Liner“ zusätzlich ohne Sprecher und einen Werbespot im Reel-Format; per Telegram schicken.

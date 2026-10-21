@@ -19,7 +19,9 @@ const points=(root,step=40)=>{const out=[];root.traverseVisible(o=>{if(!o.isMesh
 for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!process.env.DN||String(f.id)===process.env.DN)){
  v.linerKind=kind;v.build(f.id);v.setSections({pipe:true,shield:false,holder:false});v.setMode('liner');
  const s=v.liner.spec,tag=`DN ${f.id} ${kind}`;
- assert.equal(linerStages.length,7,'seven steps');
+ assert.equal(linerStages.length,9,'nine steps: bare pipe, measuring, liner, approach, opening, change, pressing, grouting, curing');
+ // The K-liner bridges the whole breakout on sound pipe.
+ if(kind==='kliner')for(let i=0;i<64;i++){const a=i/64*Math.PI*2;for(const x of [s.brk.cx-s.brk.ax*1.3,s.brk.cx+s.brk.ax*1.3])assert.ok(x>s.kliner.x0+60&&x<s.kliner.x1-60,`${tag}: K-liner overlaps the breakout`);}
  // The bore lies in the broken part of the old pipe and below the void.
  const arc=s.Rm*s.phiH;
  for(let i=0;i<32;i++){const a=i/32*Math.PI*2,x=s.holeP.x+s.holeOut*Math.cos(a),q=arc+s.holeOut*Math.sin(a);assert.ok(breakRho(s,x,q)<.95,`${tag}: bore inside the pipe breakout`);assert.ok(cavityRho(s,x,q)<.9,`${tag}: bore below the void`);}
@@ -27,18 +29,24 @@ for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!proces
  let prev=null,worst={robot:-1e9,hose:-1e9,squash:0,tip:0};
  for(let t=0;t<=linerEnd;t=Math.round((t+.02)*1000)/1000){
   const st=pose(t);
-  if(prev){assert.ok(Math.abs(st.travel-prev.travel)<210,`${tag} t=${t}: continuous travel`);assert.ok(Math.abs(st.roll-prev.roll)<.08,`${tag} t=${t}: continuous roll`);assert.ok(Math.abs(st.off-prev.off)<14,`${tag} t=${t}: continuous lift`);}
+  if(prev){assert.ok(Math.abs(st.travel-prev.travel)<420,`${tag} t=${t}: continuous travel`);assert.ok(Math.abs(st.roll-prev.roll)<.08,`${tag} t=${t}: continuous roll`);assert.ok(Math.abs(st.off-prev.off)<14,`${tag} t=${t}: continuous lift`);}
   prev=st;
   // Tool tip on the planned axis: the robot solution reaches the bore.
   const tool=st.tool==='cone'?v.cone.outlet.getWorldPosition(V()):v.coneCutter.tip.getWorldPosition(V());
   // The liner is opened with the cone cutter, never with the mushroom milling head.
-  assert.ok(!v.robot.cutter.disk.visible&&v.coneCutter.group.visible===(st.tool!=='cone'),`${tag} t=${t}: cone cutter for opening, injection cone afterwards`);
-  if(st.travel===0&&Math.abs(st.roll-s.roll)<1e-9){const target=s.holeP.clone().addScaledVector(s.holeU,st.off);worst.tip=Math.max(worst.tip,tool.distanceTo(target));}
+  assert.ok(!v.robot.cutter.disk.visible&&v.coneCutter.group.visible===(st.tool==='cutter'&&!st.robotAway),`${tag} t=${t}: no tool while measuring, cone cutter for opening, injection cone afterwards`);
+  // No liner before it is installed; the measured point is marked from the measurement on.
+  if(st.stage<2)assert.ok(!v.liner.linerGroup.visible,`${tag} t=${t}: bare pipe before lining`);
+  if(st.stage>2)assert.ok(v.liner.linerGroup.visible&&v.liner.linerGroup.position.x===0&&v.liner.linerGroup.scale.y===1,`${tag} t=${t}: liner installed`);
+  if(st.stage>=2&&st.stage<=3)assert.ok(v.liner.marker.visible&&v.liner.marker.position.distanceTo(s.holeP)<2,`${tag} t=${t}: measured point kept at the later bore`);
+  if(v.liner.laser.visible){const end=v.liner.laser.localToWorld(V(0,1,0));assert.ok(end.distanceTo(v.liner.marker.position)<1,`${tag} t=${t}: laser ends at the marker`);}
+  if(v.liner.packer?.visible)assert.ok(v.liner.packer.scale.y<=s.RL-.5,`${tag} t=${t}: packer inside the liner`);
+  if(st.tool!=='none'&&st.travel===0&&Math.abs(st.roll-s.roll)<1e-9){const target=s.holeP.clone().addScaledVector(s.holeU,st.off);worst.tip=Math.max(worst.tip,tool.distanceTo(target));}
   // Robot, tool and hose inside the liner (the working tip may touch it).
   for(const q of points(v.robot.group)){
    const r=Math.hypot(q.y,q.z),nearTip=q.distanceTo(s.holeP.clone().add(V(st.travel,0,0)))<45;
    if(q.y<-s.RL*.2)continue; // wheels on the invert
-   if(!nearTip)worst.robot=Math.max(worst.robot,r-(s.RL-1));
+   if(!nearTip)worst.robot=Math.max(worst.robot,r-((st.stage>2?s.RL:s.R)-1));
   }
   if(v.liner.hose?.visible){const c=v.liner.hose.geometry.parameters.path;for(let i=0;i<=80;i++){const q=c.getPointAt(i/80);if(q.x<-1950+st.travel)continue;worst.hose=Math.max(worst.hose,Math.hypot(q.y,q.z)+7-(s.RL-.5));}}
   if(st.tool==='cone'&&st.off>0){
@@ -50,7 +58,7 @@ for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!proces
   }
   // Grout only in the void behind the liner, never in the pipe.
   if(st.fill>0){const g=v.liner.grout.geometry.attributes.position;for(let i=0;i<g.count;i+=7){p.fromBufferAttribute(g,i);const r=Math.hypot(p.y,p.z);assert.ok(r>s.R-1.5,`${tag} t=${t}: grout outside the liner`);assert.ok(r<s.R+s.w+s.cav.H*1.12+1,`${tag} t=${t}: grout inside the void`);}}
-  if(st.stage===2&&st.f>.71)assert.ok(st.holeOut>0,`${tag} t=${t}: bore through the liner after milling`);
+  if(st.stage===4&&st.f>.71)assert.ok(st.holeOut>0,`${tag} t=${t}: bore through the liner after milling`);
  }
  assert.ok(worst.tip<.5,`${tag}: tool reaches the planned bore axis (${worst.tip.toFixed(2)} mm)`);
  assert.ok(worst.robot<=0,`${tag}: robot inside the liner (${worst.robot.toFixed(1)} mm)`);
@@ -59,8 +67,8 @@ for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!proces
  // Brass barb square to the cone flank: outwards and inclined downwards.
  {const q=new THREE.Quaternion();v.cone.barb.getWorldQuaternion(q);const b=V(0,1,0).applyQuaternion(q),axis=V(0,1,0).applyQuaternion(v.cone.group.getWorldQuaternion(new THREE.Quaternion()));const tilt=Math.asin(-b.dot(axis))*180/Math.PI;assert.ok(tilt>15&&tilt<30,`${tag}: barb inclined downwards (${tilt.toFixed(1)}°)`);}
  // Direct jumps backwards: no bore, no grout, milling head back on the spindle.
- pose(6.9);pose(.5);assert.ok(!v.liner.holeWall.visible&&!v.liner.grout.visible&&!v.liner.plug.visible,`${tag}: rewind removes bore and grout`);assert.ok(v.coneCutter.group.visible&&!v.cone.group.visible,`${tag}: rewind restores the cone cutter`);
- pose(5.5);const mid=v.liner.lastFill;pose(1);pose(5.5);assert.equal(v.liner.lastFill,mid,`${tag}: same fill after a jump`);
+ pose(8.9);pose(.5);assert.ok(!v.liner.holeWall.visible&&!v.liner.grout.visible&&!v.liner.plug.visible&&!v.liner.linerGroup.visible&&!v.liner.marker.visible,`${tag}: rewind removes bore, grout, liner and marker`);pose(3.5);assert.ok(v.coneCutter.group.visible&&!v.cone.group.visible,`${tag}: rewind restores the cone cutter`);
+ pose(7.5);const mid=v.liner.lastFill;pose(1);pose(7.5);assert.equal(v.liner.lastFill,mid,`${tag}: same fill after a jump`);
  // Full fill reaches the roof; the void floor is the liner where the old pipe is broken.
  pose(linerEnd);assert.ok(v.liner.plug.visible&&v.liner.groutTop(s.cav.cx,s.cav.cs,1).top>voidRoof(s,s.cav.cx,s.cav.cs)-.5,`${tag}: void completely filled`);
  assert.equal(voidFloor(s,s.holeP.x,arc),s.R,`${tag}: floor below the bore is the liner`);

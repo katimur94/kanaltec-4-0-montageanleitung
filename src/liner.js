@@ -15,12 +15,14 @@ const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),smooth=x=>{x=clamp(x);return 
 
 export const linerKinds=[{id:'kliner',label:'K-Liner (Kurzliner)'},{id:'inliner',label:'Schlauchliner (Inliner)'}];
 export const linerStages=[
- {title:'Liner mit Hohlraum dahinter',text:'Die Haltung ist bereits mit einem Liner saniert. Hinter dem Liner liegt noch ein Hohlraum: Am gebrochenen Altrohr ist das Bettungsmaterial ausgespült. Der Liner überbrückt die Stelle, liegt dort aber nicht mehr am Boden an.',caption:'Ausgangslage'},
- {title:'Fräsroboter fährt an',text:'Der IBAK-Roboter fährt mit einem Kegelfräser auf der Spindel bis unter den Hohlraum. Über die CutterCam wird die Stelle gesucht; das Drehmodul hinter der Kamera richtet den Fräser zur Bohrstelle aus.',caption:'Anfahren und ausrichten'},
- {title:'Liner öffnen',text:'Der Kegelfräser hebt an und dringt mit der Spitze durch den Liner – genau dort, wo dahinter der Hohlraum liegt. Die Bohrung wird nur so weit geöffnet, dass der Verpresskegel sie sicher überdeckt. Danach senkt der Fräser ab; die Späne fallen in die Sohle.',caption:'Bohrung mit dem Kegelfräser'},
+ {title:'Blankes Rohr, großer Hohlraum',text:'Das Altrohr ist im Scheitel gebrochen, Scherben fehlen. Dahinter hat das Wasser einen großen Hohlraum ausgespült. Noch ist kein Liner eingebaut – von innen sieht man direkt in den Hohlraum.',caption:'Ausgangslage'},
+ {title:'Bohrstelle einmessen',text:'Bevor saniert wird, fährt der Roboter mit der CutterCam an den Schaden. Die Stelle über dem Hohlraum wird eingemessen und markiert: Station in der Haltung und Lage im Rohrumfang als Uhrzeigerposition. Genau hier wird später durch den Liner gebohrt. Danach fährt der Roboter zurück.',caption:'Station und Uhrzeit festhalten'},
+ {title:'Liner einbauen',text:'Der K-Liner fährt auf einem Packer ein, wird über der Schadstelle aufgeblasen und an die Rohrwand gepresst. Nach dem Aushärten wird der Packer entspannt und herausgezogen. Der Liner überbrückt den Bruch – den Hohlraum dahinter sieht man von innen nicht mehr, die eingemessene Stelle bleibt bekannt.',textInliner:'Der Schlauchliner wird in die Haltung eingestülpt, legt sich an die Rohrwand und härtet aus. Er überbrückt den Bruch – den Hohlraum dahinter sieht man von innen nicht mehr, die eingemessene Stelle bleibt bekannt.',caption:'Liner rein'},
+ {title:'Zur eingemessenen Stelle',text:'Der Roboter fährt mit dem Kegelfräser auf die eingemessene Station und dreht das Drehmodul hinter der CutterCam auf die notierte Uhrzeigerposition. Die Markierung zeigt, wo der Liner geöffnet wird.',caption:'Anfahren nach Aufmaß'},
+ {title:'Liner öffnen',text:'Der Kegelfräser hebt an und dringt mit der Spitze durch den Liner – genau an der eingemessenen Stelle, hinter der der Hohlraum liegt. Die Bohrung wird nur so weit geöffnet, dass der Verpresskegel sie sicher überdeckt. Danach senkt der Fräser ab; die Späne fallen in die Sohle.',caption:'Bohrung mit dem Kegelfräser'},
  {title:'Werkzeug wechseln',text:'Der Roboter fährt zurück zum Schacht. Dort wird der Kegelfräser gegen den DVK-Flex Verpresskegel getauscht: Der Kegel wird auf dieselbe Spindel geschraubt und der Verpressschlauch auf die schräg nach unten zeigende Messingtülle gesteckt. Danach fährt der Roboter wieder an die Bohrung.',caption:'Kegelfräser ab, Verpresskegel auf'},
- {title:'Verpresskegel anpressen',text:'Das Drehmodul stellt denselben Winkel wie beim Fräsen ein, der Arm hebt den Kegel an. Die rote Dichtauflage legt sich rund um die Bohrung an den Liner und wird leicht gestaucht. Der Auslass sitzt mittig über dem Loch.',caption:'Abdichten an der Bohrung'},
- {title:'Hohlraum verpressen',text:'Verpressmörtel läuft durch den Schlauch, die schräge Messingtülle und den Kegel in die Bohrung. Hinter dem Liner breitet er sich aus, füllt zuerst die tiefen Stellen am Altrohr und steigt dann, bis der Hohlraum voll ist.',caption:'Verfüllen hinter dem Liner'},
+ {title:'DVK-Flex anpressen',text:'Das Drehmodul stellt denselben Winkel wie beim Öffnen ein, der Arm hebt den Kegel an. Die rote Dichtauflage legt sich rund um die Bohrung an den Liner und wird leicht gestaucht. Der Auslass sitzt mittig über dem Loch.',caption:'Abdichten an der Bohrung'},
+ {title:'Hohlraum verpressen',text:'Verpressmörtel läuft durch den Schlauch, die schräge Messingtülle und den Kegel in die Bohrung. Hinter dem Liner breitet er sich aus, füllt zuerst die tiefen Stellen am Altrohr und steigt dann, bis der große Hohlraum voll ist.',caption:'Verfüllen hinter dem Liner'},
  {title:'Aushärten & kontrollieren',text:'Der Kegel bleibt angepresst, bis der Mörtel angezogen hat. Dann senkt der Arm ab: Die Bohrung ist mit Mörtel verschlossen und der Hohlraum hinter dem Liner verfüllt. Der Roboter fährt zurück.',caption:'Ergebnis'}
 ];
 export const linerEnd=linerStages.length-.001;
@@ -35,14 +37,18 @@ export function linerSpec(dn,kind='kliner',axisY=-18){
  const c=Math.cos(roll),s=Math.sin(roll),reach=-axisY*c+Math.sqrt(RL*RL-axisY*axisY*s*s);
  const holeP=V(0,axisY+reach*c,reach*s),holeU=V(0,c,s),phiH=Math.atan2(holeP.z,holeP.y);
  const spec={dn,kind,R,w,tl,RL,Rm,roll,axisY,holeP,holeU,phiH,
-  x0:-3000,x1:1600,water:.04*dn,
-  kliner:{x0:-330-.25*dn,x1:290+.25*dn,feather:45},
-  cav:{cx:30,cs:-.12*Rm,ax:150+.2*dn,as:85+.2*dn,H:80+.12*dn},
-  brk:{cx:-6,cs:Rm*phiH,ax:.42*(150+.2*dn),as:.45*(85+.2*dn)},
+  x0:-4600,x1:1600,water:.04*dn,station:12.4,
+  // Large washed-out void (user: "Riesen-Hohlraum") above a broken crown section.
+  cav:{cx:30,cs:-.12*Rm,ax:300+.35*dn,as:150+.3*dn,H:200+.3*dn},
+  brk:{cx:-6,cs:Rm*phiH,ax:.5*(300+.35*dn),as:.55*(150+.3*dn)},
   // The cone cutter pierces the liner until the bore is about Ø 19 mm outside.
   lowCut:-55,lowCone:-50,press:.8,plunge:tl+19.5,
   tip:{cutter:V(millingSpec.spindleX,coneCutterSpec.tipY,0),cone:V(millingSpec.spindleX,coneSpec.mountY+coneSpec.height,0)}};
  spec.holeIn=coneCutterRadius(spec.plunge);spec.holeOut=coneCutterRadius(spec.plunge-tl);
+ // The K-liner bridges the whole breakout with overlap on sound pipe.
+ const b=spec.brk;spec.kliner={x0:b.cx-1.3*b.ax-150,x1:b.cx+1.3*b.ax+150,feather:45};
+ // Clock position looking downstream (+x): 12 at the crown, -z is the left side.
+ spec.clock=((12+phiH*6/Math.PI)%12+12)%12||12;
  return spec;
 }
 // Distance from the rotary axis to the liner along a roll angle.
@@ -58,39 +64,62 @@ export function linerThickness(spec,x){
  const k=spec.kliner;if(x<=k.x0||x>=k.x1)return 0;return spec.tl*Math.max(.12,smooth(Math.min(x-k.x0,k.x1-x)/k.feather));
 }
 
-// Deterministic process state; every time can be seeked directly.
+// Deterministic process state; every time can be seeked directly. Stages 4–8
+// keep the timing of the opening/grouting sequence (process time pt = t-2).
 export function linerState(t,spec){
- t=clamp(t,0,linerEnd);const stage=Math.min(linerStages.length-1,Math.floor(t)),f=t-stage,R=spec.roll,P=spec.plunge;
- const st={stage,f,t,travel:0,roll:0,off:spec.lowCut,tool:t<3.5?'cutter':'cone',spin:false,plunge:0,hose:0,fill:0,cure:0};
- if(stage===0)st.travel=lerp(-2700,-950,smooth((f-.2)/.8));
- else if(stage===1)st.travel=lerp(-950,0,smooth(f/.55));
- else if(stage===3)st.travel=f<.5?-2700*smooth(f/.42):-2700*(1-smooth((f-.53)/.42));
- else if(stage===6)st.travel=-1600*smooth((f-.62)/.38);
- if(stage===1)st.roll=R*smooth((f-.55)/.35);
- else if(stage===2)st.roll=R*(1-smooth((f-.88)/.12));
- else if(stage===4)st.roll=R*smooth(f/.3);
- else if(stage===5)st.roll=R;
- else if(stage===6)st.roll=R*(1-smooth((f-.42)/.16));
- if(stage===2){st.off=f<.25?lerp(spec.lowCut,-10,smooth(f/.25)):f<.7?lerp(-10,P,(f-.25)/.45):lerp(P,spec.lowCut,smooth((f-.72)/.2));st.spin=f>.06&&f<.9;}
- if(stage>=3)st.off=spec.lowCone;
- if(stage===4)st.off=lerp(spec.lowCone,spec.press,smooth((f-.32)/.53));
- if(stage===5)st.off=spec.press;
- if(stage===6)st.off=lerp(spec.press,spec.lowCone,smooth((f-.3)/.2));
- st.plunge=t>=2.7?P:stage===2?clamp(st.off,0,P):0;
- st.hose=stage===5?smooth(f/.22):stage>5?1:0;
- st.fill=stage===5?smooth((f-.22)/.73):stage>5?1:0;
- st.cure=stage===6?smooth(f/.35):0;
+ t=clamp(t,0,linerEnd);const stage=Math.min(linerStages.length-1,Math.floor(t)),f=t-stage,R=spec.roll,P=spec.plunge,pt=t-2,away=-2700;
+ const st={stage,f,t,pt,travel:0,roll:0,off:spec.lowCut,tool:t<5.5?'cutter':'cone',spin:false,plunge:0,hose:0,fill:0,cure:0,robotAway:false,liner:1,linerX:0,linerScale:1,packer:null,front:null,marker:0,laser:0};
+ if(stage<=1)st.tool='none';
+ // Liner: absent before stage 2, installed during it.
+ if(stage<2)st.liner=0;
+ else if(stage===2){
+  if(spec.kind==='kliner'){
+   st.linerX=lerp(away,0,smooth(f/.32));st.linerScale=lerp(.8,1,smooth((f-.32)/.18));
+   const inflate=smooth((f-.32)/.18)*(1-smooth((f-.72)/.08));st.packer={x:f<.8?st.linerX:lerp(0,away,smooth((f-.8)/.2)),r:lerp(.76,.995,inflate)};
+  }else st.front=lerp(spec.x0,spec.x1,smooth((f-.04)/.82));
+ }
+ // Robot: measuring run without a tool, away while the liner goes in.
+ if(stage===0||stage===2){st.travel=away;st.robotAway=true;}
+ else if(stage===1){st.travel=f<.5?lerp(away,0,smooth(f/.36)):lerp(0,away,smooth((f-.8)/.2));st.roll=R*smooth((f-.36)/.14)*(1-smooth((f-.66)/.13));st.laser=smooth((f-.46)/.06)*(1-smooth((f-.62)/.05));}
+ else if(stage===3){st.travel=lerp(away,0,smooth(f/.5));st.roll=R*smooth((f-.55)/.35);}
+ // The marker exists from the measurement until the cutter starts to open.
+ st.marker=t<1.55?0:t<1.6?smooth((t-1.55)/.05):stage<4?1:1-smooth((f-.12)/.12);
+ if(stage>=4){
+  const s=stage-2;
+  if(s===3)st.travel=f<.5?away*smooth(f/.42):away*(1-smooth((f-.53)/.42));
+  else if(s===6)st.travel=-1600*smooth((f-.62)/.38);
+  if(s===2)st.roll=R*(1-smooth((f-.88)/.12));
+  else if(s===4)st.roll=R*smooth(f/.3);
+  else if(s===5)st.roll=R;
+  else if(s===6)st.roll=R*(1-smooth((f-.42)/.16));
+  if(s===2){st.off=f<.25?lerp(spec.lowCut,-10,smooth(f/.25)):f<.7?lerp(-10,P,(f-.25)/.45):lerp(P,spec.lowCut,smooth((f-.72)/.2));st.spin=f>.06&&f<.9;}
+  if(s>=3)st.off=spec.lowCone;
+  if(s===4)st.off=lerp(spec.lowCone,spec.press,smooth((f-.32)/.53));
+  if(s===5)st.off=spec.press;
+  if(s===6)st.off=lerp(spec.press,spec.lowCone,smooth((f-.3)/.2));
+  st.hose=s===5?smooth(f/.22):s>5?1:0;
+  st.fill=s===5?smooth((f-.22)/.73):s>5?1:0;
+  st.cure=s===6?smooth(f/.35):0;
+ }
+ st.plunge=pt>=2.7?P:stage===4?clamp(st.off,0,P):0;
  st.holeIn=coneCutterRadius(st.plunge);st.holeOut=coneCutterRadius(st.plunge-spec.tl);
  return st;
 }
+const clockText=spec=>`${Math.round(spec.clock)||12} Uhr`;
+export function linerMeasure(spec){return `Station ${spec.station.toFixed(2).replace('.',',')} m · ${clockText(spec)}`;}
 export function linerReadout(st,spec,squash=0){
- const deg=Math.round(-st.roll*180/Math.PI);
- if(st.stage===0)return {text:'Liner eingebaut · Hohlraum dahinter noch leer',flag:'false'};
- if(st.stage===1)return {text:st.f<.55?'Kegelfräser in Fahrstellung · Roboter fährt an':`Drehmodul richtet aus · ${deg}°`,flag:'false'};
- if(st.stage===2)return st.holeOut>0?{text:`Liner geöffnet · Bohrung innen Ø ${Math.round(st.holeIn*2)}, außen Ø ${Math.round(st.holeOut*2)} mm`,flag:'true'}:{text:st.off>-12?'Kegelfräser dringt in den Liner ein':'Kegelfräser hebt an',flag:'true'};
- if(st.stage===3)return {text:st.tool==='cutter'?'Rückfahrt zum Schacht · Werkzeugwechsel':'DVK-Flex Verpresskegel auf der Spindel · Schlauch angeschlossen',flag:'locked'};
- if(st.stage===4)return squash>.2?{text:`Dichtauflage angepresst · am Rand bis ${squash.toFixed(1).replace('.',',')} mm gestaucht`,flag:'locked'}:{text:`Kegel richtet sich zur Bohrung aus · ${deg}°`,flag:'false'};
- if(st.stage===5)return st.fill>0?{text:`Verpressen · Hohlraum ${Math.round(st.fill*100)} % verfüllt`,flag:'true'}:{text:'Mörtel läuft durch den Verpressschlauch',flag:'true'};
+ const deg=Math.round(-st.roll*180/Math.PI),m=linerMeasure(spec);
+ if(st.stage===0)return {text:'Blankes Altrohr · Scheitel gebrochen · großer Hohlraum dahinter',flag:'false'};
+ if(st.stage===1)return st.f<.36?{text:'CutterCam fährt an den Schaden',flag:'false'}:st.f<.55?{text:`Drehmodul zeigt auf die Bruchstelle · ${deg}°`,flag:'false'}:{text:`Eingemessen: ${m} (Beispielwerte)`,flag:'locked'};
+ if(st.stage===2){
+  if(spec.kind!=='kliner')return {text:st.f<.86?`Schlauchliner wird eingestülpt · ${Math.round(clamp((st.f-.04)/.82)*100)} %`:'Schlauchliner härtet aus · liegt an der Rohrwand',flag:'true'};
+  return {text:st.f<.32?'K-Liner auf dem Packer fährt ein':st.f<.5?'Packer bläst auf · Liner legt sich an die Wand':st.f<.72?'K-Liner härtet aus':st.f<.8?'Packer wird entspannt':'Packer wird herausgezogen',flag:'true'};
+ }
+ if(st.stage===3)return {text:st.f<.55?`Kegelfräser fährt zur ${m.split(' · ')[0]}`:`Drehmodul auf ${clockText(spec)} · ${deg}°`,flag:'false'};
+ if(st.stage===4)return st.holeOut>0?{text:`Liner geöffnet · Bohrung innen Ø ${Math.round(st.holeIn*2)}, außen Ø ${Math.round(st.holeOut*2)} mm`,flag:'true'}:{text:st.off>-12?'Kegelfräser dringt in den Liner ein':'Kegelfräser hebt an',flag:'true'};
+ if(st.stage===5)return {text:st.tool==='cutter'?'Rückfahrt zum Schacht · Werkzeugwechsel':'DVK-Flex Verpresskegel auf der Spindel · Schlauch angeschlossen',flag:'locked'};
+ if(st.stage===6)return squash>.2?{text:`Dichtauflage angepresst · am Rand bis ${squash.toFixed(1).replace('.',',')} mm gestaucht`,flag:'locked'}:{text:`Kegel richtet sich zur Bohrung aus · ${deg}°`,flag:'false'};
+ if(st.stage===7)return st.fill>0?{text:`Verpressen · Hohlraum ${Math.round(st.fill*100)} % verfüllt`,flag:'true'}:{text:'Mörtel läuft durch den Verpressschlauch',flag:'true'};
  return st.cure<1?{text:'Mörtel zieht an · Kegel bleibt angepresst',flag:'true'}:{text:'Bohrung verschlossen · Hohlraum verfüllt',flag:'locked'};
 }
 
@@ -155,9 +184,11 @@ export class LinerScene{
   holeShader(this.linerMat,this.holeUniforms,'liner');
   const b=spec.brk;this.breakUniforms={uBreak:{value:new THREE.Vector4(Rm,b.cx,b.ax,b.cs)},uBreak2:{value:new THREE.Vector4(b.as,0,0,0)}};
   holeShader(this.pipeMat,this.breakUniforms,'pipe');
-  this.clipped=[this.pipeMat,this.linerMat,this.linerEdgeMat,this.soilMat,this.groutMat];
+  // Liner materials are clipped separately: by the section and, while a
+  // Schlauchliner is inverted, by its moving front.
+  this.clipped=[this.pipeMat,this.soilMat,this.groutMat];this.frontPlane=new THREE.Plane(V(-1,0,0),0);
   this.caps=[];
-  this.buildPipe();this.buildLiner();this.buildSoil();this.buildGrout();this.buildWater();this.buildChips();
+  this.buildPipe();this.buildLiner();this.buildInstall();this.buildMarker();this.buildSoil();this.buildGrout();this.buildWater();this.buildChips();
   // Pipe, liner and soil are thin shells around a section: as shadow casters they
   // only produce stray patterns inside. Robot and tools keep casting onto the liner.
   this.group.traverse(o=>{if(o.isMesh)o.castShadow=false;});
@@ -194,12 +225,49 @@ export class LinerScene{
   const inner=gridSurface(n,na,(u,v)=>{const x=lerp(x0,x1,u),a=v*TAU+Math.PI,r=R-linerThickness(s,x)-.05;return{p:surf(x,a,r),u:x/600,v:a*r/600};},true);
   const outer=gridSurface(n,na,(u,v)=>{const x=lerp(x0,x1,u),a=v*TAU+Math.PI;return{p:surf(x,a,R-.15),u:x/600,v:a*R/600};},true);
   this.linerInner=mesh(inner,this.linerMat);this.linerOuter=mesh(outer,this.linerMat);this.linerInner.name=s.kind==='kliner'?'K-Liner (Kurzliner)':'Schlauchliner';this.linerOuter.name='Liner · Außenseite';
-  this.group.add(this.linerInner,this.linerOuter);
-  for(const x of [x0,x1]){const t=linerThickness(s,x+(x===x0?.01:-.01))||.6;const ring=new THREE.RingGeometry(R-t-.1,R-.1,128,1);ring.rotateY(Math.PI/2);const o=mesh(ring,this.linerEdgeMat);o.position.x=x;this.group.add(o);}
+  // Moves in on the packer and widens to the wall while it is installed.
+  this.linerGroup=new THREE.Group();this.linerGroup.name='Liner';this.group.add(this.linerGroup);this.linerGroup.add(this.linerInner,this.linerOuter);this.linerEnds=[];
+  for(const x of [x0,x1]){const t=linerThickness(s,x+(x===x0?.01:-.01))||.6;const ring=new THREE.RingGeometry(R-t-.1,R-.1,128,1);ring.rotateY(Math.PI/2);const o=mesh(ring,this.linerEdgeMat);o.position.x=x;this.linerGroup.add(o);this.linerEnds.push(o);}
   const xs=range(x0,x1,Math.round((x1-x0)/3));
-  for(const g of [strip(xs,x=>R-linerThickness(s,x),()=>R-.15,.2),strip(xs,()=>-R+.15,x=>-R+linerThickness(s,x),.2)]){const o=mesh(g,this.linerCapMat);o.castShadow=false;this.group.add(o);this.caps.push(o);}
+  for(const g of [strip(xs,x=>R-linerThickness(s,x),()=>R-.15,.2),strip(xs,()=>-R+.15,x=>-R+linerThickness(s,x),.2)]){const o=mesh(g,this.linerCapMat);o.castShadow=false;this.linerGroup.add(o);this.caps.push(o);}
   this.holeWall=mesh(new THREE.BufferGeometry(),this.linerEdgeMat);this.holeWall.name='Verpressbohrung im Liner';this.holeWall.visible=false;this.group.add(this.holeWall);
   this.plugMat=this.groutMat.clone();this.plug=mesh(new THREE.BufferGeometry(),this.plugMat);this.plug.name='Mörtel in der Bohrung';this.plug.visible=false;this.group.add(this.plug);
+ }
+ buildInstall(){
+  const s=this.spec;
+  // K-liner packer: inflatable rubber body carrying the liner, pulled on a rope.
+  if(s.kind==='kliner'){
+   const L=s.kliner.x1-s.kliner.x0+120,prof=[[0,-L/2-55],[.5,-L/2-35],[.95,-L/2+5],[1,-L/2+30],[1,L/2-30],[.95,L/2-5],[.5,L/2+35],[0,L/2+55]];
+   const g=new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),64);g.rotateZ(-Math.PI/2);
+   // Translucent, so the liner it carries stays visible in the section.
+   this.packerMat=new THREE.MeshStandardMaterial({color:'#1d2024',roughness:.5,metalness:.05,side:THREE.DoubleSide,transparent:true,opacity:.5,depthWrite:false});this.clipped.push(this.packerMat);
+   this.packer=mesh(g,this.packerMat);this.packer.name='Packer · bläst den K-Liner an die Wand';this.packer.visible=false;this.group.add(this.packer);
+   this.packerOffset=(s.kliner.x0+s.kliner.x1)/2;this.packerHalf=L/2+55;
+   const rope=new THREE.CylinderGeometry(4,4,1,10);rope.rotateZ(Math.PI/2);rope.translate(.5,0,0);
+   this.rope=mesh(rope,new THREE.MeshStandardMaterial({color:'#2e3a44',roughness:.7}));this.rope.name='Zugseil und Luftschlauch des Packers';this.rope.visible=false;this.group.add(this.rope);
+  }else{
+   // Inversion front of the Schlauchliner.
+   this.frontRing=mesh(new THREE.TorusGeometry(s.R-s.tl*1.2,s.tl*1.6,10,128),this.linerEdgeMat);this.frontRing.rotation.y=Math.PI/2;this.frontRing.name='Einstülpfront des Schlauchliners';this.frontRing.visible=false;this.group.add(this.frontRing);
+  }
+ }
+ buildMarker(){
+  // Measured drilling point: stays where it was measured until the liner is opened.
+  const s=this.spec,m=new THREE.MeshBasicMaterial({color:'#ff3b30',transparent:true,opacity:1,depthWrite:false,toneMapped:false});this.markerMat=m;
+  const g=new THREE.Group();g.name='Eingemessene Bohrstelle';
+  g.add(new THREE.Mesh(new THREE.TorusGeometry(24,1.8,8,64),m));
+  for(const r of [0,Math.PI/2]){const b=new THREE.Mesh(new THREE.BoxGeometry(70,2.6,1),m);b.rotation.z=r;g.add(b);}
+  g.add(new THREE.Mesh(new THREE.CircleGeometry(4,24),m));
+  g.position.copy(s.holeP).addScaledVector(s.holeU,-1.2);g.quaternion.setFromUnitVectors(V(0,0,1),s.holeU.clone().negate());
+  this.marker=g;this.marker.visible=false;this.group.add(g);
+  const lg=new THREE.CylinderGeometry(.8,.8,1,10);lg.translate(0,.5,0);
+  this.laserMat=new THREE.MeshBasicMaterial({color:'#ff2a1f',transparent:true,opacity:.85,depthWrite:false,toneMapped:false});
+  this.laser=new THREE.Mesh(lg,this.laserMat);this.laser.name='Messstrahl der CutterCam';this.laser.visible=false;this.group.add(this.laser);
+ }
+ applyLinerClip(front){
+  const planes=[...(this.cut?[this.cutPlane]:[]),...(front!==null?[this.frontPlane]:[])],key=planes.length+(this.cut?'c':'')+(front!==null?'f':'');
+  if(front!==null)this.frontPlane.constant=front;
+  if(key===this.linerClipKey)return;this.linerClipKey=key;
+  for(const m of [this.linerMat,this.linerEdgeMat,this.linerCapMat]){m.clippingPlanes=planes.length?planes:null;m.clipShadows=this.cut;m.needsUpdate=true;}
  }
  buildSoil(){
   // Soil draped over the crown around the void; the inner face bulges into
@@ -276,7 +344,7 @@ export class LinerScene{
   const s=this.spec,d=new THREE.Object3D(),floor=-s.RL+s.water+.4;let shown=0;
   for(let i=0;i<this.chipData.length;i++){
    const c=this.chipData[i],age=(t-c.t)/.13;
-   if(age<0||t>=3.2){d.position.set(0,-1e5,0);d.scale.setScalar(.001);}
+   if(age<0||t>=3.2||t<2){d.position.set(0,-1e5,0);d.scale.setScalar(.001);}
    else{const fall=Math.sqrt(Math.max(0,2*(s.holeP.y-floor)/9810)),ta=Math.min(age,fall);
     d.position.copy(s.holeP).addScaledVector(s.holeU,-4).addScaledVector(c.v,ta).add(V(0,-.5*9810*ta*ta,0));
     if(age>fall){d.position.y=floor;d.position.x+=c.drift*(age-fall);}
@@ -321,10 +389,19 @@ export class LinerScene{
   // The cut-away half casts no shadows either, so no stray light/shadow patterns appear inside.
   for(const m of this.clipped){m.clippingPlanes=on?[this.cutPlane]:null;m.clipShadows=on;m.needsUpdate=true;}
   for(const c of this.caps)c.visible=on;this.groutCap.visible=on&&this.lastFill>0;
+  this.linerClipKey=null;this.applyLinerClip(this.front??null);
  }
- update(st,clock=0){
-  this.updateHole(st);this.updateGrout(st.fill);this.updateChips(st.t);
-  this.plug.visible=st.holeIn>0&&st.t>=5.3;this.groutCap.visible=this.cut&&st.fill>0;
+ update(st,clock=0,extra={}){
+  this.updateHole(st);this.updateGrout(st.fill);this.updateChips(st.pt);
+  this.plug.visible=st.holeIn>0&&st.pt>=5.3;this.groutCap.visible=this.cut&&st.fill>0;
+  // Liner installation: K-liner on the packer, Schlauchliner by inversion.
+  const s=this.spec;this.linerGroup.visible=st.liner>0||st.packer!==null||st.front!==null;
+  this.linerGroup.position.x=st.linerX;this.linerGroup.scale.set(1,st.linerScale,st.linerScale);
+  this.front=st.front;this.applyLinerClip(st.front);for(const e of this.linerEnds)e.visible=st.front===null;
+  if(this.packer){const p=st.packer;this.packer.visible=this.rope.visible=!!p;if(p){const r=(s.RL-.6)*Math.min(st.linerScale,p.r/.995);this.packer.position.x=p.x+this.packerOffset;this.packer.scale.set(1,r,r);const left=p.x+this.packerOffset-this.packerHalf;this.rope.position.set(s.x0,0,0);this.rope.scale.set(Math.max(1,left-s.x0),1,1);}}
+  if(this.frontRing){this.frontRing.visible=st.front!==null&&st.front<s.x1-5;if(st.front!==null)this.frontRing.position.x=st.front;}
+  this.marker.visible=st.marker>0;this.markerMat.opacity=st.marker;
+  this.laser.visible=st.laser>0&&!!extra.laserFrom;if(this.laser.visible){const b=this.marker.position,a=extra.laserFrom.clone().lerp(b,.18),d=b.clone().sub(a);this.laser.position.copy(a);this.laser.scale.set(1,d.length(),1);this.laser.quaternion.setFromUnitVectors(V(0,1,0),d.normalize());this.laserMat.opacity=.85*st.laser;}
   const wet=st.cure;for(const m of [this.groutMat,this.groutCapMat,this.plugMat,...(this.hoseFillMat?[this.hoseFillMat]:[])]){m.color.set(wet>0?new THREE.Color('#454d43').lerp(new THREE.Color('#6d716a'),wet):'#454d43');m.roughness=lerp(.72,.95,wet);}
   this.waterNormal.offset.x=-(clock*.05)%1;
  }
@@ -339,13 +416,15 @@ export class LinerScene{
 export function linerShot(spec,stage,f,robotX){
  const s=spec,R=s.R,size=1+s.dn/700,h=s.holeP,c=s.cav,cavMid=surf(c.cx,c.cs/s.Rm,R+s.w+c.H*.45);
  const shots=[
-  {t:V(-120,R*.45,0),d:V(.2,.18,1),dist:1500*size+600},
+  {t:V(0,R+c.H*.35,0),d:V(.16,.12,1),dist:1700*size+900},
+  {t:V(Math.min(-60,robotX-200),R*.35,0),d:V(.34,.06,1),dist:1250*size+500},
+  {t:V(-250,R*.3,0),d:V(.26,.16,1),dist:1900*size+700},
   {t:V(Math.min(-80,robotX-260),R*.15,0),d:V(.42,.2,1),dist:1250*size+300},
   {t:h.clone().add(V(-30,-R*.3,0)),d:V(.3,-.42,1),dist:560*size+120},
   {t:V(Math.max(-1500,robotX-500),R*.1,0),d:V(.2,.16,1),dist:2000*size+500},
   {t:h.clone().add(V(-40,-R*.32,0)),d:V(-.3,-.4,1),dist:600*size+140},
-  {t:cavMid.clone().lerp(h,.35).add(V(-60,0,0)),d:V(.14,.1,1),dist:900*size+260},
-  {t:V(-60,R*.5,0),d:V(.28,.16,1),dist:1250*size+380}
+  {t:cavMid.clone().lerp(h,.3).add(V(-60,0,0)),d:V(.14,.1,1),dist:1200*size+420},
+  {t:V(-60,R*.5+c.H*.2,0),d:V(.28,.16,1),dist:1500*size+600}
  ];
  const a=shots[stage],b=shots[Math.min(stage+1,shots.length-1)],k=smooth((f-.84)/.16);
  return {target:a.t.clone().lerp(b.t,k),dir:a.d.clone().normalize().lerp(b.d.clone().normalize(),k).normalize(),dist:lerp(a.dist,b.dist,k)};

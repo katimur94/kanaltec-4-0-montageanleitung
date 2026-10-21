@@ -10,7 +10,7 @@ import {millingState,millingTarget,millingSpec} from './milling.js';
 import {breakoutContour,branchBottom} from './repair.js';
 import {injectionFitting,injectionSpec} from './injection-fitting.js';
 import {ManholeScene,insertionKinematics,frameMatrix,insertionMasses} from './manhole.js';
-import {LinerScene,linerState,linerShot,reachToLiner} from './liner.js';
+import {LinerScene,linerState,linerShot,reachToLiner,linerMeasure} from './liner.js';
 import {makeInjectionCone,conformPad,restPad,coneSpec} from './injection-cone.js';
 import {makeConeCutter,coneCutterSpec} from './cone-cutter.js';
 
@@ -519,19 +519,20 @@ export class Viewer {
   for(const p of this.parts)p.node.visible=false;
   for(const o of [this.winding?.group,this.inlet,this.sensor,this.feed,this.repair?.hoseGroup])if(o)o.visible=false;
   const hide=!!this.sections?.hideRobot,base=this.robotAnchor.base,axisY=this.robot.rotationAxis.y,tool=st.tool==='cone',tip=tool?spec.tip.cone:spec.tip.cutter;
-  this.model.position.set(st.travel,spec.tl,0);this.robot.group.position.copy(base);this.robot.group.visible=!hide;this.robot.receiver.visible=false;
+  this.model.position.set(st.travel,spec.tl,0);this.robot.group.position.copy(base);this.robot.group.visible=!hide&&!st.robotAway;this.robot.receiver.visible=false;
   // Same solution as the milling head: the rotary module behind CutterCam
   // turns the tool axis, the arms lift along it. off = tip beyond the liner.
   const d=reachToLiner(spec,st.roll)+st.off,local=V(spec.holeP.x-base.x-tip.x,axisY+d-tip.y,0);
   this.robot.pose(local.y,st.travel,st.roll,local.x);
-  const c=this.robot.cutter;c.group.visible=!hide;c.group.position.copy(local);c.group.quaternion.identity();c.disk.visible=false;this.coneCutter.group.visible=!tool;this.coneCutter.group.rotation.y=st.spin?st.t*180:0;
-  this.cone.group.visible=tool&&!hide;
+  // Measuring run: motor block and spindle without a tool.
+  const c=this.robot.cutter;c.group.visible=!hide&&!st.robotAway;c.group.position.copy(local);c.group.quaternion.identity();c.disk.visible=false;this.coneCutter.group.visible=st.tool==='cutter'&&!st.robotAway;this.coneCutter.group.rotation.y=st.spin?st.t*180:0;
+  this.cone.group.visible=tool&&!hide&&!st.robotAway;
   this.model.updateMatrixWorld(true);
   let squash=0;
   if(tool){const key=[st.travel,st.roll,st.off].map(v=>v.toFixed(3)).join();if(key!==this.coneKey){this.coneKey=key;this.coneSquash=st.off>-4?conformPad(this.cone,spec.RL):(restPad(this.cone),0);}squash=this.coneSquash||0;}
   this.linerSquash=squash;
   L.setHose(tool&&!hide?this.linerHose():null,st.hose);
-  L.update(st,this.ambientClock??0);
+  L.update(st,this.ambientClock??0,{laserFrom:st.laser>0&&!hide?this.robot.cameraEye.getWorldPosition(V()):null});
   this.robotCentre=V(st.travel-500,0,0);
   if(this.currentView==='channel'&&!this.autoCam)this.placeCutterCam();
  }
@@ -562,14 +563,16 @@ export class Viewer {
  }
  linerAnchors(){
   if(!this.liner||!this.linerState)return [];const s=this.liner.spec,st=this.linerState,c=s.cav,at=(x,phi,r)=>V(x,r*Math.cos(phi),r*Math.sin(phi));
-  const tool=st.tool==='cone'?this.cone.outlet.getWorldPosition(V()).add(V(0,-30,0)):this.coneCutter.tip.getWorldPosition(V()).add(V(0,-25,0));
-  return [
-   {name:s.kind==='kliner'?'K-Liner (Kurzliner)':'Schlauchliner (Inliner)',side:'left',point:at(s.kind==='kliner'?s.kliner.x0+90:-700,-2.4,s.RL)},
-   {name:'Altrohr gebrochen · Scherben fehlen',point:at(s.brk.cx+s.brk.ax*1.25,0,s.R+s.w)},
-   {name:st.fill>0?'Verpressmörtel im Hohlraum':'Hohlraum hinter dem Liner',point:at(c.cx,c.cs/s.Rm,s.R+s.w+c.H*.55)},
-   {name:st.tool==='cone'?'DVK-Flex Verpresskegel':'Kegelfräser',side:'left',point:tool},
-   {name:st.tool==='cone'?'Verpressschlauch an der schrägen Messingtülle':st.holeIn>0?'Verpressbohrung im Liner':'Bohrstelle',point:st.tool==='cone'&&this.liner.hose?.visible?this.liner.hose.geometry.parameters.path.getPointAt(.18):s.holeP.clone()}
-  ];
+  const linerName=s.kind==='kliner'?'K-Liner (Kurzliner)':'Schlauchliner (Inliner)',voidName=st.fill>0?'Verpressmörtel im Hohlraum':'Großer Hohlraum'+(st.liner>=1&&st.stage>2?' hinter dem Liner':'');
+  const out=[{name:'Altrohr gebrochen · Scherben fehlen',point:at(s.brk.cx+s.brk.ax*1.25,0,s.R+s.w)},{name:voidName,point:at(c.cx,c.cs/s.Rm,s.R+s.w+c.H*.55)}];
+  if(st.marker>0)out.push({name:'Eingemessene Bohrstelle · '+linerMeasure(s),side:'left',point:this.liner.marker.position.clone()});
+  if(st.stage===2&&this.liner.packer?.visible)out.push({name:'Packer bläst den K-Liner an',point:this.liner.packer.position.clone().add(V(0,-s.RL*.4,-s.RL*.5))});
+  if(st.liner>=1&&st.stage!==2)out.push({name:linerName,side:'left',point:at(s.kind==='kliner'?s.kliner.x0+90:-700,-2.4,s.RL)});
+  if(!st.robotAway&&st.tool!=='none'){
+   const tool=st.tool==='cone'?this.cone.outlet.getWorldPosition(V()).add(V(0,-30,0)):this.coneCutter.tip.getWorldPosition(V()).add(V(0,-25,0));
+   out.push({name:st.tool==='cone'?'DVK-Flex Verpresskegel':'Kegelfräser',side:'left',point:tool});
+  }else if(st.stage===1&&!st.robotAway)out.push({name:'CutterCam misst ein',side:'left',point:this.robot.cameraEye.getWorldPosition(V())});
+  return out.slice(0,5);
  }
  linerShotNow(){const s=this.linerState;return linerShot(this.liner.spec,s.stage,s.f,s.travel);}
  linerCamera(dt){

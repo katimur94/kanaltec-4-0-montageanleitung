@@ -1,6 +1,6 @@
 # DSS-Flex Verfahren – interaktive 3D-Präsentation
 
-**Liner verpressen (20.10.2026):** Neuer Reiter **05 Liner verpressen**: Hohlraum hinter einem K-Liner oder Schlauchliner verfüllen – mit dem Kegelfräser öffnen, gegen den DVK-Flex Verpresskegel (Namensvorschlag: Ditom Verpress-Kegel Flexibel, nach Fotos) tauschen, anpressen, verpressen. Alle fünf DN, Ansichten CutterCam und Hohlraum.
+**Liner verpressen (20./21.10.2026):** Neuer Reiter **05 Liner verpressen**: blankes Rohr mit großem Hohlraum, Bohrstelle einmessen, Liner einbauen, dann den Hohlraum hinter dem Liner verfüllen – mit dem Kegelfräser öffnen, gegen den DVK-Flex Verpresskegel (Namensvorschlag: Ditom Verpress-Kegel Flexibel, nach Fotos) tauschen, anpressen, verpressen. Alle fünf DN, Ansichten CutterCam und Hohlraum.
 
 **Filme Gesamtablauf (29.09.2026):** Fräsen → Einbau im Schacht → Sanierung als YouTube- und Reel-Fassung, jeweils mit Sprecher, nur Musik und als Werbespot – in der [Videogalerie](Videos/DSS-Flex-Verfahren-2026/Videos-ansehen.html). Produktion: [work/VIDEO-PRODUKTION.md](work/VIDEO-PRODUKTION.md).
 
