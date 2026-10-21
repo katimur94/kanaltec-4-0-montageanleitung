@@ -1,5 +1,5 @@
-"""Finish the film "Verpressen hinter dem Liner" (1920x1080, 66 s, narrated).
-Input: render chunks in work/qa/liner/chunks2 (render-komplett-film.mjs --studio=work/qa/liner/studio)
+"""Finish the film "Verpressen hinter dem Liner" (1920x1080, 73 s, narrated; nine-step sequence).
+Input: render chunks in work/qa/liner/chunks3 (render-komplett-film.mjs --studio=work/qa/liner/studio)
 and work/qa/liner/audio/film-narrated.wav (work/liner-audio.py).
 Output: Videos/DSS-Flex-Verfahren-2026/DiTom-Verpressen-hinter-dem-Liner.mp4 (+ preview) and
 …-nur-Musik.mp4 (no narrator), both decoded completely."""
@@ -11,9 +11,9 @@ FF=imageio_ffmpeg.get_ffmpeg_exe();SRC=Path('work/qa/liner');OUT=Path('Videos/DS
 def run(a):
  r=subprocess.run([FF,'-hide_banner','-y','-loglevel','error']+a,capture_output=True,text=True)
  if r.returncode:raise RuntimeError(r.stderr[-1500:])
-parts=sorted((SRC/'chunks2').glob('YouTube-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
-assert [int(p.name.split('-')[1]) for p in parts]==list(range(0,66,6)),parts
-lst=SRC/'chunks2'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
+parts=sorted((SRC/'chunks3').glob('YouTube-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
+assert [int(p.name.split('-')[1]) for p in parts]==list(range(0,73,6)),parts
+lst=SRC/'chunks3'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
 master=SRC/'YouTube-silent.mp4';run(['-f','concat','-safe','0','-i',str(lst),'-c','copy',str(master)])
 dest=OUT/'DiTom-Verpressen-hinter-dem-Liner.mp4'
 run(['-i',str(master),'-i',str(SRC/'audio'/'film-narrated.wav'),'-map','0:v','-map','1:a','-shortest','-c:v','libx264','-preset','slow','-crf','21','-maxrate','5200k','-bufsize','10400k',
@@ -21,7 +21,7 @@ run(['-i',str(master),'-i',str(SRC/'audio'/'film-narrated.wav'),'-map','0:v','-m
 r=subprocess.run([FF,'-hide_banner','-xerror','-i',str(dest),'-af','volumedetect','-f','null','-'],capture_output=True,text=True,errors='replace');assert r.returncode==0,r.stderr[-800:]
 info=dict(size=dest.stat().st_size,peak=float(re.search(r'max_volume: ([\-\d.]+) dB',r.stderr)[1]),res='1920x1080' in r.stderr,dur=re.search(r'Duration: ([\d:.]+)',r.stderr)[1])
 assert info['res'] and info['size']<49_000_000 and info['peak']<0,info
-run(['-ss','38','-i',str(dest),'-frames:v','1','-q:v','3',str(OUT/'Liner-Verpressen-Vorschau.jpg')])
+run(['-ss','57','-i',str(dest),'-frames:v','1','-q:v','3',str(OUT/'Liner-Verpressen-Vorschau.jpg')])
 print(json.dumps(info))
 # Second version without narrator: same picture, own music only.
 music=OUT/'DiTom-Verpressen-hinter-dem-Liner-nur-Musik.mp4'

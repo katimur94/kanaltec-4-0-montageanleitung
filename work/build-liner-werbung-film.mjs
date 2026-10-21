@@ -4,7 +4,7 @@ import {existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 // Commercial studio for void filling behind the liner (Reel). Footage: portrait clips
 // rendered clean from film-liner-studio.js (work/qa/liner-werbung/footage.sh), extracted to JPG.
-const dir='work/qa/liner-werbung/studio',src='work/qa/liner-werbung/src';await mkdir(dir+'/footage',{recursive:true});
+const dir='work/qa/liner-werbung/studio2',src='work/qa/liner-werbung/src2';await mkdir(dir+'/footage',{recursive:true});
 await esbuild.build({absWorkingDir:process.cwd(),entryPoints:['work/film-liner-werbung-studio.js'],bundle:true,format:'esm',outfile:dir+'/film.js',target:'chrome120',tsconfigRaw:{}});
 await copyFile('src/logo-film.png',dir+'/logo.png');
 const ff=(await readdir('work/qa/video-runtime/imageio_ffmpeg/binaries')).find(f=>f.startsWith('ffmpeg'));

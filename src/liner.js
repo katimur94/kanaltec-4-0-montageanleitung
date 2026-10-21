@@ -83,7 +83,7 @@ export function linerState(t,spec){
  else if(stage===1){st.travel=f<.5?lerp(away,0,smooth(f/.36)):lerp(0,away,smooth((f-.8)/.2));st.roll=R*smooth((f-.36)/.14)*(1-smooth((f-.66)/.13));st.laser=smooth((f-.46)/.06)*(1-smooth((f-.62)/.05));}
  else if(stage===3){st.travel=lerp(away,0,smooth(f/.5));st.roll=R*smooth((f-.55)/.35);}
  // The marker exists from the measurement until the cutter starts to open.
- st.marker=t<1.55?0:t<1.6?smooth((t-1.55)/.05):stage<4?1:1-smooth((f-.12)/.12);
+ st.marker=t<1.55?0:t<1.6?smooth((t-1.55)/.05):stage<4?1:stage===4?1-smooth((f-.12)/.12):0;
  if(stage>=4){
   const s=stage-2;
   if(s===3)st.travel=f<.5?away*smooth(f/.42):away*(1-smooth((f-.53)/.42));

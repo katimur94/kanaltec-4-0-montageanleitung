@@ -1,4 +1,4 @@
-"""Finish the liner commercial (DVK-Flex): join render chunks, add work/qa/liner-werbung/music.wav,
+"""Finish the liner commercial (DVK-Flex): join render chunks (work/qa/liner-werbung/chunks2), add work/qa/liner-werbung/music.wav,
 encode Reel 1080x1920 (< 49 MB), decode completely, preview still.
 Output: Videos/DSS-Flex-Verfahren-2026/DiTom-DVK-Flex-Liner-Werbespot-Reel.mp4"""
 import json,re,subprocess,sys
@@ -9,8 +9,8 @@ FF=imageio_ffmpeg.get_ffmpeg_exe();SRC=Path('work/qa/liner-werbung');OUT=Path('V
 def run(a):
  r=subprocess.run([FF,'-hide_banner','-y','-loglevel','error']+a,capture_output=True,text=True)
  if r.returncode:raise RuntimeError(r.stderr[-1500:])
-parts=sorted((SRC/'chunks').glob('Reel-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
-lst=SRC/'chunks'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
+parts=sorted((SRC/'chunks2').glob('Reel-*-silent.mp4'),key=lambda p:int(p.name.split('-')[1]))
+lst=SRC/'chunks2'/'list.txt';lst.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
 master=SRC/'Reel-silent.mp4';run(['-f','concat','-safe','0','-i',str(lst),'-c','copy',str(master)])
 dest=OUT/'DiTom-DVK-Flex-Liner-Werbespot-Reel.mp4'
 run(['-i',str(master),'-i',str(SRC/'music.wav'),'-map','0:v','-map','1:a','-shortest','-c:v','libx264','-preset','slow','-crf','18','-maxrate','8000k','-bufsize','16000k',

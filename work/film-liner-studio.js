@@ -8,7 +8,7 @@ import {OutputPass} from 'three/examples/jsm/postprocessing/OutputPass.js';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 // Film: void filling behind a liner with the injection cone (user description
-// 20.10.2026). Same physical process as the web app tab "Liner verpressen";
+// 20./21.10.2026: bare pipe with a large void, measure, line, open, grout). Same physical process as the web app tab "Liner verpressen";
 // cinematic look and finishing as in film-komplett-studio.js.
 Viewer.prototype.animate=function(){};
 {const set=GTAOPass.prototype.setGBuffer;GTAOPass.prototype.setGBuffer=function(depth,normal){if(depth!==undefined&&!this.normalRenderTarget)this.normalRenderTarget={depthTexture:depth,dispose(){},setSize(){}};return set.call(this,depth,normal);};}
@@ -95,21 +95,24 @@ const logo=new Image();logo.src='logo.png';await logo.decode();
 const lerp=THREE.MathUtils.lerp,clamp=THREE.MathUtils.clamp,smooth=x=>(x=clamp(x,0,1))*x*(3-2*x),ease=x=>(x=clamp(x,0,1))<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const shots=[
- {start:3,end:8.5,a:.15,b:.6,key:'Ausgangslage',chapter:'Hohlraum hinter dem Liner',pos:[-620,330,1650],pos2:[-260,300,1180],target:[-90,170,0],target2:[30,215,0],fov:36},
- {start:8.5,end:12.5,a:.6,b:1.5,key:'Anfahrt',follow:[330,170,1000],aim:[-170,30,0],fov:36},
- {start:12.5,end:16,a:1.5,b:1.97,key:'Ausrichten',inside:true,pos:[430,-45,70],pos2:[370,-35,60],target:[0,135,-35],fov:58},
- {start:16,end:23,a:2,b:2.95,key:'Liner öffnen',chapter:'1 · Liner öffnen',pos:[300,30,650],pos2:[230,55,560],target:[0,150,-40],fov:36,blur:4},
- {start:23,end:25.5,a:3.005,b:3.04,key:'Bohrung',cutterCam:true,fov:64},
- {start:25.5,end:31,a:3.04,b:3.82,key:'Werkzeugwechsel',chapter:'2 · Werkzeugwechsel',pos:[-1550,330,3350],pos2:[-1350,300,3150],target:[-1000,40,0],fov:36},
- {start:31,end:35,a:3.82,b:4.3,key:'Verpresskegel',cone:[175,-25,330],fov:36,caption:['DVK-Flex Verpresskegel','Ditom Verpress-Kegel Flexibel']},
- {start:35,end:41,a:4.3,b:4.99,key:'Anpressen',pos:[210,-15,520],pos2:[165,-5,470],target:[0,125,-40],fov:36},
- {start:41,end:44,a:5,b:5.24,key:'Schlauch',chapter:'3 · Hohlraum verpressen',pos:[-700,220,1100],pos2:[-620,200,1000],target:[-380,70,0],fov:36},
- {start:44,end:52,a:5.24,b:5.98,key:'Verfüllen',pos:[130,370,1280],pos2:[70,330,1070],target:[20,235,-20],fov:36},
- {start:52,end:55,a:6,b:6.4,key:'Aushärten',pos:[-210,250,930],pos2:[-170,240,880],target:[0,205,-20],fov:36},
- {start:55,end:58.5,a:6.4,b:6.6,key:'Kontrolle',cutterCam:true,fov:64},
- {start:58.5,end:61.5,a:6.62,b:6.999,key:'Ergebnis',pos:[-320,430,1700],pos2:[-220,390,1480],target:[0,200,0],fov:36}
+ {start:3,end:7.5,a:.1,b:.9,key:'Ausgangslage',chapter:'Großer Hohlraum am Altrohr',pos:[-700,420,2300],pos2:[-300,380,1800],target:[-60,230,0],target2:[30,280,0],fov:36},
+ {start:7.5,end:10.5,a:1,b:1.38,key:'Einmessen',chapter:'1 · Einmessen',follow:[330,170,1000],aim:[-170,30,0],fov:36},
+ {start:10.5,end:14,a:1.4,b:1.68,key:'Markieren',cutterCam:true,fov:64},
+ {start:14,end:22,a:2,b:2.99,key:'Liner einbauen',chapter:'2 · Liner einbauen',pos:[-1200,380,2600],pos2:[-800,330,2300],target:[-700,80,0],target2:[-200,150,0],fov:36},
+ {start:22,end:25,a:3,b:3.5,key:'Anfahrt',follow:[330,170,1000],aim:[-170,30,0],fov:36},
+ {start:25,end:28,a:3.5,b:3.97,key:'Ausrichten',inside:true,pos:[430,-45,70],pos2:[370,-35,60],target:[0,135,-35],fov:58},
+ {start:28,end:34,a:4,b:4.95,key:'Liner öffnen',chapter:'3 · Liner öffnen',pos:[300,30,650],pos2:[230,55,560],target:[0,150,-40],fov:36,blur:4},
+ {start:34,end:36.5,a:5.005,b:5.04,key:'Bohrung',cutterCam:true,fov:64},
+ {start:36.5,end:41.5,a:5.04,b:5.82,key:'Werkzeugwechsel',chapter:'4 · Werkzeugwechsel',pos:[-1550,330,3350],pos2:[-1350,300,3150],target:[-1000,40,0],fov:36},
+ {start:41.5,end:45,a:5.82,b:6.3,key:'Verpresskegel',cone:[175,-25,330],fov:36,caption:['DVK-Flex Verpresskegel','Ditom Verpress-Kegel Flexibel']},
+ {start:45,end:50,a:6.3,b:6.99,key:'Anpressen',pos:[210,-15,520],pos2:[165,-5,470],target:[0,125,-40],fov:36},
+ {start:50,end:52.5,a:7,b:7.24,key:'Schlauch',chapter:'5 · Hohlraum verpressen',pos:[-700,220,1100],pos2:[-620,200,1000],target:[-380,70,0],fov:36},
+ {start:52.5,end:60,a:7.24,b:7.98,key:'Verfüllen',pos:[100,480,1900],pos2:[60,440,1650],target:[20,300,-20],fov:36},
+ {start:60,end:62.5,a:8,b:8.4,key:'Aushärten',pos:[-300,400,1550],pos2:[-240,380,1420],target:[0,285,-20],fov:36},
+ {start:62.5,end:65.5,a:8.4,b:8.6,key:'Kontrolle',cutterCam:true,fov:64},
+ {start:65.5,end:68.5,a:8.62,b:8.999,key:'Ergebnis',pos:[-320,560,2300],pos2:[-220,520,2050],target:[0,260,0],fov:36}
 ];
-const DURATION=66,OUTRO=61.5;
+const DURATION=73,OUTRO=68.5;
 function configure(w,h,supersample=2){width=w;height=h;ss=supersample;canvas.width=w;canvas.height=h;host.style.width=w+'px';host.style.height=h+'px';renderer.setPixelRatio(1);renderer.setSize(w*ss,h*ss,false);camera.aspect=w/h;camera.updateProjectionMatrix();buildPost();}
 function titleFont(weight,size){return `${weight} ${Math.round(size)}px "Segoe UI Variable Display","Segoe UI",Arial,sans-serif`;}
 function brand(t,outro){
@@ -138,8 +141,9 @@ function pose(s,t){
  const st=viewer.linerState;let pos,target;
  if(s.cutterCam){
   pos=eye.getWorldPosition(V()).add(V(6,4,0));
-  const tool=(viewer.cone.group.visible?viewer.cone.outlet:viewer.coneCutter.tip).getWorldPosition(V());
-  target=tool.lerp(S.holeP.clone().add(V(st.travel,0,0)),.4);
+  // While measuring there is no tool yet: the camera looks at the marked point.
+  const mark=S.holeP.clone(),tool=st.tool==='none'?mark:(viewer.cone.group.visible?viewer.cone.outlet:viewer.coneCutter.tip).getWorldPosition(V());
+  target=tool.lerp(mark.add(V(st.travel,0,0)),.4);
  }else if(s.follow){target=V(st.travel,0,0).add(V(...s.aim));pos=target.clone().add(V(...s.follow));}
  else if(s.cone){target=viewer.cone.outlet.getWorldPosition(V()).add(V(0,-40,0));pos=target.clone().add(V(...s.cone).multiplyScalar(1.04-.08*e));}
  else{target=V(...s.target).lerp(V(...(s.target2||s.target)),e);pos=V(...s.pos).lerp(V(...(s.pos2||s.pos)),e);}

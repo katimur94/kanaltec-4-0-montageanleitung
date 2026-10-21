@@ -39,6 +39,7 @@ for(const kind of ['kliner','inliner'])for(const f of families.filter(f=>!proces
   if(st.stage<2)assert.ok(!v.liner.linerGroup.visible,`${tag} t=${t}: bare pipe before lining`);
   if(st.stage>2)assert.ok(v.liner.linerGroup.visible&&v.liner.linerGroup.position.x===0&&v.liner.linerGroup.scale.y===1,`${tag} t=${t}: liner installed`);
   if(st.stage>=2&&st.stage<=3)assert.ok(v.liner.marker.visible&&v.liner.marker.position.distanceTo(s.holeP)<2,`${tag} t=${t}: measured point kept at the later bore`);
+  if(st.stage>4||(st.stage===4&&st.f>.25))assert.ok(!v.liner.marker.visible,`${tag} t=${t}: marker gone once the liner is opened`);
   if(v.liner.laser.visible){const end=v.liner.laser.localToWorld(V(0,1,0));assert.ok(end.distanceTo(v.liner.marker.position)<1,`${tag} t=${t}: laser ends at the marker`);}
   if(v.liner.packer?.visible)assert.ok(v.liner.packer.scale.y<=s.RL-.5,`${tag} t=${t}: packer inside the liner`);
   if(st.tool!=='none'&&st.travel===0&&Math.abs(st.roll-s.roll)<1e-9){const target=s.holeP.clone().addScaledVector(s.holeU,st.off);worst.tip=Math.max(worst.tip,tool.distanceTo(target));}

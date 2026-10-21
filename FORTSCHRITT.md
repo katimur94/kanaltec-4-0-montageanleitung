@@ -1,5 +1,13 @@
 # Fortschrittschronik
 
+## 21.10.2026 – Korrektur Markierung, Filmskripte auf neun Schritte
+
+**Korrektur (`src/liner.js`):** Die rote Markierung der Bohrstelle tauchte zu Beginn jedes Schritts nach dem Öffnen (Werkzeugwechsel, Anpressen, Verpressen, Aushärten) kurz wieder auf. Sie blendet jetzt nur im Schritt „Liner öffnen“ aus und bleibt danach weg. `work/check-liner.mjs` prüft das zusätzlich.
+
+**Filme:** Kamerafahrten (`work/film-liner-studio.js`, 73 s, Kapitel Einmessen/Liner einbauen/Öffnen/Werkzeugwechsel/Verpressen), Sprechertext (`work/liner-audio.py`) und Werbespot (`work/film-liner-werbung-studio.js`: Einmessen, Liner rein, Öffnen, Verpressen) auf den neuen Ablauf umgestellt; Rendern läuft.
+
+**Prüfung:** `npm test` (alle Prüfungen, `check-liner.mjs` für beide Linertypen und alle fünf DN) bestanden, Build neu; Kontrollbilder des Filmstudios angesehen.
+
 ## 21.10.2026 – Liner verpressen: blankes Rohr, Riesenhohlraum, Einmessen, Linereinbau
 
 **Auftrag:** Ablauf neu: Blankes Rohr mit sehr großem Hohlraum, zuerst wird eingemessen, wo später das Loch gebohrt wird, dann kommt der Liner rein, es wird geöffnet und mit DVK verpresst.

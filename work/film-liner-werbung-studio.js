@@ -5,7 +5,8 @@ import {makeConeCutter} from '../src/cone-cutter.js';
 
 // Commercial for void filling behind the liner (Reel 1080 × 1920, 25 s): motion
 // graphics over portrait scenes of the liner film (footage/…, rendered clean with
-// film-liner-studio.js) plus a live 3D reveal: the cone cutter bursts and the
+// film-liner-studio.js, nine-step sequence of 21.10.2026: bare pipe with a large void,
+// measure, line, open, grout) plus a live 3D reveal: the cone cutter bursts and the
 // DVK-Flex injection cone (name proposal) assembles. 120 BPM grid as in the DSS-Flex spot.
 Viewer.prototype.animate=function(){};
 const host=document.querySelector('#scene'),canvas=document.querySelector('#film'),ctx=canvas.getContext('2d');
@@ -81,13 +82,13 @@ async function frame(t){
   shade(.5);flash(.25*(1-smooth((t-.2)/.1))*(t>.2),C.red);
   bar(W*.5,H*.45,W*1.6,170*outExpo((t-.15)/.3),C.red,-.2,.92);
   word('HOHLRAUM',W/2+sx,H*.42+sy,150,{scale:lerp(2.6,1,outBack((t-.2)/.28)),alpha:smooth((t-.2)/.08)});
-  word('HINTER DEM LINER?',W/2+sx,H*.51+sy,118,{color:C.yellow,scale:lerp(2.6,1,outBack((t-.6)/.28)),alpha:smooth((t-.6)/.08)});
+  word('HINTER DEM ROHR?',W/2+sx,H*.51+sy,118,{color:C.yellow,scale:lerp(2.6,1,outBack((t-.6)/.28)),alpha:smooth((t-.6)/.08)});
   word('Ausgespült · unsichtbar · ohne Halt',W/2,H*.6,44,{weight:700,color:'#d8e6f0',alpha:smooth((t-1.1)/.3),track:3});
   vignette();flash(1-smooth(t/.12));flash(.8*(1-smooth((t-.2)/.12))*(t>=.2));flash(.6*(1-smooth((t-.6)/.12))*(t>=.6));
   glitch(Math.max(clamp(1-(t-.2)/.15)*(t>=.2),clamp(1-(t-.6)/.15)*(t>=.6),smooth((t-2.1)/.4)),Math.floor(t*25));
  }else if(t<4){// PROBLEM STACCATO
   const i=Math.min(2,Math.floor((t-2.5)/.5)),lt=t-2.5-i*.5,[sx,sy]=shakeAt(lt,[0],18);
-  const sc=[['bore','LINER SANIERT.',2,C.white,1.3,0],['void','HOHLRAUM DAHINTER.',50,C.cyan,2.4,-H*.08],['grout','KEIN HALT.',0,C.yellow,2,-H*.1]][i];
+  const sc=[['measure','ROHR GEBROCHEN.',0,C.white,1.3,0],['void','HOHLRAUM DAHINTER.',50,C.cyan,2.4,-H*.08],['packer','KEIN HALT.',100,C.yellow,2,-H*.1]][i];
   cover(await clip(sc[0],lt,1,sc[2]),{zoom:lerp(sc[4]*1.15,sc[4],outExpo(lt/.5)),x:sx+(i===1?W*.12:0),y:sy+sc[5],rot:(i-1)*.03});shade(.45);
   bar(W*.5,H*.5,W*1.8,210,i===1?C.blue:C.red,i%2?.18:-.18,.9*outExpo(lt/.15));
   word(sc[1],W/2+sx,H*.5+sy,i===1?120:170,{color:sc[3],scale:lerp(1.8,1,outExpo(lt/.18)),skew:-.12});
@@ -120,7 +121,7 @@ async function frame(t){
   flash(1-smooth(u/.25));flash(.9*(1-smooth((t-7.6)/.18))*(t>=7.6));flash(.7*(1-smooth((t-7)/.12))*(t>=7));
  }else if(t<15.5){// FOUR STEPS on the beat
   const i=Math.min(3,Math.floor((t-9.5)/1.5)),lt=t-9.5-i*1.5;
-  const st=[['ÖFFNEN','Kegelfräser durch den Liner',C.red,'mill',1.3,20,1.25,0],['WECHSELN','DVK-Flex auf die Spindel',C.blue,'cone',1.3,10,1.15,0],['ANPRESSEN','Dichtauflage dichtet ab',C.yellow,'press',1.4,40,1.2,0],['VERPRESSEN','Der Hohlraum wird voll',C.red,'grout',4.2,20,1.9,-H*.045]][i];
+  const st=[['EINMESSEN','Bohrstelle markieren',C.red,'measure',1.4,15,1.25,0],['LINER REIN','Packer presst an',C.blue,'packer',2,20,1.3,0],['ÖFFNEN','Kegelfräser an der Markierung',C.yellow,'mill',1.3,25,1.25,0],['VERPRESSEN','DVK-Flex füllt den Hohlraum',C.red,'grout',4.2,20,1.9,-H*.045]][i];
   const [sx,sy]=shakeAt(lt,[0],16);
   cover(await clip(st[3],lt,st[4],st[5]),{zoom:lerp(st[6]*1.12,st[6],lt/1.5),x:sx-lerp(30,-30,lt/1.5),y:sy+st[7]});
   ctx.save();ctx.fillStyle=st[2];ctx.beginPath();const x0=lerp(-W*.2,W*2.2,outExpo(lt/.4)),x1=lerp(-W*.7,W*2.2,outExpo((lt-.06)/.45));ctx.moveTo(x1,0);ctx.lineTo(x0,0);ctx.lineTo(x0-500,H);ctx.lineTo(x1-500,H);ctx.closePath();ctx.globalAlpha=.9;ctx.fill();ctx.restore();
@@ -133,7 +134,7 @@ async function frame(t){
  }else if(t<19.5){// PROMISES
   const lt=t-15.5;cover(await clip('result',lt*.6,.7),{zoom:1.9+lt*.03,y:H*.3});shade(.62);
   const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'rgba(43,143,224,.35)');g.addColorStop(1,'rgba(226,35,26,.25)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  const items=['OHNE AUFGRABEN.','DURCH DEN LINER.','HOHLRAUM VOLL.','DN 300 – 700'];
+  const items=['OHNE AUFGRABEN.','PUNKTGENAU EINGEMESSEN.','HOHLRAUM VOLL.','DN 300 – 700'];
   items.forEach((s,k)=>{const a=lt-k;if(a<0)return;const y=H*(.3+k*.12);check(W*.14,y,86,a/.5);word(s,W*.22+lerp(240,0,outExpo(a/.3)),y,k===3?96:100,{align:'left',color:k===3?C.yellow:C.white,alpha:smooth(a/.12),maxW:W*.72});});
   word('DVK-Flex Verpresskegel',W/2,H*.82,58,{weight:700,color:C.cyan,alpha:smooth((lt-3.1)/.3),track:4});
   vignette(.55);for(let k=0;k<4;k++)flash(.45*(1-smooth((lt-k)/.1))*(lt>=k));
