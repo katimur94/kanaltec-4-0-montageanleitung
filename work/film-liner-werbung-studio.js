@@ -78,8 +78,8 @@ function shakeAt(t,hits,amp=26){let x=0,y=0;for(const h of hits){const u=t-h;if(
 async function frame(t){
  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.fillStyle=C.navy;ctx.fillRect(0,0,W,H);
  if(t<2.5){// HOOK
-  const [sx,sy]=shakeAt(t,[.2,.6]);cover(await clip('void',t,.9,4),{zoom:1.75-t*.06,x:sx+W*.08,y:sy+H*.31});
-  shade(.5);flash(.25*(1-smooth((t-.2)/.1))*(t>.2),C.red);
+  const [sx,sy]=shakeAt(t,[.2,.6]);cover(await clip('void',t,.9,4),{zoom:1.75-t*.06,x:sx,y:sy+H*.36});
+  shade(.38);flash(.25*(1-smooth((t-.2)/.1))*(t>.2),C.red);
   bar(W*.5,H*.45,W*1.6,170*outExpo((t-.15)/.3),C.red,-.2,.92);
   word('HOHLRAUM',W/2+sx,H*.42+sy,150,{scale:lerp(2.6,1,outBack((t-.2)/.28)),alpha:smooth((t-.2)/.08)});
   word('HINTER DEM ROHR?',W/2+sx,H*.51+sy,118,{color:C.yellow,scale:lerp(2.6,1,outBack((t-.6)/.28)),alpha:smooth((t-.6)/.08)});
@@ -88,8 +88,8 @@ async function frame(t){
   glitch(Math.max(clamp(1-(t-.2)/.15)*(t>=.2),clamp(1-(t-.6)/.15)*(t>=.6),smooth((t-2.1)/.4)),Math.floor(t*25));
  }else if(t<4){// PROBLEM STACCATO
   const i=Math.min(2,Math.floor((t-2.5)/.5)),lt=t-2.5-i*.5,[sx,sy]=shakeAt(lt,[0],18);
-  const sc=[['measure','ROHR GEBROCHEN.',0,C.white,1.3,0],['void','HOHLRAUM DAHINTER.',50,C.cyan,2.4,-H*.08],['packer','KEIN HALT.',100,C.yellow,2,-H*.1]][i];
-  cover(await clip(sc[0],lt,1,sc[2]),{zoom:lerp(sc[4]*1.15,sc[4],outExpo(lt/.5)),x:sx+(i===1?W*.12:0),y:sy+sc[5],rot:(i-1)*.03});shade(.45);
+  const sc=[['measure','ROHR GEBROCHEN.',0,C.white,1.3,0],['void','HOHLRAUM DAHINTER.',50,C.cyan,1.6,-H*.07],['packer','KEIN HALT.',100,C.yellow,2,-H*.1]][i];
+  cover(await clip(sc[0],lt,1,sc[2]),{zoom:lerp(sc[4]*1.15,sc[4],outExpo(lt/.5)),x:sx,y:sy+sc[5],rot:(i-1)*.03});shade(.45);
   bar(W*.5,H*.5,W*1.8,210,i===1?C.blue:C.red,i%2?.18:-.18,.9*outExpo(lt/.15));
   word(sc[1],W/2+sx,H*.5+sy,i===1?120:170,{color:sc[3],scale:lerp(1.8,1,outExpo(lt/.18)),skew:-.12});
   word(`0${i+1}/03`,W*.86,H*.2,40,{weight:700,color:C.white,alpha:.8,align:'right'});
@@ -132,7 +132,7 @@ async function frame(t){
   ctx.fillStyle=C.white;for(let k=0;k<4;k++){ctx.globalAlpha=k===i?1:.3;ctx.fillRect(W*.1+k*70,H*.66,54,8);}ctx.globalAlpha=1;
   vignette(.5);flash(.7*(1-smooth(lt/.1)));glitch(clamp(1-lt/.12)*.6,i*7+Math.floor(lt*25));
  }else if(t<19.5){// PROMISES
-  const lt=t-15.5;cover(await clip('result',lt*.6,.7),{zoom:1.9+lt*.03,y:H*.3});shade(.62);
+  const lt=t-15.5;cover(await clip('result',lt*.6,.7),{zoom:1.9+lt*.03,y:H*.3});shade(.76);
   const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'rgba(43,143,224,.35)');g.addColorStop(1,'rgba(226,35,26,.25)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   const items=['OHNE AUFGRABEN.','PUNKTGENAU EINGEMESSEN.','HOHLRAUM VOLL.','DN 300 – 700'];
   items.forEach((s,k)=>{const a=lt-k;if(a<0)return;const y=H*(.3+k*.12);check(W*.14,y,86,a/.5);word(s,W*.22+lerp(240,0,outExpo(a/.3)),y,k===3?96:100,{align:'left',color:k===3?C.yellow:C.white,alpha:smooth(a/.12),maxW:W*.72});});
