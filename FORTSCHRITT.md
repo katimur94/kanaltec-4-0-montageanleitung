@@ -1,5 +1,17 @@
 # Fortschrittschronik
 
+## 21.10.2026 – Liner-Film ohne Sprecher, Werbespot-Reel DVK-Flex, Korrektur DSS-Flex-Werbespot
+
+**Auftrag:** Den Film „Verpressen hinter dem Liner“ zusätzlich ohne Sprecher und einen Werbespot im Reel-Format; per Telegram schicken.
+
+**Umsetzung:**
+- `DiTom-Verpressen-hinter-dem-Liner-nur-Musik.mp4`: gleiches Bild, eigene Musik ohne Sprecher (`work/finish-liner-film.py` erzeugt beide Fassungen).
+- `DiTom-DVK-Flex-Liner-Werbespot-Reel.mp4` (1080 × 1920, 25 s): `work/film-liner-werbung-studio.js` mit denselben Motion-Graphics-Bausteinen wie der DSS-Flex-Werbespot (Hook „Hohlraum hinter dem Liner?“, Staccato, „Die Lösung“, 3D-Reveal: Kegelfräser zerspringt, der DVK-Flex Verpresskegel setzt sich aus seinen Teilen zusammen, vier Schritte Öffnen/Wechseln/Anpressen/Verpressen, Versprechen, „Verfüllt.“, Logo und Aufruf). Hochformat-Szenen sauber ohne Logo/Titel aus `work/film-liner-studio.js` gerendert (`--clean`, Hochformat mit größerem Kameraabstand), Build `work/build-liner-werbung-film.mjs`, Musik `work/werbung-audio.py` (jetzt mit Ausgabepfad und Startwert), Fertigstellung `work/finish-liner-werbung.py`.
+- **Korrektur DSS-Flex-Werbespot:** Im Studio passte der ResizeObserver des Viewers den Renderer an den 16:9-Host an; das 3D-Produkt wurde dadurch beim Zeichnen ins Hochformat senkrecht gestreckt (wirkte zusammengepresst). Beide Werbestudios trennen jetzt den ResizeObserver; Abschnitte 5–10 s und 20–25 s des DSS-Flex-Spots neu gerendert, die Schalung hat wieder ihre echten Proportionen.
+- Galerie: Abschnitt „Verpressen hinter dem Liner“ mit drei Videos, Cache-Schlüssel des korrigierten DSS-Flex-Spots erneuert.
+
+**Prüfung:** Kontrollbilder und Kontaktbögen angesehen; alle MP4 vollständig decodiert (nur Musik: 41,8 MB, Spitze −1,8 dB; Liner-Spot: 21,8 MB, Spitze −1,4 dB; DSS-Flex-Spot: 23,5 MB, Spitze −2,1 dB). Telegram: Fassung ohne Sprecher und Liner-Werbespot mit `ok: true` bestätigt. Noch nicht auf `main`/Pages.
+
 ## 20.10.2026 – Korrektur Liner verpressen: Kegelfräser, schräge Messingtülle, Name DVK-Flex
 
 **Auftrag:** Zum Öffnen einen Kegelfräser verwenden (mit dem Pilzfräser öffnet man nicht), die Schräglage der Messingtülle für den Betonschlauch beachten und einen Namen nach dem Muster DSS-Flex (Ditom Sanierungs-Schalung Flexibel) vorschlagen.

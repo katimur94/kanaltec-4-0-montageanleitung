@@ -24,6 +24,8 @@ const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];p
 await page.goto(`http://127.0.0.1:${server.address().port}/`);await page.waitForFunction(()=>window.ready,{},{timeout:600000});
 // --lite: software rendering budget (no GTAO, no motion-blur sub-frames).
 if(process.argv.includes('--lite'))await page.evaluate(()=>film.debug.lite());
+// --clean: footage without logo, titles and dips (studios that support it).
+if(process.argv.includes('--clean'))await page.evaluate(()=>{film.debug.clean=true;});
 const all=[['YouTube',1920,1080,1.5],['Reel',1080,1920,1.5]];
 // Final size after upscaling (render may be smaller with --scale).
 const finalSize={YouTube:'1920:1080',Reel:'1080:1920'};

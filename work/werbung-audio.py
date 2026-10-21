@@ -1,11 +1,13 @@
 """Soundtrack of the DSS-Flex commercial (25 s, 120 BPM): tension and hits, riser, drop at
 the product reveal (5.5 s), impacts on explosion, cuts and logo slam. Own synthesis, no samples.
-Writes work/qa/werbung/music.wav."""
+Writes work/qa/werbung/music.wav, or: python work/werbung-audio.py <out.wav> <seed> (same cue grid,
+e.g. the liner commercial: work/qa/liner-werbung/music.wav 21102026)."""
 import sys,wave
 from pathlib import Path
 sys.path.insert(0,str(Path('work/qa/video-runtime').resolve()))
 import numpy as np
-SR=48000;D=25.0;N=int(SR*D);mix=np.zeros((N,2),np.float32);rng=np.random.default_rng(2102026)
+OUTWAV=sys.argv[1] if len(sys.argv)>1 else 'work/qa/werbung/music.wav';SEED=int(sys.argv[2]) if len(sys.argv)>2 else 2102026
+SR=48000;D=25.0;N=int(SR*D);mix=np.zeros((N,2),np.float32);rng=np.random.default_rng(SEED)
 def add(at,s,g=1,pan=0):
  st=int(at*SR);k=min(len(s),N-st)
  if k<=0:return
@@ -53,6 +55,6 @@ for k,at in enumerate([15.5,16.5,17.5,18.5]):add(at,bell([880,988,1175,1319][k])
 # Ending: ring out, fade.
 tt_=np.arange(N)/SR;env=np.minimum(tt_/.05,1)*np.clip((D-tt_)/.6,0,1);mix*=env[:,None]
 mix/=max(1e-3,float(np.max(np.abs(mix))))/.89
-with wave.open('work/qa/werbung/music.wav','wb') as f:
+with wave.open(OUTWAV,'wb') as f:
  f.setnchannels(2);f.setsampwidth(2);f.setframerate(SR);f.writeframes((np.clip(mix,-1,1)*32767).astype('<i2').tobytes())
 print('ok',float(np.max(np.abs(mix))))

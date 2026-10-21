@@ -19,7 +19,9 @@ viewer.setSections({hideRobot:true,pipe:false,shield:false,holder:false});
 const renderer=viewer.renderer,scene=viewer.scene,camera=viewer.camera;
 renderer.setPixelRatio(1);renderer.setClearColor(0x000000,0);scene.background=null;renderer.toneMappingExposure=1.45;viewer.floor.visible=false;
 const rim1=new THREE.DirectionalLight('#5fb0ff',2.2);rim1.position.set(-900,400,-800);const rim2=new THREE.DirectionalLight('#ff8a5a',1.2);rim2.position.set(900,200,-600);scene.add(rim1,rim2);
-camera.near=5;camera.far=20000;const R3=.6667;renderer.setSize(W*R3,H*R3,false);camera.aspect=W/H;camera.updateProjectionMatrix();
+camera.near=5;camera.far=20000;// The viewer's ResizeObserver would resize the renderer to its 16:9 host and the
+// portrait drawImage would then stretch the product vertically: keep it portrait.
+viewer.ro.disconnect();const R3=.6667;renderer.setSize(W*R3,H*R3,false);camera.aspect=W/H;camera.updateProjectionMatrix();
 function product(t,{yaw,pitch=.3,dist=1,explode=0}){
  viewer.group='all';viewer.explode=viewer.targetExplode=explode;viewer.ambientClock=t;viewer.resetPose();viewer.updateParts();viewer.poseSeal(0);viewer.poseMechanism(0,0,0);viewer.model.updateMatrixWorld(true);
  const b=viewer.bounds(),c=b.getCenter(new THREE.Vector3()),r=b.getSize(new THREE.Vector3()).length()/2,vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);

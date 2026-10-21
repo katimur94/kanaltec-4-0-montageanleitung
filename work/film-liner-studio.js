@@ -83,7 +83,8 @@ function buildPost(){
  composer.addPass(new OutputPass());
  grade=new ShaderPass(GradeShader);grade.uniforms.uRes.value.set(w,h);grade.uniforms.uSS.value=ss;composer.addPass(grade);
 }
-const debug={gtao:true,bloom:true,grade:true,blur:true,lite(){this.gtao=false;this.blur=false;}};
+// clean: footage for the commercial, without logo, titles and dips.
+const debug={gtao:true,bloom:true,grade:true,blur:true,clean:false,lite(){this.gtao=false;this.blur=false;}};
 function renderScene(t){
  gtao.enabled=debug.gtao;bloom.enabled=debug.bloom;grade.enabled=debug.grade;
  renderer.setRenderTarget(sceneRT);renderer.render(scene,camera);renderer.setRenderTarget(null);
@@ -142,6 +143,8 @@ function pose(s,t){
  }else if(s.follow){target=V(st.travel,0,0).add(V(...s.aim));pos=target.clone().add(V(...s.follow));}
  else if(s.cone){target=viewer.cone.outlet.getWorldPosition(V()).add(V(0,-40,0));pos=target.clone().add(V(...s.cone).multiplyScalar(1.04-.08*e));}
  else{target=V(...s.target).lerp(V(...(s.target2||s.target)),e);pos=V(...s.pos).lerp(V(...(s.pos2||s.pos)),e);}
+ // Portrait (Reel): same target, camera further back so the subject keeps its margins.
+ if(width<height&&!s.cutterCam&&!s.inside)pos.sub(target).multiplyScalar(s.cone?1.45:1.75).add(target);
  camera.position.copy(pos);camera.up.set(0,1,0);camera.fov=s.fov;camera.near=s.cutterCam?3:6;camera.updateProjectionMatrix();camera.lookAt(target);camera.updateMatrixWorld();
  const inside=s.inside||s.cutterCam;
  viewer.inspectionLamp.visible=true;cctv.visible=!!inside;headlight.visible=!s.cutterCam;crownLight.visible=!inside;voidLight.visible=!inside;
@@ -155,6 +158,7 @@ function frame(t){
  const s=shots.find(s=>t>=s.start&&t<s.end),K=debug.blur?s.blur||1:1,shutter=.5/30;
  for(let k=0;k<K;k++){const tk=K>1?t+((k+.5)/K-.5)*shutter:t;pose(s,tk);renderScene(tk);ctx.globalAlpha=1/(k+1);ctx.drawImage(renderer.domElement,0,0,width,height);}
  ctx.globalAlpha=1;
+ if(debug.clean)return canvas.toDataURL('image/jpeg',.95).split(',')[1];
  const lw=width*.15,lh=lw*logo.height/logo.width,pad=width*.03;ctx.save();ctx.globalAlpha=.92;ctx.drawImage(logo,pad,pad,lw,lh);ctx.restore();
  if(s.chapter){const a=smooth((t-s.start-.35)/.5)*(1-smooth((t-s.start-2.8)/.6));if(a>0){const m=Math.min(width,height),x=width*.05,y=height*.84;ctx.save();ctx.font=titleFont(600,m*.05);const tw=ctx.measureText(s.chapter).width;ctx.globalAlpha=a;ctx.fillStyle='rgba(6,12,18,.55)';ctx.fillRect(x-m*.02,y-m*.075,tw+m*.06,m*.1);ctx.fillStyle='#6cc0f2';ctx.fillRect(x-m*.02,y-m*.075,m*.008,m*.1);ctx.fillStyle='#eef5fa';ctx.textAlign='left';ctx.fillText(s.chapter,x,y);ctx.restore();}}
  if(s.caption){const a=smooth((t-s.start-.45)/.45)*(1-smooth((t-s.end+.75)/.45));if(a>0){const m=Math.min(width,height),x=width*.62,y=height*.78;ctx.save();ctx.globalAlpha=a;ctx.font=titleFont(600,m*.046);const w1=ctx.measureText(s.caption[0]).width;ctx.font=titleFont(400,m*.03);const w=Math.max(w1,ctx.measureText(s.caption[1]).width);ctx.fillStyle='rgba(6,12,18,.6)';ctx.fillRect(x-m*.025,y-m*.07,w+m*.06,m*.125);ctx.fillStyle='#d23b4f';ctx.fillRect(x-m*.025,y-m*.07,m*.008,m*.125);ctx.textAlign='left';ctx.fillStyle='#eef5fa';ctx.font=titleFont(600,m*.046);ctx.fillText(s.caption[0],x,y-m*.01);ctx.fillStyle='#b5cad9';ctx.font=titleFont(400,m*.03);ctx.fillText(s.caption[1],x,y+m*.038);ctx.restore();}}
